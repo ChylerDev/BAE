@@ -142,7 +142,6 @@ Trace::TraceThread::~TraceThread()
   m_Mutex.unlock();
 }
 
-#if 0
 Trace::TraceThread & Trace::TraceThread::operator<<(ostream_manip pf)
 {
   return operator<<<ostream_manip>(pf);
@@ -159,4 +158,3 @@ Trace::TraceThread & Trace::TraceThread::operator<<(ios_manip pf)
 {
   return operator<<<ios_manip>(pf);
 }
-#endif

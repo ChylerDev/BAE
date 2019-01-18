@@ -305,7 +305,6 @@ private:
       return *this;   // Return reference to this
     }
 
-#if 0
     /*! ************************************************************************
     \brief
       Overloaded operator<< function to allow std::ostream manipulation
@@ -347,7 +346,6 @@ private:
       A reference to the "this" object.
     ***************************************************************************/
     TraceThread& operator<<(ios_manip pf);
-#endif
 
   private:
 
