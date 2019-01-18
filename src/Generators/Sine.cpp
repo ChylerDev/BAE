@@ -1,0 +1,64 @@
+/*! ****************************************************************************
+\file   Sine.cpp
+\author Chyler Morrison
+\email  contact\@chyler.info
+*******************************************************************************/
+
+// Include Files                          //////////////////////////////////////
+
+#include <cmath>
+
+#include "../Engine.hpp"
+
+#include "Sine.hpp"
+
+// Private Macros                         //////////////////////////////////////
+
+// Private Enums                          //////////////////////////////////////
+
+// Private Enums                          //////////////////////////////////////
+
+// Private Objects                        //////////////////////////////////////
+
+// Private Function Declarations          //////////////////////////////////////
+
+// Public Functions                       //////////////////////////////////////
+
+namespace Generator
+{
+
+  Sine::Sine(float f) : irate(INC_RATE*f), y1(std::sin(2*PI*irate)), y2(0), beta(2*std::cos(2*PI*irate))
+  {
+  }
+
+  StereoData_t Sine::GetData(void)
+  {
+    double y = beta * y1 - y2;
+
+    y2 = y1;
+    y1 = y;
+
+    return MONO_TO_STEREO(y);
+  }
+
+  void Sine::SetFrequency(float f)
+  {
+    irate = INC_RATE * f;
+    Reset();
+  }
+
+} // namespace Generator
+
+// Private Functions                      //////////////////////////////////////
+
+namespace Generator
+{
+
+  void Sine::Reset()
+  {
+    y1 = std::sin(2*PI * irate);
+    y2 = 0;
+    beta = 2 * std::cos(2*PI * irate);
+  }
+
+} // namespace Generator
