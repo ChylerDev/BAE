@@ -1,7 +1,10 @@
 /*! ****************************************************************************
-\file   Types.hpp
-\author Chyler Morrison
-\email  contact\@chyler.info
+\file             Types.hpp
+\author           Chyler Morrison
+\par    Email:    contact\@chyler.info
+\par    Project:  AudioEngine
+
+\copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
 #ifndef __TYPES_HPP

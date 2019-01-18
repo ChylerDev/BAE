@@ -2,13 +2,9 @@
 \file             Macro.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  Ulti.Tools
-\brief
-    Header file defining macros that will be used across all areas of the
-    project.
+\par    Project:  AudioEngine
 
-\copyright        Copyright © 2019 Chyler
-\par    See LICENSE file in project root directory for more information
+\copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
 #ifndef _MACRO_HPP
