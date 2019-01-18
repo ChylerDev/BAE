@@ -37,112 +37,117 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-/*! ****************************************************************************
-\brief
-  Initiates Port Audio and handles all related calls.
-*******************************************************************************/
-class Driver
+namespace Core
 {
-private:
-
-  // Members              ///////////////////////
-
-  PaStreamParameters m_Params;
-  PaStream * m_Stream;
-
-  StereoData_t m_Buffer[MAX_BUFFER];
-  uint64_t m_BufferSize;
-  std::vector<AudioCallback_t> m_AudioCallbacks;
-
-  std::thread * m_Thread;
-
-  float m_Gain;
-  bool m_Running;
-
-public:
-
-  // Con-/De- structors   ///////////////////////
 
   /*! **************************************************************************
   \brief
-    Constructs an audio driver object.
-
-  \param gain
-    The linear gain to be used when summing all audio values.
+    Initiates Port Audio and handles all related calls.
   *****************************************************************************/
-  Driver(float gain = DEFAULT_GAIN);
-  ~Driver();
+  class Driver
+  {
+  private:
 
-  // Operators            ///////////////////////
+    // Members              ///////////////////////
 
-  // Accossors/Mutators   ///////////////////////
+    PaStreamParameters m_Params;
+    PaStream * m_Stream;
 
-  // Functions            ///////////////////////
+    StereoData_t m_Buffer[MAX_BUFFER];
+    uint64_t m_BufferSize;
+    std::vector<AudioCallback_t> m_AudioCallbacks;
 
-  /*! **************************************************************************
-  \brief
-    Adds an audio callback to the list of callbacks to check.
+    std::thread * m_Thread;
 
-  \param cb
-    The callback to be added to the list.
-  *****************************************************************************/
-  void AddAudioCallback(AudioCallback_t const & cb);
+    float m_Gain;
+    bool m_Running;
 
-  /*! **************************************************************************
-  \brief
-    Sets the gain to be used when summing all the audio values.
+  public:
 
-  \param gain
-    The linear gain value to be set.
-  *****************************************************************************/
-  void SetGain(float gain = DEFAULT_GAIN);
+    // Con-/De- structors   ///////////////////////
 
-  /*! **************************************************************************
-  \brief
-    Sets the threaded runner to stop grabbing data.
-  *****************************************************************************/
-  void Shutdown();
+    /*! ************************************************************************
+    \brief
+      Constructs an audio driver object.
 
-private:
+    \param gain
+      The linear gain to be used when summing all audio values.
+    ***************************************************************************/
+    Driver(float gain = DEFAULT_GAIN);
+    ~Driver();
 
-  // Functions                  ///////////////////////
+    // Operators            ///////////////////////
 
-  /*! **************************************************************************
-  \brief
-    Callback function for writing data to the speakers or reding data from the
-    microphones.
+    // Accossors/Mutators   ///////////////////////
 
-  \param input
-    Array of input audio data.
+    // Functions            ///////////////////////
 
-  \param output
-    Array of output audio data.
+    /*! ************************************************************************
+    \brief
+      Adds an audio callback to the list of callbacks to check.
 
-  \param frameCount
-    The number of sample frames to be processed by the stream callback.
+    \param cb
+      The callback to be added to the list.
+    ***************************************************************************/
+    void AddAudioCallback(AudioCallback_t const & cb);
 
-  \param timeInfo
-    Timesamps indicating the ADC capture time of the first sample in the input
-    buffer, the DAC output time of the first sample in the output buffer, and
-    the time the callback was invoked.
+    /*! ************************************************************************
+    \brief
+      Sets the gain to be used when summing all the audio values.
 
-  \param statusFlags
-    Flags indicating whether input/output buffers have been inserted or will be
-    dropped to overcome underflow or overflow conditions.
+    \param gain
+      The linear gain value to be set.
+    ***************************************************************************/
+    void SetGain(float gain = DEFAULT_GAIN);
 
-  \param userData
-    The the user-supplied data given when Pa_OpenStream was called.
+    /*! ************************************************************************
+    \brief
+      Sets the threaded runner to stop grabbing data.
+    ***************************************************************************/
+    void Shutdown();
 
-  \return
-    A PaStreamCallbackResult enum value.
-  *****************************************************************************/
-  static int s_WriteCallback(void const * input, void * output,
-                             unsigned long frameCount,
-                             PaStreamCallbackTimeInfo const * timeInfo,
-                             PaStreamCallbackFlags statusFlags,
-                             void * userData);
+  private:
 
-}; // class Driver
+    // Functions                  ///////////////////////
+
+    /*! ************************************************************************
+    \brief
+      Callback function for writing data to the speakers or reding data from the
+      microphones.
+
+    \param input
+      Array of input audio data.
+
+    \param output
+      Array of output audio data.
+
+    \param frameCount
+      The number of sample frames to be processed by the stream callback.
+
+    \param timeInfo
+      Timesamps indicating the ADC capture time of the first sample in the input
+      buffer, the DAC output time of the first sample in the output buffer, and
+      the time the callback was invoked.
+
+    \param statusFlags
+      Flags indicating whether input/output buffers have been inserted or will
+      be dropped to overcome underflow or overflow conditions.
+
+    \param userData
+      The the user-supplied data given when Pa_OpenStream was called.
+
+    \return
+      A PaStreamCallbackResult enum value.
+    ***************************************************************************/
+    static int s_WriteCallback(void const * input, void * output,
+                              unsigned long frameCount,
+                              PaStreamCallbackTimeInfo const * timeInfo,
+                              PaStreamCallbackFlags statusFlags,
+                              void * userData);
+
+  }; // class Driver
+
+} // namespace Core
 
 // Public Functions             ////////////////////////////////////////////////
 

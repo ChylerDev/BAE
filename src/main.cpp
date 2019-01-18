@@ -33,7 +33,7 @@ int main(int argc, char * argv[])
   UNREFERENCED_PARAMETER(argv);
 
   Generator::Sine sine_data(55);
-  Driver driver;
+  Core::Driver driver;
 
   driver.AddAudioCallback(AudioCallback_t(std::bind(&Generator::Sine::GetData, &sine_data)));
 
