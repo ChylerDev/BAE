@@ -83,7 +83,7 @@ public:
   \param cb
     The callback to be added to the list.
   *****************************************************************************/
-  void AddAudioCallback(AudioCallback_t & cb);
+  void AddAudioCallback(AudioCallback_t const & cb);
 
   /*! **************************************************************************
   \brief

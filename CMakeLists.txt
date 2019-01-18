@@ -20,7 +20,7 @@ elseif(UNIX)
 endif()
 
 if(MSVC)
-  set(COMPILER_FLAGS "/DWin32 /D_WINDOWS /W4 /WX /GR /EHsc ${CMAKE_CXX_FLAGS}" CACHE STRING "Set compiler flags here")
+  set(COMPILER_FLAGS "/DWin32 /D_WINDOWS /W4 /WX /GR /EHsc" CACHE STRING "Set compiler flags here")
   set(DEBUG_FLAG "")
 else()
   set(COMPILER_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wconversion\

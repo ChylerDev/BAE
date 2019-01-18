@@ -67,7 +67,7 @@ Driver::~Driver()
   PA_ERROR_CHECK(code, "PortAudio failed to terminate", "PortAudio terminated");
 }
 
-void Driver::AddAudioCallback(AudioCallback_t & cb)
+void Driver::AddAudioCallback(AudioCallback_t const & cb)
 {
   m_AudioCallbacks.push_back(cb);
 }
@@ -85,6 +85,9 @@ int Driver::s_WriteCallback(void const * input, void * output,
                             PaStreamCallbackFlags statusFlags,
                             void * userData)
 {
+  UNREFERENCED_PARAMETER(timeInfo);
+  UNREFERENCED_PARAMETER(input);
+
 #ifdef _DEBUG
   if(frameCount > MAX_BUFFER)
   {
