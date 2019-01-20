@@ -16,7 +16,7 @@
 
 #include "../Engine.hpp"
 
-#include "../Trace/Trace.hpp"
+#include "../Trace/src/Trace.hpp"
 #include "Driver.hpp"
 
 // Private Macros                         //////////////////////////////////////
@@ -25,11 +25,11 @@
 {                                             \
   if(code != paNoError)                       \
   {                                           \
-    Trace::log[err] << badtxt << '\n';        \
-    Trace::log[err] << Pa_GetErrorText(code); \
+    Log::Trace::log[err] << badtxt << '\n';        \
+    Log::Trace::log[err] << Pa_GetErrorText(code); \
     exit(-1);                                 \
   }                                           \
-  Trace::log[stc] << goodtxt << '\n';         \
+  Log::Trace::log[stc] << goodtxt << '\n';         \
 }                                             \
 
 // Private Enums                          //////////////////////////////////////
@@ -102,14 +102,14 @@ namespace Core
   #ifdef _DEBUG
     if(frameCount > MAX_BUFFER)
     {
-      Trace::log[err] << "PortAudio frame count is larger than the allowed buffer size. "
-                      << "This is a guaranteed underflow scenario!!!\n";
+      Log::Trace::log[err] << "PortAudio frame count is larger than the allowed buffer size. "
+                          << "This is a guaranteed underflow scenario!!!\n";
     }
   #endif
 
-    Trace::log[frq] << "PortAudio buffer size: " << frameCount << '\n';
-
-      // Convert input data to usable types
+    Log::Trace::log[frq] << "PortAudio buffer size: " << frameCount << '\n';
+    
+      // Convert input data to usable type    s
     Driver * obj = reinterpret_cast<Driver *>(userData);
     float * out = reinterpret_cast<float *>(output);
 
@@ -132,8 +132,8 @@ namespace Core
     if(i < frameCount || statusFlags & paOutputUnderflow)
     {
         // UNDERFLOW!!!
-      Trace::log[err] << "Audio system is experiencing data undeflow, "
-                      << "zero-data will be inserted to keep up!\n";
+      Log::Trace::log[err] << "Audio system is experiencing data undeflow, "
+                          << "zero-data will be inserted to keep up!\n";
 
       while(i < frameCount)
       {
@@ -143,8 +143,8 @@ namespace Core
     else if(statusFlags & paOutputOverflow)
     {
         // OVERFLOW!!!
-      Trace::log[err] << "Audio system is experiencing data overflow, "
-                      << "some data will be discarded to keep up!\n";
+      Log::Trace::log[err] << "Audio system is experiencing data overflow, "
+                          << "some data will be discarded to keep up!\n";
     }
 
     obj->m_BufferSize -= i;

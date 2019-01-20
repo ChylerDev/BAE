@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.8)
 
+add_subdirectory(src/Trace)
+
 project(AudioEngine CXX)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -46,9 +48,6 @@ set(core_files
 set(gen_files
       ${CMAKE_SOURCE_DIR}/Generators/Sine.cpp ${CMAKE_SOURCE_DIR}/Generators/Sine.hpp
 )
-set(trace_files
-      ${CMAKE_SOURCE_DIR}/Trace/Trace.cpp ${CMAKE_SOURCE_DIR}/Trace/Trace.hpp
-)
 set(engine_files
       ${CMAKE_SOURCE_DIR}/Types.hpp ${CMAKE_SOURCE_DIR}/Macro.hpp
       ${CMAKE_SOURCE_DIR}/main.cpp
@@ -57,18 +56,17 @@ set(engine_files
 
 source_group("Core" FILES ${core_files})
 source_group("Generators" FILES ${gen_files})
-source_group("Trace" FILES ${trace_files})
 source_group("Engine" FILES ${engine_files})
 
 add_executable(${PROJECT_NAME}
                  ${core_files}
                  ${gen_files}
-                 ${trace_files}
                  ${engine_files}
 )
 
 target_link_libraries(${PROJECT_NAME}
                         "${PortAudio}"
+                        Trace           # src/Trace
 )
 
 if(WIN32)
