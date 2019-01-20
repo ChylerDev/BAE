@@ -1,0 +1,3 @@
+[submodule "src/Trace"]
+	path = src/Trace
+	url = https://gitlab.com/Fluhzar/logging.git
