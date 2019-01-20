@@ -25,11 +25,11 @@
 {                                             \
   if(code != paNoError)                       \
   {                                           \
-    Log::Trace::log[err] << badtxt << '\n';        \
-    Log::Trace::log[err] << Pa_GetErrorText(code); \
+    Log::Trace::out[err] << badtxt << '\n';        \
+    Log::Trace::out[err] << Pa_GetErrorText(code); \
     exit(-1);                                 \
   }                                           \
-  Log::Trace::log[stc] << goodtxt << '\n';         \
+  Log::Trace::out[stc] << goodtxt << '\n';         \
 }                                             \
 
 // Private Enums                          //////////////////////////////////////
@@ -102,12 +102,12 @@ namespace Core
   #ifdef _DEBUG
     if(frameCount > MAX_BUFFER)
     {
-      Log::Trace::log[err] << "PortAudio frame count is larger than the allowed buffer size. "
+      Log::Trace::out[err] << "PortAudio frame count is larger than the allowed buffer size. "
                           << "This is a guaranteed underflow scenario!!!\n";
     }
   #endif
 
-    Log::Trace::log[frq] << "PortAudio buffer size: " << frameCount << '\n';
+    Log::Trace::out[frq] << "PortAudio buffer size: " << frameCount << '\n';
     
       // Convert input data to usable type    s
     Driver * obj = reinterpret_cast<Driver *>(userData);
@@ -132,7 +132,7 @@ namespace Core
     if(i < frameCount || statusFlags & paOutputUnderflow)
     {
         // UNDERFLOW!!!
-      Log::Trace::log[err] << "Audio system is experiencing data undeflow, "
+      Log::Trace::out[err] << "Audio system is experiencing data undeflow, "
                           << "zero-data will be inserted to keep up!\n";
 
       while(i < frameCount)
@@ -143,7 +143,7 @@ namespace Core
     else if(statusFlags & paOutputOverflow)
     {
         // OVERFLOW!!!
-      Log::Trace::log[err] << "Audio system is experiencing data overflow, "
+      Log::Trace::out[err] << "Audio system is experiencing data overflow, "
                           << "some data will be discarded to keep up!\n";
     }
 
