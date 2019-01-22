@@ -44,7 +44,7 @@ int main(int argc, char * argv[])
   }
   else
   {
-    ref = std::bind(&Generator::Sine::GetData, &sine_data);
+    ref = std::bind(&Generator::Sine::SendSample, &sine_data);
   }
   Core::Driver driver;
 
