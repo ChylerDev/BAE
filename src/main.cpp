@@ -15,7 +15,9 @@
 
 #include "Engine.hpp"
 
+#include "Tools/Input.hpp"
 #include "Generators/Sine.hpp"
+#include "Generators/WAV.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
@@ -29,15 +31,25 @@
 
 int main(int argc, char * argv[])
 {
-  UNREFERENCED_PARAMETER(argc);
-  UNREFERENCED_PARAMETER(argv);
+  CreateOptions(argc, argv);
 
   Generator::Sine sine_data(55);
+  Generator::WAV wav_data;
+  AudioCallback_t ref;
+
+  if(argc > 1)
+  {
+    wav_data.ReadFile(GetOptions().at(1));
+    ref = std::bind(&Generator::WAV::SendSample, &wav_data);
+  }
+  else
+  {
+    ref = std::bind(&Generator::Sine::GetData, &sine_data);
+  }
   Core::Driver driver;
 
-  driver.AddAudioCallback(AudioCallback_t(std::bind(&Generator::Sine::GetData, &sine_data)));
+  driver.AddAudioCallback(ref);
 
-  //std::this_thread::sleep_for(std::chrono::seconds(10));
   std::cin.get();
 
   driver.Shutdown();
