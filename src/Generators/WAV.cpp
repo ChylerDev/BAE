@@ -32,6 +32,10 @@
 namespace Generator
 {
 
+  WAV::WAV() : m_Data(), m_CurrentIndex(0)
+  {
+  }
+
   WAV::WAV(std::string const & path) : m_Data(), m_CurrentIndex(0)
   {
     ReadFile(path);

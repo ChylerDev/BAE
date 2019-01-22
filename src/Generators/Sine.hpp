@@ -25,44 +25,75 @@
 namespace Generator
 {
 
-/*! ****************************************************************************
-\brief
-  Generates sine data at the given frequency.
-*******************************************************************************/
-class Sine
-{
-private:
+  /*! **************************************************************************
+  \brief
+    Generates sine data at the given frequency.
+  *****************************************************************************/
+  class Sine
+  {
+  private:
 
-  // Members              ///////////////////////
+    // Members              ///////////////////////
 
-  double irate;
-  double y1, y2;
-  double beta;
+    double irate;
+    double y1, y2;
+    double beta;
 
-public:
+  public:
 
-  // Con-/De- structors   ///////////////////////
+    // Con-/De- structors   ///////////////////////
 
-  Sine(float freq = 440.f);
-  ~Sine() = default;
+    /*! ************************************************************************
+    \brief
+      Creates an object that outputs a simple sine wave without using inefficient
+      functions like std::sin.
 
-  // Operators            ///////////////////////
+    \param freq
+      The frequency for the sine-wav to output at.
+    ***************************************************************************/
+    Sine(float freq = 440.f);
 
-  // Accossors/Mutators   ///////////////////////
+    /*! ************************************************************************
+    \brief
+      Default destructor.
+    ***************************************************************************/
+    ~Sine() = default;
 
-  // Functions            ///////////////////////
+    // Operators            ///////////////////////
 
-  StereoData_t GetData(void);
+    // Accossors/Mutators   ///////////////////////
 
-  void SetFrequency(float freq);
+    // Functions            ///////////////////////
 
-private:
+    /*! ************************************************************************
+    \brief
+      Sends a single sample to Core::Driver for output to the OS.
 
-  // Functions                  ///////////////////////
+    \return
+      The stereo sample data.
+    ***************************************************************************/
+    StereoData_t SendSample(void);
 
-  void Reset(void);
+    /*! ************************************************************************
+    \brief
+      Sets the frequency to a new value.
 
-}; // class Sine
+    \param freq
+      The new frequency.
+    ***************************************************************************/
+    void SetFrequency(float freq);
+
+  private:
+
+    // Functions                  ///////////////////////
+
+    /*! ************************************************************************
+    \brief
+      Sets all the coefficients for calculating samples.
+    ***************************************************************************/
+    void Reset(void);
+
+  }; // class Sine
 
 } // namespace Generator
 

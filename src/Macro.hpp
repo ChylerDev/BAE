@@ -25,10 +25,11 @@
 #include <cmath>
 
 #ifndef PI_INC
-  static double PI = std::acos(-1.0);
-  static float PI_F = std::acos(-1.f);
-  static double LOG_10 = std::log(10.0f);
-  static double SQRT_HALF = std::sqrt(0.5);
+  static double const PI        = std::acos(-1.0);
+  static double const PI2       = 2*PI;
+  static float  const PI_F      = std::acos(-1.f);
+  static double const LOG_10    = std::log(10.0f);
+  static double const SQRT_HALF = std::sqrt(0.5);
 
   #define PI_INC
 #endif

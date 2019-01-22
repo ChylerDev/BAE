@@ -34,7 +34,7 @@ namespace Generator
   {
   }
 
-  StereoData_t Sine::GetData(void)
+  StereoData_t Sine::SendSample(void)
   {
     double y = beta * y1 - y2;
 
@@ -59,7 +59,7 @@ namespace Generator
 
   void Sine::Reset()
   {
-    y1 = std::sin(2*PI * irate);
+    y1 = std::sin(PI2 * irate);
     y2 = 0;
     beta = 2 * std::cos(2*PI * irate);
   }
