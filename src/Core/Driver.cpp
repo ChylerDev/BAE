@@ -57,7 +57,7 @@ namespace Core
     m_Params.hostApiSpecificStreamInfo = nullptr;
 
     code = Pa_OpenStream(&m_Stream, nullptr, &m_Params, SAMPLE_RATE, 0, 0,
-                        &Driver::s_WriteCallback, this);
+                         &Driver::s_WriteCallback, this);
     PA_ERROR_CHECK(code, "Failed to open the audio stream", "Opened the audio stream");
 
     code = Pa_StartStream(m_Stream);
@@ -103,11 +103,17 @@ namespace Core
     if(frameCount > MAX_BUFFER)
     {
       Log::Trace::out[err] << "PortAudio frame count is larger than the allowed buffer size. "
-                          << "This is a guaranteed underflow scenario!!!\n";
+                           << "This is a guaranteed underflow scenario!!!\n";
     }
   #endif
 
-    Log::Trace::out[frq] << "PortAudio buffer size: " << frameCount << '\n';
+    static unsigned long old_count = 0;
+
+    if(old_count != frameCount)
+    {
+      Log::Trace::out[frq] << "PortAudio buffer size: " << frameCount << '\n';
+      old_count = frameCount;
+    }
     
       // Convert input data to usable type    s
     Driver * obj = reinterpret_cast<Driver *>(userData);
@@ -133,7 +139,7 @@ namespace Core
     {
         // UNDERFLOW!!!
       Log::Trace::out[err] << "Audio system is experiencing data undeflow, "
-                          << "zero-data will be inserted to keep up!\n";
+                           << "zero-data will be inserted to keep up!\n";
 
       while(i < frameCount)
       {
@@ -144,7 +150,7 @@ namespace Core
     {
         // OVERFLOW!!!
       Log::Trace::out[err] << "Audio system is experiencing data overflow, "
-                          << "some data will be discarded to keep up!\n";
+                           << "some data will be discarded to keep up!\n";
     }
 
     obj->m_BufferSize -= i;
