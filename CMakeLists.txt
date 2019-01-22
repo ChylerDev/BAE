@@ -47,6 +47,7 @@ set(core_files
 )
 set(gen_files
       ${CMAKE_SOURCE_DIR}/Generators/Sine.cpp ${CMAKE_SOURCE_DIR}/Generators/Sine.hpp
+      ${CMAKE_SOURCE_DIR}/Generators/WAV.cpp ${CMAKE_SOURCE_DIR}/Generators/WAV.hpp
 )
 set(tools_files
       ${CMAKE_SOURCE_DIR}/Tools/Input.cpp ${CMAKE_SOURCE_DIR}/Tools/Input.hpp
