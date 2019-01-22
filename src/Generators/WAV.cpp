@@ -48,7 +48,7 @@ namespace Generator
 
   WAV::WAV(int argc) : m_Data(), m_CurrentIndex(0)
   {
-    std::string path = GetOptions().at(argc);
+    std::string path = Tools::GetOptions().at(argc);
 
     ReadFile(path);
   }

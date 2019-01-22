@@ -17,23 +17,31 @@
 
 // Private Objects                        //////////////////////////////////////
 
-static std::map<int, std::string> s_Options;
+namespace Tools
+{
+  static std::map<int, std::string> s_Options;
+} // namespace Tools
 
 // Private Function Declarations          //////////////////////////////////////
 
 // Public Functions                       //////////////////////////////////////
 
-void CreateOptions(int argc, char * argv[])
+namespace Tools
 {
-  for(int i = 0; i < argc; ++i)
-  {
-    s_Options[i] = argv[i];
-  }
-}
 
-std::map<int, std::string> const & GetOptions()
-{
-  return s_Options;
-}
+  void CreateOptions(int argc, char * argv[])
+  {
+    for(int i = 0; i < argc; ++i)
+    {
+      s_Options[i] = argv[i];
+    }
+  }
+
+  std::map<int, std::string> const & GetOptions()
+  {
+    return s_Options;
+  }
+
+} // namespace Tools
 
 // Private Functions                      //////////////////////////////////////

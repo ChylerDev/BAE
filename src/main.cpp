@@ -31,7 +31,7 @@
 
 int main(int argc, char * argv[])
 {
-  CreateOptions(argc, argv);
+  Tools::CreateOptions(argc, argv);
 
   Generator::Sine sine_data(55);
   Generator::WAV wav_data;
@@ -39,7 +39,7 @@ int main(int argc, char * argv[])
 
   if(argc > 1)
   {
-    wav_data.ReadFile(GetOptions().at(1));
+    wav_data.ReadFile(Tools::GetOptions().at(1));
     ref = std::bind(&Generator::WAV::SendSample, &wav_data);
   }
   else
