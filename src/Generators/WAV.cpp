@@ -32,21 +32,21 @@
 namespace Generator
 {
 
-  WAV::WAV() : m_Data(), m_CurrentIndex(0)
+  WAV::WAV() : m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
   {
   }
 
-  WAV::WAV(std::string const & path) : m_Data(), m_CurrentIndex(0)
+  WAV::WAV(std::string const & path) : m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
   {
     ReadFile(path);
   }
 
-  WAV::WAV(std::vector<char> const & data) : m_Data(), m_CurrentIndex(0)
+  WAV::WAV(std::vector<char> const & data) : m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
   {
     ParseWAV(data.data(), int(data.size()));
   }
 
-  WAV::WAV(int argc) : m_Data(), m_CurrentIndex(0)
+  WAV::WAV(int argc) : m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
   {
     std::string path = Tools::GetOptions().at(argc);
 
@@ -55,9 +55,9 @@ namespace Generator
 
   StereoData_t WAV::SendSample()
   {
-    if(m_CurrentIndex < m_Data.size())
+    if(m_CurrentIndex < m_Data.size() && m_Resampler)
     {
-      return m_Data[m_CurrentIndex++];
+      return m_Resampler->SendSample();
     }
     return StereoData_t(0.f,0.f);
   }
@@ -154,6 +154,8 @@ namespace Generator
       m_Data.push_back(sample);
       data += BytesPerSample;
     }
+
+    m_Resampler = new Tools::Resampler(m_Data, float(header->SamplingRate), 0, m_Data.size()-1);
   }
 
 } // namespace Generator

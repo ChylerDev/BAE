@@ -17,6 +17,8 @@
 
 #include "../Engine.hpp"
 
+#include "../Tools/Resampler.hpp"
+
 // Public Macros                ////////////////////////////////////////////////
 
 // Forward References           ////////////////////////////////////////////////
@@ -43,6 +45,8 @@ namespace Generator
 
     std::vector<StereoData_t> m_Data;
     uint64_t m_CurrentIndex;
+
+    Tools::Resampler * m_Resampler;
 
   public:
 

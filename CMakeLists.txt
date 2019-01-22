@@ -51,6 +51,7 @@ set(gen_files
 )
 set(tools_files
       ${CMAKE_SOURCE_DIR}/Tools/Input.cpp ${CMAKE_SOURCE_DIR}/Tools/Input.hpp
+      ${CMAKE_SOURCE_DIR}/Tools/Resampler.cpp ${CMAKE_SOURCE_DIR}/Tools/Resampler.hpp
 )
 set(engine_files
       ${CMAKE_SOURCE_DIR}/Types.hpp ${CMAKE_SOURCE_DIR}/Macro.hpp
