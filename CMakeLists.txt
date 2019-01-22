@@ -48,6 +48,9 @@ set(core_files
 set(gen_files
       ${CMAKE_SOURCE_DIR}/Generators/Sine.cpp ${CMAKE_SOURCE_DIR}/Generators/Sine.hpp
 )
+set(tools_files
+      ${CMAKE_SOURCE_DIR}/Tools/Input.cpp ${CMAKE_SOURCE_DIR}/Tools/Input.hpp
+)
 set(engine_files
       ${CMAKE_SOURCE_DIR}/Types.hpp ${CMAKE_SOURCE_DIR}/Macro.hpp
       ${CMAKE_SOURCE_DIR}/main.cpp
@@ -55,13 +58,15 @@ set(engine_files
 )
 
 source_group("Core" FILES ${core_files})
-source_group("Generators" FILES ${gen_files})
 source_group("Engine" FILES ${engine_files})
+source_group("Generators" FILES ${gen_files})
+source_group("Tools" FILES ${tools_files})
 
 add_executable(${PROJECT_NAME}
                  ${core_files}
-                 ${gen_files}
                  ${engine_files}
+                 ${gen_files}
+                 ${tools_files}
 )
 
 target_link_libraries(${PROJECT_NAME}
