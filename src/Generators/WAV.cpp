@@ -87,7 +87,12 @@ namespace Generator
       temp.reserve(l_file.tellg());
       l_file.seekg(0, std::ios::beg);
 
+      Log::Trace::out[stc] << "Loading file...\n";
+      Log::Trace::out.flush();
+
       temp.assign((std::istreambuf_iterator<char>(l_file)), std::istreambuf_iterator<char>());
+
+      Log::Trace::out[stc] << "File successfully loaded\n";
 
       ParseWAV(temp.data(), int(temp.size()));
     }
