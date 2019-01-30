@@ -24,14 +24,23 @@
 
 #include <cmath>
 
-#ifndef PI_INC
-  static double const PI        = std::acos(-1.0);
-  static double const PI2       = 2*PI;
-  static float  const PI_F      = std::acos(-1.f);
-  static double const LOG_10    = std::log(10.0f);
-  static double const SQRT_HALF = std::sqrt(0.5);
-
-  #define PI_INC
+#ifndef PI
+  #define PI std::acos(-1.0)
+#endif
+#ifndef PI2
+  #define PI2 (2*PI)
+#endif
+#ifndef PI_F
+  #define PI_F std::acos(-1.f)
+#endif
+#ifndef PI2_F
+  #define PI2_F (2*PI_F)
+#endif
+#ifndef LOG_10
+  #define LOG_10 std::log(10.0f)
+#endif
+#ifndef SQRT_HALF
+  #define SQRT_HALF std::sqrt(0.5)
 #endif
 
 #ifndef DB_TO_LINEAR
