@@ -14,6 +14,7 @@
 
 #include <tuple>
 #include <vector>
+#include <deque>
 
 #include "../Engine.hpp"
 
@@ -41,6 +42,8 @@ namespace Modifiers
     using PoleContainer = std::vector<std::tuple<uint32_t,float>>;
 
   private:
+    
+    using SampleContainer = std::deque<StereoData_t>;
 
     // Members              ///////////////////////
 
@@ -49,8 +52,8 @@ namespace Modifiers
       /// Vector of tuples, tuple of the y subscript and its coefficient
     PoleContainer m_Poles;
 
-    std::vector<StereoData_t> m_Inputs;
-    std::vector<StereoData_t> m_Outputs;
+    SampleContainer m_Inputs;
+    SampleContainer m_Outputs;
 
     uint32_t m_MaxXSubscript;
     uint32_t m_MaxYSubscript;
@@ -59,9 +62,21 @@ namespace Modifiers
 
     // Con-/De- structors   ///////////////////////
 
+    /*! ************************************************************************
+    \brief
+      Constructor.
+
+    \param zeros
+      Container a tuple of the x subscript and its coefficient.
+      Expected to be ordered lowest to highest by subscript.
+
+    \param poles
+      Container of a tuple of the the y subscript and its coefficient.
+      Expected to be ordered lowest to highest by subscript.
+    ***************************************************************************/
     GenericFilter(ZeroContainer const & zeros, PoleContainer const & poles);
 
-    ~GenericFilter();
+    ~GenericFilter() = default;
 
     // Operators            ///////////////////////
 
@@ -69,7 +84,17 @@ namespace Modifiers
 
     // Functions            ///////////////////////
 
-    StereoData_t FilterSample(StereoData_t x);
+    /*! ************************************************************************
+    \brief
+      Takes input sample and filters it, returning the result.
+
+    \param input
+      The input sample.
+
+    \return
+      The filtered sample.
+    ***************************************************************************/
+    StereoData_t FilterSample(StereoData_t input);
 
   private:
 
