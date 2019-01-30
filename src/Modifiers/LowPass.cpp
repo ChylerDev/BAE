@@ -52,18 +52,22 @@ namespace Modifiers
     }
 
     StereoData_t output(
-      m_Coefficients[0] * std::get<0>(input) +
+      float(m_Coefficients[0] * std::get<0>(input) +
       m_Coefficients[1] * std::get<0>(m_Outputs[0]) +
       m_Coefficients[2] * std::get<0>(m_Outputs[1]) +
-      m_Coefficients[3] * std::get<0>(m_Outputs[2]),
+      m_Coefficients[3] * std::get<0>(m_Outputs[2])),
 
-      m_Coefficients[0] * std::get<1>(input) +
+      float(m_Coefficients[0] * std::get<1>(input) +
       m_Coefficients[1] * std::get<1>(m_Outputs[0]) +
       m_Coefficients[2] * std::get<1>(m_Outputs[1]) +
-      m_Coefficients[3] * std::get<1>(m_Outputs[2])
+      m_Coefficients[3] * std::get<1>(m_Outputs[2]))
     );
 
-    std::memmove(m_Outputs+1, m_Outputs, sizeof(*m_Outputs));
+    //std::memmove(m_Outputs+1, m_Outputs, sizeof(*m_Outputs));
+    for(uint32_t i = sizeof(m_Outputs) / sizeof(*m_Outputs) - 1; i > 0; --i)
+    {
+      m_Outputs[i] = m_Outputs[i - 1];
+    }
     m_Outputs[0] = output;
 
     return output;

@@ -82,6 +82,16 @@ namespace Modifiers
 
     // Functions            ///////////////////////
 
+    /*! ************************************************************************
+    \brief
+      Takes input sample and filters it, returning the result.
+
+    \param input
+      The input sample.
+
+    \return
+      The filtered sample.
+    ***************************************************************************/
     StereoData_t FilterSample(StereoData_t input);
 
   private:
