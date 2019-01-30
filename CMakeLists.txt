@@ -51,6 +51,7 @@ set(gen_files
 )
 set(modifier_files
       ${CMAKE_SOURCE_DIR}/Modifiers/GenericFilter.cpp ${CMAKE_SOURCE_DIR}/Modifiers/GenericFilter.hpp
+      ${CMAKE_SOURCE_DIR}/Modifiers/LowPass.cpp ${CMAKE_SOURCE_DIR}/Modifiers/LowPass.hpp
 )
 set(tools_files
       ${CMAKE_SOURCE_DIR}/Tools/Input.cpp ${CMAKE_SOURCE_DIR}/Tools/Input.hpp
