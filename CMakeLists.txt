@@ -47,6 +47,7 @@ set(core_files
 )
 set(gen_files
       ${CMAKE_SOURCE_DIR}/Generators/Sine.cpp ${CMAKE_SOURCE_DIR}/Generators/Sine.hpp
+      ${CMAKE_SOURCE_DIR}/Generators/Square.cpp ${CMAKE_SOURCE_DIR}/Generators/Square.hpp
       ${CMAKE_SOURCE_DIR}/Generators/WAV.cpp ${CMAKE_SOURCE_DIR}/Generators/WAV.hpp
 )
 set(modifier_files
