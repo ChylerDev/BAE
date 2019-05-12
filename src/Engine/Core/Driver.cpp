@@ -14,7 +14,7 @@
 
 #include <portaudio/portaudio.h>
 
-#include "../../Libraries/Trace/src/Trace.hpp"
+#include "../../Libraries/Logging/src/Trace.hpp"
 
 #include "../Engine.hpp"
 #include "Driver.hpp"

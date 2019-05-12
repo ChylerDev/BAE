@@ -14,7 +14,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "../../Libraries/Trace/src/Trace.hpp"
+#include "../../Libraries/Logging/src/Trace.hpp"
 
 #include "WAV.hpp"
 #include "../Tools/Input.hpp"

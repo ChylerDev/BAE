@@ -20,7 +20,7 @@
 #include "../Engine/Generators/Square.hpp"
 #include "../Engine/Generators/WAV.hpp"
 
-#include "../Libraries/Trace/src/Trace.hpp"
+#include "../Libraries/Logging/src/Trace.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
