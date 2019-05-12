@@ -1,0 +1,6 @@
+[submodule "src/Libraries/Logging"]
+	path = src/Libraries/Logging
+	url = ../Logging.git
+[submodule "src/Libraries/RIFF-Util"]
+	path = src/Libraries/RIFF-Util
+	url = https://gitlab.com/ChylerDev/RIFF-Util.git
