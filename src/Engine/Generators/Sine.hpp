@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             Resampler.hpp
+\file             Sine.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  AudioEngine
@@ -7,14 +7,14 @@
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
-#ifndef __RESAMPLER_HPP
-#define __RESAMPLER_HPP
+#ifndef __SINE_HPP
+#define __SINE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
-#include <vector>
-
 #include "../Engine.hpp"
+
+#include "Base.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -24,24 +24,24 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace Tools
+namespace AudioEngine
+{
+namespace Generator
 {
 
   /*! **************************************************************************
   \brief
+    Generates sine data at the given frequency.
   *****************************************************************************/
-  class Resampler
+  class Sine : public Base
   {
   private:
 
     // Members              ///////////////////////
 
-    std::vector<StereoData_t> const & m_Data;
-
-    double m_Index;
-    double const m_IndexIncrement;
-
-    uint64_t m_LoopStart, m_LoopEnd;
+    double irate;
+    double y1, y2;
+    double beta;
 
   public:
 
@@ -49,25 +49,19 @@ namespace Tools
 
     /*! ************************************************************************
     \brief
-      Constructor for the resampler.
+      Creates an object that outputs a simple sine wave without using inefficient
+      functions like std::sin.
 
-    \param AudioData
-      A const reference to the audio data.
-
-    \param SourceSampleRate
-      The sample rate of the source data.
-
-    \param LoopStart
-      The sample to start looping from. Defaults to 0.
-
-    \param LoopEnd
-      The sample at the loop point to loop back to LoopStart. Defaults to 0,
-      which is interpretted as no looping.
+    \param freq
+      The frequency for the sine-wav to output at.
     ***************************************************************************/
-    Resampler(std::vector<StereoData_t> const & AudioData,
-              float SourceSampleRate,
-              uint64_t LoopStart = 0, uint64_t LoopEnd = 0
-    );
+    Sine(float freq = 440.f);
+
+    /*! ************************************************************************
+    \brief
+      Default destructor.
+    ***************************************************************************/
+    virtual ~Sine() = default;
 
     // Operators            ///////////////////////
 
@@ -82,16 +76,32 @@ namespace Tools
     \return
       The stereo sample data.
     ***************************************************************************/
-    StereoData_t SendSample();
+    virtual StereoData_t SendSample(void);
+
+    /*! ************************************************************************
+    \brief
+      Sets the frequency to a new value.
+
+    \param freq
+      The new frequency.
+    ***************************************************************************/
+    virtual void SetFrequency(float freq);
 
   private:
 
     // Functions                  ///////////////////////
 
-  }; // class Resampler
+    /*! ************************************************************************
+    \brief
+      Sets all the coefficients for calculating samples.
+    ***************************************************************************/
+    void Reset(void);
 
-} // namespace Tools
+  }; // class Sine
+
+} // namespace Generator
+} // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __RESAMPLER_HPP
+#endif // __SINE_HPP

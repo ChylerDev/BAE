@@ -7,12 +7,14 @@
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
-#ifndef __SINE_HPP
-#define __SINE_HPP
+#ifndef __SQUARE_HPP
+#define __SQUARE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
 #include "../Engine.hpp"
+
+#include "Base.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -22,22 +24,23 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Generator
 {
 
   /*! **************************************************************************
   \brief
-    Generates sine data at the given frequency.
+    Generates square wave data at the given frequency.
   *****************************************************************************/
-  class Sine
+  class Square : public Base
   {
   private:
 
     // Members              ///////////////////////
 
-    double irate;
-    double y1, y2;
-    double beta;
+    double m_Ind;
+    double m_Inv;
 
   public:
 
@@ -45,19 +48,19 @@ namespace Generator
 
     /*! ************************************************************************
     \brief
-      Creates an object that outputs a simple sine wave without using inefficient
-      functions like std::sin.
+      Creates an object that outputs a simple square wave without using
+      inefficient functions like std::sin.
 
     \param freq
-      The frequency for the sine-wav to output at.
+      The frequency for the square wav to output at.
     ***************************************************************************/
-    Sine(float freq = 440.f);
+    Square(float freq = 440.f);
 
     /*! ************************************************************************
     \brief
       Default destructor.
     ***************************************************************************/
-    ~Sine() = default;
+    virtual ~Square() = default;
 
     // Operators            ///////////////////////
 
@@ -72,7 +75,7 @@ namespace Generator
     \return
       The stereo sample data.
     ***************************************************************************/
-    StereoData_t SendSample(void);
+    virtual StereoData_t SendSample(void);
 
     /*! ************************************************************************
     \brief
@@ -81,22 +84,17 @@ namespace Generator
     \param freq
       The new frequency.
     ***************************************************************************/
-    void SetFrequency(float freq);
+    virtual void SetFrequency(float freq);
 
   private:
 
     // Functions                  ///////////////////////
 
-    /*! ************************************************************************
-    \brief
-      Sets all the coefficients for calculating samples.
-    ***************************************************************************/
-    void Reset(void);
-
-  }; // class Sine
+  }; // class Square
 
 } // namespace Generator
+} // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __SINE_HPP
+#endif // __SQUARE_HPP

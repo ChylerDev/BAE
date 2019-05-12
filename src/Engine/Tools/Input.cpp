@@ -17,15 +17,20 @@
 
 // Private Objects                        //////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Tools
 {
   static std::map<int, std::string> s_Options;
 } // namespace Tools
+} // namespace AudioEngine
 
 // Private Function Declarations          //////////////////////////////////////
 
 // Public Functions                       //////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Tools
 {
 
@@ -43,5 +48,6 @@ namespace Tools
   }
 
 } // namespace Tools
+} // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////

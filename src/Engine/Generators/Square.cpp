@@ -27,6 +27,8 @@
 
 // Public Functions                       //////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Generator
 {
 
@@ -59,5 +61,6 @@ namespace Generator
   }
 
 } // namespace Generator
+} // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////

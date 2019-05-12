@@ -22,6 +22,8 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Modifiers
 {
 
@@ -66,6 +68,7 @@ namespace Modifiers
   }; // class BandPass
 
 } // namespace Modifiers
+} // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 

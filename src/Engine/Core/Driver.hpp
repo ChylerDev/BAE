@@ -37,6 +37,8 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Core
 {
 
@@ -153,6 +155,7 @@ namespace Core
   }; // class Driver
 
 } // namespace Core
+} // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 

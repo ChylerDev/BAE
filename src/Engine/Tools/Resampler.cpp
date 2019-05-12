@@ -21,6 +21,8 @@
 
 // Public Functions                       //////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Tools
 {
 
@@ -54,5 +56,6 @@ namespace Tools
   }
 
 } // namespace Tools
+} // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////

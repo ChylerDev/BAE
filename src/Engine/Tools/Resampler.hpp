@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             GenericFilter.hpp
+\file             Resampler.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  AudioEngine
@@ -7,14 +7,12 @@
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
-#ifndef __GENERIC_FILTER_HPP
-#define __GENERIC_FILTER_HPP
+#ifndef __RESAMPLER_HPP
+#define __RESAMPLER_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
-#include <tuple>
 #include <vector>
-#include <deque>
 
 #include "../Engine.hpp"
 
@@ -26,37 +24,26 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace Modifiers
+namespace AudioEngine
+{
+namespace Tools
 {
 
-  #pragma region
   /*! **************************************************************************
   \brief
-    Generic audio filter with simple poles.
   *****************************************************************************/
-  class GenericFilter
+  class Resampler
   {
-  public:
-
-    using ZeroContainer = std::vector<std::tuple<uint32_t,float>>;
-    using PoleContainer = std::vector<std::tuple<uint32_t,float>>;
-
   private:
-    
-    using SampleContainer = std::deque<StereoData_t>;
 
     // Members              ///////////////////////
 
-      /// Vector of tuples, tuple of the x subscript and its coefficient
-    ZeroContainer m_Zeros;
-      /// Vector of tuples, tuple of the y subscript and its coefficient
-    PoleContainer m_Poles;
+    std::vector<StereoData_t> const & m_Data;
 
-    SampleContainer m_Inputs;
-    SampleContainer m_Outputs;
+    double m_Index;
+    double const m_IndexIncrement;
 
-    uint32_t m_MaxXSubscript;
-    uint32_t m_MaxYSubscript;
+    uint64_t m_LoopStart, m_LoopEnd;
 
   public:
 
@@ -64,19 +51,25 @@ namespace Modifiers
 
     /*! ************************************************************************
     \brief
-      Constructor.
+      Constructor for the resampler.
 
-    \param zeros
-      Container a tuple of the x subscript and its coefficient.
-      Expected to be ordered lowest to highest by subscript.
+    \param AudioData
+      A const reference to the audio data.
 
-    \param poles
-      Container of a tuple of the the y subscript and its coefficient.
-      Expected to be ordered lowest to highest by subscript.
+    \param SourceSampleRate
+      The sample rate of the source data.
+
+    \param LoopStart
+      The sample to start looping from. Defaults to 0.
+
+    \param LoopEnd
+      The sample at the loop point to loop back to LoopStart. Defaults to 0,
+      which is interpretted as no looping.
     ***************************************************************************/
-    GenericFilter(ZeroContainer const & zeros, PoleContainer const & poles);
-
-    ~GenericFilter() = default;
+    Resampler(std::vector<StereoData_t> const & AudioData,
+              float SourceSampleRate,
+              uint64_t LoopStart = 0, uint64_t LoopEnd = 0
+    );
 
     // Operators            ///////////////////////
 
@@ -86,25 +79,22 @@ namespace Modifiers
 
     /*! ************************************************************************
     \brief
-      Takes input sample and filters it, returning the result.
-
-    \param input
-      The input sample.
+      Sends a single sample to Core::Driver for output to the OS.
 
     \return
-      The filtered sample.
+      The stereo sample data.
     ***************************************************************************/
-    StereoData_t FilterSample(StereoData_t input);
+    StereoData_t SendSample();
 
   private:
 
     // Functions                  ///////////////////////
 
-  }; // class GenericFilter
-  #pragma endregion
+  }; // class Resampler
 
-} // namespace Modifiers
+} // namespace Tools
+} // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __GENERIC_FILTER_HPP
+#endif // __RESAMPLER_HPP

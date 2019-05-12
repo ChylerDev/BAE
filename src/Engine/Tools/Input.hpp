@@ -23,6 +23,8 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Tools
 {
 
@@ -55,6 +57,7 @@ namespace Tools
   std::map<int, std::string> const & GetOptions();
 
 } // namespace Tools
+} // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 

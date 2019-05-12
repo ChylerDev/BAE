@@ -14,7 +14,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "../Trace/src/Trace.hpp"
+#include "../../Libraries/Trace/src/Trace.hpp"
 
 #include "WAV.hpp"
 #include "../Tools/Input.hpp"
@@ -29,6 +29,8 @@
 
 // Public Functions                       //////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Generator
 {
 
@@ -63,9 +65,12 @@ namespace Generator
   }
 
 } // namespace Generator
+} // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Generator
 {
 
@@ -159,3 +164,4 @@ namespace Generator
   }
 
 } // namespace Generator
+} // namespace AudioEngine

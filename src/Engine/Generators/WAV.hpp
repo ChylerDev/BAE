@@ -16,8 +16,9 @@
 #include <vector>
 
 #include "../Engine.hpp"
-
 #include "../Tools/Resampler.hpp"
+
+#include "Base.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -27,6 +28,8 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Generator
 {
 
@@ -37,7 +40,7 @@ namespace Generator
     Supported formats: 8-bit, 16-bit, and 24-bit audio. 48kHz only for now,
     resampler will be added soon.
   *****************************************************************************/
-  class WAV
+  class WAV : public Base
   {
   private:
 
@@ -87,6 +90,12 @@ namespace Generator
     ***************************************************************************/
     WAV(int argc);
 
+    /*! ************************************************************************
+    \brief
+      Default destructor.
+    ***************************************************************************/
+    virtual ~WAV() = default;
+
     // Operators            ///////////////////////
 
     // Accossors/Mutators   ///////////////////////
@@ -109,7 +118,9 @@ namespace Generator
     \return
       The stereo sample data.
     ***************************************************************************/
-    StereoData_t SendSample(void);
+    virtual StereoData_t SendSample(void);
+
+    virtual void SetFrequency(float freq) { UNREFERENCED_PARAMETER(freq); };
 
   private:
 
@@ -132,12 +143,12 @@ namespace Generator
 
     // Functions                  ///////////////////////
 
-
     void ParseWAV(char const * array, int size);
 
   }; // class WAV
 
 } // namespace Generator
+} // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 

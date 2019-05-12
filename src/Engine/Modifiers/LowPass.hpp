@@ -14,6 +14,8 @@
 
 #include "../Engine.hpp"
 
+#include "Base.hpp"
+
 // Public Macros                ////////////////////////////////////////////////
 
 // Forward References           ////////////////////////////////////////////////
@@ -22,6 +24,8 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Modifiers
 {
 
@@ -29,7 +33,7 @@ namespace Modifiers
   /*! **************************************************************************
   \brief
   *****************************************************************************/
-  class LowPass
+  class LowPass : public Base
   {
   private:
 
@@ -57,6 +61,12 @@ namespace Modifiers
       safety checks are performed.
     ***************************************************************************/
     LowPass(float cutoff, float resonance);
+
+    /*! ************************************************************************
+    \brief
+      Default destructor.
+    ***************************************************************************/
+    virtual ~LowPass() = default;
 
     // Operators            ///////////////////////
 
@@ -92,7 +102,7 @@ namespace Modifiers
     \return
       The filtered sample.
     ***************************************************************************/
-    StereoData_t FilterSample(StereoData_t input);
+    virtual StereoData_t FilterSample(StereoData_t input);
 
   private:
 
@@ -104,6 +114,7 @@ namespace Modifiers
   #pragma endregion
 
 } // namespace Modifiers
+} // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 

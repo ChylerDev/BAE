@@ -14,23 +14,24 @@
 
 #include <portaudio/portaudio.h>
 
-#include "../Engine.hpp"
+#include "../../Libraries/Trace/src/Trace.hpp"
 
-#include "../Trace/src/Trace.hpp"
+#include "../Engine.hpp"
 #include "Driver.hpp"
+#include "../Modifiers/Vocoder.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
-#define PA_ERROR_CHECK(code, badtxt, goodtxt) \
-{                                             \
-  if(code != paNoError)                       \
-  {                                           \
+#define PA_ERROR_CHECK(code, badtxt, goodtxt)      \
+{                                                  \
+  if(code != paNoError)                            \
+  {                                                \
     Log::Trace::out[err] << badtxt << '\n';        \
     Log::Trace::out[err] << Pa_GetErrorText(code); \
-    exit(-1);                                 \
-  }                                           \
+    exit(-1);                                      \
+  }                                                \
   Log::Trace::out[stc] << goodtxt << '\n';         \
-}                                             \
+}                                                  \
 
 // Private Enums                          //////////////////////////////////////
 
@@ -38,10 +39,14 @@
 
 // Private Objects                        //////////////////////////////////////
 
+AudioEngine::Modifiers::Vocoder v(4);
+
 // Private Function Declarations          //////////////////////////////////////
 
 // Public Functions                       //////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Core
 {
 
@@ -84,9 +89,12 @@ namespace Core
   }
 
 } // namespace Core
+} // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Core
 {
 
@@ -130,6 +138,7 @@ namespace Core
         std::get<0>(sum) += std::get<0>(y);
         std::get<1>(sum) += std::get<1>(y);
       }
+      sum = v.FilterSample(sum);
       out[2*i] = std::get<0>(sum) * obj->m_Gain;
       out[2*i+1] = std::get<1>(sum) * obj->m_Gain;
     }
@@ -138,7 +147,7 @@ namespace Core
     if(i < frameCount || statusFlags & paOutputUnderflow)
     {
         // UNDERFLOW!!!
-      Log::Trace::out[err] << "Audio system is experiencing data undeflow, "
+      Log::Trace::out[err] << "Audio system is experiencing data underflow, "
                            << "zero-data will be inserted to keep up!\n";
 
       while(i < frameCount)
@@ -163,3 +172,4 @@ namespace Core
   }
 
 } // namespace Core
+} // namespace AudioEngine

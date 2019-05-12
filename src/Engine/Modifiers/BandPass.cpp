@@ -23,6 +23,8 @@
 
 // Public Functions                       //////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Modifiers
 {
 
@@ -62,9 +64,12 @@ namespace Modifiers
   }
 
 } // namespace Modifiers
+} // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace Modifiers
 {
 
@@ -112,3 +117,4 @@ namespace Modifiers
   }
 
 } // namespace Modifiers
+} // namespace AudioEngine
