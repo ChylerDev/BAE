@@ -11,6 +11,9 @@
 
 #include <cstring>
 #include <iostream>
+#include <mutex>
+#include <queue>
+#include <thread>
 
 #include <portaudio/portaudio.h>
 #include <Trace/Trace.hpp>
@@ -18,6 +21,7 @@
 #include "../Engine.hpp"
 #include "Driver.hpp"
 #include "../Modifiers/Vocoder.hpp"
+#include "../Modifiers/Envelope.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
@@ -97,8 +101,15 @@ namespace AudioEngine
 namespace Core
 {
 
-  Driver::Driver(float gain) : m_Gain(gain), m_Running(true), m_Recorder(), m_Recording(false)
+PUSH_WARNINGS()
+GCC_DISABLE_WARNING("-Wold-style-cast")
+
+  Driver::Driver(float gain) :
+    m_Params(), m_Stream(nullptr), m_OutputTrack(), m_AudioCallbacks(),
+    m_Sounds(), m_Gain(gain), m_Running(true), m_Recorder(), m_Recording(false)
   {
+    m_OutputTrack.reserve(MAX_BUFFER);
+
     auto code = Pa_Initialize();
     PA_ERROR_CHECK(code, "PortAudio failed to initialize", "PortAudio initialized");
 
@@ -116,6 +127,8 @@ namespace Core
     PA_ERROR_CHECK(code, "Failed to start the audio stream", "Started the audio stream");
   }
 
+POP_WARNINGS()
+
   Driver::~Driver()
   {
     auto code = Pa_CloseStream(m_Stream);
@@ -128,6 +141,11 @@ namespace Core
   void Driver::AddAudioCallback(AudioCallback_t const & cb)
   {
     m_AudioCallbacks.push_back(cb);
+  }
+
+  void Driver::AddSound(std::shared_ptr<Sound> const & sound)
+  {
+    m_Sounds.push_back(sound);
   }
 
   void Driver::StartRecording()
@@ -161,6 +179,9 @@ namespace AudioEngine
 namespace Core
 {
 
+PUSH_WARNINGS()
+GCC_DISABLE_WARNING("-Wold-style-cast")
+
   int Driver::s_WriteCallback(void const * input, void * output,
                               unsigned long frameCount,
                               PaStreamCallbackTimeInfo const * timeInfo,
@@ -186,7 +207,7 @@ namespace Core
       old_count = frameCount;
     }
     
-      // Convert input data to usable type    s
+      // Convert input data to usable type
     Driver * obj = reinterpret_cast<Driver *>(userData);
     float * out = reinterpret_cast<float *>(output);
 
@@ -203,7 +224,13 @@ namespace Core
         std::get<0>(sum) += std::get<0>(y);
         std::get<1>(sum) += std::get<1>(y);
       }
-      sum = v.FilterSample(sum);
+      for(auto & s : obj->m_Sounds)
+      {
+        StereoData_t y = s->GetSample();
+        std::get<0>(sum) += std::get<0>(y);
+        std::get<1>(sum) += std::get<1>(y);
+      }
+
       out[2*i] = std::get<0>(sum) * obj->m_Gain;
       out[2*i+1] = std::get<1>(sum) * obj->m_Gain;
 
@@ -240,6 +267,8 @@ namespace Core
     }
     return paComplete;
   }
+
+POP_WARNINGS()
 
   //////// Recorder Functions ////////
 

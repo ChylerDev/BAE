@@ -20,6 +20,9 @@
 
 #include "../Engine.hpp"
 
+#include "Node.hpp"
+#include "Sound.hpp"
+
 // Public Macros                ////////////////////////////////////////////////
 
 #ifndef MAX_BUFFER
@@ -51,6 +54,8 @@ namespace AudioEngine
 namespace Core
 {
 
+  class Sound;
+
   /*! **************************************************************************
   \brief
     Initiates Port Audio and handles all related calls.
@@ -67,8 +72,7 @@ namespace Core
     Track_t m_OutputTrack;
 
     std::vector<AudioCallback_t> m_AudioCallbacks;
-
-    std::thread * m_Thread;
+    std::vector<std::shared_ptr<Sound>> m_Sounds;
 
     float m_Gain;
     bool m_Running;
@@ -89,6 +93,9 @@ namespace Core
     ***************************************************************************/
     Driver(float gain = DEFAULT_GAIN);
 
+    Driver(Driver const &) = delete;
+    Driver(Driver &&) noexcept = default;
+
     /*! ************************************************************************
     \brief
       Destructor.
@@ -96,6 +103,9 @@ namespace Core
     ~Driver();
 
     // Operators            ///////////////////////
+
+    Driver & operator=(Driver const &) = delete;
+    Driver & operator=(Driver &&) noexcept = default;
 
     // Accossors/Mutators   ///////////////////////
 
@@ -109,6 +119,8 @@ namespace Core
       The callback to be added to the list.
     ***************************************************************************/
     void AddAudioCallback(AudioCallback_t const & cb);
+
+    void AddSound(std::shared_ptr<Sound> const & sound);
 
     void StartRecording();
 

@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             main.cpp
+\file             Sound.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  AudioEngine
@@ -9,15 +9,9 @@
 
 // Include Files                          //////////////////////////////////////
 
-#include <iostream>
-#include <thread>
-#include <chrono>
+#include <Trace/Trace.hpp>
 
-#include "Engine.hpp"
-
-#include "Tools/Input.hpp"
-#include "Generators/Sine.hpp"
-#include "Generators/WAV.hpp"
+#include "Sound.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
@@ -29,32 +23,56 @@
 
 // Public Functions                       //////////////////////////////////////
 
-int main(int argc, char * argv[])
+namespace AudioEngine
 {
-  Tools::CreateOptions(argc, argv);
+namespace Core
+{
 
-  Generator::Sine sine_data(55);
-  Generator::WAV wav_data;
-  AudioCallback_t ref;
-
-  if(argc > 1)
+  Sound::Sound() :
+    m_NodeGraph(), m_Output(std::make_shared<StereoData_t>()), m_InputTargets()
   {
-    wav_data.ReadFile(Tools::GetOptions().at(1));
-    ref = std::bind(&Generator::WAV::SendSample, &wav_data);
   }
-  else
+
+  void Sound::AddNode(
+    std::shared_ptr<Node> const & node,
+    uint32_t pos,
+    bool targets_output
+  )
   {
-    ref = std::bind(&Generator::Sine::SendSample, &sine_data);
+    m_NodeGraph[pos].push_back(node);
+
+    if(targets_output)
+    {
+      node->AddFinalOutput(m_Output);
+    }
   }
-  Core::Driver driver;
 
-  driver.AddAudioCallback(ref);
+  StereoData_t Sound::GetSample()
+  {
+    *m_Output = std::make_tuple(0.f,0.f);
 
-  std::cin.get();
+    for(auto & nodes : m_NodeGraph)
+    {
+      for(auto & node : nodes.second)
+      {
+        node->SendSample();
+      }
+    }
 
-  driver.Shutdown();
+    return *m_Output;
+  }
 
-  return 0;
-}
+  Sound::Graph_t & Sound::GetGraph()
+  {
+    return m_NodeGraph;
+  }
+
+  Sound::Graph_t const & Sound::GetGraph() const
+  {
+    return m_NodeGraph;
+  }
+
+} // namespace Core
+} // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////
