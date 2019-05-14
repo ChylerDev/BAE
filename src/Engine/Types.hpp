@@ -20,8 +20,15 @@
 
 // Public Types                 ////////////////////////////////////////////////
 
-  // StereoData_t[0] = left; StereoData_t[1] = right;
-using StereoData_t = std::tuple<float,float>;
-using AudioCallback_t = std::function<StereoData_t(void)>;
+namespace AudioEngine
+{
+
+    // StereoData_t[0] = left; StereoData_t[1] = right;
+  using StereoData_t = std::tuple<float,float>;
+  using AudioCallback_t = std::function<StereoData_t(void)>;
+
+  using Track_t = std::vector<StereoData_t>;
+
+} // namespace AudioEngine
 
 #endif  // __TYPES_HPP
