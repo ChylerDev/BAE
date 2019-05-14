@@ -16,10 +16,12 @@
 
 #include "../Engine/Engine.hpp"
 
-#include "../Engine/Tools/Input.hpp"
+#include "../Engine/Core/Sound.hpp"
 #include "../Engine/Generators/Sine.hpp"
 #include "../Engine/Generators/Square.hpp"
 #include "../Engine/Generators/WAV.hpp"
+#include "../Engine/Modifiers/Vocoder.hpp"
+#include "../Engine/Tools/Input.hpp"
 
 #include <Trace/Trace.hpp>
 #include <RIFF-Util/RIFF.hpp>
@@ -53,22 +55,30 @@ int main(int argc, char * argv[])
   #if 1
 
     AudioEngine::Generator::Sine sine_data(55);
-    AudioEngine::Generator::WAV wav_data;
-    AudioEngine::AudioCallback_t ref;
+    std::shared_ptr<AudioEngine::Core::Node> gen;
 
-    // if(argc > 1)
-    // {
-    //   Log::Trace::out[stc] << "Reading from WAV file\n";
-    //   wav_data.ReadFile(AudioEngine::Tools::GetOptions().at(1));
-    //   ref = std::bind(&AudioEngine::Generator::WAV::SendSample, &wav_data);
-    // }
-    // else
+    if(argc > 1)
+    {
+      Log::Trace::out[stc] << "Reading from WAV file\n";
+
+      gen = std::make_shared<AudioEngine::Core::Node>(
+        AudioEngine::Generator::WAV(AudioEngine::Tools::GetOptions().at(1))
+      );
+    }
+    else
     {
       Log::Trace::out[stc] << "Generating sine tone\n";
-      ref = std::bind(&AudioEngine::Generator::Sine::SendSample, &sine_data);
+      gen = std::make_shared<AudioEngine::Core::Node>(
+        std::make_shared<AudioEngine::Generator::Sine>(55.f)
+      );
     }
 
-    driver.AddAudioCallback(ref);
+    AudioEngine::Modifier::Vocoder v(gen, 4);
+    driver.AddSound(v);
+
+    // std::shared_ptr<AudioEngine::Core::Sound> s = std::make_shared<AudioEngine::Core::Sound>();
+    // s->AddNode(gen, 0, true);
+    // driver.AddSound(s);
 
   #else
 
