@@ -38,7 +38,55 @@
 
 // Private Objects                        //////////////////////////////////////
 
-AudioEngine::Modifiers::Vocoder v(4);
+namespace AudioEngine
+{
+namespace Core
+{
+
+  class Recorder
+  {
+    private:
+
+      // Members              ///////////////////////
+
+      std::mutex m_TrackLock;
+      Track_t m_Track;
+
+      std::mutex m_SampleLock;
+      std::queue<Track_t> m_NewSamples;
+
+      bool m_Recording;
+      std::thread m_Runner;
+
+    public:
+
+      // Con-/De- structors   ///////////////////////
+
+      Recorder();
+      ~Recorder();
+
+      // Operators            ///////////////////////
+
+      // Accossors/Mutators   ///////////////////////
+
+      // Functions            ///////////////////////
+
+      void SendSamples(Track_t const & samples);
+
+      Track_t GetRecording();
+
+    private:
+
+      // Functions                  ///////////////////////
+
+      void Runner();
+
+  };
+
+  //static AudioEngine::Modifier::Vocoder v(4);
+
+} // namespace Core
+} // namespace AudioEngine
 
 // Private Function Declarations          //////////////////////////////////////
 
@@ -49,7 +97,7 @@ namespace AudioEngine
 namespace Core
 {
 
-  Driver::Driver(float gain) : m_BufferSize(0), m_Gain(gain), m_Running(true)
+  Driver::Driver(float gain) : m_Gain(gain), m_Running(true), m_Recorder(), m_Recording(false)
   {
     auto code = Pa_Initialize();
     PA_ERROR_CHECK(code, "PortAudio failed to initialize", "PortAudio initialized");
@@ -80,6 +128,22 @@ namespace Core
   void Driver::AddAudioCallback(AudioCallback_t const & cb)
   {
     m_AudioCallbacks.push_back(cb);
+  }
+
+  void Driver::StartRecording()
+  {
+    m_Recorder = std::make_shared<Recorder>();
+    m_Recording = true;
+  }
+
+  Track_t Driver::StopRecording()
+  {
+    Track_t recording = m_Recorder->GetRecording();
+
+    m_Recording = false;
+    m_Recorder = nullptr;
+
+    return recording;
   }
 
   void Driver::Shutdown()
@@ -126,9 +190,11 @@ namespace Core
     Driver * obj = reinterpret_cast<Driver *>(userData);
     float * out = reinterpret_cast<float *>(output);
 
+    obj->m_OutputTrack.clear();
+
       // Loop through the buffer, copying the data to the output
     uint64_t i = 0;
-    for(; i < frameCount && i < obj->m_BufferSize; ++i)
+    for(; i < frameCount; ++i)
     {
       StereoData_t sum(0.f,0.f);
       for(auto cb : obj->m_AudioCallbacks)
@@ -140,6 +206,13 @@ namespace Core
       sum = v.FilterSample(sum);
       out[2*i] = std::get<0>(sum) * obj->m_Gain;
       out[2*i+1] = std::get<1>(sum) * obj->m_Gain;
+
+      obj->m_OutputTrack.push_back(sum);
+    }
+
+    if(obj->m_Recording)
+    {
+      obj->m_Recorder->SendSamples(obj->m_OutputTrack);
     }
 
       // Do over/underflow checks
@@ -161,13 +234,73 @@ namespace Core
                            << "some data will be discarded to keep up!\n";
     }
 
-    obj->m_BufferSize -= i;
-
     if(obj->m_Running)
     {
       return paContinue;
     }
     return paComplete;
+  }
+
+  //////// Recorder Functions ////////
+
+  Recorder::Recorder() :
+    m_TrackLock(), m_Track(),
+    m_SampleLock(), m_NewSamples(),
+    m_Recording(true), m_Runner([this](){ this->Runner(); })
+  {
+      // Reserve 1 second worth of memory to record
+    m_Track.reserve(SAMPLE_RATE);
+  }
+
+  Recorder::~Recorder()
+  {
+  }
+
+  void Recorder::SendSamples(Track_t const & samples)
+  {
+    m_SampleLock.lock();
+    m_NewSamples.push(samples);
+    m_SampleLock.unlock();
+  }
+
+  Track_t Recorder::GetRecording()
+  {
+    m_Recording = false;
+    m_Runner.join();
+
+    m_TrackLock.lock();
+    m_TrackLock.unlock();
+
+    return m_Track;
+  }
+
+  void Recorder::Runner()
+  {
+    do
+    {
+      size_t size;
+      Track_t samples;
+
+      m_SampleLock.lock();
+      size = m_NewSamples.size();
+      m_SampleLock.unlock();
+
+      while(size)
+      {
+        m_SampleLock.lock();
+        samples = m_NewSamples.front();
+        m_NewSamples.pop();
+        m_SampleLock.unlock();
+
+        m_TrackLock.lock();
+        m_Track.insert(m_Track.end(), samples.begin(), samples.end());
+        m_TrackLock.unlock();
+
+        --size;
+      }
+
+      std::this_thread::yield();
+    } while(m_Recording);
   }
 
 } // namespace Core

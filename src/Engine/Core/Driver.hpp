@@ -13,8 +13,7 @@
 // Include Files                ////////////////////////////////////////////////
 
 #include <functional>
-#include <mutex>
-#include <thread>
+#include <memory>
 #include <vector>
 
 #include <portaudio/portaudio.h>
@@ -32,6 +31,16 @@
 #endif
 
 // Forward References           ////////////////////////////////////////////////
+
+namespace AudioEngine
+{
+namespace Core
+{
+
+  class Recorder;
+
+} // namespace Core
+} // namespace AudioEngine
 
 // Public Enums                 ////////////////////////////////////////////////
 
@@ -55,14 +64,17 @@ namespace Core
     PaStreamParameters m_Params;
     PaStream * m_Stream;
 
-    StereoData_t m_Buffer[MAX_BUFFER];
-    uint64_t m_BufferSize;
+    Track_t m_OutputTrack;
+
     std::vector<AudioCallback_t> m_AudioCallbacks;
 
     std::thread * m_Thread;
 
     float m_Gain;
     bool m_Running;
+
+    std::shared_ptr<Recorder> m_Recorder;
+    bool m_Recording;
 
   public:
 
@@ -97,6 +109,10 @@ namespace Core
       The callback to be added to the list.
     ***************************************************************************/
     void AddAudioCallback(AudioCallback_t const & cb);
+
+    void StartRecording();
+
+    Track_t StopRecording();
 
     /*! ************************************************************************
     \brief
@@ -151,7 +167,6 @@ namespace Core
                               PaStreamCallbackTimeInfo const * timeInfo,
                               PaStreamCallbackFlags statusFlags,
                               void * userData);
-
   }; // class Driver
 
 } // namespace Core
