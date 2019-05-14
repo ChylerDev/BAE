@@ -24,7 +24,7 @@
 
 namespace AudioEngine
 {
-namespace Modifiers
+namespace Modifier
 {
 
   /*! **************************************************************************
@@ -67,7 +67,7 @@ namespace Modifiers
 
   }; // class BandPass
 
-} // namespace Modifiers
+} // namespace Modifier
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////

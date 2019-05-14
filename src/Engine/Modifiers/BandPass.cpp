@@ -25,7 +25,7 @@
 
 namespace AudioEngine
 {
-namespace Modifiers
+namespace Modifier
 {
 
   BandPass::BandPass(float f, float Q) :
@@ -63,14 +63,14 @@ namespace Modifiers
     return y;
   }
 
-} // namespace Modifiers
+} // namespace Modifier
 } // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////
 
 namespace AudioEngine
 {
-namespace Modifiers
+namespace Modifier
 {
 
   void BandPass::Reset()
@@ -116,5 +116,5 @@ namespace Modifiers
     #endif
   }
 
-} // namespace Modifiers
+} // namespace Modifier
 } // namespace AudioEngine

@@ -23,7 +23,7 @@
 
 namespace AudioEngine
 {
-namespace Modifiers
+namespace Modifier
 {
 
   GenericFilter::GenericFilter(ZeroContainer const & zeros, PoleContainer const & poles) :
@@ -67,7 +67,7 @@ namespace Modifiers
     return output;
   }
 
-} // namespace Modifiers
+} // namespace Modifier
 } // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////

@@ -30,7 +30,7 @@
 
 namespace AudioEngine
 {
-namespace Modifiers
+namespace Modifier
 {
 
   #pragma region
@@ -111,7 +111,7 @@ namespace Modifiers
   }; // class GenericFilter
   #pragma endregion
 
-} // namespace Modifiers
+} // namespace Modifier
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////

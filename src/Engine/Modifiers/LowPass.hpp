@@ -26,7 +26,7 @@
 
 namespace AudioEngine
 {
-namespace Modifiers
+namespace Modifier
 {
 
   #pragma region
@@ -113,7 +113,7 @@ namespace Modifiers
   }; // class LowPass
   #pragma endregion
 
-} // namespace Modifiers
+} // namespace Modifier
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////

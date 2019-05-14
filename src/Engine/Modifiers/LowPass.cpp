@@ -23,7 +23,7 @@
 
 namespace AudioEngine
 {
-namespace Modifiers
+namespace Modifier
 {
 
   LowPass::LowPass(float cutoff, float resonance) :
@@ -93,7 +93,7 @@ namespace Modifiers
     m_Coefficients[2] = -m_Coefficients[3] * (3 + x);
   }
 
-} // namespace Modifiers
+} // namespace Modifier
 } // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////
