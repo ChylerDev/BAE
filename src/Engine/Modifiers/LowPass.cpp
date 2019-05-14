@@ -45,7 +45,7 @@ namespace Modifier
     m_IsDirty = true;
   }
 
-  StereoData_t LowPass::FilterSample(StereoData_t input)
+  StereoData_t LowPass::FilterSample(StereoData_t const & input)
   {
     if(m_IsDirty)
     {

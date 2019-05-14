@@ -102,7 +102,7 @@ namespace Modifier
     \return
       The filtered sample.
     ***************************************************************************/
-    virtual StereoData_t FilterSample(StereoData_t input);
+    virtual StereoData_t FilterSample(StereoData_t const & input);
 
   private:
 

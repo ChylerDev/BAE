@@ -43,7 +43,7 @@ namespace Modifier
     }
   }
 
-  StereoData_t GenericFilter::FilterSample(StereoData_t input)
+  StereoData_t GenericFilter::FilterSample(StereoData_t const & input)
   {
     StereoData_t output(0.f,0.f);
 

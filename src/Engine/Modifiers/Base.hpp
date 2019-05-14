@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             BandPass.hpp
+\file             Base.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  AudioEngine
@@ -7,14 +7,12 @@
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
-#ifndef __BAND_PASS_HPP
-#define __BAND_PASS_HPP
+#ifndef __MODIFIERS_BASE_HPP
+#define __MODIFIERS_BASE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
 #include "../Engine.hpp"
-
-#include "Base.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -32,47 +30,46 @@ namespace Modifier
   /*! **************************************************************************
   \brief
   *****************************************************************************/
-  class BandPass : public Base
+  class Base
   {
   private:
 
     // Members              ///////////////////////
 
-    double m_CentralFrequency;
-    double m_Quality;
-    double m_A0, m_B1, m_B2;
-    StereoData_t m_X1, m_X2, m_Y1, m_Y2;
-
   public:
 
     // Con-/De- structors   ///////////////////////
 
-    BandPass(float f, float Q = 1);
-    virtual ~BandPass();
+    Base() = default;
+    virtual ~Base() = default;
 
     // Operators            ///////////////////////
 
     // Accossors/Mutators   ///////////////////////
 
-    void SetFrequency(float f);
-
-    void SetQuality(float Q);
-
     // Functions            ///////////////////////
 
-    virtual StereoData_t FilterSample(StereoData_t const & x);
+    /*! ************************************************************************
+    \brief
+      Takes input sample and filters it, returning the result.
+
+    \param input
+      The input sample.
+
+    \return
+      The filtered sample.
+    ***************************************************************************/
+    virtual StereoData_t FilterSample(StereoData_t const & input) { return input; };
 
   private:
 
     // Functions                  ///////////////////////
 
-    void Reset(void);
-
-  }; // class BandPass
+  }; // class Base
 
 } // namespace Modifier
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __BAND_PASS_HPP
+#endif // __MODIFIERS_BASE_HPP
