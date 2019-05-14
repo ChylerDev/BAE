@@ -17,6 +17,8 @@
 #include "Macro.hpp"
 #include "Types.hpp"
 
+#include <portaudio/portaudio.h>
+
 #include "Core/Driver.hpp"
 
 #endif // __ENGINE_HPP
