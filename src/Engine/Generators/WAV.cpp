@@ -15,6 +15,7 @@
 #include <sstream>
 
 #include "../../Libraries/Logging/src/Trace.hpp"
+#include "../../Libraries/RIFF-Util/src/RIFF/RIFF.hpp"
 
 #include "WAV.hpp"
 #include "../Tools/Input.hpp"
@@ -105,42 +106,29 @@ namespace Generator
 
   void WAV::ParseWAV(char const * array, int size)
   {
-    WAVHeader const * header = reinterpret_cast<WAVHeader const *>(array);
+      // Copy RIFF data to byte vector
+    RIFF::vector_t vec;
+    vec.assign(CHAR_STR_TO_BYTE_STR(array), CHAR_STR_TO_BYTE_STR(array) + size);
+      // Parse the riff data and extract the chunk
+    RIFF::Reader riff(vec, CONSTRUCT_BYTE_STR("WAVE"));
 
-      // Do safety checks
-    auto res1 = std::strncmp(header->RiffLabel, "RIFF", 4);
-    auto res2 = std::strncmp(header->FileTag, "WAVE", 4);
-    auto res3 = std::strncmp(header->FmtLabel, "fmt ", 4);
-    if(res1 || res2 || res3)
+      // Get the format chunk, check that it's size is correct
+    RIFF::vector_t fmt = riff.GetChunk(CONSTRUCT_BYTE_STR("fmt "));
+    if(fmt.size() != sizeof(WAVHeader))
     {
-      Log::Trace::out[err] << "Wave file read incorrectly. Header is non-comforming. Substituting zero-data\n";
+      Log::Trace::out[err] << "Error reading WAVE data, malformed header chunk\n";
       return;
     }
+      // Cast the data as a header object for easier use
+    WAVHeader const * header = reinterpret_cast<WAVHeader const *>(fmt.data());
 
-      // Search for the data chunk
-    char const * walk = array + 36;
-    while(walk < array + size && std::strncmp(walk, "data", 4))
-    {
-      walk += 4;
-      walk += *reinterpret_cast<uint32_t const *>(walk + 4) + 4;
-    }
-      // Error check
-    if(walk >= array+size)
-    {
-      Log::Trace::out[err] << "Wave file missing data chunk. Wave file is non-conforming. Substituting zero-data\n";
-      return;
-    }
-
-    uint32_t BytesPerSample = header->BitsPerSample/8 * header->ChannelCount;
-
-    walk += 4;
-    uint32_t DataSize = header->DataSize;
-    walk += 4;
-    m_Data.reserve(DataSize / BytesPerSample);
+      // Get the data chunk
+    RIFF::vector_t data_vec = riff.GetChunk(CONSTRUCT_BYTE_STR("data"));
+    m_Data.reserve(data_vec.size() / header->BytesPerSample);
 
       // Parse data
-    char const * data = walk;
-    while(data < walk + DataSize)
+    char const * data = reinterpret_cast<char *>(&data_vec[0]);
+    while(data < reinterpret_cast<char *>(&data_vec[0] + data_vec.size()))
     {
       StereoData_t sample;
 
@@ -157,10 +145,10 @@ namespace Generator
       }
 
       m_Data.push_back(sample);
-      data += BytesPerSample;
+      data += header->BytesPerSample;
     }
 
-    m_Resampler = new Tools::Resampler(m_Data, float(header->SamplingRate), 0, m_Data.size()-1);
+    m_Resampler = std::make_shared<Tools::Resampler>(m_Data, float(header->SamplingRate), 0, m_Data.size()-1);
   }
 
 } // namespace Generator

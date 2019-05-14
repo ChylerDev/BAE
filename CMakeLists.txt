@@ -17,6 +17,7 @@ endif()
 
 set(CMAKE_CXX_FLAGS "${COMPILER_FLAGS} ${DEBUG_FLAGS}")
 
+add_subdirectory(src/Libraries/RIFF-Util)
 add_subdirectory(src/Libraries/Logging)
 add_subdirectory(src/Engine)
 add_subdirectory(src/Tests)

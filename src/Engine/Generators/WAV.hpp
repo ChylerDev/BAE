@@ -13,6 +13,7 @@
 // Include Files                ////////////////////////////////////////////////
 
 #include <string>
+#include <memory>
 #include <vector>
 
 #include "../Engine.hpp"
@@ -49,7 +50,7 @@ namespace Generator
     std::vector<StereoData_t> m_Data;
     uint64_t m_CurrentIndex;
 
-    Tools::Resampler * m_Resampler;
+    std::shared_ptr<Tools::Resampler> m_Resampler;
 
   public:
 
@@ -126,19 +127,12 @@ namespace Generator
 
     struct WAVHeader
     {                       // (offset) = description
-      char RiffLabel[4];        // (00) = {'R','I','F','F'}
-      uint32_t RiffSize;        // (04) = 36 + data_size
-      char FileTag[4];          // (08) = {'W','A','V','E'}
-      char FmtLabel[4];         // (12) = {'f','m','t',' '}
-      uint32_t FmtSize;         // (16) = 16
-      uint16_t AudioFormat;     // (20) = 1
-      uint16_t ChannelCount;    // (22) = 1 or 2
-      uint32_t SamplingRate;    // (24) = (ex. 44.1kHz, 48kHz, 96kHz, 192kHz)
-      uint32_t BytesPerSecond;  // (28) = SamplingRate * BytesPerSample
-      uint16_t BytesPerSample;  // (32) = BitsPerSample/8 * ChannelCount
-      uint16_t BitsPerSample;   // (34) = 8 or 16
-      char DataLabel[4];        // (36) = {'d','a','t','a'}
-      uint32_t DataSize;        // (40) = # bytes of data
+      uint16_t AudioFormat;     // (00) = 1
+      uint16_t ChannelCount;    // (02) = 1 or 2
+      uint32_t SamplingRate;    // (04) = (ex. 44.1kHz, 48kHz, 96kHz, 192kHz)
+      uint32_t BytesPerSecond;  // (08) = SamplingRate * BytesPerSample
+      uint16_t BytesPerSample;  // (12) = BitsPerSample/8 * ChannelCount
+      uint16_t BitsPerSample;   // (14) = 8 or 16
     };
 
     // Functions                  ///////////////////////
