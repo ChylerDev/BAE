@@ -27,6 +27,7 @@ namespace Modifier
 {
 
   LowPass::LowPass(float cutoff, float resonance) :
+    Base(false),
     m_Cutoff(2*PI*cutoff), m_Resonance(resonance),
     m_Coefficients(), m_Outputs(), m_IsDirty(false)
   {

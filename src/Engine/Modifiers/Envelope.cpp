@@ -26,7 +26,7 @@ namespace AudioEngine
 namespace Modifier
 {
 
-  EnvelopeFollower::EnvelopeFollower(float fd, float fu)
+  EnvelopeFollower::EnvelopeFollower(float fd, float fu) : Base(false)
   {
     // double theta_u = std::tan(PI * fu * INC_RATE);
     // double theta_d = std::tan(PI * fd * INC_RATE);
@@ -43,6 +43,10 @@ namespace Modifier
     m_BU = beta_u;
     m_AD = 1-beta_d;
     m_BD = beta_d;
+  }
+
+  EnvelopeFollower::~EnvelopeFollower()
+  {
   }
 
   StereoData_t EnvelopeFollower::FilterSample(StereoData_t const & x)

@@ -36,11 +36,13 @@ namespace Modifier
 
     // Members              ///////////////////////
 
+    bool is_base;
+
   public:
 
     // Con-/De- structors   ///////////////////////
 
-    Base() = default;
+    Base(bool b) : is_base(b) {};
     virtual ~Base() = default;
 
     // Operators            ///////////////////////
@@ -60,6 +62,8 @@ namespace Modifier
       The filtered sample.
     ***************************************************************************/
     virtual StereoData_t FilterSample(StereoData_t const & input) { return input; };
+
+    bool IsBase() { return is_base; };
 
   private:
 

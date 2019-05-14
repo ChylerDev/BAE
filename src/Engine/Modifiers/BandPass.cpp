@@ -29,9 +29,13 @@ namespace Modifier
 {
 
   BandPass::BandPass(float f, float Q) :
-    m_CentralFrequency(f), m_Quality(Q)
+    Base(false), m_CentralFrequency(f), m_Quality(Q)
   {
     Reset();
+  }
+
+  BandPass::~BandPass()
+  {
   }
 
   void BandPass::SetFrequency(float f)

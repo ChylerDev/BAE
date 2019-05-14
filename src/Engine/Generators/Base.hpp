@@ -36,11 +36,13 @@ namespace Generator
 
     // Members              ///////////////////////
 
+    bool is_base;
+
   public:
 
     // Con-/De- structors   ///////////////////////
 
-    Base() = default;
+    Base(bool b) : is_base(b) {};
     virtual ~Base() = default;
 
     // Operators            ///////////////////////
@@ -51,6 +53,8 @@ namespace Generator
 
     virtual StereoData_t SendSample(void) { return StereoData_t(0.f, 0.f); };
     virtual void SetFrequency(float freq) { UNREFERENCED_PARAMETER(freq); };
+
+    bool IsBase() { return is_base; };
 
   private:
 

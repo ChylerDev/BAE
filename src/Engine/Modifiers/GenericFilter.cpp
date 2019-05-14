@@ -27,6 +27,7 @@ namespace Modifier
 {
 
   GenericFilter::GenericFilter(ZeroContainer const & zeros, PoleContainer const & poles) :
+    Base(false),
     m_Zeros(zeros), m_Poles(poles),
     m_MaxXSubscript(std::get<0>(m_Zeros.back())),
     m_MaxYSubscript(std::get<0>(m_Poles.back()))

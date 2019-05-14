@@ -35,21 +35,21 @@ namespace AudioEngine
 namespace Generator
 {
 
-  WAV::WAV() : m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
+  WAV::WAV() : Base(false), m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
   {
   }
 
-  WAV::WAV(std::string const & path) : m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
+  WAV::WAV(std::string const & path) : Base(false), m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
   {
     ReadFile(path);
   }
 
-  WAV::WAV(std::vector<char> const & data) : m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
+  WAV::WAV(std::vector<char> const & data) : Base(false), m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
   {
     ParseWAV(data.data(), int(data.size()));
   }
 
-  WAV::WAV(int argc) : m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
+  WAV::WAV(int argc) : Base(false), m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
   {
     std::string path = Tools::GetOptions().at(argc);
 

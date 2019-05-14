@@ -32,7 +32,7 @@ namespace AudioEngine
 namespace Generator
 {
 
-  Square::Square(float f) : m_Ind(0), m_Inv(SAMPLE_RATE/(2*f))
+  Square::Square(float f) : Base(false), m_Ind(0), m_Inv(SAMPLE_RATE/(2*f))
   {
   }
 

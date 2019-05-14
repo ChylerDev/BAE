@@ -32,7 +32,7 @@ namespace AudioEngine
 namespace Generator
 {
 
-  Sine::Sine(float f) : irate(INC_RATE*double(f)), y1(std::sin(2*PI*irate)), y2(0), beta(2*std::cos(2*PI*irate))
+  Sine::Sine(float f) : Base(false), irate(INC_RATE*double(f)), y1(std::sin(2*PI*irate)), y2(0), beta(2*std::cos(2*PI*irate))
   {
   }
 
