@@ -14,8 +14,8 @@
 #include <fstream>
 #include <sstream>
 
-#include "../../Libraries/Logging/src/Trace.hpp"
-#include "../../Libraries/RIFF-Util/src/RIFF/RIFF.hpp"
+#include <Trace/Trace.hpp>
+#include <RIFF-Util/Riff.hpp>
 
 #include "WAV.hpp"
 #include "../Tools/Input.hpp"

@@ -10,7 +10,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(PROJECT_LIB_DIR ${PROJECT_SOURCE_DIR}/../../lib)
 set(PROJECT_INC_DIR ${PROJECT_SOURCE_DIR}/../../inc)
 
-include_directories(${PROJECT_INC_DIR})
+include_directories(
+  ${PROJECT_INC_DIR}
+  ${PROJECT_SOURCE_DIR}/../Libraries/RIFF-Util/inc
+  ${PROJECT_SOURCE_DIR}/../Libraries/Logging/inc
+)
 
 if(WIN32)
   set(PLATFORM_LIB_DIR ${PROJECT_LIB_DIR}/win)

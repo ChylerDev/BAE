@@ -13,8 +13,7 @@
 #include <iostream>
 
 #include <portaudio/portaudio.h>
-
-#include "../../Libraries/Logging/src/Trace.hpp"
+#include <Trace/Trace.hpp>
 
 #include "../Engine.hpp"
 #include "Driver.hpp"
