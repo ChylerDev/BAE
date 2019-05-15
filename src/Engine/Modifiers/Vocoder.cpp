@@ -36,7 +36,7 @@ namespace Modifier
 {
 
   Vocoder::Vocoder(std::shared_ptr<Core::Node> const & base_input, int N) :
-    m_Channels(), m_CentralFrequencies(), m_BandCount(N), m_Mu(1.f),
+    m_CentralFrequencies(), m_BandCount(N), m_Mu(1.f),
     m_Sound(new Core::Sound())
   {
     auto l_BP = BPSetup();
@@ -50,14 +50,11 @@ namespace Modifier
       std::shared_ptr<Core::Node> bp(
         std::make_shared<Core::Node>(
           std::make_shared<Generator::Base>(true),
-          std::make_shared<Modifier::Base>(l_BP[i])
+          l_BP[i]
         )
       );
       std::shared_ptr<Core::Node> mod(
-        std::make_shared<Core::Node>(
-          std::make_shared<Generator::Base>(l_Osc[i]),
-          std::make_shared<Modifier::Base>(l_Env[i])
-        )
+        std::make_shared<Core::Node>(l_Osc[i], l_Env[i])
       );
 
       base_input->AddTarget(*bp);
@@ -77,9 +74,13 @@ namespace Modifier
   {
     m_Mu = std::powf(2, p/1200.f);
 
-    for(uint32_t i = 0; i < m_BandCount; ++i)
+    uint32_t counter = 0;
+
+    auto & graph = m_Sound->GetGraph();
+    for(auto & node : graph[2])
     {
-      std::get<2>(m_Channels[i]).SetFrequency(/*m_CentralFrequencies*/freq[i]*m_Mu);
+      dynamic_cast<Carrier_t *>(node->GetGenerator().get())->
+        SetFrequency(/*m_CentralFrequencies*/freq[++counter]*m_Mu);
     }
   }
 
@@ -93,7 +94,7 @@ namespace AudioEngine
 namespace Modifier
 {
 
-  std::vector<BandPass> Vocoder::BPSetup()
+  std::vector<std::shared_ptr<Modifier::Base>> Vocoder::BPSetup()
   {
     std::vector<double> l_Freq(m_BandCount+1, 0.0);
 
@@ -107,38 +108,42 @@ namespace Modifier
       l_Freq[i] = l_Freq[0] * std::pow(10, i*delta);
     }
 
-    std::vector<BandPass> l_BP;
+    std::vector<std::shared_ptr<Modifier::Base>> l_BP;
 
     double l_Q = std::sqrt(l_Freq[1]*l_Freq[0]) / (l_Freq[1] - l_Freq[0]);
 
     for(uint32_t i = 0; i < m_BandCount; ++i)
     {
       m_CentralFrequencies.push_back(std::sqrt(float(l_Freq[i] * l_Freq[i+1])));
-      l_BP.push_back(BandPass(m_CentralFrequencies.back(), float(l_Q)));
+      l_BP.push_back(
+        std::make_shared<BandPass>(m_CentralFrequencies.back(), float(l_Q))
+      );
     }
 
     return l_BP;
   }
 
-  std::vector<EnvelopeFollower> Vocoder::EnvSetup()
+  std::vector<std::shared_ptr<Modifier::Base>> Vocoder::EnvSetup()
   {
-    std::vector<EnvelopeFollower> l_Env;
+    std::vector<std::shared_ptr<Modifier::Base>> l_Env;
 
     for(uint32_t i = 0; i < m_BandCount; ++i)
     {
-      l_Env.push_back(EnvelopeFollower(20, 20'000));
+      l_Env.push_back(std::make_shared<EnvelopeFollower>(20.f, 20'000.f));
     }
 
     return l_Env;
   }
 
-  std::vector<Generator::Square> Vocoder::OscSetup()
+  std::vector<std::shared_ptr<Generator::Base>> Vocoder::OscSetup()
   {
-    std::vector<Generator::Square> l_Osc;
+    std::vector<std::shared_ptr<Generator::Base>> l_Osc;
 
     for(uint32_t i = 0; i < m_BandCount; ++i)
     {
-      l_Osc.push_back(Generator::Square(/*m_CentralFrequencies*/freq[i] * m_Mu));
+      l_Osc.push_back(
+        std::make_shared<Carrier_t>(/*m_CentralFrequencies*/freq[i] * m_Mu)
+      );
     }
 
     return l_Osc;

@@ -45,11 +45,10 @@ namespace Modifier
   {
   private:
 
-    using Channel_t = std::tuple<BandPass, EnvelopeFollower, Generator::Square>;
+    using Carrier_t = Generator::Square;
 
     // Members              ///////////////////////
 
-    std::vector<Channel_t> m_Channels;
     std::vector<float> m_CentralFrequencies;
 
     uint32_t m_BandCount;
@@ -79,9 +78,9 @@ namespace Modifier
 
     // Functions                  ///////////////////////
 
-    std::vector<BandPass> BPSetup();
-    std::vector<EnvelopeFollower> EnvSetup();
-    std::vector<Generator::Square> OscSetup();
+    std::vector<std::shared_ptr<Modifier::Base>> BPSetup();
+    std::vector<std::shared_ptr<Modifier::Base>> EnvSetup();
+    std::vector<std::shared_ptr<Generator::Base>> OscSetup();
 
   }; // class Vocoder
 
