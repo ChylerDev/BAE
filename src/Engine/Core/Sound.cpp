@@ -29,7 +29,7 @@ namespace Core
 {
 
   Sound::Sound() :
-    m_NodeGraph(), m_Output(std::make_shared<StereoData_t>()), m_InputTargets()
+    m_NodeGraph(), m_Output(std::make_shared<StereoData_t>())
   {
   }
 

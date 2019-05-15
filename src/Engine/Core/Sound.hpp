@@ -61,8 +61,6 @@ namespace Core
 
     std::shared_ptr<StereoData_t> m_Output;
 
-    std::vector<std::shared_ptr<Node>> m_InputTargets;
-
   public:
 
     // Con-/De- structors   ///////////////////////
