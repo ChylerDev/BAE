@@ -199,14 +199,16 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
     }
   #endif
 
-    static unsigned long old_count = 0;
+    #ifdef _DEBUG
+      static unsigned long old_count = 0;
 
-    if(old_count != frameCount)
-    {
-      Log::Trace::out[frq] << "PortAudio buffer size: " << frameCount << '\n';
-      old_count = frameCount;
-    }
-    
+      if(old_count != frameCount)
+      {
+        Log::Trace::out[frq] << "PortAudio buffer size: " << frameCount << '\n';
+        old_count = frameCount;
+      }
+    #endif
+
       // Convert input data to usable type
     Driver * obj = reinterpret_cast<Driver *>(userData);
     float * out = reinterpret_cast<float *>(output);
@@ -231,8 +233,8 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
         std::get<1>(sum) += std::get<1>(y);
       }
 
-      out[2*i] = std::get<0>(sum) * obj->m_Gain;
-      out[2*i+1] = std::get<1>(sum) * obj->m_Gain;
+      out[2*i] = (std::get<0>(sum) *= obj->m_Gain);
+      out[2*i+1] = (std::get<1>(sum) *= obj->m_Gain);
 
       obj->m_OutputTrack.push_back(sum);
     }
