@@ -50,9 +50,9 @@ int main(int argc, char * argv[])
 {
   AudioEngine::Tools::CreateOptions(argc, argv);
 
-  AudioEngine::Core::Driver driver;
+  AudioEngine::Core::Driver driver(0.125f);
 
-  #if 1
+  #if 0
 
     AudioEngine::Generator::Sine sine_data(55);
     std::shared_ptr<AudioEngine::Core::Node> gen;
@@ -62,7 +62,7 @@ int main(int argc, char * argv[])
       Log::Trace::out[stc] << "Reading from WAV file\n";
 
       gen = std::make_shared<AudioEngine::Core::Node>(
-        AudioEngine::Generator::WAV(AudioEngine::Tools::GetOptions().at(1))
+        std::make_shared<AudioEngine::Generator::WAV>(AudioEngine::Tools::GetOptions().at(1))
       );
     }
     else
@@ -76,32 +76,22 @@ int main(int argc, char * argv[])
     AudioEngine::Modifier::Vocoder v(gen, 4);
     driver.AddSound(v);
 
-    // std::shared_ptr<AudioEngine::Core::Sound> s = std::make_shared<AudioEngine::Core::Sound>();
-    // s->AddNode(gen, 0, true);
-    // driver.AddSound(s);
-
   #else
 
-    AudioEngine::Generator::Square root(110);
-    AudioEngine::Generator::Square first(220);
-    AudioEngine::Generator::Square second(440);
-    AudioEngine::Generator::Square third(880);
-    AudioEngine::Generator::Square fourth(1760);
-    AudioEngine::Generator::Square fifth(3520);
+    using Tone_t = AudioEngine::Generator::Square;
+    using AudioEngine::Core::Sound;
+    using AudioEngine::Core::Node;
 
-    AudioCallback_t ref_r([&root](){ return root.SendSample(); });
-    AudioCallback_t ref_1([&first](){ return first.SendSample(); });
-    AudioCallback_t ref_2([&second](){ return second.SendSample(); });
-    AudioCallback_t ref_3([&third](){ return third.SendSample(); });
-    AudioCallback_t ref_4([&fourth](){ return fourth.SendSample(); });
-    AudioCallback_t ref_5([&fifth](){ return fifth.SendSample(); });
+    std::shared_ptr<Sound> sound = std::make_shared<Sound>();
 
-    driver.AddAudioCallback(ref_r);
-    driver.AddAudioCallback(ref_1);
-    driver.AddAudioCallback(ref_2);
-    driver.AddAudioCallback(ref_3);
-    driver.AddAudioCallback(ref_4);
-    driver.AddAudioCallback(ref_5);
+    sound->AddNode(std::make_shared<Node>(std::make_shared<Tone_t>(220.f)), 0, true);
+    sound->AddNode(std::make_shared<Node>(std::make_shared<Tone_t>(440.f)), 0, true);
+    sound->AddNode(std::make_shared<Node>(std::make_shared<Tone_t>(660.f)), 0, true);
+    sound->AddNode(std::make_shared<Node>(std::make_shared<Tone_t>(880.f)), 0, true);
+    sound->AddNode(std::make_shared<Node>(std::make_shared<Tone_t>(1100.f)), 0, true);
+    sound->AddNode(std::make_shared<Node>(std::make_shared<Tone_t>(1320.f)), 0, true);
+
+    driver.AddSound(sound);
 
   #endif
 
