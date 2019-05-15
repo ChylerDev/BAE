@@ -126,6 +126,11 @@ namespace Core
 
     // Accossors/Mutators   ///////////////////////
 
+    std::shared_ptr<Generator::Base> & GetGenerator();
+    std::shared_ptr<Modifier::Base> & GetModifier();
+    std::shared_ptr<Generator::Base> const & GetGenerator() const;
+    std::shared_ptr<Modifier::Base> const & GetModifier() const;
+
     // Functions            ///////////////////////
 
     void SetInteractor(Interaction_t const & interactor);

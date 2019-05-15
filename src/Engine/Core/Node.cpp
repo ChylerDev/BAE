@@ -88,6 +88,26 @@ namespace Core
   {
   }
 
+  std::shared_ptr<Generator::Base> & Node::GetGenerator()
+  {
+    return m_Generator;
+  }
+
+  std::shared_ptr<Modifier::Base> & Node::GetModifier()
+  {
+    return m_Modifier;
+  }
+
+  std::shared_ptr<Generator::Base> const & Node::GetGenerator() const
+  {
+    return m_Generator;
+  }
+
+  std::shared_ptr<Modifier::Base> const & Node::GetModifier() const
+  {
+    return m_Modifier;
+  }
+
   void Node::SetInteractor(Interaction_t const & interactor)
   {
     m_Interaction = interactor;
