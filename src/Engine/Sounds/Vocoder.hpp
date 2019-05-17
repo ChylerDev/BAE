@@ -78,8 +78,8 @@ namespace Sounds
 
     // Functions                  ///////////////////////
 
-    std::vector<std::shared_ptr<Modifier::Base>> BPSetup();
-    std::vector<std::shared_ptr<Modifier::Base>> EnvSetup();
+    std::vector<Modifier::pBase_t> BPSetup();
+    std::vector<Modifier::pBase_t> EnvSetup();
     std::vector<std::shared_ptr<Generator::Base>> OscSetup();
 
   }; // class Vocoder

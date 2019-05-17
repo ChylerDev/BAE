@@ -29,7 +29,8 @@ namespace AudioEngine
 namespace Modifier
 {
 
-  #pragma region
+  using pLowPass_t = std::shared_ptr<class LowPass>;
+
   /*! **************************************************************************
   \brief
   *****************************************************************************/
@@ -111,7 +112,6 @@ namespace Modifier
     void Reset();
 
   }; // class LowPass
-  #pragma endregion
 
 } // namespace Modifier
 } // namespace AudioEngine

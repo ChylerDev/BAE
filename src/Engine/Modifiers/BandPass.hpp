@@ -29,6 +29,8 @@ namespace AudioEngine
 namespace Modifier
 {
 
+  using pBandPass_t = std::shared_ptr<class BandPass>;
+
   /*! **************************************************************************
   \brief
   *****************************************************************************/

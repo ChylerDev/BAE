@@ -33,7 +33,8 @@ namespace AudioEngine
 namespace Modifier
 {
 
-  #pragma region
+  using pGenericFilter = std::shared_ptr<class GenericFilter>;
+
   /*! **************************************************************************
   \brief
     Generic audio filter with simple poles.
@@ -109,7 +110,6 @@ namespace Modifier
     // Functions                  ///////////////////////
 
   }; // class GenericFilter
-  #pragma endregion
 
 } // namespace Modifier
 } // namespace AudioEngine

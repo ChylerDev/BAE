@@ -52,7 +52,7 @@ namespace Core
     TargetsVec_t m_Targets;
 
     std::shared_ptr<Generator::Base> m_Generator;
-    std::shared_ptr<Modifier::Base> m_Modifier;
+    Modifier::pBase_t m_Modifier;
 
     Interaction_t m_Interaction;
 
@@ -84,7 +84,7 @@ namespace Core
     \param mod
       The modifier used for the node.
     ***************************************************************************/
-    Node(std::shared_ptr<Modifier::Base> const & mod);
+    Node(Modifier::pBase_t const & mod);
 
     /*! ************************************************************************
     \brief
@@ -99,7 +99,7 @@ namespace Core
     \param mod
       The modifier used for the node.
     ***************************************************************************/
-    Node(std::shared_ptr<Generator::Base> const & gen, std::shared_ptr<Modifier::Base> const & mod);
+    Node(std::shared_ptr<Generator::Base> const & gen, Modifier::pBase_t const & mod);
 
     /*! ************************************************************************
     \brief
@@ -118,7 +118,7 @@ namespace Core
     ***************************************************************************/
     Node(
       std::shared_ptr<Generator::Base> const & gen,
-      std::shared_ptr<Modifier::Base> const & mod,
+      Modifier::pBase_t const & mod,
       Interaction_t const & interactor
     );
 
@@ -127,9 +127,9 @@ namespace Core
     // Accossors/Mutators   ///////////////////////
 
     std::shared_ptr<Generator::Base> & GetGenerator();
-    std::shared_ptr<Modifier::Base> & GetModifier();
+    Modifier::pBase_t & GetModifier();
     std::shared_ptr<Generator::Base> const & GetGenerator() const;
-    std::shared_ptr<Modifier::Base> const & GetModifier() const;
+    Modifier::pBase_t const & GetModifier() const;
 
     // Functions            ///////////////////////
 

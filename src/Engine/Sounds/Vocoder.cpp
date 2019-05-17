@@ -90,7 +90,7 @@ namespace AudioEngine
 namespace Sounds
 {
 
-  std::vector<std::shared_ptr<Modifier::Base>> Vocoder::BPSetup()
+  std::vector<Modifier::pBase_t> Vocoder::BPSetup()
   {
     std::vector<double> l_Freq(m_BandCount+1, 0.0);
 
@@ -104,7 +104,7 @@ namespace Sounds
       l_Freq[i] = l_Freq[0] * std::pow(10, i*delta);
     }
 
-    std::vector<std::shared_ptr<Modifier::Base>> l_BP;
+    std::vector<Modifier::pBase_t> l_BP;
 
     double l_Q = std::sqrt(l_Freq[1]*l_Freq[0]) / (l_Freq[1] - l_Freq[0]);
 
@@ -112,20 +112,20 @@ namespace Sounds
     {
       m_CentralFrequencies.push_back(std::sqrt(float(l_Freq[i] * l_Freq[i+1])));
       l_BP.push_back(
-        std::make_shared<Modifier::BandPass>(m_CentralFrequencies.back(), float(l_Q))
+        Modifier::Base::CreateModifier<Modifier::BandPass>(m_CentralFrequencies.back(), float(l_Q))
       );
     }
 
     return l_BP;
   }
 
-  std::vector<std::shared_ptr<Modifier::Base>> Vocoder::EnvSetup()
+  std::vector<Modifier::pBase_t> Vocoder::EnvSetup()
   {
-    std::vector<std::shared_ptr<Modifier::Base>> l_Env;
+    std::vector<Modifier::pBase_t> l_Env;
 
     for(uint32_t i = 0; i < m_BandCount; ++i)
     {
-      l_Env.push_back(std::make_shared<Modifier::EnvelopeFollower>(20.f, 20'000.f));
+      l_Env.push_back(Modifier::Base::CreateModifier<Modifier::EnvelopeFollower>(20.f, 20'000.f));
     }
 
     return l_Env;

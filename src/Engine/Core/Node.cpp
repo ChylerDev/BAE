@@ -28,8 +28,8 @@ namespace Core
 
   Node::Node(std::shared_ptr<Generator::Base> const & gen) :
     m_Targets(),
-    m_Generator((gen)),
-    m_Modifier(std::make_shared<Modifier::Base>(true)),
+    m_Generator(gen),
+    m_Modifier(Modifier::Base::CreateModifier<Modifier::Base>(true)),
     m_Interaction(
       [this](StereoData_t const & g, StereoData_t const & m)
       { UNREFERENCED_PARAMETER(m); return g; }
@@ -38,10 +38,10 @@ namespace Core
   {
   }
 
-  Node::Node(std::shared_ptr<Modifier::Base> const & mod) :
+  Node::Node(Modifier::pBase_t const & mod) :
     m_Targets(),
     m_Generator(std::make_shared<Generator::Base>(true)),
-    m_Modifier((mod)),
+    m_Modifier(mod),
     m_Interaction(
       [this](StereoData_t const & g, StereoData_t const & m)
       { UNREFERENCED_PARAMETER(g); return m; }
@@ -52,7 +52,7 @@ namespace Core
 
   Node::Node(
     std::shared_ptr<Generator::Base> const & gen,
-    std::shared_ptr<Modifier::Base> const & mod
+    Modifier::pBase_t const & mod
   ) :
     m_Targets(),
     m_Generator(gen),
@@ -77,14 +77,14 @@ namespace Core
 
   Node::Node(
     std::shared_ptr<Generator::Base> const & gen,
-    std::shared_ptr<Modifier::Base> const & mod,
+    Modifier::pBase_t const & mod,
     Interaction_t const & interactor
   ) :
     m_Targets(),
-    m_Generator((gen)),
-    m_Modifier((mod)),
+    m_Generator(gen),
+    m_Modifier(mod),
     m_Interaction(interactor),
-    m_Input(new StereoData_t(0.f, 0.f))
+    m_Input(std::make_shared<StereoData_t>(0.f, 0.f))
   {
   }
 
@@ -93,7 +93,7 @@ namespace Core
     return m_Generator;
   }
 
-  std::shared_ptr<Modifier::Base> & Node::GetModifier()
+  Modifier::pBase_t & Node::GetModifier()
   {
     return m_Modifier;
   }
@@ -103,7 +103,7 @@ namespace Core
     return m_Generator;
   }
 
-  std::shared_ptr<Modifier::Base> const & Node::GetModifier() const
+  Modifier::pBase_t const & Node::GetModifier() const
   {
     return m_Modifier;
   }
