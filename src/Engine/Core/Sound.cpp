@@ -28,9 +28,24 @@ namespace AudioEngine
 namespace Core
 {
 
-  Sound::Sound() :
-    m_NodeGraph(), m_Output(std::make_shared<StereoData_t>())
+  Sound::Sound(float gain) :
+    m_NodeGraph(), m_Output(std::make_shared<StereoData_t>()), m_Gain(gain)
   {
+  }
+
+  Sound::Graph_t & Sound::GetGraph()
+  {
+    return m_NodeGraph;
+  }
+
+  Sound::Graph_t const & Sound::GetGraph() const
+  {
+    return m_NodeGraph;
+  }
+
+  void Sound::SetOutputGain(float gain)
+  {
+    m_Gain = gain;
   }
 
   void Sound::AddNode(
@@ -59,17 +74,10 @@ namespace Core
       }
     }
 
+    std::get<0>(*m_Output) *= m_Gain;
+    std::get<1>(*m_Output) *= m_Gain;
+
     return *m_Output;
-  }
-
-  Sound::Graph_t & Sound::GetGraph()
-  {
-    return m_NodeGraph;
-  }
-
-  Sound::Graph_t const & Sound::GetGraph() const
-  {
-    return m_NodeGraph;
   }
 
 } // namespace Core

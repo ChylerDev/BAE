@@ -61,17 +61,24 @@ namespace Core
 
     std::shared_ptr<StereoData_t> m_Output;
 
+    float m_Gain;
+
   public:
 
     // Con-/De- structors   ///////////////////////
 
-    Sound();
+    Sound(float gain = DEFAULT_GAIN);
 
     ~Sound() = default;
 
     // Operators            ///////////////////////
 
     // Accossors/Mutators   ///////////////////////
+
+    Graph_t & GetGraph();
+    Graph_t const & GetGraph() const;
+
+    void SetOutputGain(float gain);
 
     // Functions            ///////////////////////
 
@@ -82,9 +89,6 @@ namespace Core
     );
 
     StereoData_t GetSample();
-
-    Graph_t & GetGraph();
-    Graph_t const & GetGraph() const;
 
   private:
 
