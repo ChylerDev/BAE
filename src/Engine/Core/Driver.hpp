@@ -29,10 +29,6 @@
   #define MAX_BUFFER (SAMPLE_RATE/10)
 #endif
 
-#ifndef DEFAULT_GAIN
-  #define DEFAULT_GAIN 0.5f
-#endif
-
 // Forward References           ////////////////////////////////////////////////
 
 namespace AudioEngine

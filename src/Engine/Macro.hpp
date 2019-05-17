@@ -22,6 +22,10 @@
   #define INC_RATE (1.0/double(SAMPLE_RATE))
 #endif
 
+#ifndef DEFAULT_GAIN
+  #define DEFAULT_GAIN 0.5f
+#endif
+
 #ifndef EPSILON
   /// Macro for the value at which we call the difference between two values effectively zero
  #define EPSILON (1.0/(1 << 16))

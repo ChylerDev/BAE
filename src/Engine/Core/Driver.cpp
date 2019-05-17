@@ -191,13 +191,13 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
     UNREFERENCED_PARAMETER(timeInfo);
     UNREFERENCED_PARAMETER(input);
 
-  #ifdef _DEBUG
-    if(frameCount > MAX_BUFFER)
-    {
-      Log::Trace::out[err] << "PortAudio frame count is larger than the allowed buffer size. "
-                           << "This is a guaranteed underflow scenario!!!\n";
-    }
-  #endif
+    #ifdef _DEBUG
+      if(frameCount > MAX_BUFFER)
+      {
+        Log::Trace::out[err] << "PortAudio frame count is larger than the allowed buffer size. "
+                            << "This is a guaranteed underflow scenario!!!\n";
+      }
+    #endif
 
     #ifdef _DEBUG
       static unsigned long old_count = 0;
