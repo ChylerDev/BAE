@@ -56,8 +56,16 @@ namespace Modifier
   {
     StereoData_t y;
 
-    std::get<0>(y) = float(m_A0 * (std::get<0>(x)-std::get<0>(m_X2)) + m_B1 * std::get<0>(m_Y1) - m_B2 * std::get<0>(m_Y2));
-    std::get<1>(y) = float(m_A0 * (std::get<1>(x)-std::get<1>(m_X2)) + m_B1 * std::get<1>(m_Y1) - m_B2 * std::get<1>(m_Y2));
+    std::get<0>(y) = float(
+      m_A0 * (std::get<0>(x) - std::get<0>(m_X2)) +
+      m_B1 * std::get<0>(m_Y1) -
+      m_B2 * std::get<0>(m_Y2)
+    );
+    std::get<1>(y) = float(
+      m_A0 * (std::get<1>(x) - std::get<1>(m_X2)) +
+      m_B1 * std::get<1>(m_Y1) -
+      m_B2 * std::get<1>(m_Y2)
+    );
 
     m_Y2 = m_Y1;
     m_Y1 = y;
