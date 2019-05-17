@@ -22,6 +22,7 @@
 #include "../Engine/Generators/WAV.hpp"
 #include "../Engine/Modifiers/Vocoder.hpp"
 #include "../Engine/Tools/Input.hpp"
+#include "../Engine/Tools/WAVWriter.hpp"
 
 #include <Trace/Trace.hpp>
 #include <RIFF-Util/RIFF.hpp>
@@ -31,16 +32,6 @@
 // Private Enums                          //////////////////////////////////////
 
 // Private Objects                        //////////////////////////////////////
-
-struct WAVHeader
-{                       // (offset) = description
-  uint16_t AudioFormat;     // (00) = 1
-  uint16_t ChannelCount;    // (02) = 1 or 2
-  uint32_t SamplingRate;    // (04) = (ex. 44.1kHz, 48kHz, 96kHz, 192kHz)
-  uint32_t BytesPerSecond;  // (08) = SamplingRate * BytesPerSample
-  uint16_t BytesPerSample;  // (12) = BitsPerSample/8 * ChannelCount
-  uint16_t BitsPerSample;   // (14) = 8 or 16
-};
 
 // Private Function Declarations          //////////////////////////////////////
 
@@ -95,57 +86,14 @@ int main(int argc, char * argv[])
 
   #endif
 
-  //driver.StartRecording();
+  driver.StartRecording();
 
   std::cin.get();
 
-  // AudioEngine::Track_t recording = driver.StopRecording();
-  // driver.Shutdown();
+  std::basic_ofstream<RIFF::byte_t> file("wave_out.wav", std::ios_base::binary);
+  file << AudioEngine::Tools::WriteWAV(driver.StopRecording());
 
-  // RIFF::Writer wav_writer(CONSTRUCT_BYTE_STR("WAVE"));
-
-  // WAVHeader header;
-  // header.AudioFormat = 1;
-  // header.ChannelCount = 2;
-  // header.SamplingRate = SAMPLE_RATE;
-  // header.BitsPerSample = 16;
-  // header.BytesPerSample = header.BitsPerSample / 8 * header.ChannelCount;
-  // header.BytesPerSecond = SAMPLE_RATE * header.BytesPerSample;
-
-  // RIFF::vector_t format;
-  // format.assign(
-  //   reinterpret_cast<RIFF::byte_t *>(&header),
-  //   reinterpret_cast<RIFF::byte_t *>(&header) + sizeof(WAVHeader)
-  // );
-
-  // std::vector<std::tuple<int16_t,int16_t>> audio;
-  // for(auto & f : recording)
-  // {
-  //   audio.push_back(
-  //     std::make_tuple(
-  //       int16_t(std::get<0>(f) * 0x7FFF),
-  //       int16_t(std::get<1>(f) * 0x7FFF)
-  //     )
-  //   );
-  // }
-
-  // RIFF::vector_t data;
-  // for(auto & a : audio)
-  // {
-  //   data.push_back(static_cast<RIFF::byte_t>(static_cast<uint16_t>(std::get<0>(a)) & 0xFF));
-  //   data.push_back(static_cast<RIFF::byte_t>((static_cast<uint16_t>(std::get<0>(a)) & 0xFF00) >> 8));
-  //   data.push_back(static_cast<RIFF::byte_t>(static_cast<uint16_t>(std::get<1>(a)) & 0xFF));
-  //   data.push_back(static_cast<RIFF::byte_t>((static_cast<uint16_t>(std::get<1>(a)) & 0xFF00) >> 8));
-  // }
-
-  // wav_writer.AddChunk(CONSTRUCT_BYTE_STR("fmt "), format);
-  // wav_writer.AddChunk(CONSTRUCT_BYTE_STR("data"), data);
-
-  // RIFF::vector_t RIFFData = wav_writer.RIFFData();
-
-  // std::basic_ofstream<RIFF::byte_t> file("wave_out.wav", std::ios_base::binary);
-
-  // file << RIFFData;
+  driver.Shutdown();
 
   return 0;
 }
