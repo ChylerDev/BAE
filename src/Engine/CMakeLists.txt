@@ -51,6 +51,7 @@ set(modifier_files
       ${CMAKE_SOURCE_DIR}/Modifiers/LowPass.cpp ${CMAKE_SOURCE_DIR}/Modifiers/LowPass.hpp
       ${CMAKE_SOURCE_DIR}/Modifiers/BandPass.cpp ${CMAKE_SOURCE_DIR}/Modifiers/BandPass.hpp
       ${CMAKE_SOURCE_DIR}/Modifiers/Envelope.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Envelope.hpp
+      ${CMAKE_SOURCE_DIR}/Modifiers/Gain.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Gain.hpp
       ${CMAKE_SOURCE_DIR}/Modifiers/Base.hpp
 )
 set(sound_files
