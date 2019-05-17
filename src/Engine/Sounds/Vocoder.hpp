@@ -17,13 +17,13 @@
 
 #include "../Engine.hpp"
 
-#include "Envelope.hpp"
-#include "BandPass.hpp"
+#include "../Core/Node.hpp"
+#include "../Core/Sound.hpp"
 #include "../Generators/Base.hpp"
 #include "../Generators/Sine.hpp"
 #include "../Generators/Square.hpp"
-#include "../Core/Node.hpp"
-#include "../Core/Sound.hpp"
+#include "../Modifiers/Envelope.hpp"
+#include "../Modifiers/BandPass.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -35,7 +35,7 @@
 
 namespace AudioEngine
 {
-namespace Modifier
+namespace Sounds
 {
 
   /*! **************************************************************************
@@ -84,7 +84,7 @@ namespace Modifier
 
   }; // class Vocoder
 
-} // namespace Modifier
+} // namespace Sounds
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////

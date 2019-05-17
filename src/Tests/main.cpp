@@ -20,7 +20,7 @@
 #include "../Engine/Generators/Sine.hpp"
 #include "../Engine/Generators/Square.hpp"
 #include "../Engine/Generators/WAV.hpp"
-#include "../Engine/Modifiers/Vocoder.hpp"
+#include "../Engine/Sounds/Vocoder.hpp"
 #include "../Engine/Tools/Input.hpp"
 #include "../Engine/Tools/WAVWriter.hpp"
 
@@ -43,7 +43,7 @@ int main(int argc, char * argv[])
 
   AudioEngine::Core::Driver driver(0.125f);
 
-  #if 0
+  #if 1
 
     AudioEngine::Generator::Sine sine_data(55);
     std::shared_ptr<AudioEngine::Core::Node> gen;
@@ -64,7 +64,7 @@ int main(int argc, char * argv[])
       );
     }
 
-    AudioEngine::Modifier::Vocoder v(gen, 4);
+    AudioEngine::Sounds::Vocoder v(gen, 4);
     driver.AddSound(v);
 
   #else

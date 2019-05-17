@@ -9,13 +9,9 @@
 
 // Include Files                          //////////////////////////////////////
 
-#include "../Generators/Sine.hpp"
-#include "../Generators/Square.hpp"
-#include "Envelope.hpp"
-#include "BandPass.hpp"
-#include "Vocoder.hpp"
-
 #include <Trace/Trace.hpp>
+
+#include "Vocoder.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
@@ -32,7 +28,7 @@ float freq[] = {/*55,68.75,82.5,110,137.5,165,220,275,330,440,550,660,880,1100,1
 
 namespace AudioEngine
 {
-namespace Modifier
+namespace Sounds
 {
 
   Vocoder::Vocoder(std::shared_ptr<Core::Node> const & base_input, int N) :
@@ -84,14 +80,14 @@ namespace Modifier
     }
   }
 
-} // namespace Modifier
+} // namespace Sounds
 } // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////
 
 namespace AudioEngine
 {
-namespace Modifier
+namespace Sounds
 {
 
   std::vector<std::shared_ptr<Modifier::Base>> Vocoder::BPSetup()
@@ -116,7 +112,7 @@ namespace Modifier
     {
       m_CentralFrequencies.push_back(std::sqrt(float(l_Freq[i] * l_Freq[i+1])));
       l_BP.push_back(
-        std::make_shared<BandPass>(m_CentralFrequencies.back(), float(l_Q))
+        std::make_shared<Modifier::BandPass>(m_CentralFrequencies.back(), float(l_Q))
       );
     }
 
@@ -129,7 +125,7 @@ namespace Modifier
 
     for(uint32_t i = 0; i < m_BandCount; ++i)
     {
-      l_Env.push_back(std::make_shared<EnvelopeFollower>(20.f, 20'000.f));
+      l_Env.push_back(std::make_shared<Modifier::EnvelopeFollower>(20.f, 20'000.f));
     }
 
     return l_Env;
@@ -149,5 +145,5 @@ namespace Modifier
     return l_Osc;
   }
 
-} // namespace Modifier
+} // namespace Sounds
 } // namespace AudioEngine

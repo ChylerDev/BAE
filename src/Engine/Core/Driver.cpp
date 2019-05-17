@@ -20,8 +20,6 @@
 
 #include "../Engine.hpp"
 #include "Driver.hpp"
-#include "../Modifiers/Vocoder.hpp"
-#include "../Modifiers/Envelope.hpp"
 
 // Private Macros                         //////////////////////////////////////
 

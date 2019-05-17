@@ -52,7 +52,9 @@ set(modifier_files
       ${CMAKE_SOURCE_DIR}/Modifiers/BandPass.cpp ${CMAKE_SOURCE_DIR}/Modifiers/BandPass.hpp
       ${CMAKE_SOURCE_DIR}/Modifiers/Envelope.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Envelope.hpp
       ${CMAKE_SOURCE_DIR}/Modifiers/Base.hpp
-      ${CMAKE_SOURCE_DIR}/Modifiers/Vocoder.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Vocoder.hpp
+)
+set(sound_files
+      ${CMAKE_SOURCE_DIR}/Sounds/Vocoder.cpp ${CMAKE_SOURCE_DIR}/Sounds/Vocoder.hpp
 )
 set(tools_files
       ${CMAKE_SOURCE_DIR}/Tools/Input.cpp ${CMAKE_SOURCE_DIR}/Tools/Input.hpp
@@ -68,6 +70,7 @@ source_group("Core" FILES ${core_files})
 source_group("Engine" FILES ${engine_files})
 source_group("Generators" FILES ${gen_files})
 source_group("Modifiers" FILES ${modifier_files})
+source_group("Sounds" FILES ${sound_files})
 source_group("Tools" FILES ${tools_files})
 
 add_library(${PROJECT_NAME} STATIC
@@ -75,6 +78,7 @@ add_library(${PROJECT_NAME} STATIC
               ${engine_files}
               ${gen_files}
               ${modifier_files}
+              ${sound_files}
               ${tools_files}
 )
 
