@@ -14,6 +14,7 @@ include_directories(
   ${PROJECT_INC_DIR}
   ${PROJECT_SOURCE_DIR}/../Libraries/RIFF-Util/inc
   ${PROJECT_SOURCE_DIR}/../Libraries/Logging/inc
+  ${PROJECT_SOURCE_DIR}/../Libraries/FixedPoint/inc
 )
 
 if(WIN32)
