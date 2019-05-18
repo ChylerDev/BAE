@@ -27,9 +27,6 @@
 
 // Private Objects                        //////////////////////////////////////
 
-float freq[] = {/*55,68.75,82.5,110,137.5,165,220,275,330,440,550,660,880,1100,1320,1760,2200,2640,2520,4400,5280*/
-                220,440,660,880};
-
 // Private Function Declarations          //////////////////////////////////////
 
 // Public Functions                       //////////////////////////////////////
@@ -75,7 +72,7 @@ namespace Sounds
     for(auto & node : graph[2])
     {
       dynamic_cast<Carrier_t *>(node->GetGenerator().get())->
-        SetFrequency(/*m_CentralFrequencies*/freq[++counter]*m_Mu);
+        SetFrequency(m_CentralFrequencies[++counter]*m_Mu);
     }
   }
 
@@ -137,7 +134,7 @@ namespace Sounds
     for(uint32_t i = 0; i < m_BandCount; ++i)
     {
       l_Osc.push_back(
-        GenBase_t::Create<Carrier_t>(/*m_CentralFrequencies*/freq[i] * m_Mu)
+        GenBase_t::Create<Carrier_t>(m_CentralFrequencies[i] * m_Mu)
       );
     }
 
