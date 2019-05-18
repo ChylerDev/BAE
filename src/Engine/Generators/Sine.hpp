@@ -29,8 +29,6 @@ namespace AudioEngine
 namespace Generator
 {
 
-  using pSine_t = std::shared_ptr<class Sine>;
-
   /*! **************************************************************************
   \brief
     Generates sine data at the given frequency.

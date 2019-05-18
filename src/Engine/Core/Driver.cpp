@@ -15,10 +15,9 @@
 #include <queue>
 #include <thread>
 
-#include <portaudio/portaudio.h>
 #include <Trace/Trace.hpp>
 
-#include "../Engine.hpp"
+#include "Sound.hpp"
 #include "Driver.hpp"
 
 // Private Macros                         //////////////////////////////////////
@@ -49,18 +48,26 @@ namespace Core
   {
     private:
 
+      using lock_t = std::unique_lock<std::mutex>;
+
       // Members              ///////////////////////
 
-      std::mutex m_TrackLock;
+      std::mutex m_TrackMutex;
       Track_t m_Track;
 
-      std::mutex m_SampleLock;
+      std::mutex m_SampleMutex;
       std::queue<Track_t> m_NewSamples;
 
       bool m_Recording;
       std::thread m_Runner;
 
     public:
+
+      template<typename ...Args>
+      static inline pRecorder_t Create(Args &&... params)
+      {
+        return std::make_shared<Recorder>(params...);
+      }
 
       // Con-/De- structors   ///////////////////////
 
@@ -141,14 +148,14 @@ POP_WARNINGS()
     m_AudioCallbacks.push_back(cb);
   }
 
-  void Driver::AddSound(std::shared_ptr<Sound> const & sound)
+  void Driver::AddSound(pSound_t const & sound)
   {
     m_Sounds.push_back(sound);
   }
 
   void Driver::StartRecording()
   {
-    m_Recorder = std::make_shared<Recorder>();
+    m_Recorder = Recorder::Create();
     m_Recording = true;
   }
 
@@ -273,8 +280,8 @@ POP_WARNINGS()
   //////// Recorder Functions ////////
 
   Recorder::Recorder() :
-    m_TrackLock(), m_Track(),
-    m_SampleLock(), m_NewSamples(),
+    m_TrackMutex(), m_Track(),
+    m_SampleMutex(), m_NewSamples(),
     m_Recording(true), m_Runner([this](){ this->Runner(); })
   {
       // Reserve 1 second worth of memory to record
@@ -287,9 +294,9 @@ POP_WARNINGS()
 
   void Recorder::SendSamples(Track_t const & samples)
   {
-    m_SampleLock.lock();
+    lock_t lk(m_SampleMutex);
+
     m_NewSamples.push(samples);
-    m_SampleLock.unlock();
   }
 
   Track_t Recorder::GetRecording()
@@ -297,8 +304,7 @@ POP_WARNINGS()
     m_Recording = false;
     m_Runner.join();
 
-    m_TrackLock.lock();
-    m_TrackLock.unlock();
+    std::unique_lock lk(m_TrackMutex);
 
     return m_Track;
   }
@@ -310,22 +316,24 @@ POP_WARNINGS()
       size_t size;
       Track_t samples;
 
-      m_SampleLock.lock();
-      size = m_NewSamples.size();
-      m_SampleLock.unlock();
+      {
+        lock_t lk(m_SampleMutex);
+        size = m_NewSamples.size();
+      }
 
       while(size)
       {
-        m_SampleLock.lock();
-        samples = m_NewSamples.front();
-        m_NewSamples.pop();
-        m_SampleLock.unlock();
-
-        m_TrackLock.lock();
-        m_Track.insert(m_Track.end(), samples.begin(), samples.end());
-        m_TrackLock.unlock();
-
         --size;
+
+        {
+          lock_t lk_s(m_SampleMutex);
+          samples = m_NewSamples.front();
+          m_NewSamples.pop();
+        }
+        {
+          lock_t lk_t(m_TrackMutex);
+          m_Track.insert(m_Track.end(), samples.begin(), samples.end());
+        }
       }
 
       std::this_thread::yield();

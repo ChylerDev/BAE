@@ -9,8 +9,7 @@
 
 // Include Files                          //////////////////////////////////////
 
-#include <Trace/Trace.hpp>
-
+#include "Node.hpp"
 #include "Sound.hpp"
 
 // Private Macros                         //////////////////////////////////////

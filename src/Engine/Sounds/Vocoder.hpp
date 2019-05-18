@@ -17,13 +17,7 @@
 
 #include "../Engine.hpp"
 
-#include "../Core/Node.hpp"
-#include "../Core/Sound.hpp"
-#include "../Generators/Base.hpp"
-#include "../Generators/Sine.hpp"
-#include "../Generators/Square.hpp"
-#include "../Modifiers/Envelope.hpp"
-#include "../Modifiers/BandPass.hpp"
+#include "Base.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -41,7 +35,7 @@ namespace Sounds
   /*! **************************************************************************
   \brief
   *****************************************************************************/
-  class Vocoder
+  class Vocoder : public Base
   {
   private:
 
@@ -55,17 +49,13 @@ namespace Sounds
 
     float m_Mu;
 
-    std::shared_ptr<Core::Sound> m_Sound;
-
   public:
 
     // Con-/De- structors   ///////////////////////
 
-    Vocoder(std::shared_ptr<Core::Node> const & base_input, int N=1);
+    Vocoder(pNode_t const & base_input, int N=1);
 
     // Operators            ///////////////////////
-
-    operator std::shared_ptr<Core::Sound>();
 
     // Accossors/Mutators   ///////////////////////
 
@@ -74,13 +64,19 @@ namespace Sounds
 
     // Functions            ///////////////////////
 
+    template<typename ...Args>
+    static inline pVocoder_t Create(Args &&... params)
+    {
+      return std::make_shared<Vocoder>(params...);
+    }
+
   private:
 
     // Functions                  ///////////////////////
 
-    std::vector<Modifier::pBase_t> BPSetup();
-    std::vector<Modifier::pBase_t> EnvSetup();
-    std::vector<std::shared_ptr<Generator::Base>> OscSetup();
+    std::vector<pModBase_t> BPSetup();
+    std::vector<pModBase_t> EnvSetup();
+    std::vector<pGenBase_t> OscSetup();
 
   }; // class Vocoder
 

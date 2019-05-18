@@ -29,8 +29,6 @@ namespace AudioEngine
 namespace Modifier
 {
 
-  using pEnvelopeFollower_t = std::shared_ptr<class EnvelopeFollower>;
-
   /*! **************************************************************************
   \brief
   *****************************************************************************/

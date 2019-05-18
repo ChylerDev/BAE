@@ -11,8 +11,6 @@
 
 #include <cmath>
 
-#include "../Engine.hpp"
-
 #include "Sine.hpp"
 
 // Private Macros                         //////////////////////////////////////

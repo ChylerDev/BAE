@@ -29,8 +29,6 @@ namespace AudioEngine
 namespace Modifier
 {
 
-  using pLowPass_t = std::shared_ptr<class LowPass>;
-
   /*! **************************************************************************
   \brief
   *****************************************************************************/

@@ -18,9 +18,6 @@
 
 #include "../Engine.hpp"
 
-#include "../Generators/Base.hpp"
-#include "../Modifiers/Base.hpp"
-
 // Public Macros                ////////////////////////////////////////////////
 
 // Forward References           ////////////////////////////////////////////////
@@ -34,8 +31,6 @@ namespace AudioEngine
 namespace Core
 {
 
-  using pNode_t = std::shared_ptr<class Node>;
-
   /*! **************************************************************************
   \brief
   *****************************************************************************/
@@ -45,7 +40,7 @@ namespace Core
 
       // StereoData_t interactor(StereoData_t GeneratorSample, StereoData_t ModifierSample)
     using Interaction_t = std::function<StereoData_t(StereoData_t const &, StereoData_t const &)>;
-    using TargetsVec_t = std::vector<std::shared_ptr<StereoData_t>>;
+    using TargetsVec_t = std::vector<pStereoData_t>;
 
   private:
 
@@ -53,14 +48,20 @@ namespace Core
 
     TargetsVec_t m_Targets;
 
-    Generator::pBase_t m_Generator;
-    Modifier::pBase_t m_Modifier;
+    pGenBase_t m_Generator;
+    pModBase_t m_Modifier;
 
     Interaction_t m_Interaction;
 
-    std::shared_ptr<StereoData_t> m_Input;
+    pStereoData_t m_Input;
 
   public:
+
+    template<typename ...Args>
+    static inline pNode_t Create(Args &&... params)
+    {
+      return std::make_shared<Node>(params...);
+    };
 
     // Con-/De- structors   ///////////////////////
 
@@ -74,7 +75,7 @@ namespace Core
     \param gen
       The generator used for the node.
     ***************************************************************************/
-    Node(Generator::pBase_t const & gen);
+    Node(pGenBase_t const & gen);
 
     /*! ************************************************************************
     \brief
@@ -86,7 +87,7 @@ namespace Core
     \param mod
       The modifier used for the node.
     ***************************************************************************/
-    Node(Modifier::pBase_t const & mod);
+    Node(pModBase_t const & mod);
 
     /*! ************************************************************************
     \brief
@@ -101,7 +102,7 @@ namespace Core
     \param mod
       The modifier used for the node.
     ***************************************************************************/
-    Node(Generator::pBase_t const & gen, Modifier::pBase_t const & mod);
+    Node(pGenBase_t const & gen, pModBase_t const & mod);
 
     /*! ************************************************************************
     \brief
@@ -119,8 +120,8 @@ namespace Core
       second argument is the sample from the modifier.
     ***************************************************************************/
     Node(
-      Generator::pBase_t const & gen,
-      Modifier::pBase_t const & mod,
+      pGenBase_t const & gen,
+      pModBase_t const & mod,
       Interaction_t const & interactor
     );
 
@@ -128,25 +129,19 @@ namespace Core
 
     // Accossors/Mutators   ///////////////////////
 
-    Generator::pBase_t & GetGenerator();
-    Modifier::pBase_t & GetModifier();
-    Generator::pBase_t const & GetGenerator() const;
-    Modifier::pBase_t const & GetModifier() const;
+    pGenBase_t & GetGenerator();
+    pModBase_t & GetModifier();
+    pGenBase_t const & GetGenerator() const;
+    pModBase_t const & GetModifier() const;
 
     // Functions            ///////////////////////
 
     void SetInteractor(Interaction_t const & interactor);
 
     void AddTarget(Node const & target);
-    void AddOutput(std::shared_ptr<StereoData_t> const & output);
+    void AddOutput(pStereoData_t const & output);
 
     void SendSample(void);
-
-    template<typename ...Args>
-    static pNode_t Create(Args &&... params)
-    {
-      return std::make_shared<Node>(params);
-    };
 
   private:
 

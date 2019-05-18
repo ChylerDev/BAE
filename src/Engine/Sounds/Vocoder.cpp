@@ -11,6 +11,14 @@
 
 #include <Trace/Trace.hpp>
 
+#include "../Core/Sound.hpp"
+#include "../Core/Node.hpp"
+
+#include "../Generators/Square.hpp"
+
+#include "../Modifiers/BandPass.hpp"
+#include "../Modifiers/Envelope.hpp"
+
 #include "Vocoder.hpp"
 
 // Private Macros                         //////////////////////////////////////
@@ -31,9 +39,8 @@ namespace AudioEngine
 namespace Sounds
 {
 
-  Vocoder::Vocoder(std::shared_ptr<Core::Node> const & base_input, int N) :
-    m_CentralFrequencies(), m_BandCount(N), m_Mu(1.f),
-    m_Sound(new Core::Sound())
+  Vocoder::Vocoder(pNode_t const & base_input, int N) : Base(DEFAULT_GAIN, false),
+    m_CentralFrequencies(), m_BandCount(N), m_Mu(1.f)
   {
     auto l_BP = BPSetup();
     auto l_Env = EnvSetup();
@@ -44,13 +51,10 @@ namespace Sounds
     for(uint32_t i = 0; i < m_BandCount; ++i)
     {
       std::shared_ptr<Core::Node> bp(
-        std::make_shared<Core::Node>(
-          std::make_shared<Generator::Base>(true),
-          l_BP[i]
-        )
+        Node_t::Create(GenBase_t::Create<GenBase_t>(true),l_BP[i])
       );
       std::shared_ptr<Core::Node> mod(
-        std::make_shared<Core::Node>(l_Osc[i], l_Env[i])
+        Node_t::Create(l_Osc[i], l_Env[i])
       );
 
       base_input->AddTarget(*bp);
@@ -59,11 +63,6 @@ namespace Sounds
       m_Sound->AddNode(bp, 1);
       m_Sound->AddNode(mod, 2, true);
     }
-  }
-
-  Vocoder::operator std::shared_ptr<Core::Sound>()
-  {
-    return m_Sound;
   }
 
   void Vocoder::SetOffset(float p)
@@ -90,7 +89,7 @@ namespace AudioEngine
 namespace Sounds
 {
 
-  std::vector<Modifier::pBase_t> Vocoder::BPSetup()
+  std::vector<pModBase_t> Vocoder::BPSetup()
   {
     std::vector<double> l_Freq(m_BandCount+1, 0.0);
 
@@ -104,7 +103,7 @@ namespace Sounds
       l_Freq[i] = l_Freq[0] * std::pow(10, i*delta);
     }
 
-    std::vector<Modifier::pBase_t> l_BP;
+    std::vector<pModBase_t> l_BP;
 
     double l_Q = std::sqrt(l_Freq[1]*l_Freq[0]) / (l_Freq[1] - l_Freq[0]);
 
@@ -112,33 +111,33 @@ namespace Sounds
     {
       m_CentralFrequencies.push_back(std::sqrt(float(l_Freq[i] * l_Freq[i+1])));
       l_BP.push_back(
-        Modifier::Base::CreateModifier<Modifier::BandPass>(m_CentralFrequencies.back(), float(l_Q))
+        ModBase_t::Create<BandPass_t>(m_CentralFrequencies.back(), float(l_Q))
       );
     }
 
     return l_BP;
   }
 
-  std::vector<Modifier::pBase_t> Vocoder::EnvSetup()
+  std::vector<pModBase_t> Vocoder::EnvSetup()
   {
-    std::vector<Modifier::pBase_t> l_Env;
+    std::vector<pModBase_t> l_Env;
 
     for(uint32_t i = 0; i < m_BandCount; ++i)
     {
-      l_Env.push_back(Modifier::Base::CreateModifier<Modifier::EnvelopeFollower>(20.f, 20'000.f));
+      l_Env.push_back(ModBase_t::Create<Envelope_t>(20.f, 20'000.f));
     }
 
     return l_Env;
   }
 
-  std::vector<std::shared_ptr<Generator::Base>> Vocoder::OscSetup()
+  std::vector<pGenBase_t> Vocoder::OscSetup()
   {
-    std::vector<std::shared_ptr<Generator::Base>> l_Osc;
+    std::vector<pGenBase_t> l_Osc;
 
     for(uint32_t i = 0; i < m_BandCount; ++i)
     {
       l_Osc.push_back(
-        std::make_shared<Carrier_t>(/*m_CentralFrequencies*/freq[i] * m_Mu)
+        GenBase_t::Create<Carrier_t>(/*m_CentralFrequencies*/freq[i] * m_Mu)
       );
     }
 

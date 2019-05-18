@@ -12,16 +12,12 @@
 
 // Include Files                ////////////////////////////////////////////////
 
-#include <cstdint>
-
 #include <map>
 #include <memory>
 #include <tuple>
 #include <vector>
 
 #include "../Engine.hpp"
-
-#include "Node.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -35,10 +31,6 @@ namespace AudioEngine
 {
 namespace Core
 {
-
-  using pSound_t = std::shared_ptr<class Sound>;
-
-  class Node;
 
   /*! **************************************************************************
   \brief
@@ -59,11 +51,17 @@ namespace Core
 
     Graph_t m_NodeGraph;
 
-    std::shared_ptr<StereoData_t> m_Output;
+    pStereoData_t m_Output;
 
     float m_Gain;
 
   public:
+
+    template <typename ...Args>
+    static inline pSound_t Create(Args &&... params)
+    {
+      return std::make_shared<Sound>(params...);
+    };
 
     // Con-/De- structors   ///////////////////////
 
@@ -89,12 +87,6 @@ namespace Core
     );
 
     StereoData_t GetSample();
-
-    template <typename ...Args>
-    static pSound_t Create(Args &&... params)
-    {
-      return std::make_shared<Sound>(params...);
-    };
 
   private:
 

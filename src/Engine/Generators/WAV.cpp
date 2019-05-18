@@ -17,8 +17,10 @@
 #include <Trace/Trace.hpp>
 #include <RIFF-Util/Riff.hpp>
 
-#include "WAV.hpp"
 #include "../Tools/Input.hpp"
+#include "../Tools/Resampler.hpp"
+
+#include "WAV.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
@@ -35,30 +37,32 @@ namespace AudioEngine
 namespace Generator
 {
 
-  WAV::WAV() : Base(false), m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
+  WAV::WAV() : Base(false),
+    m_Data(), m_CurrentIndex(0), m_Resampler()
   {
   }
 
-  WAV::WAV(std::string const & path) : Base(false), m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
+  WAV::WAV(std::string const & path) : Base(false),
+    m_Data(), m_CurrentIndex(0), m_Resampler()
   {
     ReadFile(path);
   }
 
-  WAV::WAV(std::vector<char> const & data) : Base(false), m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
+  WAV::WAV(std::vector<char> const & data) : Base(false),
+    m_Data(), m_CurrentIndex(0), m_Resampler()
   {
     ParseWAV(data.data(), int(data.size()));
   }
 
-  WAV::WAV(int argc) : Base(false), m_Data(), m_CurrentIndex(0), m_Resampler(nullptr)
+  WAV::WAV(int argc) : Base(false),
+    m_Data(), m_CurrentIndex(0), m_Resampler()
   {
-    std::string path = Tools::GetOptions().at(argc);
-
-    ReadFile(path);
+    ReadFile(Tools::GetOptions().at(argc));
   }
 
   StereoData_t WAV::SendSample()
   {
-    if(m_CurrentIndex < m_Data.size() && m_Resampler)
+    if(m_CurrentIndex++ < m_Data.size() && m_Resampler)
     {
       return m_Resampler->SendSample();
     }
@@ -109,7 +113,7 @@ namespace Generator
       // Copy RIFF data to byte vector
     RIFF::vector_t vec;
     vec.assign(CHAR_STR_TO_BYTE_STR(array), CHAR_STR_TO_BYTE_STR(array) + size);
-      // Parse the riff data and extract the chunk
+      // Parse the riff data
     RIFF::Reader riff(vec, CONSTRUCT_BYTE_STR("WAVE"));
 
       // Get the format chunk, check that it's size is correct
@@ -148,7 +152,9 @@ namespace Generator
       data += header->BytesPerSample;
     }
 
-    m_Resampler = std::make_shared<Tools::Resampler>(m_Data, float(header->SamplingRate), 0, m_Data.size()-1);
+    m_Resampler = Resampler_t::Create(
+      m_Data, float(header->SamplingRate), 0, m_Data.size()-1
+    );
   }
 
 } // namespace Generator

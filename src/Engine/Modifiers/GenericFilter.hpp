@@ -33,8 +33,6 @@ namespace AudioEngine
 namespace Modifier
 {
 
-  using pGenericFilter = std::shared_ptr<class GenericFilter>;
-
   /*! **************************************************************************
   \brief
     Generic audio filter with simple poles.

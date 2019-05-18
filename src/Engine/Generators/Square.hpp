@@ -29,8 +29,6 @@ namespace AudioEngine
 namespace Generator
 {
 
-  using pSquare_t = std::shared_ptr<class Square>;
-
   /*! **************************************************************************
   \brief
     Generates square wave data at the given frequency.

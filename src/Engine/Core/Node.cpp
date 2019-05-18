@@ -9,6 +9,9 @@
 
 // Include Files                          //////////////////////////////////////
 
+#include "../Generators/Base.hpp"
+#include "../Modifiers/Base.hpp"
+
 #include "Node.hpp"
 
 // Private Macros                         //////////////////////////////////////
@@ -26,10 +29,10 @@ namespace AudioEngine
 namespace Core
 {
 
-  Node::Node(Generator::pBase_t const & gen) :
+  Node::Node(pGenBase_t const & gen) :
     m_Targets(),
     m_Generator(gen),
-    m_Modifier(Modifier::Base::Create<Modifier::Base>(true)),
+    m_Modifier(ModBase_t::Create<ModBase_t>(true)),
     m_Interaction(
       [this](StereoData_t const & g, StereoData_t const & m)
       { UNREFERENCED_PARAMETER(m); return g; }
@@ -38,9 +41,9 @@ namespace Core
   {
   }
 
-  Node::Node(Modifier::pBase_t const & mod) :
+  Node::Node(pModBase_t const & mod) :
     m_Targets(),
-    m_Generator(Generator::Base::Create<Generator::Base>(true)),
+    m_Generator(GenBase_t::Create<GenBase_t>(true)),
     m_Modifier(mod),
     m_Interaction(
       [this](StereoData_t const & g, StereoData_t const & m)
@@ -51,8 +54,8 @@ namespace Core
   }
 
   Node::Node(
-    Generator::pBase_t const & gen,
-    Modifier::pBase_t const & mod
+    pGenBase_t const & gen,
+    pModBase_t const & mod
   ) :
     m_Targets(),
     m_Generator(gen),
@@ -76,8 +79,8 @@ namespace Core
   }
 
   Node::Node(
-    Generator::pBase_t const & gen,
-    Modifier::pBase_t const & mod,
+    pGenBase_t const & gen,
+    pModBase_t const & mod,
     Interaction_t const & interactor
   ) :
     m_Targets(),
@@ -88,22 +91,22 @@ namespace Core
   {
   }
 
-  Generator::pBase_t & Node::GetGenerator()
+  pGenBase_t & Node::GetGenerator()
   {
     return m_Generator;
   }
 
-  Modifier::pBase_t & Node::GetModifier()
+  pModBase_t & Node::GetModifier()
   {
     return m_Modifier;
   }
 
-  Generator::pBase_t const & Node::GetGenerator() const
+  pGenBase_t const & Node::GetGenerator() const
   {
     return m_Generator;
   }
 
-  Modifier::pBase_t const & Node::GetModifier() const
+  pModBase_t const & Node::GetModifier() const
   {
     return m_Modifier;
   }
@@ -118,7 +121,7 @@ namespace Core
     m_Targets.push_back(target.m_Input);
   }
 
-  void Node::AddOutput(std::shared_ptr<StereoData_t> const & output)
+  void Node::AddOutput(pStereoData_t const & output)
   {
     m_Targets.push_back(output);
   }

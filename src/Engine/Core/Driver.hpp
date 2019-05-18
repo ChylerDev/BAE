@@ -16,12 +16,7 @@
 #include <memory>
 #include <vector>
 
-#include <portaudio/portaudio.h>
-
 #include "../Engine.hpp"
-
-#include "Node.hpp"
-#include "Sound.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -31,16 +26,6 @@
 
 // Forward References           ////////////////////////////////////////////////
 
-namespace AudioEngine
-{
-namespace Core
-{
-
-  class Recorder;
-
-} // namespace Core
-} // namespace AudioEngine
-
 // Public Enums                 ////////////////////////////////////////////////
 
 // Public Objects               ////////////////////////////////////////////////
@@ -49,8 +34,6 @@ namespace AudioEngine
 {
 namespace Core
 {
-
-  class Sound;
 
   /*! **************************************************************************
   \brief
@@ -68,15 +51,21 @@ namespace Core
     Track_t m_OutputTrack;
 
     std::vector<AudioCallback_t> m_AudioCallbacks;
-    std::vector<std::shared_ptr<Sound>> m_Sounds;
+    std::vector<pSound_t> m_Sounds;
 
     float m_Gain;
     bool m_Running;
 
-    std::shared_ptr<Recorder> m_Recorder;
+    pRecorder_t m_Recorder;
     bool m_Recording;
 
   public:
+
+    template<typename ...Args>
+    static inline pDriver_t Create(Args &&... params)
+    {
+      return std::make_shared<Driver>(params...);
+    };
 
     // Con-/De- structors   ///////////////////////
 
@@ -116,7 +105,7 @@ namespace Core
     ***************************************************************************/
     void AddAudioCallback(AudioCallback_t const & cb);
 
-    void AddSound(std::shared_ptr<Sound> const & sound);
+    void AddSound(pSound_t const & sound);
 
     void StartRecording();
 
@@ -171,10 +160,10 @@ namespace Core
       A PaStreamCallbackResult enum value.
     ***************************************************************************/
     static int s_WriteCallback(void const * input, void * output,
-                              unsigned long frameCount,
-                              PaStreamCallbackTimeInfo const * timeInfo,
-                              PaStreamCallbackFlags statusFlags,
-                              void * userData);
+                               unsigned long frameCount,
+                               PaStreamCallbackTimeInfo const * timeInfo,
+                               PaStreamCallbackFlags statusFlags,
+                               void * userData);
   }; // class Driver
 
 } // namespace Core

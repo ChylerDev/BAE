@@ -27,8 +27,6 @@ namespace AudioEngine
 namespace Generator
 {
 
-  using pBase_t = std::shared_ptr<class Base>;
-
   /*! **************************************************************************
   \brief
   *****************************************************************************/
@@ -41,6 +39,23 @@ namespace Generator
     bool is_base;
 
   public:
+
+    /*! ************************************************************************
+    \brief
+      Creates a generator object and returns a pointer to it. This function
+      checks to make sure the given type derives this base class.
+
+    \tparam T
+      The type to create a pointer to.
+
+    \return
+      The pointer to the new object.
+    ***************************************************************************/
+    template <class T, typename ...Args, std::enable_if_t<std::is_base_of_v<Base, T>, int> = 0>
+    static inline pGenBase_t Create(Args &&... params)
+    {
+      return std::make_shared<T>(params...);
+    };
 
     // Con-/De- structors   ///////////////////////
 
@@ -57,23 +72,6 @@ namespace Generator
     virtual void SetFrequency(float freq) { UNREFERENCED_PARAMETER(freq); };
 
     bool IsBase() { return is_base; };
-
-    /*! ************************************************************************
-    \brief
-      Creates a generator object and returns a pointer to it. This function
-      checks to make sure the given type derives this base class.
-
-    \tparam T
-      The type to create a pointer to.
-
-    \return
-      The pointer to the new object.
-    ***************************************************************************/
-    template <class T, typename ...Args, std::enable_if_t<std::is_base_of_v<Base, T>, int> = 0>
-    static pBase_t Create(Args &&... params)
-    {
-      return std::make_shared<T>(params...);
-    };
 
   private:
 

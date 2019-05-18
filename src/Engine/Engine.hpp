@@ -19,6 +19,4 @@
 
 #include <portaudio/portaudio.h>
 
-#include "Core/Driver.hpp"
-
 #endif // __ENGINE_HPP
