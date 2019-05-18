@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             BandPass.hpp
+\file             Base.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  AudioEngine
@@ -7,14 +7,14 @@
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
-#ifndef __BAND_PASS_HPP
-#define __BAND_PASS_HPP
+#ifndef __SOUNDS_BASE_HPP
+#define __SOUNDS_BASE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
 #include "../Engine.hpp"
 
-#include "Base.hpp"
+#include "../Core/Sound.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -26,53 +26,60 @@
 
 namespace AudioEngine
 {
-namespace Modifier
+namespace Sounds
 {
 
   /*! **************************************************************************
   \brief
   *****************************************************************************/
-  class BandPass : public Base
+  class Base
   {
   private:
 
     // Members              ///////////////////////
 
-    double m_CentralFrequency;
-    double m_Quality;
-    double m_A0, m_B1, m_B2;
-    StereoData_t m_X1, m_X2, m_Y1, m_Y2;
+    bool m_IsBase;
+
+  protected:
+
+    // Members              ///////////////////////
+
+    pSound_t m_Sound;
 
   public:
 
+    template<typename T, typename ...Args,
+      std::enable_if_t<std::is_base_of_v<Base, T>, int> = 0
+    >
+    static inline pSoundsBase_t Create(Args &&... params)
+    {
+      return std::make_shared<T>(params...);
+    }
+
     // Con-/De- structors   ///////////////////////
 
-    BandPass(float f, float Q = 1);
-    virtual ~BandPass();
+    Base(float gain, bool b) : m_IsBase(b), m_Sound(Core::Sound::Create(gain)) {};
+    virtual ~Base() = default;
 
     // Operators            ///////////////////////
 
     // Accossors/Mutators   ///////////////////////
 
-    void SetFrequency(float f);
-
-    void SetQuality(float Q);
-
     // Functions            ///////////////////////
 
-    virtual StereoData_t FilterSample(StereoData_t const & x);
+    bool IsBase() const { return m_IsBase; };
+
+    virtual pSound_t & ToSound() { return m_Sound; };
 
   private:
 
     // Functions                  ///////////////////////
 
-    void Reset(void);
+  }; // class stub
 
-  }; // class BandPass
-
-} // namespace Modifier
+} // namespace Sounds
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __BAND_PASS_HPP
+#endif // __SOUNDS_BASE_HPP

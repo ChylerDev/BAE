@@ -10,17 +10,25 @@
 // Include Files                          //////////////////////////////////////
 
 #include <iostream>
+#include <fstream>
 #include <thread>
 #include <chrono>
 
 #include "../Engine/Engine.hpp"
 
-#include "../Engine/Tools/Input.hpp"
+#include "../Engine/Core/Driver.hpp"
+#include "../Engine/Core/Node.hpp"
+#include "../Engine/Core/Sound.hpp"
+#include "../Engine/Generators/Base.hpp"
 #include "../Engine/Generators/Sine.hpp"
 #include "../Engine/Generators/Square.hpp"
 #include "../Engine/Generators/WAV.hpp"
+#include "../Engine/Sounds/Vocoder.hpp"
+#include "../Engine/Tools/Input.hpp"
+#include "../Engine/Tools/WAVWriter.hpp"
 
-#include "../Libraries/Logging/src/Trace.hpp"
+#include <Trace/Trace.hpp>
+#include <RIFF-Util/RIFF.hpp>
 
 // Private Macros                         //////////////////////////////////////
 
@@ -34,60 +42,53 @@
 
 int main(int argc, char * argv[])
 {
+  using Tone_t = AudioEngine::Square_t;
+
   AudioEngine::Tools::CreateOptions(argc, argv);
+
+  AudioEngine::pDriver_t driver = AudioEngine::Driver_t::Create(0.125f);
 
   #if 1
 
-    AudioEngine::Generator::Sine sine_data(55);
-    AudioEngine::Generator::WAV wav_data;
-    AudioCallback_t ref;
+    AudioEngine::pNode_t gen;
 
     if(argc > 1)
     {
       Log::Trace::out[stc] << "Reading from WAV file\n";
-      wav_data.ReadFile(AudioEngine::Tools::GetOptions().at(1));
-      ref = std::bind(&AudioEngine::Generator::WAV::SendSample, &wav_data);
+      gen = AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<AudioEngine::WAV_t>(AudioEngine::Tools::GetOptions().at(1)));
     }
     else
     {
       Log::Trace::out[stc] << "Generating sine tone\n";
-      ref = std::bind(&AudioEngine::Generator::Sine::SendSample, &sine_data);
+      gen = AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(55.f));
     }
 
-    AudioEngine::Core::Driver driver;
-
-    driver.AddAudioCallback(ref);
+    AudioEngine::pVocoder_t v = AudioEngine::Vocoder_t::Create(gen, 4);
+    driver->AddSound(v->ToSound());
 
   #else
 
-  AudioEngine::Generator::Square root(110);
-  AudioEngine::Generator::Square first(220);
-  AudioEngine::Generator::Square second(440);
-  AudioEngine::Generator::Square third(880);
-  AudioEngine::Generator::Square fourth(1760);
-  AudioEngine::Generator::Square fifth(3520);
+    AudioEngine::pSound_t sound = AudioEngine::Sound_t::Create();
 
-  AudioCallback_t ref_r([&root](){ return root.SendSample(); });
-  AudioCallback_t ref_1([&first](){ return first.SendSample(); });
-  AudioCallback_t ref_2([&second](){ return second.SendSample(); });
-  AudioCallback_t ref_3([&third](){ return third.SendSample(); });
-  AudioCallback_t ref_4([&fourth](){ return fourth.SendSample(); });
-  AudioCallback_t ref_5([&fifth](){ return fifth.SendSample(); });
+    sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(220.f)), 0, true);
+    sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(440.f)), 0, true);
+    sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(660.f)), 0, true);
+    sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(880.f)), 0, true);
+    sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(1100.f)), 0, true);
+    sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(1320.f)), 0, true);
 
-  AudioEngine::Core::Driver driver;
-
-  driver.AddAudioCallback(ref_r);
-  driver.AddAudioCallback(ref_1);
-  driver.AddAudioCallback(ref_2);
-  driver.AddAudioCallback(ref_3);
-  driver.AddAudioCallback(ref_4);
-  driver.AddAudioCallback(ref_5);
+    driver->AddSound(sound);
 
   #endif
 
+  driver->StartRecording();
+
   std::cin.get();
 
-  driver.Shutdown();
+  std::basic_ofstream<RIFF::byte_t> file("wave_out.wav", std::ios_base::binary);
+  file << AudioEngine::Tools::WriteWAV(driver->StopRecording());
+
+  driver->Shutdown();
 
   return 0;
 }

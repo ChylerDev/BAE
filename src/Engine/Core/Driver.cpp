@@ -11,14 +11,14 @@
 
 #include <cstring>
 #include <iostream>
+#include <mutex>
+#include <queue>
+#include <thread>
 
-#include <portaudio/portaudio.h>
+#include <Trace/Trace.hpp>
 
-#include "../../Libraries/Logging/src/Trace.hpp"
-
-#include "../Engine.hpp"
+#include "Sound.hpp"
 #include "Driver.hpp"
-#include "../Modifiers/Vocoder.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
@@ -39,7 +39,63 @@
 
 // Private Objects                        //////////////////////////////////////
 
-AudioEngine::Modifiers::Vocoder v(4);
+namespace AudioEngine
+{
+namespace Core
+{
+
+  class Recorder
+  {
+    private:
+
+      using lock_t = std::unique_lock<std::mutex>;
+
+      // Members              ///////////////////////
+
+      std::mutex m_TrackMutex;
+      Track_t m_Track;
+
+      std::mutex m_SampleMutex;
+      std::queue<Track_t> m_NewSamples;
+
+      bool m_Recording;
+      std::thread m_Runner;
+
+    public:
+
+      template<typename ...Args>
+      static inline pRecorder_t Create(Args &&... params)
+      {
+        return std::make_shared<Recorder>(params...);
+      }
+
+      // Con-/De- structors   ///////////////////////
+
+      Recorder();
+      ~Recorder();
+
+      // Operators            ///////////////////////
+
+      // Accossors/Mutators   ///////////////////////
+
+      // Functions            ///////////////////////
+
+      void SendSamples(Track_t const & samples);
+
+      Track_t GetRecording();
+
+    private:
+
+      // Functions                  ///////////////////////
+
+      void Runner();
+
+  };
+
+  //static AudioEngine::Modifier::Vocoder v(4);
+
+} // namespace Core
+} // namespace AudioEngine
 
 // Private Function Declarations          //////////////////////////////////////
 
@@ -50,8 +106,15 @@ namespace AudioEngine
 namespace Core
 {
 
-  Driver::Driver(float gain) : m_BufferSize(0), m_Gain(gain), m_Running(true)
+PUSH_WARNINGS()
+GCC_DISABLE_WARNING("-Wold-style-cast")
+
+  Driver::Driver(float gain) :
+    m_Params(), m_Stream(nullptr), m_OutputTrack(), m_AudioCallbacks(),
+    m_Sounds(), m_Gain(gain), m_Running(true), m_Recorder(), m_Recording(false)
   {
+    m_OutputTrack.reserve(MAX_BUFFER);
+
     auto code = Pa_Initialize();
     PA_ERROR_CHECK(code, "PortAudio failed to initialize", "PortAudio initialized");
 
@@ -69,6 +132,8 @@ namespace Core
     PA_ERROR_CHECK(code, "Failed to start the audio stream", "Started the audio stream");
   }
 
+POP_WARNINGS()
+
   Driver::~Driver()
   {
     auto code = Pa_CloseStream(m_Stream);
@@ -81,6 +146,27 @@ namespace Core
   void Driver::AddAudioCallback(AudioCallback_t const & cb)
   {
     m_AudioCallbacks.push_back(cb);
+  }
+
+  void Driver::AddSound(pSound_t const & sound)
+  {
+    m_Sounds.push_back(sound);
+  }
+
+  void Driver::StartRecording()
+  {
+    m_Recorder = Recorder::Create();
+    m_Recording = true;
+  }
+
+  Track_t Driver::StopRecording()
+  {
+    Track_t recording = m_Recorder->GetRecording();
+
+    m_Recording = false;
+    m_Recorder = nullptr;
+
+    return recording;
   }
 
   void Driver::Shutdown()
@@ -98,6 +184,9 @@ namespace AudioEngine
 namespace Core
 {
 
+PUSH_WARNINGS()
+GCC_DISABLE_WARNING("-Wold-style-cast")
+
   int Driver::s_WriteCallback(void const * input, void * output,
                               unsigned long frameCount,
                               PaStreamCallbackTimeInfo const * timeInfo,
@@ -107,29 +196,33 @@ namespace Core
     UNREFERENCED_PARAMETER(timeInfo);
     UNREFERENCED_PARAMETER(input);
 
-  #ifdef _DEBUG
-    if(frameCount > MAX_BUFFER)
-    {
-      Log::Trace::out[err] << "PortAudio frame count is larger than the allowed buffer size. "
-                           << "This is a guaranteed underflow scenario!!!\n";
-    }
-  #endif
+    #ifdef _DEBUG
+      if(frameCount > MAX_BUFFER)
+      {
+        Log::Trace::out[err] << "PortAudio frame count is larger than the allowed buffer size. "
+                            << "This is a guaranteed underflow scenario!!!\n";
+      }
+    #endif
 
-    static unsigned long old_count = 0;
+    #ifdef _DEBUG
+      static unsigned long old_count = 0;
 
-    if(old_count != frameCount)
-    {
-      Log::Trace::out[frq] << "PortAudio buffer size: " << frameCount << '\n';
-      old_count = frameCount;
-    }
-    
-      // Convert input data to usable type    s
+      if(old_count != frameCount)
+      {
+        Log::Trace::out[frq] << "PortAudio buffer size: " << frameCount << '\n';
+        old_count = frameCount;
+      }
+    #endif
+
+      // Convert input data to usable type
     Driver * obj = reinterpret_cast<Driver *>(userData);
     float * out = reinterpret_cast<float *>(output);
 
+    obj->m_OutputTrack.clear();
+
       // Loop through the buffer, copying the data to the output
     uint64_t i = 0;
-    for(; i < frameCount && i < obj->m_BufferSize; ++i)
+    for(; i < frameCount; ++i)
     {
       StereoData_t sum(0.f,0.f);
       for(auto cb : obj->m_AudioCallbacks)
@@ -138,9 +231,22 @@ namespace Core
         std::get<0>(sum) += std::get<0>(y);
         std::get<1>(sum) += std::get<1>(y);
       }
-      sum = v.FilterSample(sum);
-      out[2*i] = std::get<0>(sum) * obj->m_Gain;
-      out[2*i+1] = std::get<1>(sum) * obj->m_Gain;
+      for(auto & s : obj->m_Sounds)
+      {
+        StereoData_t y = s->GetSample();
+        std::get<0>(sum) += std::get<0>(y);
+        std::get<1>(sum) += std::get<1>(y);
+      }
+
+      out[2*i] = (std::get<0>(sum) *= obj->m_Gain);
+      out[2*i+1] = (std::get<1>(sum) *= obj->m_Gain);
+
+      obj->m_OutputTrack.push_back(sum);
+    }
+
+    if(obj->m_Recording)
+    {
+      obj->m_Recorder->SendSamples(obj->m_OutputTrack);
     }
 
       // Do over/underflow checks
@@ -162,13 +268,76 @@ namespace Core
                            << "some data will be discarded to keep up!\n";
     }
 
-    obj->m_BufferSize -= i;
-
     if(obj->m_Running)
     {
       return paContinue;
     }
     return paComplete;
+  }
+
+POP_WARNINGS()
+
+  //////// Recorder Functions ////////
+
+  Recorder::Recorder() :
+    m_TrackMutex(), m_Track(),
+    m_SampleMutex(), m_NewSamples(),
+    m_Recording(true), m_Runner([this](){ this->Runner(); })
+  {
+      // Reserve 1 second worth of memory to record
+    m_Track.reserve(SAMPLE_RATE);
+  }
+
+  Recorder::~Recorder()
+  {
+  }
+
+  void Recorder::SendSamples(Track_t const & samples)
+  {
+    lock_t lk(m_SampleMutex);
+
+    m_NewSamples.push(samples);
+  }
+
+  Track_t Recorder::GetRecording()
+  {
+    m_Recording = false;
+    m_Runner.join();
+
+    std::unique_lock lk(m_TrackMutex);
+
+    return m_Track;
+  }
+
+  void Recorder::Runner()
+  {
+    do
+    {
+      size_t size;
+      Track_t samples;
+
+      {
+        lock_t lk(m_SampleMutex);
+        size = m_NewSamples.size();
+      }
+
+      while(size)
+      {
+        --size;
+
+        {
+          lock_t lk_s(m_SampleMutex);
+          samples = m_NewSamples.front();
+          m_NewSamples.pop();
+        }
+        {
+          lock_t lk_t(m_TrackMutex);
+          m_Track.insert(m_Track.end(), samples.begin(), samples.end());
+        }
+      }
+
+      std::this_thread::yield();
+    } while(m_Recording);
   }
 
 } // namespace Core

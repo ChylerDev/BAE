@@ -17,7 +17,6 @@
 #include <vector>
 
 #include "../Engine.hpp"
-#include "../Tools/Resampler.hpp"
 
 #include "Base.hpp"
 
@@ -50,7 +49,7 @@ namespace Generator
     std::vector<StereoData_t> m_Data;
     uint64_t m_CurrentIndex;
 
-    std::shared_ptr<Tools::Resampler> m_Resampler;
+    pResampler_t m_Resampler;
 
   public:
 

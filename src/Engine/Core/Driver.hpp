@@ -13,11 +13,8 @@
 // Include Files                ////////////////////////////////////////////////
 
 #include <functional>
-#include <mutex>
-#include <thread>
+#include <memory>
 #include <vector>
-
-#include <portaudio/portaudio.h>
 
 #include "../Engine.hpp"
 
@@ -25,10 +22,6 @@
 
 #ifndef MAX_BUFFER
   #define MAX_BUFFER (SAMPLE_RATE/10)
-#endif
-
-#ifndef DEFAULT_GAIN
-  #define DEFAULT_GAIN 0.5f
 #endif
 
 // Forward References           ////////////////////////////////////////////////
@@ -55,16 +48,24 @@ namespace Core
     PaStreamParameters m_Params;
     PaStream * m_Stream;
 
-    StereoData_t m_Buffer[MAX_BUFFER];
-    uint64_t m_BufferSize;
-    std::vector<AudioCallback_t> m_AudioCallbacks;
+    Track_t m_OutputTrack;
 
-    std::thread * m_Thread;
+    std::vector<AudioCallback_t> m_AudioCallbacks;
+    std::vector<pSound_t> m_Sounds;
 
     float m_Gain;
     bool m_Running;
 
+    pRecorder_t m_Recorder;
+    bool m_Recording;
+
   public:
+
+    template<typename ...Args>
+    static inline pDriver_t Create(Args &&... params)
+    {
+      return std::make_shared<Driver>(params...);
+    };
 
     // Con-/De- structors   ///////////////////////
 
@@ -77,6 +78,9 @@ namespace Core
     ***************************************************************************/
     Driver(float gain = DEFAULT_GAIN);
 
+    Driver(Driver const &) = delete;
+    Driver(Driver &&) noexcept = default;
+
     /*! ************************************************************************
     \brief
       Destructor.
@@ -84,6 +88,9 @@ namespace Core
     ~Driver();
 
     // Operators            ///////////////////////
+
+    Driver & operator=(Driver const &) = delete;
+    Driver & operator=(Driver &&) noexcept = default;
 
     // Accossors/Mutators   ///////////////////////
 
@@ -97,6 +104,12 @@ namespace Core
       The callback to be added to the list.
     ***************************************************************************/
     void AddAudioCallback(AudioCallback_t const & cb);
+
+    void AddSound(pSound_t const & sound);
+
+    void StartRecording();
+
+    Track_t StopRecording();
 
     /*! ************************************************************************
     \brief
@@ -147,11 +160,10 @@ namespace Core
       A PaStreamCallbackResult enum value.
     ***************************************************************************/
     static int s_WriteCallback(void const * input, void * output,
-                              unsigned long frameCount,
-                              PaStreamCallbackTimeInfo const * timeInfo,
-                              PaStreamCallbackFlags statusFlags,
-                              void * userData);
-
+                               unsigned long frameCount,
+                               PaStreamCallbackTimeInfo const * timeInfo,
+                               PaStreamCallbackFlags statusFlags,
+                               void * userData);
   }; // class Driver
 
 } // namespace Core

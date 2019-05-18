@@ -22,6 +22,19 @@
   #define INC_RATE (1.0/double(SAMPLE_RATE))
 #endif
 
+#ifndef DEFAULT_GAIN
+  #define DEFAULT_GAIN 0.5f
+#endif
+
+#ifndef EPSILON
+  /// Macro for the value at which we call the difference between two values effectively zero
+ #define EPSILON (1.0/(1 << 16))
+#endif  // EPSILON
+#ifndef EPSILON_F
+  /// Macro for the value at which we call the difference between two values effectively zero
+ #define EPSILON_F (1.0f/(1 << 16))
+#endif  // EPSILON_F
+
 #include <cmath>
 
 #ifndef PI
@@ -67,19 +80,30 @@
  #define PRINT(p) TO_STR(p)
 #endif // PRINT
 
+#ifndef DO_PRAGMA
+  #if defined(_MSC_VER)
+      /// Do VC++ pragma command
+    #define DO_PRAGMA(x) __pragma(x)
+  #elif defined(__clang__) || defined(__GNUC__)
+      /// Do clang/gcc pragma command
+    #define DO_PRAGMA(x) _Pragma(TO_STR(x))
+  #else
+      // Do not assume any pragma format, swallow message
+    #define DO_PRAGMA(x)
+  #endif  // _MSC_VER || (__clang__ || __GNUC__)
+#endif  // DO_PRAGMA
+
 #ifndef TODO
   #if defined(_MSC_VER)
-      /// Print the message
-    #define TODO(x) __pragma(message(__FILE__ "(" PRINT(__LINE__) ") TODO - " TO_STR(x)))
+      /// Print the to-do message
+    #define TODO(x) DO_PRAGMA(message(__FILE__ "(" PRINT(__LINE__) ") TODO - " TO_STR(x)))
   #elif defined(__clang__) || defined(__GNUC__)
-      /// Print the message
-    #define DO_PRAGMA(x) _Pragma (TO_STR(x))
-      /// Primes the message and calls the pragma function
+      /// Print the to-do message
     #define TODO(x) DO_PRAGMA(message ("TODO - " TO_STR(x)))
   #else
-      /// If unkown compiler, don't assume any knowledge of pragma/messages
+      // If unkown compiler, don't assume any knowledge of pragma/messages
     #define TODO(x)
- #endif // _MSC_VER || (__clang__ || __GNUC__)
+  #endif  // _MSC_VER || (__clang__ || __GNUC__)
 #endif  //TODO
 
 #ifndef UNREFERENCED_PARAMETER
@@ -92,13 +116,64 @@
   #endif // _WIN32 || __linux__
 #endif // UNREFERENCED_PARAMETER
 
-#ifndef EPSILON
-  /// Macro for the value at which we call the difference between two values effectively zero
- #define EPSILON (1.0/(1 << 16))
-#endif  // EPSILON
-#ifndef EPSILON_F
-  /// Macro for the value at which we call the difference between two values effectively zero
- #define EPSILON_F (1.0f/(1 << 16))
-#endif  // EPSILON_F
+#ifndef PUSH_WARNINGS
+  #if defined(_MSC_VER)
+      /// Push warnings
+    #define PUSH_WARNINGS() DO_PRAGMA(warning(push))
+  #elif defined(__clang__)
+      /// Push warnings
+    #define PUSH_WARNINGS() DO_PRAGMA(clang diagnostic push)
+  #elif defined(__GNUC__)
+      /// Push warnings
+    #define PUSH_WARNINGS() DO_PRAGMA(GCC diagnostic push)
+  #else
+      /// Don't assume other compiler pragmas
+    #define PUSH_WARNINGS()
+  #endif  // _MSC_VER || __clang__ || __GNUC__
+#endif  // PUSH_WARNINGS
+
+#ifndef MSVC_DISABLE_WARNING
+  #if defined(_MSC_VER)
+      /// Disable given VC++ warning
+    #define MSVC_DISABLE_WARNING(x) DO_PRAGMA(warning(disable: x))
+  #else
+      // Swallow message for non-VC++ compilers
+    #define MSVC_DISABLE_WARNING(x)
+  #endif
+#endif
+#ifndef CLANG_DISABLE_WARNING
+  #if defined(__clang__)
+      /// Disable given clang warning
+    #define CLANG_DISABLE_WARNING(x) DO_PRAGMA(clang diagnostic ignored x)
+  #else
+      // Swallow message for non-clang compilers
+    #define CLANG_DISABLE_WARNING(x)
+  #endif
+#endif
+#ifndef GCC_DISABLE_WARNING
+  #if defined(__GNUC__)
+      /// Disable given gcc warning
+    #define GCC_DISABLE_WARNING(x) DO_PRAGMA(GCC diagnostic ignored x)
+  #else
+      // Swallow message for non-gcc compilers
+    #define GCC_DISABLE_WARNING(x)
+  #endif
+#endif
+
+#ifndef POP_WARNINGS
+  #if defined(_MSC_VER)
+      /// POP_WARNINGS
+    #define POP_WARNINGS() DO_PRAGMA(warning(pop))
+  #elif defined(__clang__)
+      /// POP_WARNINGS
+    #define POP_WARNINGS() DO_PRAGMA(clang diagnostic pop)
+  #elif defined(__GNUC__)
+      /// POP_WARNINGS
+    #define POP_WARNINGS() DO_PRAGMA(GCC diagnostic pop)
+  #else
+      // Don't assume other compiler pragmas
+    #define POP_WARNINGS()
+  #endif  // _MSC_VER || __clang__ || __GNUC__
+#endif  // POP_WARNINGS
 
 #endif  // __MACRO_HPP

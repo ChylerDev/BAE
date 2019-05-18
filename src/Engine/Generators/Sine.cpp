@@ -11,8 +11,6 @@
 
 #include <cmath>
 
-#include "../Engine.hpp"
-
 #include "Sine.hpp"
 
 // Private Macros                         //////////////////////////////////////
@@ -32,8 +30,11 @@ namespace AudioEngine
 namespace Generator
 {
 
-  Sine::Sine(float f) : irate(INC_RATE*f), y1(std::sin(2*PI*irate)), y2(0), beta(2*std::cos(2*PI*irate))
+  Sine::Sine(float f) : Base(false),
+    irate(INC_RATE*double(f)),
+    y1(), y2(), beta()
   {
+    Reset();
   }
 
   StereoData_t Sine::SendSample(void)
@@ -48,7 +49,7 @@ namespace Generator
 
   void Sine::SetFrequency(float f)
   {
-    irate = INC_RATE * f;
+    irate = INC_RATE * double(f);
     Reset();
   }
 

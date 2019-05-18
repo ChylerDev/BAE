@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             BandPass.hpp
+\file             Envelope.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  AudioEngine
@@ -7,8 +7,8 @@
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
-#ifndef __BAND_PASS_HPP
-#define __BAND_PASS_HPP
+#ifndef __STUB_HPP
+#define __STUB_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -32,47 +32,40 @@ namespace Modifier
   /*! **************************************************************************
   \brief
   *****************************************************************************/
-  class BandPass : public Base
+  class EnvelopeFollower : public Base
   {
   private:
 
     // Members              ///////////////////////
 
-    double m_CentralFrequency;
-    double m_Quality;
-    double m_A0, m_B1, m_B2;
-    StereoData_t m_X1, m_X2, m_Y1, m_Y2;
+    double m_AU, m_BU;
+    double m_AD, m_BD;
+    StereoData_t m_X1, m_Y1;
 
   public:
 
     // Con-/De- structors   ///////////////////////
 
-    BandPass(float f, float Q = 1);
-    virtual ~BandPass();
+    EnvelopeFollower(float fd, float fu);
+    virtual ~EnvelopeFollower();
 
     // Operators            ///////////////////////
 
+    virtual StereoData_t FilterSample(StereoData_t const & x);
+
     // Accossors/Mutators   ///////////////////////
 
-    void SetFrequency(float f);
-
-    void SetQuality(float Q);
-
     // Functions            ///////////////////////
-
-    virtual StereoData_t FilterSample(StereoData_t const & x);
 
   private:
 
     // Functions                  ///////////////////////
 
-    void Reset(void);
-
-  }; // class BandPass
+  }; // class EnvelopeFollower
 
 } // namespace Modifier
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __BAND_PASS_HPP
+#endif // __STUB_HPP

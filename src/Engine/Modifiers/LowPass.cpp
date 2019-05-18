@@ -23,10 +23,11 @@
 
 namespace AudioEngine
 {
-namespace Modifiers
+namespace Modifier
 {
 
   LowPass::LowPass(float cutoff, float resonance) :
+    Base(false),
     m_Cutoff(2*PI*cutoff), m_Resonance(resonance),
     m_Coefficients(), m_Outputs(), m_IsDirty(false)
   {
@@ -45,7 +46,7 @@ namespace Modifiers
     m_IsDirty = true;
   }
 
-  StereoData_t LowPass::FilterSample(StereoData_t input)
+  StereoData_t LowPass::FilterSample(StereoData_t const & input)
   {
     if(m_IsDirty)
     {
@@ -93,7 +94,7 @@ namespace Modifiers
     m_Coefficients[2] = -m_Coefficients[3] * (3 + x);
   }
 
-} // namespace Modifiers
+} // namespace Modifier
 } // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////

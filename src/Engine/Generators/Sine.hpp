@@ -55,7 +55,7 @@ namespace Generator
     \param freq
       The frequency for the sine-wav to output at.
     ***************************************************************************/
-    Sine(float freq = 440.f);
+    Sine(float freq);
 
     /*! ************************************************************************
     \brief

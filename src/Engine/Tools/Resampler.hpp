@@ -12,6 +12,7 @@
 
 // Include Files                ////////////////////////////////////////////////
 
+#include <memory>
 #include <vector>
 
 #include "../Engine.hpp"
@@ -46,6 +47,12 @@ namespace Tools
     uint64_t m_LoopStart, m_LoopEnd;
 
   public:
+
+    template<typename ...Args>
+    static inline pResampler_t Create(Args &&... params)
+    {
+      return std::make_shared<Resampler>(params...);
+    }
 
     // Con-/De- structors   ///////////////////////
 

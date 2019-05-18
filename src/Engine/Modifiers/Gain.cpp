@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             main.cpp
+\file             Gain.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  AudioEngine
@@ -9,15 +9,7 @@
 
 // Include Files                          //////////////////////////////////////
 
-#include <iostream>
-#include <thread>
-#include <chrono>
-
-#include "Engine.hpp"
-
-#include "Tools/Input.hpp"
-#include "Generators/Sine.hpp"
-#include "Generators/WAV.hpp"
+#include "Gain.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
@@ -29,32 +21,32 @@
 
 // Public Functions                       //////////////////////////////////////
 
-int main(int argc, char * argv[])
+namespace AudioEngine
 {
-  Tools::CreateOptions(argc, argv);
+namespace Modifier
+{
 
-  Generator::Sine sine_data(55);
-  Generator::WAV wav_data;
-  AudioCallback_t ref;
-
-  if(argc > 1)
+  Gain::Gain(float gain) : Base(false), m_Gain(gain)
   {
-    wav_data.ReadFile(Tools::GetOptions().at(1));
-    ref = std::bind(&Generator::WAV::SendSample, &wav_data);
   }
-  else
+
+  void Gain::SetGain(float gain)
   {
-    ref = std::bind(&Generator::Sine::SendSample, &sine_data);
+    m_Gain = gain;
   }
-  Core::Driver driver;
 
-  driver.AddAudioCallback(ref);
+  float Gain::GetGain() const
+  {
+    return m_Gain;
+  }
 
-  std::cin.get();
+  StereoData_t Gain::FilterSample(StereoData_t const & input)
+  {
+    return StereoData_t(std::get<0>(input) * m_Gain,
+                        std::get<1>(input) * m_Gain);
+  }
 
-  driver.Shutdown();
-
-  return 0;
-}
+} // namespace Modifier
+} // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////

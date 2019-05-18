@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             BandPass.hpp
+\file             Sound.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  AudioEngine
@@ -7,14 +7,17 @@
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
-#ifndef __BAND_PASS_HPP
-#define __BAND_PASS_HPP
+#ifndef __SOUND_HPP
+#define __SOUND_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
-#include "../Engine.hpp"
+#include <map>
+#include <memory>
+#include <tuple>
+#include <vector>
 
-#include "Base.hpp"
+#include "../Engine.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -26,53 +29,74 @@
 
 namespace AudioEngine
 {
-namespace Modifier
+namespace Core
 {
 
   /*! **************************************************************************
   \brief
   *****************************************************************************/
-  class BandPass : public Base
+  class Sound
   {
+  public:
+
+    using Graph_t =
+      std::map<
+        uint32_t,
+        std::vector<pNode_t>
+      >;
+
   private:
 
     // Members              ///////////////////////
 
-    double m_CentralFrequency;
-    double m_Quality;
-    double m_A0, m_B1, m_B2;
-    StereoData_t m_X1, m_X2, m_Y1, m_Y2;
+    Graph_t m_NodeGraph;
+
+    pStereoData_t m_Output;
+
+    float m_Gain;
 
   public:
 
+    template <typename ...Args>
+    static inline pSound_t Create(Args &&... params)
+    {
+      return std::make_shared<Sound>(params...);
+    };
+
     // Con-/De- structors   ///////////////////////
 
-    BandPass(float f, float Q = 1);
-    virtual ~BandPass();
+    Sound(float gain = DEFAULT_GAIN);
+
+    ~Sound() = default;
 
     // Operators            ///////////////////////
 
     // Accossors/Mutators   ///////////////////////
 
-    void SetFrequency(float f);
+    Graph_t & GetGraph();
+    Graph_t const & GetGraph() const;
 
-    void SetQuality(float Q);
+    void SetOutputGain(float gain);
 
     // Functions            ///////////////////////
 
-    virtual StereoData_t FilterSample(StereoData_t const & x);
+    void AddNode(
+      pNode_t const & node,
+      uint32_t pos,
+      bool targets_output = false
+    );
+
+    StereoData_t GetSample();
 
   private:
 
     // Functions                  ///////////////////////
 
-    void Reset(void);
+  }; // class Sound
 
-  }; // class BandPass
-
-} // namespace Modifier
+} // namespace Core
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __BAND_PASS_HPP
+#endif // __SOUND_HPP

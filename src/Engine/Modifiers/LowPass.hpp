@@ -26,10 +26,9 @@
 
 namespace AudioEngine
 {
-namespace Modifiers
+namespace Modifier
 {
 
-  #pragma region
   /*! **************************************************************************
   \brief
   *****************************************************************************/
@@ -102,7 +101,7 @@ namespace Modifiers
     \return
       The filtered sample.
     ***************************************************************************/
-    virtual StereoData_t FilterSample(StereoData_t input);
+    virtual StereoData_t FilterSample(StereoData_t const & input);
 
   private:
 
@@ -111,9 +110,8 @@ namespace Modifiers
     void Reset();
 
   }; // class LowPass
-  #pragma endregion
 
-} // namespace Modifiers
+} // namespace Modifier
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////

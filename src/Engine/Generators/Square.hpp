@@ -54,7 +54,7 @@ namespace Generator
     \param freq
       The frequency for the square wav to output at.
     ***************************************************************************/
-    Square(float freq = 440.f);
+    Square(float freq);
 
     /*! ************************************************************************
     \brief

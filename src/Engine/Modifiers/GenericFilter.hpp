@@ -30,10 +30,9 @@
 
 namespace AudioEngine
 {
-namespace Modifiers
+namespace Modifier
 {
 
-  #pragma region
   /*! **************************************************************************
   \brief
     Generic audio filter with simple poles.
@@ -102,16 +101,15 @@ namespace Modifiers
     \return
       The filtered sample.
     ***************************************************************************/
-    virtual StereoData_t FilterSample(StereoData_t input);
+    virtual StereoData_t FilterSample(StereoData_t const & input);
 
   private:
 
     // Functions                  ///////////////////////
 
   }; // class GenericFilter
-  #pragma endregion
 
-} // namespace Modifiers
+} // namespace Modifier
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////

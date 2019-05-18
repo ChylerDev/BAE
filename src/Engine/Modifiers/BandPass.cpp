@@ -25,13 +25,17 @@
 
 namespace AudioEngine
 {
-namespace Modifiers
+namespace Modifier
 {
 
   BandPass::BandPass(float f, float Q) :
-    m_CentralFrequency(f), m_Quality(Q)
+    Base(false), m_CentralFrequency(f), m_Quality(Q)
   {
     Reset();
+  }
+
+  BandPass::~BandPass()
+  {
   }
 
   void BandPass::SetFrequency(float f)
@@ -52,8 +56,16 @@ namespace Modifiers
   {
     StereoData_t y;
 
-    std::get<0>(y) = float(m_A0 * (std::get<0>(x)-std::get<0>(m_X2)) + m_B1 * std::get<0>(m_Y1) - m_B2 * std::get<0>(m_Y2));
-    std::get<1>(y) = float(m_A0 * (std::get<1>(x)-std::get<1>(m_X2)) + m_B1 * std::get<1>(m_Y1) - m_B2 * std::get<1>(m_Y2));
+    std::get<0>(y) = float(
+      m_A0 * (std::get<0>(x) - std::get<0>(m_X2)) +
+      m_B1 * std::get<0>(m_Y1) -
+      m_B2 * std::get<0>(m_Y2)
+    );
+    std::get<1>(y) = float(
+      m_A0 * (std::get<1>(x) - std::get<1>(m_X2)) +
+      m_B1 * std::get<1>(m_Y1) -
+      m_B2 * std::get<1>(m_Y2)
+    );
 
     m_Y2 = m_Y1;
     m_Y1 = y;
@@ -63,14 +75,14 @@ namespace Modifiers
     return y;
   }
 
-} // namespace Modifiers
+} // namespace Modifier
 } // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////
 
 namespace AudioEngine
 {
-namespace Modifiers
+namespace Modifier
 {
 
   void BandPass::Reset()
@@ -116,5 +128,5 @@ namespace Modifiers
     #endif
   }
 
-} // namespace Modifiers
+} // namespace Modifier
 } // namespace AudioEngine

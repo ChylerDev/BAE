@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             BandPass.hpp
+\file             Vocoder.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  AudioEngine
@@ -7,10 +7,13 @@
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
-#ifndef __BAND_PASS_HPP
-#define __BAND_PASS_HPP
+#ifndef __VOCODER_HPP
+#define __VOCODER_HPP
 
 // Include Files                ////////////////////////////////////////////////
+
+#include <vector>
+#include <tuple>
 
 #include "../Engine.hpp"
 
@@ -26,53 +29,60 @@
 
 namespace AudioEngine
 {
-namespace Modifier
+namespace Sounds
 {
 
   /*! **************************************************************************
   \brief
   *****************************************************************************/
-  class BandPass : public Base
+  class Vocoder : public Base
   {
   private:
 
+    using Carrier_t = Generator::Square;
+
     // Members              ///////////////////////
 
-    double m_CentralFrequency;
-    double m_Quality;
-    double m_A0, m_B1, m_B2;
-    StereoData_t m_X1, m_X2, m_Y1, m_Y2;
+    std::vector<float> m_CentralFrequencies;
+
+    uint32_t m_BandCount;
+
+    float m_Mu;
 
   public:
 
     // Con-/De- structors   ///////////////////////
 
-    BandPass(float f, float Q = 1);
-    virtual ~BandPass();
+    Vocoder(pNode_t const & base_input, int N=1);
 
     // Operators            ///////////////////////
 
     // Accossors/Mutators   ///////////////////////
 
-    void SetFrequency(float f);
-
-    void SetQuality(float Q);
+      // p is in cents
+    void SetOffset(float p);
 
     // Functions            ///////////////////////
 
-    virtual StereoData_t FilterSample(StereoData_t const & x);
+    template<typename ...Args>
+    static inline pVocoder_t Create(Args &&... params)
+    {
+      return std::make_shared<Vocoder>(params...);
+    }
 
   private:
 
     // Functions                  ///////////////////////
 
-    void Reset(void);
+    std::vector<pModBase_t> BPSetup();
+    std::vector<pModBase_t> EnvSetup();
+    std::vector<pGenBase_t> OscSetup();
 
-  }; // class BandPass
+  }; // class Vocoder
 
-} // namespace Modifier
+} // namespace Sounds
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __BAND_PASS_HPP
+#endif // __VOCODER_HPP

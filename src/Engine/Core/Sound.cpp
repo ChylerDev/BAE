@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             Sine.cpp
+\file             Sound.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  AudioEngine
@@ -9,15 +9,10 @@
 
 // Include Files                          //////////////////////////////////////
 
-#include <cmath>
-
-#include "../Engine.hpp"
-
-#include "Square.hpp"
+#include "Node.hpp"
+#include "Sound.hpp"
 
 // Private Macros                         //////////////////////////////////////
-
-// Private Enums                          //////////////////////////////////////
 
 // Private Enums                          //////////////////////////////////////
 
@@ -29,38 +24,62 @@
 
 namespace AudioEngine
 {
-namespace Generator
+namespace Core
 {
 
-  Square::Square(float f) : Base(false), m_Ind(0), m_Inv(SAMPLE_RATE/(2*f))
+  Sound::Sound(float gain) :
+    m_NodeGraph(), m_Output(std::make_shared<StereoData_t>()), m_Gain(gain)
   {
   }
 
-  StereoData_t Square::SendSample(void)
+  Sound::Graph_t & Sound::GetGraph()
   {
-    double y = 1;
+    return m_NodeGraph;
+  }
 
-    if(m_Ind >= m_Inv && m_Ind < 2*m_Inv)
+  Sound::Graph_t const & Sound::GetGraph() const
+  {
+    return m_NodeGraph;
+  }
+
+  void Sound::SetOutputGain(float gain)
+  {
+    m_Gain = gain;
+  }
+
+  void Sound::AddNode(
+    pNode_t const & node,
+    uint32_t pos,
+    bool targets_output
+  )
+  {
+    m_NodeGraph[pos].push_back(node);
+
+    if(targets_output)
     {
-      y = -1;
+      node->AddOutput(m_Output);
+    }
+  }
+
+  StereoData_t Sound::GetSample()
+  {
+    *m_Output = std::make_tuple(0.f,0.f);
+
+    for(auto & nodes : m_NodeGraph)
+    {
+      for(auto & node : nodes.second)
+      {
+        node->SendSample();
+      }
     }
 
-    if(m_Ind >= 2*m_Inv)
-    {
-      m_Ind -= 2*m_Inv;
-    }
+    std::get<0>(*m_Output) *= m_Gain;
+    std::get<1>(*m_Output) *= m_Gain;
 
-    ++m_Ind;
-
-    return MONO_TO_STEREO(y);
+    return *m_Output;
   }
 
-  void Square::SetFrequency(float f)
-  {
-    m_Inv = SAMPLE_RATE/(2*f);
-  }
-
-} // namespace Generator
+} // namespace Core
 } // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////
