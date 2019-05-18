@@ -75,14 +75,14 @@ int main(int argc, char * argv[])
 
   #else
 
-    pSound_t sound = Sound::Create();
+    pSound_t sound = Sound_t::Create();
 
-    sound->AddNode(Node::Create(GenBase_t::Create<Tone_t>(220.f)), 0, true);
-    sound->AddNode(Node::Create(GenBase_t::Create<Tone_t>(440.f)), 0, true);
-    sound->AddNode(Node::Create(GenBase_t::Create<Tone_t>(660.f)), 0, true);
-    sound->AddNode(Node::Create(GenBase_t::Create<Tone_t>(880.f)), 0, true);
-    sound->AddNode(Node::Create(GenBase_t::Create<Tone_t>(1100.f)), 0, true);
-    sound->AddNode(Node::Create(GenBase_t::Create<Tone_t>(1320.f)), 0, true);
+    sound->AddNode(Node_t::Create(GenBase_t::Create<Tone_t>(220.f)), 0, true);
+    sound->AddNode(Node_t::Create(GenBase_t::Create<Tone_t>(440.f)), 0, true);
+    sound->AddNode(Node_t::Create(GenBase_t::Create<Tone_t>(660.f)), 0, true);
+    sound->AddNode(Node_t::Create(GenBase_t::Create<Tone_t>(880.f)), 0, true);
+    sound->AddNode(Node_t::Create(GenBase_t::Create<Tone_t>(1100.f)), 0, true);
+    sound->AddNode(Node_t::Create(GenBase_t::Create<Tone_t>(1320.f)), 0, true);
 
     driver.AddSound(sound);
 
