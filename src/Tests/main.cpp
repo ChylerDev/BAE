@@ -39,29 +39,35 @@
 
 int main(int argc, char * argv[])
 {
+  using Sound_t = AudioEngine::Core::Sound;
+  using AudioEngine::Core::pSound_t;
+  using Node_t = AudioEngine::Core::Node;
+  using AudioEngine::Core::pNode_t;
+  using Tone_t = AudioEngine::Generator::Square;
+  using GenBase_t = AudioEngine::Generator::Base;
+  using pGenBase_t = AudioEngine::Generator::pBase_t;
+  using WAV_t = AudioEngine::Generator::WAV;
+
   AudioEngine::Tools::CreateOptions(argc, argv);
 
   AudioEngine::Core::Driver driver(0.125f);
 
   #if 1
 
-    AudioEngine::Generator::Sine sine_data(55);
-    std::shared_ptr<AudioEngine::Core::Node> gen;
+    pNode_t gen;
 
     if(argc > 1)
     {
       Log::Trace::out[stc] << "Reading from WAV file\n";
 
-      gen = std::make_shared<AudioEngine::Core::Node>(
-        std::make_shared<AudioEngine::Generator::WAV>(AudioEngine::Tools::GetOptions().at(1))
+      gen = Node_t::Create(
+        GenBase_t::Create<WAV_t>(AudioEngine::Tools::GetOptions().at(1))
       );
     }
     else
     {
       Log::Trace::out[stc] << "Generating sine tone\n";
-      gen = std::make_shared<AudioEngine::Core::Node>(
-        std::make_shared<AudioEngine::Generator::Sine>(55.f)
-      );
+      gen = Node_t::Create(GenBase_t::Create<Tone_t>(55.f));
     }
 
     AudioEngine::Sounds::Vocoder v(gen, 4);
@@ -69,18 +75,14 @@ int main(int argc, char * argv[])
 
   #else
 
-    using Tone_t = AudioEngine::Generator::Square;
-    using AudioEngine::Core::Sound;
-    using AudioEngine::Core::Node;
+    pSound_t sound = Sound::Create();
 
-    std::shared_ptr<Sound> sound = std::make_shared<Sound>();
-
-    sound->AddNode(std::make_shared<Node>(std::make_shared<Tone_t>(220.f)), 0, true);
-    sound->AddNode(std::make_shared<Node>(std::make_shared<Tone_t>(440.f)), 0, true);
-    sound->AddNode(std::make_shared<Node>(std::make_shared<Tone_t>(660.f)), 0, true);
-    sound->AddNode(std::make_shared<Node>(std::make_shared<Tone_t>(880.f)), 0, true);
-    sound->AddNode(std::make_shared<Node>(std::make_shared<Tone_t>(1100.f)), 0, true);
-    sound->AddNode(std::make_shared<Node>(std::make_shared<Tone_t>(1320.f)), 0, true);
+    sound->AddNode(Node::Create(GenBase_t::Create<Tone_t>(220.f)), 0, true);
+    sound->AddNode(Node::Create(GenBase_t::Create<Tone_t>(440.f)), 0, true);
+    sound->AddNode(Node::Create(GenBase_t::Create<Tone_t>(660.f)), 0, true);
+    sound->AddNode(Node::Create(GenBase_t::Create<Tone_t>(880.f)), 0, true);
+    sound->AddNode(Node::Create(GenBase_t::Create<Tone_t>(1100.f)), 0, true);
+    sound->AddNode(Node::Create(GenBase_t::Create<Tone_t>(1320.f)), 0, true);
 
     driver.AddSound(sound);
 
