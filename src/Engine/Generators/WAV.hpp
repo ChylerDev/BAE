@@ -34,6 +34,8 @@ namespace AudioEngine
 namespace Generator
 {
 
+  using pWAV_t = std::shared_ptr<class WAV>;
+
   /*! **************************************************************************
   \brief
     Plays audio from a WAV file.

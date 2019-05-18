@@ -29,6 +29,8 @@ namespace AudioEngine
 namespace Generator
 {
 
+  using pSine_t = std::shared_ptr<class Sine>;
+
   /*! **************************************************************************
   \brief
     Generates sine data at the given frequency.
@@ -55,7 +57,7 @@ namespace Generator
     \param freq
       The frequency for the sine-wav to output at.
     ***************************************************************************/
-    Sine(float freq = 440.f);
+    Sine(float freq);
 
     /*! ************************************************************************
     \brief

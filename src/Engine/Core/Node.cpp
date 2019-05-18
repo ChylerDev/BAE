@@ -26,10 +26,10 @@ namespace AudioEngine
 namespace Core
 {
 
-  Node::Node(std::shared_ptr<Generator::Base> const & gen) :
+  Node::Node(Generator::pBase_t const & gen) :
     m_Targets(),
     m_Generator(gen),
-    m_Modifier(Modifier::Base::CreateModifier<Modifier::Base>(true)),
+    m_Modifier(Modifier::Base::Create<Modifier::Base>(true)),
     m_Interaction(
       [this](StereoData_t const & g, StereoData_t const & m)
       { UNREFERENCED_PARAMETER(m); return g; }
@@ -40,7 +40,7 @@ namespace Core
 
   Node::Node(Modifier::pBase_t const & mod) :
     m_Targets(),
-    m_Generator(std::make_shared<Generator::Base>(true)),
+    m_Generator(Generator::Base::Create<Generator::Base>(true)),
     m_Modifier(mod),
     m_Interaction(
       [this](StereoData_t const & g, StereoData_t const & m)
@@ -51,7 +51,7 @@ namespace Core
   }
 
   Node::Node(
-    std::shared_ptr<Generator::Base> const & gen,
+    Generator::pBase_t const & gen,
     Modifier::pBase_t const & mod
   ) :
     m_Targets(),
@@ -76,7 +76,7 @@ namespace Core
   }
 
   Node::Node(
-    std::shared_ptr<Generator::Base> const & gen,
+    Generator::pBase_t const & gen,
     Modifier::pBase_t const & mod,
     Interaction_t const & interactor
   ) :
@@ -88,7 +88,7 @@ namespace Core
   {
   }
 
-  std::shared_ptr<Generator::Base> & Node::GetGenerator()
+  Generator::pBase_t & Node::GetGenerator()
   {
     return m_Generator;
   }
@@ -98,7 +98,7 @@ namespace Core
     return m_Modifier;
   }
 
-  std::shared_ptr<Generator::Base> const & Node::GetGenerator() const
+  Generator::pBase_t const & Node::GetGenerator() const
   {
     return m_Generator;
   }
@@ -118,7 +118,7 @@ namespace Core
     m_Targets.push_back(target.m_Input);
   }
 
-  void Node::AddFinalOutput(std::shared_ptr<StereoData_t> const & output)
+  void Node::AddOutput(std::shared_ptr<StereoData_t> const & output)
   {
     m_Targets.push_back(output);
   }

@@ -79,7 +79,7 @@ namespace Modifier
       The pointer to the new object.
     ***************************************************************************/
     template <class T, typename ...Args, std::enable_if_t<std::is_base_of_v<Base, T>, int> = 0>
-    static pBase_t CreateModifier(Args &&... params)
+    static pBase_t Create(Args &&... params)
     {
       return std::make_shared<T>(params...);
     };

@@ -34,6 +34,8 @@ namespace AudioEngine
 namespace Core
 {
 
+  using pNode_t = std::shared_ptr<class Node>;
+
   /*! **************************************************************************
   \brief
   *****************************************************************************/
@@ -51,7 +53,7 @@ namespace Core
 
     TargetsVec_t m_Targets;
 
-    std::shared_ptr<Generator::Base> m_Generator;
+    Generator::pBase_t m_Generator;
     Modifier::pBase_t m_Modifier;
 
     Interaction_t m_Interaction;
@@ -72,7 +74,7 @@ namespace Core
     \param gen
       The generator used for the node.
     ***************************************************************************/
-    Node(std::shared_ptr<Generator::Base> const & gen);
+    Node(Generator::pBase_t const & gen);
 
     /*! ************************************************************************
     \brief
@@ -99,7 +101,7 @@ namespace Core
     \param mod
       The modifier used for the node.
     ***************************************************************************/
-    Node(std::shared_ptr<Generator::Base> const & gen, Modifier::pBase_t const & mod);
+    Node(Generator::pBase_t const & gen, Modifier::pBase_t const & mod);
 
     /*! ************************************************************************
     \brief
@@ -117,7 +119,7 @@ namespace Core
       second argument is the sample from the modifier.
     ***************************************************************************/
     Node(
-      std::shared_ptr<Generator::Base> const & gen,
+      Generator::pBase_t const & gen,
       Modifier::pBase_t const & mod,
       Interaction_t const & interactor
     );
@@ -126,9 +128,9 @@ namespace Core
 
     // Accossors/Mutators   ///////////////////////
 
-    std::shared_ptr<Generator::Base> & GetGenerator();
+    Generator::pBase_t & GetGenerator();
     Modifier::pBase_t & GetModifier();
-    std::shared_ptr<Generator::Base> const & GetGenerator() const;
+    Generator::pBase_t const & GetGenerator() const;
     Modifier::pBase_t const & GetModifier() const;
 
     // Functions            ///////////////////////
@@ -136,9 +138,15 @@ namespace Core
     void SetInteractor(Interaction_t const & interactor);
 
     void AddTarget(Node const & target);
-    void AddFinalOutput(std::shared_ptr<StereoData_t> const & output);
+    void AddOutput(std::shared_ptr<StereoData_t> const & output);
 
     void SendSample(void);
+
+    template<typename ...Args>
+    static pNode_t Create(Args &&... params)
+    {
+      return std::make_shared<Node>(params);
+    };
 
   private:
 

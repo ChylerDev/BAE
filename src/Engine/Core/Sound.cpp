@@ -49,7 +49,7 @@ namespace Core
   }
 
   void Sound::AddNode(
-    std::shared_ptr<Node> const & node,
+    pNode_t const & node,
     uint32_t pos,
     bool targets_output
   )
@@ -58,7 +58,7 @@ namespace Core
 
     if(targets_output)
     {
-      node->AddFinalOutput(m_Output);
+      node->AddOutput(m_Output);
     }
   }
 

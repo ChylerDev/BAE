@@ -36,6 +36,8 @@ namespace AudioEngine
 namespace Core
 {
 
+  using pSound_t = std::shared_ptr<class Sound>;
+
   class Node;
 
   /*! **************************************************************************
@@ -48,9 +50,7 @@ namespace Core
     using Graph_t =
       std::map<
         uint32_t,
-        std::vector<
-          std::shared_ptr<Node>
-        >
+        std::vector<pNode_t>
       >;
 
   private:
@@ -83,12 +83,18 @@ namespace Core
     // Functions            ///////////////////////
 
     void AddNode(
-      std::shared_ptr<Node> const & node,
+      pNode_t const & node,
       uint32_t pos,
       bool targets_output = false
     );
 
     StereoData_t GetSample();
+
+    template <typename ...Args>
+    static pSound_t Create(Args &&... params)
+    {
+      return std::make_shared<Sound>(params...);
+    };
 
   private:
 
