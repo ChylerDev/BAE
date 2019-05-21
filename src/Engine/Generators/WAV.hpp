@@ -120,8 +120,6 @@ namespace Generator
     ***************************************************************************/
     virtual StereoData_t SendSample(void);
 
-    virtual void SetFrequency(float freq) { UNREFERENCED_PARAMETER(freq); };
-
   private:
 
     struct WAVHeader

@@ -38,15 +38,15 @@ namespace Modifier
 
     // Members              ///////////////////////
 
-    double m_AU, m_BU;
-    double m_AD, m_BD;
+    Math_t m_AU, m_BU;
+    Math_t m_AD, m_BD;
     StereoData_t m_X1, m_Y1;
 
   public:
 
     // Con-/De- structors   ///////////////////////
 
-    EnvelopeFollower(float fd, float fu);
+    EnvelopeFollower(Math_t fd, Math_t fu);
     virtual ~EnvelopeFollower();
 
     // Operators            ///////////////////////

@@ -42,13 +42,13 @@
 
 int main(int argc, char * argv[])
 {
-  using Tone_t = AudioEngine::Square_t;
+  using Tone_t = AudioEngine::Sine_t;
 
   AudioEngine::Tools::CreateOptions(argc, argv);
 
-  AudioEngine::pDriver_t driver = AudioEngine::Driver_t::Create(0.125f);
+  AudioEngine::pDriver_t driver = AudioEngine::Driver_t::Create(0.25f);
 
-  #if 1
+  #if 0
 
     AudioEngine::pNode_t gen;
 
@@ -63,12 +63,15 @@ int main(int argc, char * argv[])
       gen = AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(55.f));
     }
 
-    AudioEngine::pVocoder_t v = AudioEngine::Vocoder_t::Create(gen, 4);
-    driver->AddSound(v->ToSound());
+    //AudioEngine::pVocoder_t v = AudioEngine::Vocoder_t::Create(gen, 4);
+    //driver->AddSound(v->ToSound());
+    AudioEngine::pSound_t s = AudioEngine::Sound_t::Create();
+    s->AddNode(gen, 0, true);
+    driver->AddSound(s);
 
   #else
 
-    AudioEngine::pSound_t sound = AudioEngine::Sound_t::Create();
+    AudioEngine::pSound_t sound = AudioEngine::Sound_t::Create(1);
 
     sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(220.f)), 0, true);
     sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(440.f)), 0, true);

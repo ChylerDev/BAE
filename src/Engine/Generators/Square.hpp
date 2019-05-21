@@ -39,8 +39,8 @@ namespace Generator
 
     // Members              ///////////////////////
 
-    double m_Ind;
-    double m_Inv;
+    Math_t m_Ind;
+    Math_t m_Inv;
 
   public:
 
@@ -54,7 +54,7 @@ namespace Generator
     \param freq
       The frequency for the square wav to output at.
     ***************************************************************************/
-    Square(float freq);
+    Square(Math_t freq);
 
     /*! ************************************************************************
     \brief
@@ -84,7 +84,7 @@ namespace Generator
     \param freq
       The new frequency.
     ***************************************************************************/
-    virtual void SetFrequency(float freq);
+    virtual void SetFrequency(Math_t freq);
 
   private:
 

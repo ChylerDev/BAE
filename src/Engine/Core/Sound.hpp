@@ -53,7 +53,7 @@ namespace Core
 
     pStereoData_t m_Output;
 
-    float m_Gain;
+    Math_t m_Gain;
 
   public:
 
@@ -65,7 +65,7 @@ namespace Core
 
     // Con-/De- structors   ///////////////////////
 
-    Sound(float gain = DEFAULT_GAIN);
+    Sound(Math_t gain = DEFAULT_GAIN);
 
     ~Sound() = default;
 
@@ -76,7 +76,7 @@ namespace Core
     Graph_t & GetGraph();
     Graph_t const & GetGraph() const;
 
-    void SetOutputGain(float gain);
+    void SetOutputGain(Math_t gain);
 
     // Functions            ///////////////////////
 

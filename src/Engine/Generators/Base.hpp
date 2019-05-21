@@ -69,7 +69,7 @@ namespace Generator
     // Functions            ///////////////////////
 
     virtual StereoData_t SendSample(void) { return StereoData_t(0.f, 0.f); };
-    virtual void SetFrequency(float freq) { UNREFERENCED_PARAMETER(freq); };
+    virtual void SetFrequency(Math_t freq) { UNREFERENCED_PARAMETER(freq); };
 
     bool IsBase() { return is_base; };
 

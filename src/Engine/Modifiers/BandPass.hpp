@@ -38,25 +38,25 @@ namespace Modifier
 
     // Members              ///////////////////////
 
-    double m_CentralFrequency;
-    double m_Quality;
-    double m_A0, m_B1, m_B2;
+    Math_t m_CentralFrequency;
+    Math_t m_Quality;
+    Math_t m_A0, m_B1, m_B2;
     StereoData_t m_X1, m_X2, m_Y1, m_Y2;
 
   public:
 
     // Con-/De- structors   ///////////////////////
 
-    BandPass(float f, float Q = 1);
+    BandPass(Math_t f, Math_t Q = 1);
     virtual ~BandPass();
 
     // Operators            ///////////////////////
 
     // Accossors/Mutators   ///////////////////////
 
-    void SetFrequency(float f);
+    void SetFrequency(Math_t f);
 
-    void SetQuality(float Q);
+    void SetQuality(Math_t Q);
 
     // Functions            ///////////////////////
 

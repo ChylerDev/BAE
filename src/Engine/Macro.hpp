@@ -21,9 +21,12 @@
 #ifndef INC_RATE
   #define INC_RATE (1.0/double(SAMPLE_RATE))
 #endif
+#ifndef INC_RATE_FP
+  #define INC_RATE_FP SampleType_t(1.0/double(SAMPLE_RATE))
+#endif
 
 #ifndef DEFAULT_GAIN
-  #define DEFAULT_GAIN 0.5f
+  #define DEFAULT_GAIN Math_t(0.5)
 #endif
 
 #ifndef EPSILON
@@ -64,11 +67,11 @@
 #endif
 
 #ifndef MONO_TO_STEREO
-  #define MONO_TO_STEREO(x) StereoData_t(float(x*SQRT_HALF),float(x*SQRT_HALF))
+  #define MONO_TO_STEREO(x) StereoData_t((x*SQRT_HALF),(x*SQRT_HALF))
 #endif
 
 #ifndef STEREO_TO_MONO
-  #define STEREO_TO_MONO(x) ((std::get<0>(x) + std::get<1>(x))*0.5)
+  #define STEREO_TO_MONO(x) ((std::get<0>(x) + std::get<1>(x))/SQRT_HALF)
 #endif
 
 #ifndef TO_STR

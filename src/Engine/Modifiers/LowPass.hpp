@@ -38,9 +38,9 @@ namespace Modifier
 
     // Members              ///////////////////////
 
-    double m_Cutoff;
-    double m_Resonance;
-    double m_Coefficients[4];
+    Math_t m_Cutoff;
+    Math_t m_Resonance;
+    Math_t m_Coefficients[4];
     StereoData_t m_Outputs[3];
     bool m_IsDirty;
 
@@ -59,7 +59,7 @@ namespace Modifier
       The resonance angle of the filter, value can be in range [0,1/6]. No
       safety checks are performed.
     ***************************************************************************/
-    LowPass(float cutoff, float resonance);
+    LowPass(Math_t cutoff, Math_t resonance);
 
     /*! ************************************************************************
     \brief
@@ -78,7 +78,7 @@ namespace Modifier
     \param cutoff
       The cutoff frequency.
     ***************************************************************************/
-    void SetCutoff(float cutoff);
+    void SetCutoff(Math_t cutoff);
 
     /*! ************************************************************************
     \brief
@@ -87,7 +87,7 @@ namespace Modifier
     \param resonance
       The resonance angle, in range [0,1/6]. No safety checks are performed.
     ***************************************************************************/
-    void SetResonance(float resonance);
+    void SetResonance(Math_t resonance);
 
     // Functions            ///////////////////////
 

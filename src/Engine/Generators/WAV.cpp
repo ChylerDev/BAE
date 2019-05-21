@@ -66,7 +66,7 @@ namespace Generator
     {
       return m_Resampler->SendSample();
     }
-    return StereoData_t(0.f,0.f);
+    return StereoData_t(0,0);
   }
 
 } // namespace Generator
@@ -138,14 +138,14 @@ namespace Generator
 
       if(header->BitsPerSample == 8)
       {
-        std::get<0>(sample) = (*data - 128)/128.f;
-        std::get<1>(sample) = (*(header->ChannelCount==1 ? data : data+1) - 128)/128.f;
+        std::get<0>(sample).Data() = (*data) << 8;
+        std::get<1>(sample).Data() = (*(header->ChannelCount==1 ? data : data+1)) << 8;
       }
       else
       {
         int16_t const * rdata = reinterpret_cast<int16_t const *>(data);
-        std::get<0>(sample) = (*rdata)/float(0x7FFF);
-        std::get<1>(sample) = (*(header->ChannelCount==1 ? rdata : rdata+1))/float(0x7FFF);
+        std::get<0>(sample).Data() = *rdata;
+        std::get<1>(sample).Data() = (*(header->ChannelCount==1 ? rdata : rdata+1));
       }
 
       m_Data.push_back(sample);
@@ -153,7 +153,7 @@ namespace Generator
     }
 
     m_Resampler = Resampler_t::Create(
-      m_Data, float(header->SamplingRate), 0, m_Data.size()-1
+      m_Data, header->SamplingRate, 0, m_Data.size()-1
     );
   }
 

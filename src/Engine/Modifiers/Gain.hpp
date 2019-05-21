@@ -38,21 +38,21 @@ namespace Modifier
 
     // Members              ///////////////////////
 
-    float m_Gain;
+    Math_t m_Gain;
 
   public:
 
     // Con-/De- structors   ///////////////////////
 
-    Gain(float gain = DEFAULT_GAIN);
+    Gain(Math_t gain = DEFAULT_GAIN);
     virtual ~Gain() = default;
 
     // Operators            ///////////////////////
 
     // Accossors/Mutators   ///////////////////////
 
-    void SetGain(float gain);
-    float GetGain() const;
+    void SetGain(Math_t gain);
+    Math_t GetGain() const;
 
     // Functions            ///////////////////////
 

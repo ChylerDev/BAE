@@ -109,7 +109,7 @@ namespace Core
 PUSH_WARNINGS()
 GCC_DISABLE_WARNING("-Wold-style-cast")
 
-  Driver::Driver(float gain) :
+  Driver::Driver(Math_t gain) :
     m_Params(), m_Stream(nullptr), m_OutputTrack(), m_AudioCallbacks(),
     m_Sounds(), m_Gain(gain), m_Running(true), m_Recorder(), m_Recording(false)
   {
@@ -120,7 +120,7 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
 
     m_Params.device = Pa_GetDefaultOutputDevice();
     m_Params.channelCount = 2;
-    m_Params.sampleFormat = paFloat32;
+    m_Params.sampleFormat = paInt16;
     m_Params.suggestedLatency = Pa_GetDeviceInfo(m_Params.device)->defaultHighOutputLatency;
     m_Params.hostApiSpecificStreamInfo = nullptr;
 
@@ -169,6 +169,11 @@ POP_WARNINGS()
     return recording;
   }
 
+  void Driver::SetGain(Math_t gain)
+  {
+    m_Gain = gain;
+  }
+
   void Driver::Shutdown()
   {
     m_Running = false;
@@ -200,7 +205,7 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
       if(frameCount > MAX_BUFFER)
       {
         Log::Trace::out[err] << "PortAudio frame count is larger than the allowed buffer size. "
-                            << "This is a guaranteed underflow scenario!!!\n";
+                             << "This is a guaranteed underflow scenario!!!\n";
       }
     #endif
 
@@ -216,7 +221,7 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
 
       // Convert input data to usable type
     Driver * obj = reinterpret_cast<Driver *>(userData);
-    float * out = reinterpret_cast<float *>(output);
+    int16_t * out = reinterpret_cast<int16_t *>(output);
 
     obj->m_OutputTrack.clear();
 
@@ -238,8 +243,8 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
         std::get<1>(sum) += std::get<1>(y);
       }
 
-      out[2*i] = (std::get<0>(sum) *= obj->m_Gain);
-      out[2*i+1] = (std::get<1>(sum) *= obj->m_Gain);
+      out[2*i] = (std::get<0>(sum) *= obj->m_Gain).Data();
+      out[2*i+1] = (std::get<1>(sum) *= obj->m_Gain).Data();
 
       obj->m_OutputTrack.push_back(sum);
     }
@@ -258,7 +263,7 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
 
       while(i < frameCount)
       {
-        out[i++] = 0.f;
+        out[i++] = 0;
       }
     }
     else if(statusFlags & paOutputOverflow)

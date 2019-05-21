@@ -58,7 +58,7 @@ namespace Sounds
 
     // Con-/De- structors   ///////////////////////
 
-    Base(float gain, bool b) : m_IsBase(b), m_Sound(Core::Sound::Create(gain)) {};
+    Base(Math_t gain, bool b) : m_IsBase(b), m_Sound(Core::Sound::Create(gain)) {};
     virtual ~Base() = default;
 
     // Operators            ///////////////////////

@@ -37,7 +37,7 @@ namespace Core
       [this](StereoData_t const & g, StereoData_t const & m)
       { UNREFERENCED_PARAMETER(m); return g; }
     ),
-    m_Input(std::make_shared<StereoData_t>(0.f,0.f))
+    m_Input(std::make_shared<StereoData_t>(0,0))
   {
   }
 
@@ -49,7 +49,7 @@ namespace Core
       [this](StereoData_t const & g, StereoData_t const & m)
       { UNREFERENCED_PARAMETER(g); return m; }
     ),
-    m_Input(std::make_shared<StereoData_t>(0.f,0.f))
+    m_Input(std::make_shared<StereoData_t>(0,0))
   {
   }
 
@@ -74,7 +74,7 @@ namespace Core
           );
       }
     ),
-    m_Input(std::make_shared<StereoData_t>(0.f,0.f))
+    m_Input(std::make_shared<StereoData_t>(0,0))
   {
   }
 
@@ -87,7 +87,7 @@ namespace Core
     m_Generator(gen),
     m_Modifier(mod),
     m_Interaction(interactor),
-    m_Input(std::make_shared<StereoData_t>(0.f, 0.f))
+    m_Input(std::make_shared<StereoData_t>(0,0))
   {
   }
 
@@ -133,7 +133,7 @@ namespace Core
     );
 
       // Set to 0 before setting the targets in case this node itself is one of the targets
-    *m_Input = StereoData_t(0.f,0.f);
+    *m_Input = StereoData_t(0,0);
 
     for(auto & target : m_Targets)
     {

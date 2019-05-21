@@ -32,7 +32,8 @@ namespace AudioEngine
 namespace Generator
 {
 
-  Square::Square(float f) : Base(false), m_Ind(0), m_Inv(SAMPLE_RATE/(2*f))
+  TODO("Once FixedPoint supports operator/, remove the double cast here")
+  Square::Square(Math_t f) : Base(false), m_Ind(0), m_Inv(SAMPLE_RATE/(2*double(f)))
   {
   }
 
@@ -55,9 +56,10 @@ namespace Generator
     return MONO_TO_STEREO(y);
   }
 
-  void Square::SetFrequency(float f)
+  TODO("Once FixedPoint supports operator/, remove the double cast here")
+  void Square::SetFrequency(Math_t f)
   {
-    m_Inv = SAMPLE_RATE/(2*f);
+    m_Inv = SAMPLE_RATE/(2*double(f));
   }
 
 } // namespace Generator

@@ -28,7 +28,7 @@ namespace AudioEngine
 namespace Modifier
 {
 
-  BandPass::BandPass(float f, float Q) :
+  BandPass::BandPass(Math_t f, Math_t Q) :
     Base(false), m_CentralFrequency(f), m_Quality(Q)
   {
     Reset();
@@ -38,14 +38,14 @@ namespace Modifier
   {
   }
 
-  void BandPass::SetFrequency(float f)
+  void BandPass::SetFrequency(Math_t f)
   {
     m_CentralFrequency = f;
 
     Reset();
   }
 
-  void BandPass::SetQuality(float Q)
+  void BandPass::SetQuality(Math_t Q)
   {
     m_Quality = Q;
 
@@ -56,12 +56,12 @@ namespace Modifier
   {
     StereoData_t y;
 
-    std::get<0>(y) = float(
+    std::get<0>(y) = SampleType_t(
       m_A0 * (std::get<0>(x) - std::get<0>(m_X2)) +
       m_B1 * std::get<0>(m_Y1) -
       m_B2 * std::get<0>(m_Y2)
     );
-    std::get<1>(y) = float(
+    std::get<1>(y) = SampleType_t(
       m_A0 * (std::get<1>(x) - std::get<1>(m_X2)) +
       m_B1 * std::get<1>(m_Y1) -
       m_B2 * std::get<1>(m_Y2)
@@ -85,14 +85,15 @@ namespace AudioEngine
 namespace Modifier
 {
 
+  TODO("Once FixedPoint supports operator/, change doubles to Math_t/SampleType_t")
   void BandPass::Reset()
   {
     #if 1
       double fL, fH;
 
       double a = 1;
-      double b = -m_CentralFrequency/m_Quality;
-      double c = -m_CentralFrequency*m_CentralFrequency;
+      double b = double(-m_CentralFrequency)/double(m_Quality);
+      double c = double(-m_CentralFrequency*m_CentralFrequency);
 
       double fL_q1 = (-b + std::sqrt(b*b - 4*a*c)) / (2*a);
       double fL_q2 = (-b - std::sqrt(b*b - 4*a*c)) / (2*a);

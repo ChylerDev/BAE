@@ -26,24 +26,24 @@ namespace AudioEngine
 namespace Modifier
 {
 
-  Gain::Gain(float gain) : Base(false), m_Gain(gain)
+  Gain::Gain(Math_t gain) : Base(false), m_Gain(gain)
   {
   }
 
-  void Gain::SetGain(float gain)
+  void Gain::SetGain(Math_t gain)
   {
     m_Gain = gain;
   }
 
-  float Gain::GetGain() const
+  Math_t Gain::GetGain() const
   {
     return m_Gain;
   }
 
   StereoData_t Gain::FilterSample(StereoData_t const & input)
   {
-    return StereoData_t(std::get<0>(input) * m_Gain,
-                        std::get<1>(input) * m_Gain);
+    return StereoData_t(SampleType_t(std::get<0>(input) * m_Gain),
+                        SampleType_t(std::get<1>(input) * m_Gain));
   }
 
 } // namespace Modifier
