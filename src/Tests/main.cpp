@@ -23,6 +23,8 @@
 #include "../Engine/Generators/Sine.hpp"
 #include "../Engine/Generators/Square.hpp"
 #include "../Engine/Generators/WAV.hpp"
+#include "../Engine/Modifiers/Base.hpp"
+#include "../Engine/Modifiers/Envelope.hpp"
 #include "../Engine/Sounds/Vocoder.hpp"
 #include "../Engine/Tools/Input.hpp"
 #include "../Engine/Tools/WAVWriter.hpp"
@@ -46,9 +48,9 @@ int main(int argc, char * argv[])
 
   AudioEngine::Tools::CreateOptions(argc, argv);
 
-  AudioEngine::pDriver_t driver = AudioEngine::Driver_t::Create(0.25f);
+  AudioEngine::pDriver_t driver = AudioEngine::Driver_t::Create(1.0f);
 
-  #if 0
+  #if 1
 
     AudioEngine::pNode_t gen;
 
@@ -60,7 +62,7 @@ int main(int argc, char * argv[])
     else
     {
       Log::Trace::out[stc] << "Generating sine tone\n";
-      gen = AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(55.f));
+      gen = AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(440.f));
     }
 
     //AudioEngine::pVocoder_t v = AudioEngine::Vocoder_t::Create(gen, 4);
@@ -69,7 +71,7 @@ int main(int argc, char * argv[])
     s->AddNode(gen, 0, true);
     driver->AddSound(s);
 
-  #else
+  #elif 0
 
     AudioEngine::pSound_t sound = AudioEngine::Sound_t::Create(1);
 
@@ -79,6 +81,19 @@ int main(int argc, char * argv[])
     sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(880.f)), 0, true);
     sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(1100.f)), 0, true);
     sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(1320.f)), 0, true);
+
+    driver->AddSound(sound);
+
+  #else
+
+    AudioEngine::pSound_t sound = AudioEngine::Sound_t::Create(1.0);
+
+    AudioEngine::pNode_t node1 = AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(440.f));
+    sound->AddNode(node1, 0);
+
+    AudioEngine::pNode_t node2 = AudioEngine::Node_t::Create(AudioEngine::ModBase_t::Create<AudioEngine::Envelope_t>(20.f, 20'000.f));
+    node1->AddTarget(*node2);
+    sound->AddNode(node2, 1, true);
 
     driver->AddSound(sound);
 
