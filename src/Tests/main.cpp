@@ -20,8 +20,10 @@
 #include "../Engine/Core/Node.hpp"
 #include "../Engine/Core/Sound.hpp"
 #include "../Engine/Generators/Base.hpp"
+#include "../Engine/Generators/Sawtooth.hpp"
 #include "../Engine/Generators/Sine.hpp"
 #include "../Engine/Generators/Square.hpp"
+#include "../Engine/Generators/Triangle.hpp"
 #include "../Engine/Generators/WAV.hpp"
 #include "../Engine/Modifiers/Base.hpp"
 #include "../Engine/Modifiers/Envelope.hpp"
@@ -69,7 +71,7 @@ int main(int argc, char * argv[])
     AudioEngine::Vocoder_t v = AudioEngine::Sounds::Vocoder::Create(gen, 4);
     driver->AddSound(v->ToSound());
 
-  #elif 1
+  #elif 0
 
     AudioEngine::Sound_t sound = AudioEngine::Core::Sound::Create(0.75);
 
@@ -103,7 +105,7 @@ int main(int argc, char * argv[])
 
     driver->AddSound(sound);
 
-  #else
+  #elif 0
 
     AudioEngine::Sound_t sound = AudioEngine::Core::Sound::Create(1.0);
 
@@ -113,6 +115,18 @@ int main(int argc, char * argv[])
     AudioEngine::Node_t node2 = AudioEngine::Core::Node::Create(AudioEngine::Modifier::Base::Create<AudioEngine::Modifier::EnvelopeFollower>(20.f, 20'000.f));
     node1->AddTarget(*node2);
     sound->AddNode(node2, 1, true);
+
+    driver->AddSound(sound);
+
+  #else
+
+    AudioEngine::Sound_t sound = AudioEngine::Core::Sound::Create(1.0);
+
+    AudioEngine::Node_t n = AudioEngine::Core::Node::Create(
+      AudioEngine::Generator::Base::Create<AudioEngine::Generator::Triangle>(440)
+    );
+
+    sound->AddNode(n, 0, true);
 
     driver->AddSound(sound);
 

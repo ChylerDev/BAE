@@ -42,8 +42,10 @@ set(core_files
       ${CMAKE_SOURCE_DIR}/Core/Sound.cpp ${CMAKE_SOURCE_DIR}/Core/Sound.hpp
 )
 set(gen_files
+      ${CMAKE_SOURCE_DIR}/Generators/Sawtooth.cpp ${CMAKE_SOURCE_DIR}/Generators/Sawtooth.hpp
       ${CMAKE_SOURCE_DIR}/Generators/Sine.cpp ${CMAKE_SOURCE_DIR}/Generators/Sine.hpp
       ${CMAKE_SOURCE_DIR}/Generators/Square.cpp ${CMAKE_SOURCE_DIR}/Generators/Square.hpp
+      ${CMAKE_SOURCE_DIR}/Generators/Triangle.cpp ${CMAKE_SOURCE_DIR}/Generators/Triangle.hpp
       ${CMAKE_SOURCE_DIR}/Generators/WAV.cpp ${CMAKE_SOURCE_DIR}/Generators/WAV.hpp
       ${CMAKE_SOURCE_DIR}/Generators/Base.hpp
 )
