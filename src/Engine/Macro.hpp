@@ -22,7 +22,7 @@
   #define INC_RATE (1.0/double(SAMPLE_RATE))
 #endif
 #ifndef INC_RATE_FP
-  #define INC_RATE_FP SampleType_t(1.0/double(SAMPLE_RATE))
+  #define INC_RATE_FP Math::FixedPoint<0,31>(1.0/double(SAMPLE_RATE))
 #endif
 
 #ifndef DEFAULT_GAIN
@@ -67,7 +67,7 @@
 #endif
 
 #ifndef MONO_TO_STEREO
-  #define MONO_TO_STEREO(x) StereoData_t((x*SQRT_HALF),(x*SQRT_HALF))
+  #define MONO_TO_STEREO(x) StereoData_t(((x)*SQRT_HALF),((x)*SQRT_HALF))
 #endif
 
 #ifndef STEREO_TO_MONO
