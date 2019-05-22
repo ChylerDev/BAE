@@ -31,7 +31,7 @@ namespace Generator
 {
 
   Sine::Sine(Math_t f) : Base(false),
-    irate(INC_RATE_FP*f),
+    irate(INC_RATE*double(f)),
     y1(), y2(), beta()
   {
     Reset();
@@ -47,7 +47,7 @@ namespace Generator
     return MONO_TO_STEREO(y);
   }
 
-  void Sine::SetFrequency(float f)
+  void Sine::SetFrequency(Math_t f)
   {
     irate = INC_RATE * double(f);
     Reset();

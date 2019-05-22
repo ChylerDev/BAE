@@ -85,7 +85,7 @@ namespace Generator
     \param freq
       The new frequency.
     ***************************************************************************/
-    virtual void SetFrequency(float freq);
+    virtual void SetFrequency(Math_t freq);
 
   private:
 
