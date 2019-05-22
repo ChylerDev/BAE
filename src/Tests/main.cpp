@@ -65,11 +65,8 @@ int main(int argc, char * argv[])
       gen = AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(440.f));
     }
 
-    //AudioEngine::pVocoder_t v = AudioEngine::Vocoder_t::Create(gen, 4);
-    //driver->AddSound(v->ToSound());
-    AudioEngine::pSound_t s = AudioEngine::Sound_t::Create();
-    s->AddNode(gen, 0, true);
-    driver->AddSound(s);
+    AudioEngine::pVocoder_t v = AudioEngine::Vocoder_t::Create(gen, 4);
+    driver->AddSound(v->ToSound());
 
   #elif 0
 
