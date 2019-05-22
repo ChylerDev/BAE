@@ -136,10 +136,10 @@ namespace Core
 
     // Functions            ///////////////////////
 
-    void SetInteractor(Interaction_t const & interactor);
+    Node & SetInteractor(Interaction_t const & interactor);
 
-    void AddTarget(Node const & target);
-    void AddOutput(pStereoData_t const & output);
+    Node & AddTarget(Node const & target);
+    Node & AddOutput(pStereoData_t const & output);
 
     void SendSample(void);
 

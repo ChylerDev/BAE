@@ -94,19 +94,12 @@ int main(int argc, char * argv[])
     g5->AddTarget(*m5);
     g6->AddTarget(*m6);
 
-    sound->AddNode(g1, 0);
-    sound->AddNode(g2, 0);
-    sound->AddNode(g3, 0);
-    sound->AddNode(g4, 0);
-    sound->AddNode(g5, 0);
-    sound->AddNode(g6, 0);
-
-    sound->AddNode(m1, 1, true);
-    sound->AddNode(m2, 1, true);
-    sound->AddNode(m3, 1, true);
-    sound->AddNode(m4, 1, true);
-    sound->AddNode(m5, 1, true);
-    sound->AddNode(m6, 1, true);
+    sound->AddNode(g1, 0).AddNode(m1, 1, true)
+          .AddNode(g2, 0).AddNode(m2, 1, true)
+          .AddNode(g3, 0).AddNode(m3, 1, true)
+          .AddNode(g4, 0).AddNode(m4, 1, true)
+          .AddNode(g5, 0).AddNode(m5, 1, true)
+          .AddNode(g6, 0).AddNode(m6, 1, true);
 
     driver->AddSound(sound);
 

@@ -57,8 +57,7 @@ namespace Sounds
       base_input->AddTarget(*bp);
       bp->AddTarget(*mod);
 
-      m_Sound->AddNode(bp, 1);
-      m_Sound->AddNode(mod, 2, true);
+      m_Sound->AddNode(bp, 1).AddNode(mod, 2, true);
     }
   }
 

@@ -111,19 +111,22 @@ namespace Core
     return m_Modifier;
   }
 
-  void Node::SetInteractor(Interaction_t const & interactor)
+  Node & Node::SetInteractor(Interaction_t const & interactor)
   {
     m_Interaction = interactor;
+    return *this;
   }
 
-  void Node::AddTarget(Node const & target)
+  Node & Node::AddTarget(Node const & target)
   {
     m_Targets.push_back(target.m_Input);
+    return *this;
   }
 
-  void Node::AddOutput(pStereoData_t const & output)
+  Node & Node::AddOutput(pStereoData_t const & output)
   {
     m_Targets.push_back(output);
+    return *this;
   }
 
   void Node::SendSample(void)

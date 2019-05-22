@@ -76,11 +76,11 @@ namespace Core
     Graph_t & GetGraph();
     Graph_t const & GetGraph() const;
 
-    void SetOutputGain(Math_t gain);
+    Sound & SetOutputGain(Math_t gain);
 
     // Functions            ///////////////////////
 
-    void AddNode(
+    Sound & AddNode(
       Node_t const & node,
       uint32_t pos,
       bool targets_output = false
