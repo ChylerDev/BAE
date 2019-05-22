@@ -37,11 +37,11 @@ namespace Tools
   {
   private:
 
-    using Index_t = Math::FixedPoint<23,8>;
+    using Index_t = Math::FixedPoint<47,16>;
 
     // Members              ///////////////////////
 
-    std::vector<StereoData_t> const & m_Data;
+    std::vector<StereoData_t> m_Data;
 
     Index_t m_Index;
     Math_t const m_IndexIncrement;

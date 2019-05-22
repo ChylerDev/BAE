@@ -46,9 +46,6 @@ namespace Generator
 
     // Members              ///////////////////////
 
-    std::vector<StereoData_t> m_Data;
-    uint64_t m_CurrentIndex;
-
     pResampler_t m_Resampler;
 
   public:

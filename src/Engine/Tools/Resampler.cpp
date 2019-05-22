@@ -36,14 +36,23 @@ namespace Tools
 
   StereoData_t Resampler::SendSample()
   {
-    StereoData_t sample(
-      SampleType_t(std::get<0>(m_Data[uint64_t(m_Index)]) +
-        (m_Index - uint64_t(m_Index)) *
-        (std::get<0>(m_Data[uint64_t(m_Index)+1]) - std::get<0>(m_Data[uint64_t(m_Index)]))),
-      SampleType_t(std::get<1>(m_Data[uint64_t(m_Index)]) +
-        (m_Index - uint64_t(m_Index)) *
-        (std::get<1>(m_Data[uint64_t(m_Index)+1]) - std::get<1>(m_Data[uint64_t(m_Index)])))
-    );
+    if(int32_t(m_Index) >= m_Data.size() && m_LoopEnd == 0)
+    {
+      return StereoData_t(0,0);
+    }
+
+    SampleType_t fraction(m_Index - uint64_t(m_Index));
+
+    SampleType_t l_x1(std::get<0>(m_Data[uint64_t(m_Index)]));
+    SampleType_t l_x2(std::get<0>(m_Data[uint64_t(m_Index)+1]));
+
+    SampleType_t r_x1(std::get<1>(m_Data[uint64_t(m_Index)]));
+    SampleType_t r_x2(std::get<1>(m_Data[uint64_t(m_Index)+1]));
+
+    SampleType_t l(l_x1 + fraction * (l_x2 - l_x1));
+    SampleType_t r(r_x1 + fraction * (r_x2 - r_x1));
+
+    StereoData_t sample(l, r);
 
     m_Index += m_IndexIncrement;
 

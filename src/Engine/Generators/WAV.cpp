@@ -38,31 +38,31 @@ namespace Generator
 {
 
   WAV::WAV() : Base(false),
-    m_Data(), m_CurrentIndex(0), m_Resampler()
+    m_Resampler()
   {
   }
 
   WAV::WAV(std::string const & path) : Base(false),
-    m_Data(), m_CurrentIndex(0), m_Resampler()
+    m_Resampler()
   {
     ReadFile(path);
   }
 
   WAV::WAV(std::vector<char> const & data) : Base(false),
-    m_Data(), m_CurrentIndex(0), m_Resampler()
+    m_Resampler()
   {
     ParseWAV(data.data(), int(data.size()));
   }
 
   WAV::WAV(int argc) : Base(false),
-    m_Data(), m_CurrentIndex(0), m_Resampler()
+    m_Resampler()
   {
     ReadFile(Tools::GetOptions().at(argc));
   }
 
   StereoData_t WAV::SendSample()
   {
-    if(m_CurrentIndex++ < m_Data.size() && m_Resampler)
+    if(m_Resampler)
     {
       return m_Resampler->SendSample();
     }
@@ -128,7 +128,8 @@ namespace Generator
 
       // Get the data chunk
     RIFF::vector_t data_vec = riff.GetChunk(CONSTRUCT_BYTE_STR("data"));
-    m_Data.reserve(data_vec.size() / header->BytesPerSample);
+    std::vector<StereoData_t> AudioData;
+    AudioData.reserve(data_vec.size() / header->BytesPerSample);
 
       // Parse data
     char const * data = reinterpret_cast<char *>(&data_vec[0]);
@@ -138,22 +139,38 @@ namespace Generator
 
       if(header->BitsPerSample == 8)
       {
-        std::get<0>(sample).Data() = (*data) << 8;
-        std::get<1>(sample).Data() = (*(header->ChannelCount==1 ? data : data+1)) << 8;
+        if(header->ChannelCount == 1)
+        {
+          std::get<0>(sample).Data() = std::get<1>(sample).Data() =
+            SampleType_t::Int_t(((*data) << 8) * SQRT_HALF);
+        }
+        else
+        {
+          std::get<0>(sample).Data() = ((*data) << 8);
+          std::get<1>(sample).Data() = ((*(data+1)) << 8);
+        }
       }
-      else
+      else  // assume 16-bit audio is being used
       {
         int16_t const * rdata = reinterpret_cast<int16_t const *>(data);
-        std::get<0>(sample).Data() = *rdata;
-        std::get<1>(sample).Data() = (*(header->ChannelCount==1 ? rdata : rdata+1));
+        if(header->ChannelCount == 1)
+        {
+          std::get<0>(sample).Data() = std::get<1>(sample).Data() =
+            SampleType_t::Int_t((*rdata) * SQRT_HALF);
+        }
+        else
+        {
+          std::get<0>(sample).Data() = *rdata;
+          std::get<1>(sample).Data() = *(rdata+1);
+        }
       }
 
-      m_Data.push_back(sample);
+      AudioData.push_back(sample);
       data += header->BytesPerSample;
     }
 
     m_Resampler = Resampler_t::Create(
-      m_Data, header->SamplingRate, 0, m_Data.size()-1
+      AudioData, header->SamplingRate, 0, AudioData.size()-1
     );
   }
 
