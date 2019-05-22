@@ -4,3 +4,6 @@
 [submodule "src/Libraries/RIFF-Util"]
 	path = src/Libraries/RIFF-Util
 	url = https://gitlab.com/ChylerDev/RIFF-Util.git
+[submodule "src/Libraries/FixedPoint"]
+	path = src/Libraries/FixedPoint
+	url = https://gitlab.com/ChylerDev/FixedPoint.git

@@ -27,7 +27,7 @@ namespace AudioEngine
 namespace Core
 {
 
-  Sound::Sound(float gain) :
+  Sound::Sound(Math_t gain) :
     m_NodeGraph(), m_Output(std::make_shared<StereoData_t>()), m_Gain(gain)
   {
   }
@@ -42,7 +42,7 @@ namespace Core
     return m_NodeGraph;
   }
 
-  void Sound::SetOutputGain(float gain)
+  void Sound::SetOutputGain(Math_t gain)
   {
     m_Gain = gain;
   }
@@ -63,7 +63,7 @@ namespace Core
 
   StereoData_t Sound::GetSample()
   {
-    *m_Output = std::make_tuple(0.f,0.f);
+    *m_Output = StereoData_t(0,0);
 
     for(auto & nodes : m_NodeGraph)
     {

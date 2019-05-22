@@ -41,8 +41,8 @@ namespace Modifier
   {
   public:
 
-    using ZeroContainer = std::vector<std::tuple<uint32_t,float>>;
-    using PoleContainer = std::vector<std::tuple<uint32_t,float>>;
+    using ZeroContainer = std::vector<std::tuple<uint32_t,Math_t>>;
+    using PoleContainer = std::vector<std::tuple<uint32_t,Math_t>>;
 
   private:
     

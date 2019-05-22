@@ -30,7 +30,7 @@ namespace AudioEngine
 namespace Generator
 {
 
-  Sine::Sine(float f) : Base(false),
+  Sine::Sine(Math_t f) : Base(false),
     irate(INC_RATE*double(f)),
     y1(), y2(), beta()
   {
@@ -39,7 +39,7 @@ namespace Generator
 
   StereoData_t Sine::SendSample(void)
   {
-    double y = beta * y1 - y2;
+    SampleType_t y = beta * y1 - y2;
 
     y2 = y1;
     y1 = y;
@@ -47,7 +47,7 @@ namespace Generator
     return MONO_TO_STEREO(y);
   }
 
-  void Sine::SetFrequency(float f)
+  void Sine::SetFrequency(Math_t f)
   {
     irate = INC_RATE * double(f);
     Reset();
@@ -65,9 +65,9 @@ namespace Generator
 
   void Sine::Reset()
   {
-    y1 = std::sin(PI2 * irate);
+    y1 = std::sin(double(PI2 * irate));
     y2 = 0;
-    beta = 2 * std::cos(2*PI * irate);
+    beta = 2 * std::cos(double(2*PI * irate));
   }
 
 } // namespace Generator

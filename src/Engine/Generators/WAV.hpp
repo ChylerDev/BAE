@@ -46,9 +46,6 @@ namespace Generator
 
     // Members              ///////////////////////
 
-    std::vector<StereoData_t> m_Data;
-    uint64_t m_CurrentIndex;
-
     pResampler_t m_Resampler;
 
   public:
@@ -119,8 +116,6 @@ namespace Generator
       The stereo sample data.
     ***************************************************************************/
     virtual StereoData_t SendSample(void);
-
-    virtual void SetFrequency(float freq) { UNREFERENCED_PARAMETER(freq); };
 
   private:
 

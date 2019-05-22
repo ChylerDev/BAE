@@ -37,12 +37,14 @@ namespace Tools
   {
   private:
 
+    using Index_t = Math::FixedPoint<47,16>;
+
     // Members              ///////////////////////
 
-    std::vector<StereoData_t> const & m_Data;
+    std::vector<StereoData_t> m_Data;
 
-    double m_Index;
-    double const m_IndexIncrement;
+    Index_t m_Index;
+    Math_t const m_IndexIncrement;
 
     uint64_t m_LoopStart, m_LoopEnd;
 
@@ -74,7 +76,7 @@ namespace Tools
       which is interpretted as no looping.
     ***************************************************************************/
     Resampler(std::vector<StereoData_t> const & AudioData,
-              float SourceSampleRate,
+              int32_t SourceSampleRate,
               uint64_t LoopStart = 0, uint64_t LoopEnd = 0
     );
 

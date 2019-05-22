@@ -39,9 +39,9 @@ namespace Generator
 
     // Members              ///////////////////////
 
-    double irate;
-    double y1, y2;
-    double beta;
+    Math_t irate;
+    SampleType_t y1, y2;
+    Math_t beta;
 
   public:
 
@@ -55,7 +55,7 @@ namespace Generator
     \param freq
       The frequency for the sine-wav to output at.
     ***************************************************************************/
-    Sine(float freq);
+    Sine(Math_t freq);
 
     /*! ************************************************************************
     \brief
@@ -85,7 +85,7 @@ namespace Generator
     \param freq
       The new frequency.
     ***************************************************************************/
-    virtual void SetFrequency(float freq);
+    virtual void SetFrequency(Math_t freq);
 
   private:
 

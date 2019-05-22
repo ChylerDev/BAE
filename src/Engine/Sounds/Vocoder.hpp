@@ -43,24 +43,24 @@ namespace Sounds
 
     // Members              ///////////////////////
 
-    std::vector<float> m_CentralFrequencies;
+    std::vector<Math_t> m_CentralFrequencies;
 
     uint32_t m_BandCount;
 
-    float m_Mu;
+    Math_t m_Mu;
 
   public:
 
     // Con-/De- structors   ///////////////////////
 
-    Vocoder(pNode_t const & base_input, int N=1);
+    Vocoder(pNode_t const & base_input, int N=1, Math_t gain = DEFAULT_GAIN);
 
     // Operators            ///////////////////////
 
     // Accossors/Mutators   ///////////////////////
 
       // p is in cents
-    void SetOffset(float p);
+    void SetOffset(int32_t p);
 
     // Functions            ///////////////////////
 

@@ -53,7 +53,7 @@ namespace Core
     std::vector<AudioCallback_t> m_AudioCallbacks;
     std::vector<pSound_t> m_Sounds;
 
-    float m_Gain;
+    Math_t m_Gain;
     bool m_Running;
 
     pRecorder_t m_Recorder;
@@ -76,7 +76,7 @@ namespace Core
     \param gain
       The linear gain to be used when summing all audio values.
     ***************************************************************************/
-    Driver(float gain = DEFAULT_GAIN);
+    Driver(Math_t gain = DEFAULT_GAIN);
 
     Driver(Driver const &) = delete;
     Driver(Driver &&) noexcept = default;
@@ -118,7 +118,7 @@ namespace Core
     \param gain
       The linear gain value to be set.
     ***************************************************************************/
-    void SetGain(float gain = DEFAULT_GAIN);
+    void SetGain(Math_t gain = DEFAULT_GAIN);
 
     /*! ************************************************************************
     \brief

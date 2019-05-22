@@ -36,7 +36,7 @@ namespace AudioEngine
 namespace Sounds
 {
 
-  Vocoder::Vocoder(pNode_t const & base_input, int N) : Base(DEFAULT_GAIN, false),
+  Vocoder::Vocoder(pNode_t const & base_input, int N, Math_t gain) : Base(gain, false),
     m_CentralFrequencies(), m_BandCount(N), m_Mu(1.f)
   {
     auto l_BP = BPSetup();
@@ -62,7 +62,7 @@ namespace Sounds
     }
   }
 
-  void Vocoder::SetOffset(float p)
+  void Vocoder::SetOffset(int32_t p)
   {
     m_Mu = std::powf(2, p/1200.f);
 

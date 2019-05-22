@@ -59,22 +59,22 @@ namespace Tools
     {
       data.push_back(
         static_cast<RIFF::byte_t>(
-          static_cast<uint16_t>(std::get<0>(a) * 0x7FFF) & 0x00'FF
+          static_cast<uint16_t>(std::get<0>(a).Data()) & 0x00'FF
         )
       );
       data.push_back(
         static_cast<RIFF::byte_t>(
-          (static_cast<uint16_t>(std::get<0>(a) * 0x7FFF) & 0xFF'00) >> 8
+          (static_cast<uint16_t>(std::get<0>(a).Data()) & 0xFF'00) >> 8
         )
       );
       data.push_back(
         static_cast<RIFF::byte_t>(
-          static_cast<uint16_t>(std::get<1>(a) * 0x7FFF) & 0xFF
+          static_cast<uint16_t>(std::get<1>(a).Data()) & 0xFF
         )
       );
       data.push_back(
         static_cast<RIFF::byte_t>(
-          (static_cast<uint16_t>(std::get<1>(a) * 0x7FFF) & 0xFF'00) >> 8
+          (static_cast<uint16_t>(std::get<1>(a).Data()) & 0xFF'00) >> 8
         )
       );
     }

@@ -26,7 +26,7 @@ namespace AudioEngine
 namespace Modifier
 {
 
-  LowPass::LowPass(float cutoff, float resonance) :
+  LowPass::LowPass(Math_t cutoff, Math_t resonance) :
     Base(false),
     m_Cutoff(2*PI*cutoff), m_Resonance(resonance),
     m_Coefficients(), m_Outputs(), m_IsDirty(false)
@@ -34,13 +34,13 @@ namespace Modifier
     Reset();
   }
 
-  void LowPass::SetCutoff(float cutoff)
+  void LowPass::SetCutoff(Math_t cutoff)
   {
     m_Cutoff = 2*PI*cutoff;
     m_IsDirty = true;
   }
 
-  void LowPass::SetResonance(float resonance)
+  void LowPass::SetResonance(Math_t resonance)
   {
     m_Resonance = resonance;
     m_IsDirty = true;
@@ -80,9 +80,9 @@ namespace Modifier
   {
     static double angle, K, T, x, y, z, g;
 
-    angle = (PI/6)*(4 - m_Resonance);
+    angle = (PI/6)*double(4 - m_Resonance);
     K = 1 - 2*std::cos(angle);
-    T = m_Cutoff * INC_RATE;
+    T = double(m_Cutoff) * INC_RATE;
     x = K*T;
     y = K*T*T;
     z = T*T*T;
