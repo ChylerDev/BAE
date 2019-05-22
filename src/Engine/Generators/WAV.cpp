@@ -169,7 +169,7 @@ namespace Generator
       data += header->BytesPerSample;
     }
 
-    m_Resampler = Resampler_t::Create(
+    m_Resampler = Tools::Resampler::Create(
       AudioData, header->SamplingRate, 0, AudioData.size()-1
     );
   }

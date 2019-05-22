@@ -46,7 +46,7 @@ namespace Generator
 
     // Members              ///////////////////////
 
-    pResampler_t m_Resampler;
+    Resampler_t m_Resampler;
 
   public:
 

@@ -53,7 +53,7 @@ namespace Sounds
 
     // Con-/De- structors   ///////////////////////
 
-    Vocoder(pNode_t const & base_input, int N=1, Math_t gain = DEFAULT_GAIN);
+    Vocoder(Node_t const & base_input, int N=1, Math_t gain = DEFAULT_GAIN);
 
     // Operators            ///////////////////////
 
@@ -65,7 +65,7 @@ namespace Sounds
     // Functions            ///////////////////////
 
     template<typename ...Args>
-    static inline pVocoder_t Create(Args &&... params)
+    static inline Vocoder_t Create(Args &&... params)
     {
       return std::make_shared<Vocoder>(params...);
     }
@@ -74,9 +74,9 @@ namespace Sounds
 
     // Functions                  ///////////////////////
 
-    std::vector<pModBase_t> BPSetup();
-    std::vector<pModBase_t> EnvSetup();
-    std::vector<pGenBase_t> OscSetup();
+    std::vector<ModBase_t> BPSetup();
+    std::vector<ModBase_t> EnvSetup();
+    std::vector<GenBase_t> OscSetup();
 
   }; // class Vocoder
 

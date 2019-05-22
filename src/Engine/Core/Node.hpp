@@ -48,8 +48,8 @@ namespace Core
 
     TargetsVec_t m_Targets;
 
-    pGenBase_t m_Generator;
-    pModBase_t m_Modifier;
+    GenBase_t m_Generator;
+    ModBase_t m_Modifier;
 
     Interaction_t m_Interaction;
 
@@ -58,7 +58,7 @@ namespace Core
   public:
 
     template<typename ...Args>
-    static inline pNode_t Create(Args &&... params)
+    static inline Node_t Create(Args &&... params)
     {
       return std::make_shared<Node>(params...);
     };
@@ -75,7 +75,7 @@ namespace Core
     \param gen
       The generator used for the node.
     ***************************************************************************/
-    Node(pGenBase_t const & gen);
+    Node(GenBase_t const & gen);
 
     /*! ************************************************************************
     \brief
@@ -87,7 +87,7 @@ namespace Core
     \param mod
       The modifier used for the node.
     ***************************************************************************/
-    Node(pModBase_t const & mod);
+    Node(ModBase_t const & mod);
 
     /*! ************************************************************************
     \brief
@@ -102,7 +102,7 @@ namespace Core
     \param mod
       The modifier used for the node.
     ***************************************************************************/
-    Node(pGenBase_t const & gen, pModBase_t const & mod);
+    Node(GenBase_t const & gen, ModBase_t const & mod);
 
     /*! ************************************************************************
     \brief
@@ -120,8 +120,8 @@ namespace Core
       second argument is the sample from the modifier.
     ***************************************************************************/
     Node(
-      pGenBase_t const & gen,
-      pModBase_t const & mod,
+      GenBase_t const & gen,
+      ModBase_t const & mod,
       Interaction_t const & interactor
     );
 
@@ -129,10 +129,10 @@ namespace Core
 
     // Accossors/Mutators   ///////////////////////
 
-    pGenBase_t & GetGenerator();
-    pModBase_t & GetModifier();
-    pGenBase_t const & GetGenerator() const;
-    pModBase_t const & GetModifier() const;
+    GenBase_t & GetGenerator();
+    ModBase_t & GetModifier();
+    GenBase_t const & GetGenerator() const;
+    ModBase_t const & GetModifier() const;
 
     // Functions            ///////////////////////
 

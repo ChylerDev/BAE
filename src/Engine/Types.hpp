@@ -88,48 +88,31 @@ namespace AudioEngine
   using AudioCallback_t = std::function<StereoData_t(void)>;
 
     // Core
-  using Recorder_t = Core::Recorder;
-  using pRecorder_t = PTR(Recorder_t);
-  using Driver_t = Core::Driver;
-  using pDriver_t = PTR(Driver_t);
-  using Node_t = Core::Node;
-  using pNode_t = PTR(Node_t);
-  using Sound_t = Core::Sound;
-  using pSound_t = PTR(Sound_t);
+  using Recorder_t = PTR(Core::Recorder);
+  using Driver_t   = PTR(Core::Driver);
+  using Node_t     = PTR(Core::Node);
+  using Sound_t    = PTR(Core::Sound);
 
     // Generator
-  using GenBase_t = Generator::Base;
-  using pGenBase_t = PTR(GenBase_t);
-  using Sine_t = Generator::Sine;
-  using pSine_t = PTR(Sine_t);
-  using Square_t = Generator::Square;
-  using pSquare_t = PTR(Square_t);
-  using WAV_t = Generator::WAV;
-  using pWAV_t = PTR(WAV_t);
+  using GenBase_t = PTR(Generator::Base);
+  using Sine_t    = PTR(Generator::Sine);
+  using Square_t  = PTR(Generator::Square);
+  using WAV_t     = PTR(Generator::WAV);
 
     // Modifier
-  using ModBase_t = Modifier::Base;
-  using pModBase_t = PTR(ModBase_t);
-  using BandPass_t = Modifier::BandPass;
-  using pBandPass_t = PTR(BandPass_t);
-  using Envelope_t = Modifier::EnvelopeFollower;
-  using pEnvelope_t = PTR(Envelope_t);
-  using Gain_t = Modifier::Gain;
-  using pGain_t = PTR(Gain_t);
-  using Filter_t = Modifier::GenericFilter;
-  using pFilter_t = PTR(Filter_t);
-  using LowPass_t = Modifier::LowPass;
-  using pLowPass_t = PTR(LowPass_t);
+  using ModBase_t  = PTR(Modifier::Base);
+  using BandPass_t = PTR(Modifier::BandPass);
+  using Envelope_t = PTR(Modifier::EnvelopeFollower);
+  using Gain_t     = PTR(Modifier::Gain);
+  using Filter_t   = PTR(Modifier::GenericFilter);
+  using LowPass_t  = PTR(Modifier::LowPass);
 
     // Sounds
-  using SoundsBase_t = Sounds::Base;
-  using pSoundsBase_t = PTR(SoundsBase_t);
-  using Vocoder_t = Sounds::Vocoder;
-  using pVocoder_t = PTR(Vocoder_t);
+  using SoundsBase_t = PTR(Sounds::Base);
+  using Vocoder_t    = PTR(Sounds::Vocoder);
 
     // Tools
-  using Resampler_t = Tools::Resampler;
-  using pResampler_t = PTR(Resampler_t);
+  using Resampler_t = PTR(Tools::Resampler);
 
 } // namespace AudioEngine
 

@@ -51,7 +51,7 @@ namespace Tools
   public:
 
     template<typename ...Args>
-    static inline pResampler_t Create(Args &&... params)
+    static inline Resampler_t Create(Args &&... params)
     {
       return std::make_shared<Resampler>(params...);
     }

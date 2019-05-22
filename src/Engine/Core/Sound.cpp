@@ -48,7 +48,7 @@ namespace Core
   }
 
   void Sound::AddNode(
-    pNode_t const & node,
+    Node_t const & node,
     uint32_t pos,
     bool targets_output
   )

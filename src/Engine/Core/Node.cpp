@@ -29,10 +29,10 @@ namespace AudioEngine
 namespace Core
 {
 
-  Node::Node(pGenBase_t const & gen) :
+  Node::Node(GenBase_t const & gen) :
     m_Targets(),
     m_Generator(gen),
-    m_Modifier(ModBase_t::Create<ModBase_t>(true)),
+    m_Modifier(Modifier::Base::Create<Modifier::Base>(true)),
     m_Interaction(
       [this](StereoData_t const & g, StereoData_t const & m)
       { UNREFERENCED_PARAMETER(m); return g; }
@@ -41,9 +41,9 @@ namespace Core
   {
   }
 
-  Node::Node(pModBase_t const & mod) :
+  Node::Node(ModBase_t const & mod) :
     m_Targets(),
-    m_Generator(GenBase_t::Create<GenBase_t>(true)),
+    m_Generator(Generator::Base::Create<Generator::Base>(true)),
     m_Modifier(mod),
     m_Interaction(
       [this](StereoData_t const & g, StereoData_t const & m)
@@ -54,8 +54,8 @@ namespace Core
   }
 
   Node::Node(
-    pGenBase_t const & gen,
-    pModBase_t const & mod
+    GenBase_t const & gen,
+    ModBase_t const & mod
   ) :
     m_Targets(),
     m_Generator(gen),
@@ -79,8 +79,8 @@ namespace Core
   }
 
   Node::Node(
-    pGenBase_t const & gen,
-    pModBase_t const & mod,
+    GenBase_t const & gen,
+    ModBase_t const & mod,
     Interaction_t const & interactor
   ) :
     m_Targets(),
@@ -91,22 +91,22 @@ namespace Core
   {
   }
 
-  pGenBase_t & Node::GetGenerator()
+  GenBase_t & Node::GetGenerator()
   {
     return m_Generator;
   }
 
-  pModBase_t & Node::GetModifier()
+  ModBase_t & Node::GetModifier()
   {
     return m_Modifier;
   }
 
-  pGenBase_t const & Node::GetGenerator() const
+  GenBase_t const & Node::GetGenerator() const
   {
     return m_Generator;
   }
 
-  pModBase_t const & Node::GetModifier() const
+  ModBase_t const & Node::GetModifier() const
   {
     return m_Modifier;
   }

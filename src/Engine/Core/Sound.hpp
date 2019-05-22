@@ -42,7 +42,7 @@ namespace Core
     using Graph_t =
       std::map<
         uint32_t,
-        std::vector<pNode_t>
+        std::vector<Node_t>
       >;
 
   private:
@@ -58,7 +58,7 @@ namespace Core
   public:
 
     template <typename ...Args>
-    static inline pSound_t Create(Args &&... params)
+    static inline Sound_t Create(Args &&... params)
     {
       return std::make_shared<Sound>(params...);
     };
@@ -81,7 +81,7 @@ namespace Core
     // Functions            ///////////////////////
 
     void AddNode(
-      pNode_t const & node,
+      Node_t const & node,
       uint32_t pos,
       bool targets_output = false
     );
