@@ -42,12 +42,13 @@ namespace Core
     return m_NodeGraph;
   }
 
-  void Sound::SetOutputGain(Math_t gain)
+  Sound & Sound::SetOutputGain(Math_t gain)
   {
     m_Gain = gain;
+    return *this;
   }
 
-  void Sound::AddNode(
+  Sound & Sound::AddNode(
     Node_t const & node,
     uint32_t pos,
     bool targets_output
@@ -59,6 +60,8 @@ namespace Core
     {
       node->AddOutput(m_Output);
     }
+
+    return *this;
   }
 
   StereoData_t Sound::GetSample()
