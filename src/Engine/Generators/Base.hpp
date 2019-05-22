@@ -52,7 +52,7 @@ namespace Generator
       The pointer to the new object.
     ***************************************************************************/
     template <class T, typename ...Args, std::enable_if_t<std::is_base_of_v<Base, T>, int> = 0>
-    static inline pGenBase_t Create(Args &&... params)
+    static inline GenBase_t Create(Args &&... params)
     {
       return std::make_shared<T>(params...);
     };

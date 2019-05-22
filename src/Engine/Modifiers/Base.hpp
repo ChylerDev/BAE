@@ -52,7 +52,7 @@ namespace Modifier
       The pointer to the new object.
     ***************************************************************************/
     template <class T, typename ...Args, std::enable_if_t<std::is_base_of_v<Base, T>, int> = 0>
-    static inline pModBase_t Create(Args &&... params)
+    static inline ModBase_t Create(Args &&... params)
     {
       return std::make_shared<T>(params...);
     };

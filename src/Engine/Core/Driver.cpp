@@ -64,7 +64,7 @@ namespace Core
     public:
 
       template<typename ...Args>
-      static inline pRecorder_t Create(Args &&... params)
+      static inline Recorder_t Create(Args &&... params)
       {
         return std::make_shared<Recorder>(params...);
       }
@@ -148,7 +148,7 @@ POP_WARNINGS()
     m_AudioCallbacks.push_back(cb);
   }
 
-  void Driver::AddSound(pSound_t const & sound)
+  void Driver::AddSound(Sound_t const & sound)
   {
     m_Sounds.push_back(sound);
   }

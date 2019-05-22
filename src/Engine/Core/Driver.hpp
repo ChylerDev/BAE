@@ -51,18 +51,18 @@ namespace Core
     Track_t m_OutputTrack;
 
     std::vector<AudioCallback_t> m_AudioCallbacks;
-    std::vector<pSound_t> m_Sounds;
+    std::vector<Sound_t> m_Sounds;
 
     Math_t m_Gain;
     bool m_Running;
 
-    pRecorder_t m_Recorder;
+    Recorder_t m_Recorder;
     bool m_Recording;
 
   public:
 
     template<typename ...Args>
-    static inline pDriver_t Create(Args &&... params)
+    static inline Driver_t Create(Args &&... params)
     {
       return std::make_shared<Driver>(params...);
     };
@@ -105,7 +105,7 @@ namespace Core
     ***************************************************************************/
     void AddAudioCallback(AudioCallback_t const & cb);
 
-    void AddSound(pSound_t const & sound);
+    void AddSound(Sound_t const & sound);
 
     void StartRecording();
 

@@ -44,14 +44,14 @@ namespace Sounds
 
     // Members              ///////////////////////
 
-    pSound_t m_Sound;
+    Sound_t m_Sound;
 
   public:
 
     template<typename T, typename ...Args,
       std::enable_if_t<std::is_base_of_v<Base, T>, int> = 0
     >
-    static inline pSoundsBase_t Create(Args &&... params)
+    static inline SoundsBase_t Create(Args &&... params)
     {
       return std::make_shared<T>(params...);
     }
@@ -69,7 +69,7 @@ namespace Sounds
 
     bool IsBase() const { return m_IsBase; };
 
-    virtual pSound_t & ToSound() { return m_Sound; };
+    virtual Sound_t & ToSound() { return m_Sound; };
 
   private:
 
