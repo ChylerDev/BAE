@@ -27,6 +27,7 @@
 #include "../Engine/Generators/Triangle.hpp"
 #include "../Engine/Generators/WAV.hpp"
 #include "../Engine/Modifiers/Base.hpp"
+#include "../Engine/Modifiers/Delay.hpp"
 #include "../Engine/Modifiers/Envelope.hpp"
 #include "../Engine/Modifiers/Gain.hpp"
 #include "../Engine/Sounds/Vocoder.hpp"
@@ -123,11 +124,17 @@ int main(int argc, char * argv[])
 
     AudioEngine::Sound_t sound = AudioEngine::Core::Sound::Create(1.0);
 
-    AudioEngine::Node_t n = AudioEngine::Core::Node::Create(
+    AudioEngine::Node_t n1 = AudioEngine::Core::Node::Create(
       AudioEngine::Generator::Base::Create<AudioEngine::Generator::Noise>()
     );
+    AudioEngine::Node_t n2 = AudioEngine::Core::Node::Create(
+      AudioEngine::Modifier::Base::Create<AudioEngine::Modifier::Delay>(48000)
+    );
 
-    sound->AddNode(n, 0, true);
+    n1->AddTarget(*n2);
+
+    sound->AddNode(n1, 0);
+    sound->AddNode(n2, 1, true);
 
     driver->AddSound(sound);
 
@@ -137,8 +144,8 @@ int main(int argc, char * argv[])
 
   std::cin.get();
 
-  std::basic_ofstream<RIFF::byte_t>("wave_out.wav", std::ios_base::binary) <<
-    AudioEngine::Tools::WriteWAV(driver->StopRecording());
+  std::basic_ofstream<RIFF::byte_t> file("wave_out.wav", std::ios_base::binary);
+  file << AudioEngine::Tools::WriteWAV(driver->StopRecording());
 
   driver->Shutdown();
 
