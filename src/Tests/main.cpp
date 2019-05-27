@@ -28,6 +28,7 @@
 #include "../Engine/Generators/WAV.hpp"
 #include "../Engine/Modifiers/Base.hpp"
 #include "../Engine/Modifiers/Delay.hpp"
+#include "../Engine/Modifiers/Echo.hpp"
 #include "../Engine/Modifiers/Envelope.hpp"
 #include "../Engine/Modifiers/Gain.hpp"
 #include "../Engine/Sounds/Vocoder.hpp"
@@ -125,10 +126,10 @@ int main(int argc, char * argv[])
     AudioEngine::Sound_t sound = AudioEngine::Core::Sound::Create(1.0);
 
     AudioEngine::Node_t n1 = AudioEngine::Core::Node::Create(
-      AudioEngine::Generator::Base::Create<AudioEngine::Generator::Noise>()
+      AudioEngine::Generator::Base::Create<AudioEngine::Generator::Square>(220)
     );
     AudioEngine::Node_t n2 = AudioEngine::Core::Node::Create(
-      AudioEngine::Modifier::Base::Create<AudioEngine::Modifier::Delay>(48000)
+      AudioEngine::Modifier::Base::Create<AudioEngine::Modifier::Echo>(18000, 0.25)
     );
 
     n1->AddTarget(*n2);
