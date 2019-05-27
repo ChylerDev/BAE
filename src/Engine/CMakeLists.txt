@@ -42,6 +42,7 @@ set(core_files
       ${CMAKE_SOURCE_DIR}/Core/Sound.cpp ${CMAKE_SOURCE_DIR}/Core/Sound.hpp
 )
 set(gen_files
+      ${CMAKE_SOURCE_DIR}/Generators/Noise.cpp ${CMAKE_SOURCE_DIR}/Generators/Noise.hpp
       ${CMAKE_SOURCE_DIR}/Generators/Sawtooth.cpp ${CMAKE_SOURCE_DIR}/Generators/Sawtooth.hpp
       ${CMAKE_SOURCE_DIR}/Generators/Sine.cpp ${CMAKE_SOURCE_DIR}/Generators/Sine.hpp
       ${CMAKE_SOURCE_DIR}/Generators/Square.cpp ${CMAKE_SOURCE_DIR}/Generators/Square.hpp
@@ -100,6 +101,6 @@ endif()
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E copy_directory
                     "${PLATFORM_LIB_DIR}"
-                    $<TARGET_FILE_DIR:${PROJECT_NAME}>
+                    "${CMAKE_BINARY_DIR}/$<CONFIG>"
                     COMMENT "Copying run-time dependencies"
 )

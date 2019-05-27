@@ -20,6 +20,7 @@
 #include "../Engine/Core/Node.hpp"
 #include "../Engine/Core/Sound.hpp"
 #include "../Engine/Generators/Base.hpp"
+#include "../Engine/Generators/Noise.hpp"
 #include "../Engine/Generators/Sawtooth.hpp"
 #include "../Engine/Generators/Sine.hpp"
 #include "../Engine/Generators/Square.hpp"
@@ -123,7 +124,7 @@ int main(int argc, char * argv[])
     AudioEngine::Sound_t sound = AudioEngine::Core::Sound::Create(1.0);
 
     AudioEngine::Node_t n = AudioEngine::Core::Node::Create(
-      AudioEngine::Generator::Base::Create<AudioEngine::Generator::Triangle>(440)
+      AudioEngine::Generator::Base::Create<AudioEngine::Generator::Noise>()
     );
 
     sound->AddNode(n, 0, true);
@@ -136,8 +137,8 @@ int main(int argc, char * argv[])
 
   std::cin.get();
 
-  std::basic_ofstream<RIFF::byte_t> file("wave_out.wav", std::ios_base::binary);
-  file << AudioEngine::Tools::WriteWAV(driver->StopRecording());
+  std::basic_ofstream<RIFF::byte_t>("wave_out.wav", std::ios_base::binary) <<
+    AudioEngine::Tools::WriteWAV(driver->StopRecording());
 
   driver->Shutdown();
 
