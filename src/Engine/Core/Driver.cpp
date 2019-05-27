@@ -121,7 +121,7 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
     m_Params.device = Pa_GetDefaultOutputDevice();
     m_Params.channelCount = 2;
     m_Params.sampleFormat = paInt16;
-    m_Params.suggestedLatency = Pa_GetDeviceInfo(m_Params.device)->defaultHighOutputLatency;
+    m_Params.suggestedLatency = 0.050; //Pa_GetDeviceInfo(m_Params.device)->defaultLowOutputLatency;
     m_Params.hostApiSpecificStreamInfo = nullptr;
 
     code = Pa_OpenStream(&m_Stream, nullptr, &m_Params, SAMPLE_RATE, 0, 0,
