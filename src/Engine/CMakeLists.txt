@@ -52,6 +52,7 @@ set(gen_files
 )
 set(modifier_files
       ${CMAKE_SOURCE_DIR}/Modifiers/BandPass.cpp ${CMAKE_SOURCE_DIR}/Modifiers/BandPass.hpp
+      ${CMAKE_SOURCE_DIR}/Modifiers/ADSR.cpp ${CMAKE_SOURCE_DIR}/Modifiers/ADSR.hpp
       ${CMAKE_SOURCE_DIR}/Modifiers/Delay.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Delay.hpp
       ${CMAKE_SOURCE_DIR}/Modifiers/Echo.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Echo.hpp
       ${CMAKE_SOURCE_DIR}/Modifiers/Envelope.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Envelope.hpp

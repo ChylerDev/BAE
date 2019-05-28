@@ -27,6 +27,7 @@
 #include "../Engine/Generators/Triangle.hpp"
 #include "../Engine/Generators/WAV.hpp"
 #include "../Engine/Modifiers/Base.hpp"
+#include "../Engine/Modifiers/ADSR.hpp"
 #include "../Engine/Modifiers/Delay.hpp"
 #include "../Engine/Modifiers/Echo.hpp"
 #include "../Engine/Modifiers/Envelope.hpp"
@@ -126,15 +127,16 @@ int main(int argc, char * argv[])
     AudioEngine::Sound_t sound = AudioEngine::Core::Sound::Create(1.0);
 
     AudioEngine::Node_t n1 = AudioEngine::Core::Node::Create(
-      AudioEngine::Generator::Base::Create<AudioEngine::Generator::Square>(220)
+      AudioEngine::Generator::Base::Create<AudioEngine::Generator::Square>(440)
     );
-    AudioEngine::Node_t n2 = AudioEngine::Core::Node::Create(
-      AudioEngine::Modifier::Base::Create<AudioEngine::Modifier::Echo>(18000, 0.25)
+    auto mod = AudioEngine::Modifier::Base::Create<AudioEngine::Modifier::ADSR>(
+      uint64_t(0.0375*SAMPLE_RATE), uint64_t(0.25*SAMPLE_RATE), AudioEngine::Math_t(0.5), uint64_t(0.75*SAMPLE_RATE)
     );
-
-    n1->AddTarget(*n2);
+    AudioEngine::Node_t n2 = AudioEngine::Core::Node::Create(mod);
 
     sound->AddNode(n1, 0);
+
+    n1->AddTarget(*n2);
     sound->AddNode(n2, 1, true);
 
     driver->AddSound(sound);
@@ -142,6 +144,11 @@ int main(int argc, char * argv[])
   #endif
 
   driver->StartRecording();
+
+  std::cin.get();
+
+  auto adsr = reinterpret_cast<AudioEngine::Modifier::ADSR*>(mod.get());
+  adsr->Release();
 
   std::cin.get();
 
