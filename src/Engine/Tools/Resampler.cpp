@@ -36,7 +36,7 @@ namespace Tools
 
   StereoData_t Resampler::SendSample()
   {
-    if(int32_t(m_Index) >= m_Data.size() && m_LoopEnd == 0)
+    if(size_t(m_Index) >= m_Data.size() && m_LoopEnd == 0)
     {
       return StereoData_t(0,0);
     }

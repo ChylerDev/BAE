@@ -9,6 +9,8 @@
 
 // Include Files                          //////////////////////////////////////
 
+#include <cmath>
+
 #include <Trace/Trace.hpp>
 
 #include "../Core/Sound.hpp"
@@ -63,7 +65,7 @@ namespace Sounds
 
   void Vocoder::SetOffset(int32_t p)
   {
-    m_Mu = std::powf(2, p/1200.f);
+    m_Mu = std::pow(2, float(p)/1200.f);
 
     uint32_t counter = 0;
 

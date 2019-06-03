@@ -15,7 +15,7 @@
 #include <sstream>
 
 #include <Trace/Trace.hpp>
-#include <RIFF-Util/Riff.hpp>
+#include <RIFF-Util/RIFF.hpp>
 
 #include "../Tools/Input.hpp"
 #include "../Tools/Resampler.hpp"
@@ -146,8 +146,8 @@ namespace Generator
         }
         else
         {
-          std::get<0>(sample).Data() = ((*data) << 8);
-          std::get<1>(sample).Data() = ((*(data+1)) << 8);
+          std::get<0>(sample).Data() = int16_t((*data) << 8);
+          std::get<1>(sample).Data() = int16_t((*(data+1)) << 8);
         }
       }
       else  // assume 16-bit audio is being used

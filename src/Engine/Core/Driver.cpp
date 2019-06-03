@@ -48,18 +48,11 @@ namespace Core
   {
     private:
 
-      using lock_t = std::unique_lock<std::mutex>;
-
       // Members              ///////////////////////
 
-      std::mutex m_TrackMutex;
       Track_t m_Track;
 
-      std::mutex m_SampleMutex;
-      std::queue<Track_t> m_NewSamples;
-
-      bool m_Recording;
-      std::thread m_Runner;
+      std::deque<Track_t> m_NewSamples;
 
     public:
 
@@ -83,12 +76,6 @@ namespace Core
       void SendSamples(Track_t const & samples);
 
       Track_t GetRecording();
-
-    private:
-
-      // Functions                  ///////////////////////
-
-      void Runner();
 
   };
 
@@ -121,7 +108,7 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
     m_Params.device = Pa_GetDefaultOutputDevice();
     m_Params.channelCount = 2;
     m_Params.sampleFormat = paInt16;
-    m_Params.suggestedLatency = 0.050; //Pa_GetDeviceInfo(m_Params.device)->defaultLowOutputLatency;
+    m_Params.suggestedLatency = Pa_GetDeviceInfo(m_Params.device)->defaultHighOutputLatency;
     m_Params.hostApiSpecificStreamInfo = nullptr;
 
     code = Pa_OpenStream(&m_Stream, nullptr, &m_Params, SAMPLE_RATE, 0, 0,
@@ -285,9 +272,7 @@ POP_WARNINGS()
   //////// Recorder Functions ////////
 
   Recorder::Recorder() :
-    m_TrackMutex(), m_Track(),
-    m_SampleMutex(), m_NewSamples(),
-    m_Recording(true), m_Runner([this](){ this->Runner(); })
+    m_Track(), m_NewSamples()
   {
       // Reserve 1 second worth of memory to record
     m_Track.reserve(SAMPLE_RATE);
@@ -299,50 +284,18 @@ POP_WARNINGS()
 
   void Recorder::SendSamples(Track_t const & samples)
   {
-    lock_t lk(m_SampleMutex);
-
-    m_NewSamples.push(samples);
+    m_NewSamples.push_back(samples);
   }
 
   Track_t Recorder::GetRecording()
   {
-    m_Recording = false;
-    m_Runner.join();
-
-    std::unique_lock lk(m_TrackMutex);
+    m_Track.reserve(m_NewSamples.size() * SAMPLE_RATE);
+    for(auto & s : m_NewSamples)
+    {
+      m_Track.insert(m_Track.end(), s.begin(), s.end());
+    }
 
     return m_Track;
-  }
-
-  void Recorder::Runner()
-  {
-    do
-    {
-      size_t size;
-      Track_t samples;
-
-      {
-        lock_t lk(m_SampleMutex);
-        size = m_NewSamples.size();
-      }
-
-      while(size)
-      {
-        --size;
-
-        {
-          lock_t lk_s(m_SampleMutex);
-          samples = m_NewSamples.front();
-          m_NewSamples.pop();
-        }
-        {
-          lock_t lk_t(m_TrackMutex);
-          m_Track.insert(m_Track.end(), samples.begin(), samples.end());
-        }
-      }
-
-      std::this_thread::yield();
-    } while(m_Recording);
   }
 
 } // namespace Core

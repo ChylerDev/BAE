@@ -28,7 +28,8 @@ namespace Modifier
 
   TODO("Fix double casts")
   ADSR::ADSR(uint64_t a, uint64_t d, Math_t s, uint64_t r) : Base(false),
-    m_Attack(1.0/a), m_Decay(double(s-1)/d), m_Sustain(s), m_Release(double(-s)/r),
+    m_Attack(1.0/double(a)), m_Decay(double(s-1)/double(d)),
+    m_Sustain(s), m_Release(double(-s)/double(r)),
     m_State(state::attack), m_Gain(0)
   {
   }
@@ -63,6 +64,7 @@ namespace Modifier
           m_Gain = 0;
         }
         break;
+      case state::invalid:
       default:
         return StereoData_t(0,0);
         break;

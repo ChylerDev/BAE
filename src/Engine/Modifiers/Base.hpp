@@ -55,7 +55,7 @@ namespace Modifier
     static inline ModBase_t Create(Args &&... params)
     {
       return std::make_shared<T>(params...);
-    };
+    }
 
     // Con-/De- structors   ///////////////////////
 

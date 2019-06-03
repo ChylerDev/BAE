@@ -65,7 +65,7 @@ namespace Core
     static inline Driver_t Create(Args &&... params)
     {
       return std::make_shared<Driver>(params...);
-    };
+    }
 
     // Con-/De- structors   ///////////////////////
 

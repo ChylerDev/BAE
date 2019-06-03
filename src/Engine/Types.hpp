@@ -15,6 +15,7 @@
 #include <cstdint>
 
 #include <functional>
+#include <memory>
 #include <tuple>
 
 #define FIXED_POINT_RAW_ACCESS
@@ -24,7 +25,7 @@
 
 #define PTR(x) std::shared_ptr<x>
 
-// Forward References           ////////////////////////////////////////////////\ 
+// Forward References           ////////////////////////////////////////////////
 
 namespace AudioEngine
 {

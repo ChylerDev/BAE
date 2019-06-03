@@ -32,6 +32,7 @@ if(WIN32)
   find_library(PortAudio portaudio_x64)
 else()
   find_library(PortAudio portaudio)
+  find_package(Threads REQUIRED)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -94,6 +95,7 @@ target_link_libraries(${PROJECT_NAME}
                         ${PortAudio}
                         Trace
                         RIFF
+                        ${CMAKE_THREAD_LIBS_INIT}
 )
 
 if(WIN32)

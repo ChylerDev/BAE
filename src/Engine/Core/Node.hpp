@@ -61,7 +61,7 @@ namespace Core
     static inline Node_t Create(Args &&... params)
     {
       return std::make_shared<Node>(params...);
-    };
+    }
 
     // Con-/De- structors   ///////////////////////
 
