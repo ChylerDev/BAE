@@ -127,7 +127,7 @@ int main(int argc, char * argv[])
     AudioEngine::Sound_t sound = AudioEngine::Core::Sound::Create(1.0);
 
     AudioEngine::Node_t n1 = AudioEngine::Core::Node::Create(
-      AudioEngine::Generator::Base::Create<AudioEngine::Generator::Square>(440)
+      AudioEngine::Generator::Base::Create<Tone_t>(440)
     );
     auto mod = AudioEngine::Modifier::Base::Create<AudioEngine::Modifier::ADSR>(
       uint64_t(0.0375*SAMPLE_RATE), uint64_t(0.25*SAMPLE_RATE), AudioEngine::Math_t(0.5), uint64_t(0.75*SAMPLE_RATE)
@@ -152,10 +152,19 @@ int main(int argc, char * argv[])
 
   std::cin.get();
 
-  std::basic_ofstream<RIFF::byte_t> file("wave_out.wav", std::ios_base::binary);
-  file << AudioEngine::Tools::WriteWAV(driver->StopRecording());
-
   driver->Shutdown();
+
+  std::basic_ofstream<RIFF::byte_t> file("wave_out.wav", std::ios_base::binary);
+  if(!file)
+  {
+    std::cerr << "Error in opening file for write\n";
+  }
+  else
+  {
+    file << AudioEngine::Tools::WriteWAV(driver->StopRecording());
+  }
+
+  std::ofstream f("test.txt"); f << "test file\n";
 
   return 0;
 }

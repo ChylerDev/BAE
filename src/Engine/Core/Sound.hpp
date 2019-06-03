@@ -61,7 +61,7 @@ namespace Core
     static inline Sound_t Create(Args &&... params)
     {
       return std::make_shared<Sound>(params...);
-    };
+    }
 
     // Con-/De- structors   ///////////////////////
 

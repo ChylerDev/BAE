@@ -45,7 +45,7 @@ namespace Tools
     header.ChannelCount = 2;
     header.SamplingRate = SAMPLE_RATE;
     header.BitsPerSample = 16;
-    header.BytesPerSample = header.BitsPerSample / 8 * header.ChannelCount;
+    header.BytesPerSample = uint16_t((header.BitsPerSample >> 3) * header.ChannelCount);
     header.BytesPerSecond = SAMPLE_RATE * header.BytesPerSample;
 
     RIFF::vector_t format;
@@ -55,6 +55,8 @@ namespace Tools
     );
 
     RIFF::vector_t data;
+    data.reserve(audio.size() * 4);
+
     for(auto & a : audio)
     {
       data.push_back(

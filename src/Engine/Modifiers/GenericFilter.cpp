@@ -29,19 +29,11 @@ namespace Modifier
   GenericFilter::GenericFilter(ZeroContainer const & zeros, PoleContainer const & poles) :
     Base(false),
     m_Zeros(zeros), m_Poles(poles),
+    m_Inputs(std::get<0>(m_Zeros.back()), StereoData_t(0.f,0.f)),
+    m_Outputs(std::get<0>(m_Poles.back()), StereoData_t(0.f,0.f)),
     m_MaxXSubscript(std::get<0>(m_Zeros.back())),
     m_MaxYSubscript(std::get<0>(m_Poles.back()))
   {
-      // Fill input container with 0-value samples
-    for(uint32_t i = 0; i <= m_MaxXSubscript; ++i)
-    {
-      m_Inputs.push_back(StereoData_t(0.f,0.f));
-    }
-      // Fill output container with 0-value samples
-    for(uint32_t i = 0; i <= m_MaxYSubscript; ++i)
-    {
-      m_Outputs.push_back(StereoData_t(0.f,0.f));
-    }
   }
 
   StereoData_t GenericFilter::FilterSample(StereoData_t const & input)

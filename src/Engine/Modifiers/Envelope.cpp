@@ -27,7 +27,8 @@ namespace Modifier
 {
 
   TODO("Once FixedPoint supports operator/, change double to Math_t")
-  EnvelopeFollower::EnvelopeFollower(Math_t fd, Math_t fu) : Base(false)
+  EnvelopeFollower::EnvelopeFollower(Math_t fd, Math_t fu) : Base(false),
+    m_AU(), m_BU(), m_AD(), m_BD(), m_X1(), m_Y1()
   {
     double theta_u = std::tan(double(PI * fu * INC_RATE));
     double theta_d = std::tan(double(PI * fd * INC_RATE));

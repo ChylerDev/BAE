@@ -29,7 +29,9 @@ namespace Modifier
 {
 
   BandPass::BandPass(Math_t f, Math_t Q) :
-    Base(false), m_CentralFrequency(f), m_Quality(Q)
+    Base(false), m_CentralFrequency(f), m_Quality(Q),
+    m_A0(), m_B1(), m_B2(),
+    m_X1(), m_X2(), m_Y1(), m_Y2()
   {
     Reset();
   }

@@ -55,7 +55,7 @@ namespace Generator
     static inline GenBase_t Create(Args &&... params)
     {
       return std::make_shared<T>(params...);
-    };
+    }
 
     // Con-/De- structors   ///////////////////////
 
