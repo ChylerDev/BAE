@@ -12,7 +12,13 @@
 
 // Include Files                ////////////////////////////////////////////////
 
+#include <functional>
+#include <unordered_map>
+#include <string>
+
 #include "../Engine.hpp"
+
+#include "../Tools/MethodTable.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -30,7 +36,7 @@ namespace Generator
   /*! **************************************************************************
   \brief
   *****************************************************************************/
-  class Base
+  class Base: public Tools::MethodTable
   {
   private:
 
@@ -69,7 +75,6 @@ namespace Generator
     // Functions            ///////////////////////
 
     virtual StereoData_t SendSample(void) { return StereoData_t(0.f, 0.f); };
-    virtual void SetFrequency(Math_t freq) { UNREFERENCED_PARAMETER(freq); };
 
     bool IsBase() { return is_base; };
 

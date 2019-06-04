@@ -114,11 +114,11 @@ int main(int argc, char * argv[])
     AudioEngine::Sound_t sound = AudioEngine::Core::Sound::Create(1.0);
 
     AudioEngine::Node_t node1 = AudioEngine::Core::Node::Create(AudioEngine::Generator::Base::Create<Tone_t>(440.f));
-    sound->AddNode(node1, 0);
+    sound->AddNode(node1, 0, true);
 
-    AudioEngine::Node_t node2 = AudioEngine::Core::Node::Create(AudioEngine::Modifier::Base::Create<AudioEngine::Modifier::EnvelopeFollower>(20.f, 20'000.f));
-    node1->AddTarget(*node2);
-    sound->AddNode(node2, 1, true);
+    // AudioEngine::Node_t node2 = AudioEngine::Core::Node::Create(AudioEngine::Modifier::Base::Create<AudioEngine::Modifier::EnvelopeFollower>(20.f, 20'000.f));
+    // node1->AddTarget(*node2);
+    // sound->AddNode(node2, 1, true);
 
     driver->AddSound(sound);
 
@@ -130,7 +130,7 @@ int main(int argc, char * argv[])
       AudioEngine::Generator::Base::Create<Tone_t>(440)
     );
     auto mod = AudioEngine::Modifier::Base::Create<AudioEngine::Modifier::ADSR>(
-      uint64_t(0.0375*SAMPLE_RATE), uint64_t(0.25*SAMPLE_RATE), AudioEngine::Math_t(0.5), uint64_t(0.75*SAMPLE_RATE)
+      uint64_t(0.0375*SAMPLE_RATE), uint64_t(0.20*SAMPLE_RATE), AudioEngine::Math_t(0.5), uint64_t(0.25*SAMPLE_RATE)
     );
     AudioEngine::Node_t n2 = AudioEngine::Core::Node::Create(mod);
 
@@ -145,26 +145,26 @@ int main(int argc, char * argv[])
 
   driver->StartRecording();
 
-  std::cin.get();
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  METHOD(*n1->GetGenerator(), SetFrequency, AudioEngine::Math_t, 110);
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  METHOD(*n2->GetModifier(), Release, void *, nullptr);
 
-  auto adsr = reinterpret_cast<AudioEngine::Modifier::ADSR*>(mod.get());
-  adsr->Release();
-
-  std::cin.get();
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
   driver->Shutdown();
 
-  std::basic_ofstream<RIFF::byte_t> file("wave_out.wav", std::ios_base::binary);
+  std::ofstream file("wave_out.wav", std::ios_base::binary);
   if(!file)
   {
     std::cerr << "Error in opening file for write\n";
   }
   else
   {
-    file << AudioEngine::Tools::WriteWAV(driver->StopRecording());
-  }
+    auto v = AudioEngine::Tools::WriteWAV(driver->StopRecording());
 
-  std::ofstream f("test.txt"); f << "test file\n";
+    file.write(reinterpret_cast<char*>(v.data()), v.size());
+  }
 
   return 0;
 }

@@ -42,7 +42,8 @@ namespace Modifier
     Math_t m_Resonance;
     Math_t m_Coefficients[4];
     StereoData_t m_Outputs[3];
-    bool m_IsDirty;
+
+    MethodTable_t m_Table;
 
   public:
 
@@ -102,6 +103,8 @@ namespace Modifier
       The filtered sample.
     ***************************************************************************/
     virtual StereoData_t FilterSample(StereoData_t const & input);
+
+    virtual MethodTable_t const & GetMethodTable() const;
 
   private:
 

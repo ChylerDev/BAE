@@ -14,6 +14,8 @@
 
 #include "../Engine.hpp"
 
+#include "../Tools/MethodTable.hpp"
+
 // Public Macros                ////////////////////////////////////////////////
 
 // Forward References           ////////////////////////////////////////////////
@@ -30,7 +32,7 @@ namespace Modifier
   /*! **************************************************************************
   \brief
   *****************************************************************************/
-  class Base
+  class Base: public Tools::MethodTable
   {
   private:
 

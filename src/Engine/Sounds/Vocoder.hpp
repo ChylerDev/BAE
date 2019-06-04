@@ -44,12 +44,18 @@ namespace Sounds
     // Members              ///////////////////////
 
     std::vector<Math_t> m_CentralFrequencies;
-
     uint32_t m_BandCount;
-
     Math_t m_Mu;
 
+    MethodTable_t m_Table;
+
   public:
+
+    template<typename ...Args>
+    static inline Vocoder_t Create(Args &&... params)
+    {
+      return std::make_shared<Vocoder>(params...);
+    }
 
     // Con-/De- structors   ///////////////////////
 
@@ -64,11 +70,7 @@ namespace Sounds
 
     // Functions            ///////////////////////
 
-    template<typename ...Args>
-    static inline Vocoder_t Create(Args &&... params)
-    {
-      return std::make_shared<Vocoder>(params...);
-    }
+    virtual MethodTable_t const & GetMethodTable() const;
 
   private:
 

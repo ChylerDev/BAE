@@ -33,8 +33,11 @@ namespace Generator
 {
 
   TODO("Once FixedPoint supports operator/, remove the double cast here")
-  Square::Square(Math_t f) : Base(false), m_Ind(0), m_Inv(SAMPLE_RATE/(2*double(f)))
+  Square::Square(Math_t f) : Base(false),
+    m_Ind(0), m_Inv(SAMPLE_RATE/(2*double(f))),
+    m_Table()
   {
+    m_Table["SetFrequency"] = [this](void * freq){ SetFrequency(*reinterpret_cast<Math_t*>(freq)); };
   }
 
   StereoData_t Square::SendSample(void)
@@ -60,6 +63,11 @@ namespace Generator
   void Square::SetFrequency(Math_t f)
   {
     m_Inv = SAMPLE_RATE/(2*double(f));
+  }
+
+  MethodTable_t const & Square::GetMethodTable() const
+  {
+    return m_Table;
   }
 
 } // namespace Generator

@@ -88,6 +88,8 @@ namespace AudioEngine
 
   using AudioCallback_t = std::function<StereoData_t(void)>;
 
+  using MethodTable_t = std::unordered_map<std::string,std::function<void(void*)>>;
+
     // Core
   using Recorder_t = PTR(Core::Recorder);
   using Driver_t   = PTR(Core::Driver);

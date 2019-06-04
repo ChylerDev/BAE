@@ -42,6 +42,8 @@ namespace Modifier
 
     std::deque<StereoData_t> m_Delay;
 
+    MethodTable_t m_Table;
+
   public:
 
     // Con-/De- structors   ///////////////////////
@@ -55,7 +57,11 @@ namespace Modifier
 
     // Functions            ///////////////////////
 
+    void SetDelay(uint64_t samples);
+
     virtual StereoData_t FilterSample(StereoData_t const & input);
+
+    virtual MethodTable_t const & GetMethodTable() const;
 
   private:
 

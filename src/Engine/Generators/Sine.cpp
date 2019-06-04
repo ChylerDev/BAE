@@ -32,8 +32,11 @@ namespace Generator
 
   Sine::Sine(Math_t f) : Base(false),
     irate(INC_RATE*double(f)),
-    y1(), y2(), beta()
+    y1(std::sin(double(PI2 * irate))), y2(), beta(),
+    m_Table()
   {
+    m_Table["SetFrequency"] = [this](void * freq){ SetFrequency(*reinterpret_cast<Math_t*>(freq)); };
+
     Reset();
   }
 
@@ -53,6 +56,11 @@ namespace Generator
     Reset();
   }
 
+  MethodTable_t const & Sine::GetMethodTable() const
+  {
+    return m_Table;
+  }
+
 } // namespace Generator
 } // namespace AudioEngine
 
@@ -65,8 +73,6 @@ namespace Generator
 
   void Sine::Reset()
   {
-    y1 = std::sin(double(PI2 * irate));
-    y2 = 0;
     beta = 2 * std::cos(double(2*PI * irate));
   }
 

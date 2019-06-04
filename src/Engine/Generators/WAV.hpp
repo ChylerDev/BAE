@@ -48,6 +48,8 @@ namespace Generator
 
     Resampler_t m_Resampler;
 
+    MethodTable_t m_Table;
+
   public:
 
     // Con-/De- structors   ///////////////////////
@@ -117,6 +119,8 @@ namespace Generator
     ***************************************************************************/
     virtual StereoData_t SendSample(void);
 
+    virtual MethodTable_t const & GetMethodTable() const;
+
   private:
 
     struct WAVHeader
@@ -132,6 +136,8 @@ namespace Generator
     // Functions                  ///////////////////////
 
     void ParseWAV(char const * array, int size);
+
+    void SetupMethodTable();
 
   }; // class WAV
 

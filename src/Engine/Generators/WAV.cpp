@@ -38,25 +38,32 @@ namespace Generator
 {
 
   WAV::WAV() : Base(false),
-    m_Resampler()
+    m_Resampler(), m_Table()
   {
+    SetupMethodTable();
   }
 
   WAV::WAV(std::string const & path) : Base(false),
-    m_Resampler()
+    m_Resampler(), m_Table()
   {
+    SetupMethodTable();
+
     ReadFile(path);
   }
 
   WAV::WAV(std::vector<char> const & data) : Base(false),
-    m_Resampler()
+    m_Resampler(), m_Table()
   {
+    SetupMethodTable();
+
     ParseWAV(data.data(), int(data.size()));
   }
 
   WAV::WAV(int argc) : Base(false),
-    m_Resampler()
+    m_Resampler(), m_Table()
   {
+    SetupMethodTable();
+
     ReadFile(Tools::GetOptions().at(argc));
   }
 
@@ -68,16 +75,6 @@ namespace Generator
     }
     return StereoData_t(0,0);
   }
-
-} // namespace Generator
-} // namespace AudioEngine
-
-// Private Functions                      //////////////////////////////////////
-
-namespace AudioEngine
-{
-namespace Generator
-{
 
   void WAV::ReadFile(std::string const & path)
   {
@@ -106,6 +103,21 @@ namespace Generator
 
       ParseWAV(temp.data(), int(temp.size()));
     }
+  }
+
+} // namespace Generator
+} // namespace AudioEngine
+
+// Private Functions                      //////////////////////////////////////
+
+namespace AudioEngine
+{
+namespace Generator
+{
+
+  void WAV::SetupMethodTable()
+  {
+    m_Table["ReadFile"] = [this](void * path){ ReadFile(*reinterpret_cast<std::string*>(path)); };
   }
 
   void WAV::ParseWAV(char const * array, int size)
