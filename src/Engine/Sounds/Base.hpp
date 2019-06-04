@@ -15,6 +15,7 @@
 #include "../Engine.hpp"
 
 #include "../Core/Sound.hpp"
+#include "../Tools/MethodTable.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -32,7 +33,7 @@ namespace Sounds
   /*! **************************************************************************
   \brief
   *****************************************************************************/
-  class Base
+  class Base: public Tools::MethodTable
   {
   private:
 

@@ -39,8 +39,10 @@ namespace Sounds
 {
 
   Vocoder::Vocoder(Node_t const & base_input, int N, Math_t gain) : Base(gain, false),
-    m_CentralFrequencies(), m_BandCount(N), m_Mu(1.f)
+    m_CentralFrequencies(), m_BandCount(N), m_Mu(1.f), m_Table()
   {
+    m_Table["SetOffset"] = [this](void * p){ SetOffset(*reinterpret_cast<int32_t*>(p)); };
+
     auto l_BP = BPSetup();
     auto l_Env = EnvSetup();
     auto l_Osc = OscSetup();
@@ -75,6 +77,11 @@ namespace Sounds
       dynamic_cast<Carrier_t *>(node->GetGenerator().get())->
         SetFrequency(m_CentralFrequencies[++counter]*m_Mu);
     }
+  }
+
+  MethodTable_t const & Vocoder::GetMethodTable() const
+  {
+    return m_Table;
   }
 
 } // namespace Sounds
