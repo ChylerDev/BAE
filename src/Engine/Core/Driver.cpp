@@ -210,30 +210,18 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
     Driver * obj = reinterpret_cast<Driver *>(userData);
     int16_t * out = reinterpret_cast<int16_t *>(output);
 
-    obj->m_OutputTrack.clear();
+    obj->m_OutputTrack.assign(frameCount, StereoData_t(0,0));
 
-      // Loop through the buffer, copying the data to the output
-    uint64_t i = 0;
-    for(; i < frameCount; ++i)
+    for(auto & s : obj->m_Sounds)
     {
-      StereoData_t sum(0.f,0.f);
-      for(auto cb : obj->m_AudioCallbacks)
-      {
-        StereoData_t y = cb();
-        std::get<0>(sum) += std::get<0>(y);
-        std::get<1>(sum) += std::get<1>(y);
-      }
-      for(auto & s : obj->m_Sounds)
-      {
-        StereoData_t y = s->GetSample();
-        std::get<0>(sum) += std::get<0>(y);
-        std::get<1>(sum) += std::get<1>(y);
-      }
+      s->SendBlock(obj->m_OutputTrack.data(), obj->m_OutputTrack.size());
+    }
 
-      out[2*i] = (std::get<0>(sum) *= obj->m_Gain).Data();
-      out[2*i+1] = (std::get<1>(sum) *= obj->m_Gain).Data();
-
-      obj->m_OutputTrack.push_back(sum);
+    static uint64_t i;
+    for(i = 0; i < frameCount; ++i)
+    {
+      out[2*i] = (SampleType_t(std::get<0>(obj->m_OutputTrack[i]) * obj->m_Gain)).Data();
+      out[2*i+1] = (SampleType_t(std::get<1>(obj->m_OutputTrack[i]) * obj->m_Gain)).Data();
     }
 
     if(obj->m_Recording)
@@ -242,16 +230,11 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
     }
 
       // Do over/underflow checks
-    if(i < frameCount || statusFlags & paOutputUnderflow)
+    if(statusFlags & paOutputUnderflow)
     {
         // UNDERFLOW!!!
       Log::Trace::out[err] << "Audio system is experiencing data underflow, "
                            << "zero-data will be inserted to keep up!\n";
-
-      while(i < frameCount)
-      {
-        out[i++] = 0;
-      }
     }
     else if(statusFlags & paOutputOverflow)
     {

@@ -87,6 +87,7 @@ namespace Core
     );
 
     StereoData_t GetSample();
+    void SendBlock(StereoData_t * buffer, uint64_t size);
 
   private:
 

@@ -82,6 +82,27 @@ namespace Core
     return *m_Output;
   }
 
+  void Sound::SendBlock(StereoData_t * buffer, uint64_t size)
+  {
+    static uint64_t i;
+
+    for(i = 0; i < size; ++i)
+    {
+      *m_Output = StereoData_t(0,0);
+
+      for(auto & nodes : m_NodeGraph)
+      {
+        for(auto & node : nodes.second)
+        {
+          node->SendSample();
+        }
+      }
+
+      std::get<0>(buffer[i]) += std::get<0>(*m_Output) * m_Gain;
+      std::get<1>(buffer[i]) += std::get<1>(*m_Output) * m_Gain;
+    }
+  }
+
 } // namespace Core
 } // namespace AudioEngine
 
