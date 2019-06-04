@@ -67,20 +67,6 @@ namespace Generator
     ReadFile(Tools::GetOptions().at(argc));
   }
 
-  StereoData_t WAV::SendSample()
-  {
-    if(m_Resampler)
-    {
-      return m_Resampler->SendSample();
-    }
-    return StereoData_t(0,0);
-  }
-
-  void WAV::SendBlock(StereoData_t * buffer, uint64_t size)
-  {
-    m_Resampler->SendBlock(buffer, size);
-  }
-
   void WAV::ReadFile(std::string const & path)
   {
     std::ifstream l_file(path, std::ios::binary);
@@ -108,6 +94,25 @@ namespace Generator
 
       ParseWAV(temp.data(), int(temp.size()));
     }
+  }
+
+  StereoData_t WAV::SendSample()
+  {
+    if(m_Resampler)
+    {
+      return m_Resampler->SendSample();
+    }
+    return StereoData_t(0,0);
+  }
+
+  void WAV::SendBlock(StereoData_t * buffer, uint64_t size)
+  {
+    m_Resampler->SendBlock(buffer, size);
+  }
+
+  MethodTable_t const & WAV::GetMethodTable() const
+  {
+    return m_Table;
   }
 
 } // namespace Generator

@@ -22,6 +22,13 @@
   #define METHOD_PARAM_RET(obj, func, rettype, val) [&, obj, val]()->rettype{obj.GetMethodTable().at(#func)(val); return std::get<0>(*val);}()
 #endif
 
+#ifndef LEFT
+  #define LEFT(stereodata) std::get<0>(stereodata)
+#endif
+#ifndef RIGHT
+  #define RIGHT(stereodata) std::get<1>(stereodata)
+#endif
+
 #ifndef SAMPLE_RATE
   #define SAMPLE_RATE 48'000
 #endif

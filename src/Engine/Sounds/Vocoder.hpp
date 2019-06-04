@@ -59,7 +59,7 @@ namespace Sounds
 
     // Con-/De- structors   ///////////////////////
 
-    Vocoder(Node_t const & base_input, int N=1, Math_t gain = DEFAULT_GAIN);
+    Vocoder(Block_t const & base_input, int N=1, Math_t gain = DEFAULT_GAIN);
 
     // Operators            ///////////////////////
 

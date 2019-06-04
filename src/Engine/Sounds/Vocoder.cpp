@@ -14,7 +14,7 @@
 #include <Trace/Trace.hpp>
 
 #include "../Core/Sound.hpp"
-#include "../Core/Node.hpp"
+#include "../Core/Block.hpp"
 
 #include "../Generators/Square.hpp"
 
@@ -38,7 +38,7 @@ namespace AudioEngine
 namespace Sounds
 {
 
-  Vocoder::Vocoder(Node_t const & base_input, int N, Math_t gain) : Base(gain, false),
+  Vocoder::Vocoder(Block_t const & base_input, int N, Math_t gain) : Base(gain, false),
     m_CentralFrequencies(), m_BandCount(N), m_Mu(1.f), m_Table()
   {
     m_Table["SetOffset"] = [this](void * p){ SetOffset(*reinterpret_cast<int32_t*>(p)); };
@@ -47,21 +47,20 @@ namespace Sounds
     auto l_Env = EnvSetup();
     auto l_Osc = OscSetup();
 
-    m_Sound->AddNode(base_input, 0);
+    m_Sound->AddBlock(base_input, 0);
 
     for(uint32_t i = 0; i < m_BandCount; ++i)
     {
-      std::shared_ptr<Core::Node> bp(
-        Core::Node::Create(Generator::Base::Create<Generator::Base>(true),l_BP[i])
+      std::shared_ptr<Core::Block> bp(
+        Core::Block::Create(Generator::Base::Create<Generator::Base>(true),l_BP[i])
       );
-      std::shared_ptr<Core::Node> mod(
-        Core::Node::Create(l_Osc[i], l_Env[i])
+      std::shared_ptr<Core::Block> mod(
+        Core::Block::Create(l_Osc[i], l_Env[i])
       );
 
-      base_input->AddTarget(*bp);
-      bp->AddTarget(*mod);
-
-      m_Sound->AddNode(bp, 1).AddNode(mod, 2, true);
+      m_Sound->AddBlock(bp, 1).AddBlock(mod, 2, true)
+              .SetTarget(base_input, 0, bp, 1)
+              .SetTarget(bp, 1, mod, 2);
     }
   }
 
@@ -74,8 +73,9 @@ namespace Sounds
     auto & graph = m_Sound->GetGraph();
     for(auto & node : graph[2])
     {
-      dynamic_cast<Carrier_t *>(node->GetGenerator().get())->
-        SetFrequency(m_CentralFrequencies[++counter]*m_Mu);
+      static Math_t freq;
+      freq = m_CentralFrequencies[++counter]*m_Mu;
+      m_Sound->GetBlock(node)->GetGenerator()->GetMethodTable().at("SetFrequency")(&freq);
     }
   }
 

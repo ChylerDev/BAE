@@ -9,7 +9,7 @@
 
 // Include Files                          //////////////////////////////////////
 
-#include "Node.hpp"
+#include "Block.hpp"
 #include "Sound.hpp"
 
 // Private Macros                         //////////////////////////////////////
@@ -28,7 +28,7 @@ namespace Core
 {
 
   Sound::Sound(Math_t gain) :
-    m_NodeGraph(), m_Output(std::make_shared<StereoData_t>()), m_Gain(gain)
+    m_NodeGraph(), m_Gain(gain)
   {
   }
 
@@ -42,64 +42,106 @@ namespace Core
     return m_NodeGraph;
   }
 
+  Block_t & Sound::GetBlock(Node_t const & node)
+  {
+    return node->block;
+  }
+
+  Block_t const & Sound::GetBlock(Node_t const & node) const
+  {
+    return node->block;
+  }
+
   Sound & Sound::SetOutputGain(Math_t gain)
   {
     m_Gain = gain;
     return *this;
   }
 
-  Sound & Sound::AddNode(
-    Node_t const & node,
+  Sound & Sound::AddBlock(
+    Block_t const & block,
     uint32_t pos,
     bool targets_output
   )
   {
-    m_NodeGraph[pos].push_back(node);
-
-    if(targets_output)
-    {
-      node->AddOutput(m_Output);
-    }
+    m_NodeGraph[pos].push_back(
+      std::make_shared<Node>(
+        aStereoData_t(new StereoData_t[8192]),
+        block, std::deque<Node_t>(), targets_output
+      )
+    );
 
     return *this;
   }
 
-  StereoData_t Sound::GetSample()
+  Sound & Sound::SetTarget(Block_t const & block, uint32_t pos_b, Block_t const & target, uint32_t pos_t)
   {
-    *m_Output = StereoData_t(0,0);
+    Node_t source;
+    Node_t dest;
+
+    for(auto & node : m_NodeGraph[pos_b])
+    {
+      if(node->block == block)
+      {
+        source = node;
+        break;
+      }
+    }
+    for(auto & node : m_NodeGraph[pos_t])
+    {
+      if(node->block == target)
+      {
+        dest = node;
+        break;
+      }
+    }
+
+    SetTarget(source, dest);
+
+    return *this;
+  }
+
+  Sound & Sound::SetTarget(Node_t const & source, Node_t const & dest)
+  {
+    source->outputs.push_back(dest);
+
+    return *this;
+  }
+
+  void Sound::SendBlock(StereoData_t * output, uint64_t size)
+  {
+    static aStereoData_t buffer(new StereoData_t[size]);
+    static uint64_t i;
 
     for(auto & nodes : m_NodeGraph)
     {
       for(auto & node : nodes.second)
       {
-        node->SendSample();
-      }
-    }
+        std::fill(buffer.get(), buffer.get()+size, StereoData_t(0,0));
 
-    std::get<0>(*m_Output) *= m_Gain;
-    std::get<1>(*m_Output) *= m_Gain;
+        node->block->SendBlock(buffer.get(), node->input.get(), size);
 
-    return *m_Output;
-  }
-
-  void Sound::SendBlock(StereoData_t * buffer, uint64_t size)
-  {
-    static uint64_t i;
-
-    for(i = 0; i < size; ++i)
-    {
-      *m_Output = StereoData_t(0,0);
-
-      for(auto & nodes : m_NodeGraph)
-      {
-        for(auto & node : nodes.second)
+        if(node->final_output)
         {
-          node->SendSample();
+          for(i = 0; i < size; ++i)
+          {
+             LEFT(output[i]) +=  LEFT(buffer[i]) * m_Gain;
+            RIGHT(output[i]) += RIGHT(buffer[i]) * m_Gain;
+          }
+        }
+
+        std::fill(node->input.get(), node->input.get()+size, StereoData_t(0,0));
+
+        for(auto & o : node->outputs)
+        {
+          for(i = 0; i < size; ++i)
+          {
+            LEFT((o->input)[i]) +=
+              LEFT(buffer[i]);
+            RIGHT(o->input[i]) += RIGHT(buffer[i]);
+          }
         }
       }
-
-      std::get<0>(buffer[i]) += std::get<0>(*m_Output) * m_Gain;
-      std::get<1>(buffer[i]) += std::get<1>(*m_Output) * m_Gain;
     }
   }
 

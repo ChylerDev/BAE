@@ -34,7 +34,7 @@ namespace AudioEngine
 
     class Recorder;
     class Driver;
-    class Node;
+    class Block;
     class Sound;
 
   } // namespace Core
@@ -83,6 +83,7 @@ namespace AudioEngine
     // StereoData_t[0] = left; StereoData_t[1] = right;
   using StereoData_t = std::tuple<SampleType_t,SampleType_t>;
   using pStereoData_t = PTR(StereoData_t);
+  using aStereoData_t = PTR(StereoData_t[]);
 
   using Track_t = std::vector<StereoData_t>;
 
@@ -93,7 +94,7 @@ namespace AudioEngine
     // Core
   using Recorder_t = PTR(Core::Recorder);
   using Driver_t   = PTR(Core::Driver);
-  using Node_t     = PTR(Core::Node);
+  using Block_t    = PTR(Core::Block);
   using Sound_t    = PTR(Core::Sound);
 
     // Generator

@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             Node.hpp
+\file             Block.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  AudioEngine
@@ -7,8 +7,8 @@
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
-#ifndef __NODE_HPP
-#define __NODE_HPP
+#ifndef __BLOCK_HPP
+#define __BLOCK_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -34,92 +34,87 @@ namespace Core
   /*! **************************************************************************
   \brief
   *****************************************************************************/
-  class Node
+  class Block
   {
   public:
 
-      // StereoData_t interactor(StereoData_t GeneratorSample, StereoData_t ModifierSample)
-    using Interaction_t = std::function<StereoData_t(StereoData_t const &, StereoData_t const &)>;
-    using TargetsVec_t = std::vector<pStereoData_t>;
+      // void interactor(StereoData_t * OutputBuffer, StereoData_t * GeneratorBuffer, StereoData_t * ModifierBuffer, uint64_t buffer size)
+    using Interaction_t = std::function<void(StereoData_t*, StereoData_t*, StereoData_t*, uint64_t)>;
 
   private:
 
     // Members              ///////////////////////
-
-    TargetsVec_t m_Targets;
 
     GenBase_t m_Generator;
     ModBase_t m_Modifier;
 
     Interaction_t m_Interaction;
 
-    pStereoData_t m_Input;
-
   public:
 
     template<typename ...Args>
-    static inline Node_t Create(Args &&... params)
+    static inline Block_t Create(Args &&... params)
     {
-      return std::make_shared<Node>(params...);
+      return std::make_shared<Block>(params...);
     }
 
     // Con-/De- structors   ///////////////////////
 
     /*! ************************************************************************
     \brief
-      Node constructor.
+      Block constructor.
 
       The default interactor will be used, which is defined as forwarding the
       generator's output.
 
     \param gen
-      The generator used for the node.
+      The generator used for the block.
     ***************************************************************************/
-    Node(GenBase_t const & gen);
+    Block(GenBase_t const & gen);
 
     /*! ************************************************************************
     \brief
-      Node constructor.
+      Block constructor.
 
       The default interactor will be used, which is defined forwarding the
       modifier's output.
 
     \param mod
-      The modifier used for the node.
+      The modifier used for the block.
     ***************************************************************************/
-    Node(ModBase_t const & mod);
+    Block(ModBase_t const & mod);
 
     /*! ************************************************************************
     \brief
-      Node constructor.
+      Block constructor.
 
       The default interactor will be used, which is defined as multiplying the
       generated sample by the filtered sample.
 
     \param gen
-      The generator used for the node.
+      The generator used for the block.
 
     \param mod
-      The modifier used for the node.
+      The modifier used for the block.
     ***************************************************************************/
-    Node(GenBase_t const & gen, ModBase_t const & mod);
+    Block(GenBase_t const & gen, ModBase_t const & mod);
 
     /*! ************************************************************************
     \brief
-      Node constructor.
+      Block constructor.
 
     \param gen
-      The generator used for the node.
+      The generator used for the block.
 
     \param mod
-      The modifier used for the node.
+      The modifier used for the block.
 
     \param interactor
       The function that defines how the output of the generator and the modifier
       are combined. The first argument is the sample from the generator, and the
       second argument is the sample from the modifier.
     ***************************************************************************/
-    Node(
+    Block(
       GenBase_t const & gen,
       ModBase_t const & mod,
       Interaction_t const & interactor
@@ -136,22 +131,19 @@ namespace Core
 
     // Functions            ///////////////////////
 
-    Node & SetInteractor(Interaction_t const & interactor);
+    Block & SetInteractor(Interaction_t const & interactor);
 
-    Node & AddTarget(Node const & target);
-    Node & AddOutput(pStereoData_t const & output);
-
-    void SendSample(void);
+    void SendBlock(StereoData_t * output, StereoData_t * input, uint64_t size);
 
   private:
 
     // Functions                  ///////////////////////
 
-  }; // class Node
+  }; // class Block
 
 } // namespace Core
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __NODE_HPP
+#endif // __BLOCK_HPP

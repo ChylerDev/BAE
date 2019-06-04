@@ -39,7 +39,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(core_files
       ${CMAKE_SOURCE_DIR}/Core/Driver.cpp ${CMAKE_SOURCE_DIR}/Core/Driver.hpp
-      ${CMAKE_SOURCE_DIR}/Core/Node.cpp ${CMAKE_SOURCE_DIR}/Core/Node.hpp
+      ${CMAKE_SOURCE_DIR}/Core/Block.cpp ${CMAKE_SOURCE_DIR}/Core/Block.hpp
       ${CMAKE_SOURCE_DIR}/Core/Sound.cpp ${CMAKE_SOURCE_DIR}/Core/Sound.hpp
 )
 set(gen_files
