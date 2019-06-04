@@ -50,6 +50,25 @@ namespace Generator
     return MONO_TO_STEREO(y);
   }
 
+  void Sine::SendBlock(StereoData_t * buffer, uint64_t size)
+  {
+    static uint64_t i = 0;
+
+    for(i = 0; i < size; ++i)
+    {
+      static SampleType_t sample;
+
+      sample = beta * y1 - y2;
+      y2 = y1;
+      y1 = sample;
+
+      static StereoData_t out;
+      out = MONO_TO_STEREO(sample);
+      std::get<0>(buffer[i]) += std::get<0>(out);
+      std::get<1>(buffer[i]) += std::get<1>(out);
+    }
+  }
+
   void Sine::SetFrequency(Math_t f)
   {
     irate = INC_RATE * double(f);

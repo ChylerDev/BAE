@@ -16,7 +16,10 @@
   #define METHOD(obj, func, type, val) { type t(val); (obj).GetMethodTable().at(#func)(&t); }
 #endif
 #ifndef METHOD_RET
-  #define METHOD_RET(obj, func, type) [obj]()->type{ type t; obj.GetMethodTable().at(#func)(&t); return t; }();
+  #define METHOD_RET(obj, func, rettype) [&, obj]()->rettype{rettype t; obj.GetMethodTable().at(#func)(&t); return t;}()
+#endif
+#ifndef METHOD_PARAM_RET
+  #define METHOD_PARAM_RET(obj, func, rettype, val) [&, obj, val]()->rettype{obj.GetMethodTable().at(#func)(val); return std::get<0>(*val);}()
 #endif
 
 #ifndef SAMPLE_RATE

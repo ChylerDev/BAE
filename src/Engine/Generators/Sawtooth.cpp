@@ -34,9 +34,7 @@ namespace Generator
 
   void Sawtooth::SetFrequency(Math_t freq)
   {
-    if(m_Irate < 0) freq *= -1;
-
-    m_Irate = double(freq) * INC_RATE;
+    m_Irate = 2 * double(freq) * INC_RATE;
   }
 
   StereoData_t Sawtooth::SendSample()
@@ -49,6 +47,26 @@ namespace Generator
     }
 
     return MONO_TO_STEREO(m_Inc);
+  }
+
+  void Sawtooth::SendBlock(StereoData_t * buffer, uint64_t size)
+  {
+    static uint64_t i = 0;
+
+    for(i = 0; i < size; ++i)
+    {
+      m_Inc += m_Irate;
+
+      if(m_Inc >= 1)
+      {
+        m_Inc -= 2;
+      }
+
+      static StereoData_t out;
+      out = MONO_TO_STEREO(m_Inc);
+      std::get<0>(buffer[i]) += std::get<0>(out);
+      std::get<1>(buffer[i]) += std::get<1>(out);
+    }
   }
 
   MethodTable_t const & Sawtooth::GetMethodTable() const

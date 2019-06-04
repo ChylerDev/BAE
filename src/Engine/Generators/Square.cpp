@@ -59,6 +59,27 @@ namespace Generator
     return MONO_TO_STEREO(y);
   }
 
+  void Square::SendBlock(StereoData_t * buffer, uint64_t size)
+  {
+    static uint64_t i;
+
+    for(i = 0; i < size; ++i)
+    {
+      static SampleType_t sample;
+      sample = (m_Ind >= m_Inv && m_Ind < 2*m_Inv) ? -1 : 1;
+
+      if(m_Ind >= 2*m_Inv)
+      {
+        (++m_Ind) -= 2*m_Inv;
+      }
+
+      static StereoData_t out;
+      out = MONO_TO_STEREO(sample);
+      std::get<0>(buffer[i]) += std::get<0>(out);
+      std::get<1>(buffer[i]) += std::get<1>(out);
+    }
+  }
+
   TODO("Once FixedPoint supports operator/, remove the double cast here")
   void Square::SetFrequency(Math_t f)
   {

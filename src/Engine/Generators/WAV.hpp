@@ -118,6 +118,7 @@ namespace Generator
       The stereo sample data.
     ***************************************************************************/
     virtual StereoData_t SendSample(void);
+    virtual void SendBlock(StereoData_t * buffer, uint64_t size);
 
     virtual MethodTable_t const & GetMethodTable() const;
 

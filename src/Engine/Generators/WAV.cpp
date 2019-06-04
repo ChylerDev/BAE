@@ -76,6 +76,11 @@ namespace Generator
     return StereoData_t(0,0);
   }
 
+  void WAV::SendBlock(StereoData_t * buffer, uint64_t size)
+  {
+    m_Resampler->SendBlock(buffer, size);
+  }
+
   void WAV::ReadFile(std::string const & path)
   {
     std::ifstream l_file(path, std::ios::binary);
