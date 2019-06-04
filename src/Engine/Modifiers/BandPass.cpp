@@ -81,6 +81,30 @@ namespace Modifier
     return y;
   }
 
+  void BandPass::FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size)
+  {
+    static uint64_t i;
+
+    for(i = 0; i < size; ++i)
+    {
+      std::get<0>(output[i]) += SampleType_t(
+        m_A0 * (std::get<0>(input[i]) - std::get<0>(m_X2)) +
+        m_B1 * std::get<0>(m_Y1) -
+        m_B2 * std::get<0>(m_Y2)
+      );
+      std::get<1>(output[i]) += SampleType_t(
+        m_A0 * (std::get<1>(input[i]) - std::get<1>(m_X2)) +
+        m_B1 * std::get<1>(m_Y1) -
+        m_B2 * std::get<1>(m_Y2)
+      );
+
+      m_Y2 = m_Y1;
+      m_Y1 = output[i];
+      m_X2 = m_X1;
+      m_X1 = input[i];
+    }
+  }
+
   MethodTable_t const & BandPass::GetMethodTable() const
   {
     return m_Table;

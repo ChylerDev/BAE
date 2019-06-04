@@ -48,6 +48,17 @@ namespace Modifier
                         SampleType_t(std::get<1>(input) * m_Gain));
   }
 
+  void Gain::FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size)
+  {
+    static uint64_t i;
+
+    for(i = 0; i < size; ++i)
+    {
+      std::get<0>(output[i]) += std::get<0>(input[i]) * m_Gain;
+      std::get<1>(output[i]) += std::get<1>(input[i]) * m_Gain;
+    }
+  }
+
   MethodTable_t const & Gain::GetMethodTable() const
   {
     return m_Table;

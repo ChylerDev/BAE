@@ -82,6 +82,51 @@ namespace Modifier
     );
   }
 
+  void ADSR::FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size)
+  {
+    static uint64_t i;
+
+    for(i = 0; i < size; ++i)
+    {
+      switch(m_State)
+      {
+        case state::attack:
+          m_Gain += m_Attack;
+          if(m_Gain >= 1)
+          {
+            m_State = state::decay;
+            m_Gain = 1;
+          }
+          break;
+        case state::decay:
+          m_Gain += m_Decay;
+          if(m_Gain <= m_Sustain)
+          {
+            m_State = state::sustain;
+            m_Gain = m_Sustain;
+          }
+          break;
+        case state::sustain:
+          break;
+        case state::release:
+          m_Gain += m_Release;
+          if(m_Gain <= 0)
+          {
+            m_State = state::invalid;
+            m_Gain = 0;
+          }
+          break;
+        case state::invalid:
+        default:
+          return;
+          break;
+      };
+
+      std::get<0>(output[i]) += std::get<0>(input[i]) * m_Gain;
+      std::get<1>(output[i]) += std::get<1>(input[i]) * m_Gain;
+    }
+  }
+
   MethodTable_t const & ADSR::GetMethodTable() const
   {
     return m_Table;

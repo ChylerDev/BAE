@@ -42,6 +42,20 @@ namespace Modifier
     return s;
   }
 
+  void Delay::FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size)
+  {
+    m_Delay.insert(m_Delay.end(), input, input + size);
+
+    static uint64_t i;
+    for(i = 0; i < size; ++i)
+    {
+      std::get<0>(output[i]) += std::get<0>(m_Delay.front());
+      std::get<1>(output[i]) += std::get<1>(m_Delay.front());
+
+      m_Delay.pop_front();
+    }
+  }
+
   void Delay::SetDelay(uint64_t samples)
   {
     while(samples < m_Delay.size())

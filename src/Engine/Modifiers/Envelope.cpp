@@ -83,6 +83,36 @@ namespace Modifier
     return y;
   }
 
+  void EnvelopeFollower::FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size)
+  {
+    static uint64_t i;
+
+    for(i = 0; i < size; ++i)
+    {
+      static StereoData_t sample;
+
+      if(+(std::get<0>(input[i])) > std::get<0>(m_Y1))
+        std::get<0>(sample) = float(m_AU * (+(std::get<0>(input[i])) +
+                                    +(std::get<0>(m_X1))) + m_BU * std::get<0>(m_Y1));
+      else
+        std::get<0>(sample) = float(m_AD * (+(std::get<0>(input[i])) +
+                                    +(std::get<0>(m_X1))) + m_BD * std::get<0>(m_Y1));
+
+      if(+(std::get<1>(input[i])) > std::get<1>(m_Y1))
+        std::get<1>(sample) = float(m_AU * (+(std::get<1>(input[i])) +
+                                    +(std::get<1>(m_X1))) + m_BU * std::get<1>(m_Y1));
+      else
+        std::get<1>(sample) = float(m_AD * (+(std::get<1>(input[i])) +
+                                    +(std::get<1>(m_X1))) + m_BD * std::get<1>(m_Y1));
+
+      m_Y1 = sample;
+      m_X1 = input[i];
+
+      std::get<0>(output[i]) += std::get<0>(sample);
+      std::get<1>(output[i]) += std::get<1>(sample);
+    }
+  }
+
 } // namespace Modifier
 } // namespace AudioEngine
 
