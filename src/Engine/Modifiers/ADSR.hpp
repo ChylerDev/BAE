@@ -56,6 +56,8 @@ namespace Modifier
 
     Math::FixedPoint<7,24> m_Gain;
 
+    MethodTable_t m_Table;
+
   public:
 
     // Con-/De- structors   ///////////////////////
@@ -88,6 +90,8 @@ namespace Modifier
     void Release(void);
 
     virtual StereoData_t FilterSample(StereoData_t const & input);
+
+    virtual MethodTable_t const & GetMethodTable() const;
 
   private:
 

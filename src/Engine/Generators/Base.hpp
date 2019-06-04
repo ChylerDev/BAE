@@ -18,6 +18,8 @@
 
 #include "../Engine.hpp"
 
+#include "../Tools/MethodTable.hpp"
+
 // Public Macros                ////////////////////////////////////////////////
 
 // Forward References           ////////////////////////////////////////////////
@@ -34,15 +36,13 @@ namespace Generator
   /*! **************************************************************************
   \brief
   *****************************************************************************/
-  class Base
+  class Base: public Tools::MethodTable
   {
   private:
 
     // Members              ///////////////////////
 
     bool is_base;
-
-    MethodTable_t table;
 
   public:
 
@@ -65,7 +65,7 @@ namespace Generator
 
     // Con-/De- structors   ///////////////////////
 
-    Base(bool b) : is_base(b), table() {};
+    Base(bool b) : is_base(b) {};
     virtual ~Base() = default;
 
     // Operators            ///////////////////////
@@ -75,8 +75,6 @@ namespace Generator
     // Functions            ///////////////////////
 
     virtual StereoData_t SendSample(void) { return StereoData_t(0.f, 0.f); };
-
-    virtual MethodTable_t const & GetMethodTable() const { return table; };
 
     bool IsBase() { return is_base; };
 

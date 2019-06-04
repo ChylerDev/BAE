@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             Gain.hpp
+\file             MethodTable.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  AudioEngine
@@ -7,14 +7,12 @@
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
-#ifndef __GAIN_HPP
-#define __GAIN_HPP
+#ifndef __METHODTABLE_HPP
+#define __METHODTABLE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
 #include "../Engine.hpp"
-
-#include "Base.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -26,49 +24,31 @@
 
 namespace AudioEngine
 {
-namespace Modifier
+namespace Tools
 {
 
   /*! **************************************************************************
   \brief
   *****************************************************************************/
-  class Gain : public Base
+  class MethodTable
   {
   private:
 
     // Members              ///////////////////////
 
-    Math_t m_Gain;
-
-    MethodTable_t m_Table;
+    static MethodTable_t const s_Table;
 
   public:
 
     // Con-/De- structors   ///////////////////////
 
-    Gain(Math_t gain = DEFAULT_GAIN);
-    virtual ~Gain() = default;
+    virtual ~MethodTable() = default;
 
     // Operators            ///////////////////////
 
     // Accossors/Mutators   ///////////////////////
 
-    void SetGain(Math_t gain);
-    Math_t GetGain() const;
-
     // Functions            ///////////////////////
-
-    /*! ************************************************************************
-    \brief
-      Takes input sample and filters it, returning the result.
-
-    \param input
-      The input sample.
-
-    \return
-      The filtered sample.
-    ***************************************************************************/
-    virtual StereoData_t FilterSample(StereoData_t const & input);
 
     virtual MethodTable_t const & GetMethodTable() const;
 
@@ -76,11 +56,11 @@ namespace Modifier
 
     // Functions                  ///////////////////////
 
-  }; // class Gain
+  }; // class MethodTable
 
-} // namespace Modifier
+} // namespace Tools
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __GAIN_HPP
+#endif // __METHODTABLE_HPP

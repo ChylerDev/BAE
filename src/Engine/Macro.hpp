@@ -15,6 +15,9 @@
 #ifndef METHOD
   #define METHOD(obj, func, type, val) { type t(val); (obj).GetMethodTable().at(#func)(&t); }
 #endif
+#ifndef METHOD_RET
+  #define METHOD_RET(obj, func, type) [obj]()->type{ type t; obj.GetMethodTable().at(#func)(&t); return t; }();
+#endif
 
 #ifndef SAMPLE_RATE
   #define SAMPLE_RATE 48'000

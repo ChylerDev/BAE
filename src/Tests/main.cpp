@@ -109,7 +109,7 @@ int main(int argc, char * argv[])
 
     driver->AddSound(sound);
 
-  #elif 1
+  #elif 0
 
     AudioEngine::Sound_t sound = AudioEngine::Core::Sound::Create(1.0);
 
@@ -130,7 +130,7 @@ int main(int argc, char * argv[])
       AudioEngine::Generator::Base::Create<Tone_t>(440)
     );
     auto mod = AudioEngine::Modifier::Base::Create<AudioEngine::Modifier::ADSR>(
-      uint64_t(0.0375*SAMPLE_RATE), uint64_t(0.25*SAMPLE_RATE), AudioEngine::Math_t(0.5), uint64_t(0.75*SAMPLE_RATE)
+      uint64_t(0.0375*SAMPLE_RATE), uint64_t(0.20*SAMPLE_RATE), AudioEngine::Math_t(0.5), uint64_t(0.25*SAMPLE_RATE)
     );
     AudioEngine::Node_t n2 = AudioEngine::Core::Node::Create(mod);
 
@@ -145,25 +145,25 @@ int main(int argc, char * argv[])
 
   driver->StartRecording();
 
-  std::cin.get();
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  METHOD(*n1->GetGenerator(), SetFrequency, AudioEngine::Math_t, 110);
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
+  METHOD(*n2->GetModifier(), Release, void *, nullptr);
 
-  // auto adsr = reinterpret_cast<AudioEngine::Modifier::ADSR*>(mod.get());
-  // adsr->Release();
-*
-  METHOD(*node1->GetGenerator(), SetFrequency, AudioEngine::Math_t, 110);
-
-  std::cin.get();
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
   driver->Shutdown();
 
-  std::basic_ofstream<RIFF::byte_t> file("wave_out.wav", std::ios_base::binary);
+  std::ofstream file("wave_out.wav", std::ios_base::binary);
   if(!file)
   {
     std::cerr << "Error in opening file for write\n";
   }
   else
   {
-    file << AudioEngine::Tools::WriteWAV(driver->StopRecording());
+    auto v = AudioEngine::Tools::WriteWAV(driver->StopRecording());
+
+    file.write(reinterpret_cast<char*>(v.data()), v.size());
   }
 
   return 0;

@@ -43,6 +43,8 @@ namespace Modifier
     Math_t m_A0, m_B1, m_B2;
     StereoData_t m_X1, m_X2, m_Y1, m_Y2;
 
+    MethodTable_t m_Table;
+
   public:
 
     // Con-/De- structors   ///////////////////////
@@ -61,6 +63,8 @@ namespace Modifier
     // Functions            ///////////////////////
 
     virtual StereoData_t FilterSample(StereoData_t const & x);
+
+    virtual MethodTable_t const & GetMethodTable() const;
 
   private:
 

@@ -30,8 +30,15 @@ namespace Modifier
   ADSR::ADSR(uint64_t a, uint64_t d, Math_t s, uint64_t r) : Base(false),
     m_Attack(1.0/double(a)), m_Decay(double(s-1)/double(d)),
     m_Sustain(s), m_Release(double(-s)/double(r)),
-    m_State(state::attack), m_Gain(0)
+    m_State(state::attack), m_Gain(0),
+    m_Table()
   {
+    m_Table["Release"] = [this](void *){ Release(); };
+  }
+
+  void ADSR::Release()
+  {
+    m_State = state::release;
   }
 
   StereoData_t ADSR::FilterSample(StereoData_t const & sample)
@@ -75,9 +82,9 @@ namespace Modifier
     );
   }
 
-  void ADSR::Release()
+  MethodTable_t const & ADSR::GetMethodTable() const
   {
-    m_State = state::release;
+    return m_Table;
   }
 
 } // namespace Modifier
