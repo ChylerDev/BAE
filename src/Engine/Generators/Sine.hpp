@@ -43,6 +43,8 @@ namespace Generator
     SampleType_t y1, y2;
     Math_t beta;
 
+    MethodTable_t m_Table;
+
   public:
 
     // Con-/De- structors   ///////////////////////
@@ -85,7 +87,9 @@ namespace Generator
     \param freq
       The new frequency.
     ***************************************************************************/
-    virtual void SetFrequency(Math_t freq);
+    void SetFrequency(Math_t freq);
+
+    virtual MethodTable_t const & GetMethodTable() const;
 
   private:
 

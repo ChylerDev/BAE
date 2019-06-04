@@ -42,6 +42,8 @@ namespace Generator
     Math_t m_Ind;
     Math_t m_Inv;
 
+    MethodTable_t m_Table;
+
   public:
 
     // Con-/De- structors   ///////////////////////
@@ -84,7 +86,9 @@ namespace Generator
     \param freq
       The new frequency.
     ***************************************************************************/
-    virtual void SetFrequency(Math_t freq);
+    void SetFrequency(Math_t freq);
+
+    virtual MethodTable_t const & GetMethodTable() const;
 
   private:
 

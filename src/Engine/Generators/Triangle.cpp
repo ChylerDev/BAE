@@ -27,8 +27,9 @@ namespace Generator
 {
 
   Triangle::Triangle(Math_t freq) : Base(false),
-    m_Irate(4 * double(freq) * INC_RATE), m_Inc()
+    m_Irate(4 * double(freq) * INC_RATE), m_Inc(), m_Table()
   {
+    m_Table["SetFrequency"] = [this](void * f){ SetFrequency(*reinterpret_cast<Math_t*>(f)); };
   }
 
   void Triangle::SetFrequency(Math_t freq)
@@ -50,6 +51,11 @@ namespace Generator
     }
 
     return MONO_TO_STEREO(m_Inc);
+  }
+
+  MethodTable_t const & Triangle::GetMethodTable() const
+  {
+    return m_Table;
   }
 
 } // namespace Generator

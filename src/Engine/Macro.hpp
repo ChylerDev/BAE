@@ -12,6 +12,10 @@
 
 // Public Macros                ////////////////////////////////////////////////
 
+#ifndef METHOD
+  #define METHOD(obj, func, type, val) { type t(val); (obj).GetMethodTable().at(#func)(&t); }
+#endif
+
 #ifndef SAMPLE_RATE
   #define SAMPLE_RATE 48'000
 #endif

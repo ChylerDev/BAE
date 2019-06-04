@@ -32,8 +32,10 @@ namespace Generator
 
   Sine::Sine(Math_t f) : Base(false),
     irate(INC_RATE*double(f)),
-    y1(), y2(), beta()
+    y1(), y2(), beta(),
+    m_Table()
   {
+    m_Table["SetFrequency"] = [this](void * freq){ SetFrequency(*reinterpret_cast<Math_t*>(freq)); };
     Reset();
   }
 
@@ -51,6 +53,11 @@ namespace Generator
   {
     irate = INC_RATE * double(f);
     Reset();
+  }
+
+  MethodTable_t const & Sine::GetMethodTable() const
+  {
+    return m_Table;
   }
 
 } // namespace Generator

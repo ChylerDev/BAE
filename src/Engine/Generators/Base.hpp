@@ -12,6 +12,10 @@
 
 // Include Files                ////////////////////////////////////////////////
 
+#include <functional>
+#include <unordered_map>
+#include <string>
+
 #include "../Engine.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
@@ -38,6 +42,8 @@ namespace Generator
 
     bool is_base;
 
+    MethodTable_t table;
+
   public:
 
     /*! ************************************************************************
@@ -59,7 +65,7 @@ namespace Generator
 
     // Con-/De- structors   ///////////////////////
 
-    Base(bool b) : is_base(b) {};
+    Base(bool b) : is_base(b), table() {};
     virtual ~Base() = default;
 
     // Operators            ///////////////////////
@@ -69,7 +75,8 @@ namespace Generator
     // Functions            ///////////////////////
 
     virtual StereoData_t SendSample(void) { return StereoData_t(0.f, 0.f); };
-    virtual void SetFrequency(Math_t freq) { UNREFERENCED_PARAMETER(freq); };
+
+    virtual MethodTable_t const & GetMethodTable() const { return table; };
 
     bool IsBase() { return is_base; };
 

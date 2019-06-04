@@ -39,8 +39,9 @@ namespace Generator
     // Members              ///////////////////////
 
     Math_t m_Irate;
-
     Math_t m_Inc;
+
+    MethodTable_t m_Table;
 
   public:
 
@@ -55,9 +56,11 @@ namespace Generator
 
     // Functions            ///////////////////////
 
-    virtual void SetFrequency(Math_t freq);
+    void SetFrequency(Math_t freq);
 
     virtual StereoData_t SendSample(void);
+
+    virtual MethodTable_t const & GetMethodTable() const;
 
   private:
 

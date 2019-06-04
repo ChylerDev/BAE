@@ -109,16 +109,16 @@ int main(int argc, char * argv[])
 
     driver->AddSound(sound);
 
-  #elif 0
+  #elif 1
 
     AudioEngine::Sound_t sound = AudioEngine::Core::Sound::Create(1.0);
 
     AudioEngine::Node_t node1 = AudioEngine::Core::Node::Create(AudioEngine::Generator::Base::Create<Tone_t>(440.f));
-    sound->AddNode(node1, 0);
+    sound->AddNode(node1, 0, true);
 
-    AudioEngine::Node_t node2 = AudioEngine::Core::Node::Create(AudioEngine::Modifier::Base::Create<AudioEngine::Modifier::EnvelopeFollower>(20.f, 20'000.f));
-    node1->AddTarget(*node2);
-    sound->AddNode(node2, 1, true);
+    // AudioEngine::Node_t node2 = AudioEngine::Core::Node::Create(AudioEngine::Modifier::Base::Create<AudioEngine::Modifier::EnvelopeFollower>(20.f, 20'000.f));
+    // node1->AddTarget(*node2);
+    // sound->AddNode(node2, 1, true);
 
     driver->AddSound(sound);
 
@@ -147,8 +147,10 @@ int main(int argc, char * argv[])
 
   std::cin.get();
 
-  auto adsr = reinterpret_cast<AudioEngine::Modifier::ADSR*>(mod.get());
-  adsr->Release();
+  // auto adsr = reinterpret_cast<AudioEngine::Modifier::ADSR*>(mod.get());
+  // adsr->Release();
+*
+  METHOD(*node1->GetGenerator(), SetFrequency, AudioEngine::Math_t, 110);
 
   std::cin.get();
 
@@ -163,8 +165,6 @@ int main(int argc, char * argv[])
   {
     file << AudioEngine::Tools::WriteWAV(driver->StopRecording());
   }
-
-  std::ofstream f("test.txt"); f << "test file\n";
 
   return 0;
 }

@@ -27,8 +27,9 @@ namespace Generator
 {
 
   Sawtooth::Sawtooth(Math_t freq) : Base(false),
-    m_Irate(2 * double(freq) * INC_RATE), m_Inc()
+    m_Irate(2 * double(freq) * INC_RATE), m_Inc(), m_Table()
   {
+    m_Table["SetFrequency"] = [this](void * f){ SetFrequency(*reinterpret_cast<Math_t*>(f)); };
   }
 
   void Sawtooth::SetFrequency(Math_t freq)
@@ -48,6 +49,11 @@ namespace Generator
     }
 
     return MONO_TO_STEREO(m_Inc);
+  }
+
+  MethodTable_t const & Sawtooth::GetMethodTable() const
+  {
+    return m_Table;
   }
 
 } // namespace Generator
