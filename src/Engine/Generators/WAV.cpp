@@ -14,7 +14,6 @@
 #include <fstream>
 #include <sstream>
 
-#include <Trace/Trace.hpp>
 #include <RIFF-Util/RIFF.hpp>
 
 #include "../Tools/Input.hpp"
@@ -73,11 +72,11 @@ namespace Generator
 
     if(!l_file)
     {
-      Log::Trace::out[err] << "WAV file " << path << " couldn't be opened.\n";
+      std::cerr << "WAV file " << path << " couldn't be opened.\n";
     }
     else
     {
-      Log::Trace::out[stc] << "WAV file " << path << " opened for reading\n";
+      std::cout << "WAV file " << path << " opened for reading\n";
 
       std::vector<char> temp;
 
@@ -85,12 +84,11 @@ namespace Generator
       temp.reserve(l_file.tellg());
       l_file.seekg(0, std::ios::beg);
 
-      Log::Trace::out[stc] << "Loading file...\n";
-      Log::Trace::out.flush();
+      std::cout << "Loading file...\n";
 
       temp.assign((std::istreambuf_iterator<char>(l_file)), std::istreambuf_iterator<char>());
 
-      Log::Trace::out[stc] << "File successfully loaded\n";
+      std::cout << "File successfully loaded\n";
 
       ParseWAV(temp.data(), int(temp.size()));
     }
@@ -102,7 +100,7 @@ namespace Generator
     {
       return m_Resampler->SendSample();
     }
-    return StereoData_t(0,0);
+    return StereoData_t(SampleType_t(0), SampleType_t(0));
   }
 
   void WAV::SendBlock(StereoData_t * buffer, uint64_t size)
@@ -142,7 +140,7 @@ namespace Generator
     RIFF::vector_t fmt = riff.GetChunk(CONSTRUCT_BYTE_STR("fmt "));
     if(fmt.size() != sizeof(WAVHeader))
     {
-      Log::Trace::out[err] << "Error reading WAVE data, malformed header chunk\n";
+      std::cerr << "Error reading WAVE data, malformed header chunk\n";
       return;
     }
       // Cast the data as a header object for easier use
@@ -163,13 +161,13 @@ namespace Generator
       {
         if(header->ChannelCount == 1)
         {
-          std::get<0>(sample).Data() = std::get<1>(sample).Data() =
-            SampleType_t::Int_t(((*data) << 8) * SQRT_HALF);
+          Left(sample) = Right(sample) =
+            SampleType_t(((*data) << 8) * SQRT_HALF)/SampleType_t(0x8000);
         }
         else
         {
-          std::get<0>(sample).Data() = int16_t((*data) << 8);
-          std::get<1>(sample).Data() = int16_t((*(data+1)) << 8);
+          Left(sample) = SampleType_t((*data) << 8)/SampleType_t(0x8000);
+          Right(sample) = SampleType_t((*(data+1)) << 8)/SampleType_t(0x8000);
         }
       }
       else  // assume 16-bit audio is being used
@@ -177,13 +175,13 @@ namespace Generator
         int16_t const * rdata = reinterpret_cast<int16_t const *>(data);
         if(header->ChannelCount == 1)
         {
-          std::get<0>(sample).Data() = std::get<1>(sample).Data() =
-            SampleType_t::Int_t((*rdata) * SQRT_HALF);
+          Left(sample) = Right(sample) =
+            SampleType_t((*rdata) * SQRT_HALF)/SampleType_t(0x8000);
         }
         else
         {
-          std::get<0>(sample).Data() = *rdata;
-          std::get<1>(sample).Data() = *(rdata+1);
+          Left(sample) = *rdata / SampleType_t(0x8000);
+          Right(sample) = *(rdata+1) / SampleType_t(0x8000);
         }
       }
 

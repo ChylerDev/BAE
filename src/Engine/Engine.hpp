@@ -17,6 +17,8 @@
 #include "Macro.hpp"
 #include "Types.hpp"
 
+#include "Tools/Util.hpp"
+
 #include <portaudio/portaudio.h>
 
 #endif // __ENGINE_HPP

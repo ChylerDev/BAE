@@ -32,9 +32,8 @@ namespace AudioEngine
 namespace Generator
 {
 
-  TODO("Once FixedPoint supports operator/, remove the double cast here")
   Square::Square(Math_t f) : Base(false),
-    m_Ind(0), m_Inv(SAMPLE_RATE/(2*double(f))),
+    m_Ind(0), m_Inv(SAMPLE_RATE/(2*f)),
     m_Table()
   {
     m_Table["SetFrequency"] = [this](void * freq){ SetFrequency(*reinterpret_cast<Math_t*>(freq)); };
@@ -66,7 +65,7 @@ namespace Generator
     for(i = 0; i < size; ++i)
     {
       static SampleType_t sample;
-      sample = (m_Ind >= m_Inv && m_Ind < 2*m_Inv) ? -1 : 1;
+      sample = SampleType_t((m_Ind >= m_Inv && m_Ind < 2*m_Inv) ? -1 : 1);
 
       if(m_Ind >= 2*m_Inv)
       {
@@ -75,15 +74,14 @@ namespace Generator
 
       static StereoData_t out;
       out = MONO_TO_STEREO(sample);
-      std::get<0>(buffer[i]) += std::get<0>(out);
-      std::get<1>(buffer[i]) += std::get<1>(out);
+      Left(buffer[i]) += Left(out);
+      Right(buffer[i]) += Right(out);
     }
   }
 
-  TODO("Once FixedPoint supports operator/, remove the double cast here")
   void Square::SetFrequency(Math_t f)
   {
-    m_Inv = SAMPLE_RATE/(2*double(f));
+    m_Inv = SAMPLE_RATE/(2*f);
   }
 
   MethodTable_t const & Square::GetMethodTable() const

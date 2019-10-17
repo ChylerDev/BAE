@@ -43,11 +43,11 @@ namespace Tools
 
     SampleType_t fraction(m_Index - uint64_t(m_Index));
 
-    SampleType_t l_x1(std::get<0>(m_Data[uint64_t(m_Index)]));
-    SampleType_t l_x2(std::get<0>(m_Data[uint64_t(m_Index)+1]));
+    SampleType_t l_x1(Left(m_Data[uint64_t(m_Index)]));
+    SampleType_t l_x2(Left(m_Data[uint64_t(m_Index)+1]));
 
-    SampleType_t r_x1(std::get<1>(m_Data[uint64_t(m_Index)]));
-    SampleType_t r_x2(std::get<1>(m_Data[uint64_t(m_Index)+1]));
+    SampleType_t r_x1(Right(m_Data[uint64_t(m_Index)]));
+    SampleType_t r_x2(Right(m_Data[uint64_t(m_Index)+1]));
 
     SampleType_t l(l_x1 + fraction * (l_x2 - l_x1));
     SampleType_t r(r_x1 + fraction * (r_x2 - r_x1));
@@ -75,14 +75,14 @@ namespace Tools
         return;
       }
 
-      std::get<0>(buffer[i]) += (std::get<0>(m_Data[uint64_t(m_Index)])) +
+      Left(buffer[i]) += (Left(m_Data[uint64_t(m_Index)])) +
                                 (m_Index - uint64_t(m_Index)) *
-                                ((std::get<0>(m_Data[uint64_t(m_Index)+1])) -
-                                 (std::get<0>(m_Data[uint64_t(m_Index)])));
-      std::get<1>(buffer[i]) += (std::get<1>(m_Data[uint64_t(m_Index)])) +
+                                ((Left(m_Data[uint64_t(m_Index)+1])) -
+                                 (Left(m_Data[uint64_t(m_Index)])));
+      Right(buffer[i]) += (Right(m_Data[uint64_t(m_Index)])) +
                                 (m_Index - uint64_t(m_Index)) *
-                                ((std::get<1>(m_Data[uint64_t(m_Index)+1])) -
-                                 (std::get<1>(m_Data[uint64_t(m_Index)])));
+                                ((Right(m_Data[uint64_t(m_Index)+1])) -
+                                 (Right(m_Data[uint64_t(m_Index)])));
     }
   }
 

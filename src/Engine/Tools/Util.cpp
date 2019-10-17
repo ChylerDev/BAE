@@ -1,15 +1,15 @@
 /*! ****************************************************************************
-\file             Noise.cpp
+\file             Util.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 // Include Files                          //////////////////////////////////////
 
-#include "Noise.hpp"
+#include "Util.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
@@ -23,39 +23,26 @@
 
 namespace AudioEngine
 {
-namespace Generator
-{
-
-  Noise::Noise() : Base(false),
-    m_Distribution(-0x8000, 0x7FFF), m_Engine(std::random_device()())
+  /*! **************************************************************************
+  \brief
+  
+  *****************************************************************************/
+  constexpr SampleType_t & Left(StereoData_t & s)
   {
+	  return std::get<0>(s);
   }
-
-  StereoData_t Noise::SendSample()
+  constexpr SampleType_t const & Left(StereoData_t const & s)
   {
-    SampleType_t sample;
-    sample = m_Distribution(m_Engine)/SampleType_t(0x8000);
-
-    return MONO_TO_STEREO(sample);
+	  return std::get<0>(s);
   }
-
-  void Noise::SendBlock(StereoData_t * buffer, uint64_t size)
+  constexpr SampleType_t & Right(StereoData_t & s)
   {
-    static uint64_t i = 0;
-    for(i = 0; i < size; ++i)
-    {
-      static SampleType_t sample;
-
-      sample = m_Distribution(m_Engine)/SampleType_t(0x8000);
-
-      static StereoData_t out;
-      out = MONO_TO_STEREO(sample);
-      Left(buffer[i]) += Left(out);
-      Right(buffer[i]) += Right(out);
-    }
+	  return std::get<1>(s);
   }
-
-} // namespace Generator
+  constexpr SampleType_t const & Right(StereoData_t const & s)
+  {
+	  return std::get<1>(s);
+  }
 } // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////

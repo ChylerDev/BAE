@@ -30,8 +30,8 @@ namespace Modifier
   EnvelopeFollower::EnvelopeFollower(Math_t fd, Math_t fu) : Base(false),
     m_AU(), m_BU(), m_AD(), m_BD(), m_X1(), m_Y1()
   {
-    double theta_u = std::tan(double(PI * fu * INC_RATE));
-    double theta_d = std::tan(double(PI * fd * INC_RATE));
+    double theta_u = std::tan(PI * fu * INC_RATE);
+    double theta_d = std::tan(PI * fd * INC_RATE);
 
     m_AU = theta_u / (1+theta_u);
     m_BU = (1-theta_u) / (1+theta_u);
@@ -55,26 +55,26 @@ namespace Modifier
   {
     StereoData_t y;
 
-    if(+(std::get<0>(x)) > std::get<0>(m_Y1))
+    if(+(Left(x)) > Left(m_Y1))
     {
-      std::get<0>(y) = float(m_AU * +(std::get<0>(x)) + m_BU*std::get<0>(m_Y1));
-      // std::get<0>(y) = float(m_AU * (+(std::get<0>(x)) + +(std::get<0>(m_X1))) + m_BU * std::get<0>(m_Y1));
+      Left(y) = float(m_AU * +(Left(x)) + m_BU*Left(m_Y1));
+      // Left(y) = float(m_AU * (+(Left(x)) + +(Left(m_X1))) + m_BU * Left(m_Y1));
     }
     else
     {
-      std::get<0>(y) = float(m_AD * +(std::get<0>(x)) + m_BD*std::get<0>(m_Y1));
-      // std::get<0>(y) = float(m_AD * (+(std::get<0>(x)) + +(std::get<0>(m_X1))) + m_BD * std::get<0>(m_Y1));
+      Left(y) = float(m_AD * +(Left(x)) + m_BD*Left(m_Y1));
+      // Left(y) = float(m_AD * (+(Left(x)) + +(Left(m_X1))) + m_BD * Left(m_Y1));
     }
 
-    if(+(std::get<1>(x)) > std::get<1>(m_Y1))
+    if(+(Right(x)) > Right(m_Y1))
     {
-      std::get<1>(y) = float(m_AU * +(std::get<1>(x)) + m_BU*std::get<1>(m_Y1));
-      // std::get<1>(y) = float(m_AU * (+(std::get<1>(x)) + +(std::get<1>(m_X1))) + m_BU * std::get<1>(m_Y1));
+      Right(y) = float(m_AU * +(Right(x)) + m_BU*Right(m_Y1));
+      // Right(y) = float(m_AU * (+(Right(x)) + +(Right(m_X1))) + m_BU * Right(m_Y1));
     }
     else
     {
-      std::get<1>(y) = float(m_AD * +(std::get<1>(x)) + m_BD*std::get<1>(m_Y1));
-      // std::get<1>(y) = float(m_AD * (+(std::get<1>(x)) + +(std::get<1>(m_X1))) + m_BD * std::get<1>(m_Y1));
+      Right(y) = float(m_AD * +(Right(x)) + m_BD*Right(m_Y1));
+      // Right(y) = float(m_AD * (+(Right(x)) + +(Right(m_X1))) + m_BD * Right(m_Y1));
     }
 
     m_Y1 = y;
@@ -91,25 +91,25 @@ namespace Modifier
     {
       static StereoData_t sample;
 
-      if(+(std::get<0>(input[i])) > std::get<0>(m_Y1))
-        std::get<0>(sample) = float(m_AU * (+(std::get<0>(input[i])) +
-                                    +(std::get<0>(m_X1))) + m_BU * std::get<0>(m_Y1));
+      if(+(Left(input[i])) > Left(m_Y1))
+        Left(sample) = float(m_AU * (+(Left(input[i])) +
+                                    +(Left(m_X1))) + m_BU * Left(m_Y1));
       else
-        std::get<0>(sample) = float(m_AD * (+(std::get<0>(input[i])) +
-                                    +(std::get<0>(m_X1))) + m_BD * std::get<0>(m_Y1));
+        Left(sample) = float(m_AD * (+(Left(input[i])) +
+                                    +(Left(m_X1))) + m_BD * Left(m_Y1));
 
-      if(+(std::get<1>(input[i])) > std::get<1>(m_Y1))
-        std::get<1>(sample) = float(m_AU * (+(std::get<1>(input[i])) +
-                                    +(std::get<1>(m_X1))) + m_BU * std::get<1>(m_Y1));
+      if(+(Right(input[i])) > Right(m_Y1))
+        Right(sample) = float(m_AU * (+(Right(input[i])) +
+                                    +(Right(m_X1))) + m_BU * Right(m_Y1));
       else
-        std::get<1>(sample) = float(m_AD * (+(std::get<1>(input[i])) +
-                                    +(std::get<1>(m_X1))) + m_BD * std::get<1>(m_Y1));
+        Right(sample) = float(m_AD * (+(Right(input[i])) +
+                                    +(Right(m_X1))) + m_BD * Right(m_Y1));
 
       m_Y1 = sample;
       m_X1 = input[i];
 
-      std::get<0>(output[i]) += std::get<0>(sample);
-      std::get<1>(output[i]) += std::get<1>(sample);
+      Left(output[i]) += Left(sample);
+      Right(output[i]) += Right(sample);
     }
   }
 

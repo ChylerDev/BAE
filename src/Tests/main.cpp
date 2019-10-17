@@ -36,7 +36,6 @@
 #include "../Engine/Tools/Input.hpp"
 #include "../Engine/Tools/WAVWriter.hpp"
 
-#include <Trace/Trace.hpp>
 #include <RIFF-Util/RIFF.hpp>
 
 // Private Macros                         //////////////////////////////////////
@@ -63,12 +62,12 @@ int main(int argc, char * argv[])
 
     if(argc > 1)
     {
-      Log::Trace::out[stc] << "Reading from WAV file\n";
+      std::cout << "Reading from WAV file\n";
       gen = AudioEngine::Core::Block::Create(AudioEngine::Generator::Base::Create<AudioEngine::Generator::WAV>(AudioEngine::Tools::GetOptions().at(1)));
     }
     else
     {
-      Log::Trace::out[stc] << "Generating sine tone\n";
+      std::cout << "Generating sine tone\n";
       gen = AudioEngine::Core::Block::Create(AudioEngine::Generator::Base::Create<Tone_t>(440.f));
     }
 

@@ -15,8 +15,6 @@
 #include <queue>
 #include <thread>
 
-#include <Trace/Trace.hpp>
-
 #include "Sound.hpp"
 #include "Driver.hpp"
 
@@ -26,11 +24,11 @@
 {                                                  \
   if(code != paNoError)                            \
   {                                                \
-    Log::Trace::out[err] << badtxt << '\n';        \
-    Log::Trace::out[err] << Pa_GetErrorText(code); \
+    std::cerr << badtxt << '\n';        \
+    std::cerr << Pa_GetErrorText(code); \
     exit(-1);                                      \
   }                                                \
-  Log::Trace::out[stc] << goodtxt << '\n';         \
+  std::cout << goodtxt << '\n';         \
 }                                                  \
 
 // Private Enums                          //////////////////////////////////////
@@ -107,7 +105,7 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
 
     m_Params.device = Pa_GetDefaultOutputDevice();
     m_Params.channelCount = 2;
-    m_Params.sampleFormat = paInt16;
+    m_Params.sampleFormat = paFloat32;
     m_Params.suggestedLatency = Pa_GetDeviceInfo(m_Params.device)->defaultHighOutputLatency;
     m_Params.hostApiSpecificStreamInfo = nullptr;
 
@@ -191,7 +189,7 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
     #ifdef _DEBUG
       if(frameCount > MAX_BUFFER)
       {
-        Log::Trace::out[err] << "PortAudio frame count is larger than the allowed buffer size. "
+        std::cerr << "PortAudio frame count is larger than the allowed buffer size. "
                              << "This is a guaranteed underflow scenario!!!\n";
       }
     #endif
@@ -201,16 +199,16 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
 
       if(old_count != frameCount)
       {
-        Log::Trace::out[frq] << "PortAudio buffer size: " << frameCount << '\n';
+        std::cout << "PortAudio buffer size: " << frameCount << '\n';
         old_count = frameCount;
       }
     #endif
 
       // Convert input data to usable type
     Driver * obj = reinterpret_cast<Driver *>(userData);
-    int16_t * out = reinterpret_cast<int16_t *>(output);
+    SampleType_t * out = reinterpret_cast<SampleType_t*>(output);
 
-    obj->m_OutputTrack.assign(frameCount, StereoData_t(0,0));
+    obj->m_OutputTrack.assign(frameCount, StereoData_t(SampleType_t(0), SampleType_t(0)));
 
     for(auto & s : obj->m_Sounds)
     {
@@ -220,8 +218,8 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
     static uint64_t i;
     for(i = 0; i < frameCount; ++i)
     {
-      out[2*i] = (SampleType_t(std::get<0>(obj->m_OutputTrack[i]) * obj->m_Gain)).Data();
-      out[2*i+1] = (SampleType_t(std::get<1>(obj->m_OutputTrack[i]) * obj->m_Gain)).Data();
+      out[2*i] = (SampleType_t(Left(obj->m_OutputTrack[i]) * obj->m_Gain));
+      out[2*i+1] = (SampleType_t(Right(obj->m_OutputTrack[i]) * obj->m_Gain));
     }
 
     if(obj->m_Recording)
@@ -233,13 +231,13 @@ GCC_DISABLE_WARNING("-Wold-style-cast")
     if(statusFlags & paOutputUnderflow)
     {
         // UNDERFLOW!!!
-      Log::Trace::out[err] << "Audio system is experiencing data underflow, "
+      std::cerr << "Audio system is experiencing data underflow, "
                            << "zero-data will be inserted to keep up!\n";
     }
     else if(statusFlags & paOutputOverflow)
     {
         // OVERFLOW!!!
-      Log::Trace::out[err] << "Audio system is experiencing data overflow, "
+      std::cerr << "Audio system is experiencing data overflow, "
                            << "some data will be discarded to keep up!\n";
     }
 

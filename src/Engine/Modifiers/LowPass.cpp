@@ -51,14 +51,14 @@ namespace Modifier
   StereoData_t LowPass::FilterSample(StereoData_t const & input)
   {
     StereoData_t output(
-      float(m_Coefficients[0] * std::get<0>(input) +
-            m_Coefficients[1] * std::get<0>(m_Outputs[0]) +
-            m_Coefficients[2] * std::get<0>(m_Outputs[1]) +
-            m_Coefficients[3] * std::get<0>(m_Outputs[2])),
-      float(m_Coefficients[0] * std::get<1>(input) +
-            m_Coefficients[1] * std::get<1>(m_Outputs[0]) +
-            m_Coefficients[2] * std::get<1>(m_Outputs[1]) +
-            m_Coefficients[3] * std::get<1>(m_Outputs[2]))
+      float(m_Coefficients[0] * Left(input) +
+            m_Coefficients[1] * Left(m_Outputs[0]) +
+            m_Coefficients[2] * Left(m_Outputs[1]) +
+            m_Coefficients[3] * Left(m_Outputs[2])),
+      float(m_Coefficients[0] * Right(input) +
+            m_Coefficients[1] * Right(m_Outputs[0]) +
+            m_Coefficients[2] * Right(m_Outputs[1]) +
+            m_Coefficients[3] * Right(m_Outputs[2]))
     );
 
     //std::memmove(m_Outputs+1, m_Outputs, sizeof(*m_Outputs));
@@ -79,16 +79,16 @@ namespace Modifier
     {
       static StereoData_t out;
 
-      std::get<0>(output[i]) += std::get<0>(out) = 
-        float(m_Coefficients[0] * std::get<0>(input[i]) +
-              m_Coefficients[1] * std::get<0>(m_Outputs[0]) +
-              m_Coefficients[2] * std::get<0>(m_Outputs[1]) +
-              m_Coefficients[3] * std::get<0>(m_Outputs[2]));
-      std::get<0>(output[i]) += std::get<1>(out) = 
-        float(m_Coefficients[0] * std::get<1>(input[i]) +
-              m_Coefficients[1] * std::get<1>(m_Outputs[0]) +
-              m_Coefficients[2] * std::get<1>(m_Outputs[1]) +
-              m_Coefficients[3] * std::get<1>(m_Outputs[2]));
+      Left(output[i]) += Left(out) = 
+        float(m_Coefficients[0] * Left(input[i]) +
+              m_Coefficients[1] * Left(m_Outputs[0]) +
+              m_Coefficients[2] * Left(m_Outputs[1]) +
+              m_Coefficients[3] * Left(m_Outputs[2]));
+      Left(output[i]) += Right(out) = 
+        float(m_Coefficients[0] * Right(input[i]) +
+              m_Coefficients[1] * Right(m_Outputs[0]) +
+              m_Coefficients[2] * Right(m_Outputs[1]) +
+              m_Coefficients[3] * Right(m_Outputs[2]));
 
       std::move(m_Outputs+1, m_Outputs+4, m_Outputs);
       m_Outputs[0] = out;

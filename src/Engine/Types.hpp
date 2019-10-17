@@ -19,7 +19,7 @@
 #include <tuple>
 
 #define FIXED_POINT_RAW_ACCESS
-#include <FixedPoint/Math.hpp>
+#include <FixedPoint/FixedPoint.hpp>
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -78,8 +78,8 @@ namespace AudioEngine
 namespace AudioEngine
 {
 
-  using Math_t = Math::FixedPoint<15,16>;
-  using SampleType_t = Math::Audio16Bit_t;
+  using Math_t = double;//FixedPoint::FixedPoint<15,16>;
+  using SampleType_t = float;//FixedPoint::Audio16Bit_t;
     // StereoData_t[0] = left; StereoData_t[1] = right;
   using StereoData_t = std::tuple<SampleType_t,SampleType_t>;
   using pStereoData_t = PTR(StereoData_t);

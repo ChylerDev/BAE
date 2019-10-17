@@ -27,7 +27,7 @@ namespace Modifier
 {
 
   Delay::Delay(uint64_t samples) : Base(false),
-    m_Delay(samples, StereoData_t(0,0)), m_Table()
+    m_Delay(samples, StereoData_t(SampleType_t(0), SampleType_t(0))), m_Table()
   {
     m_Table["SetDelay"] = [this](void * s){ SetDelay(*reinterpret_cast<uint64_t*>(s)); };
   }
@@ -49,8 +49,8 @@ namespace Modifier
     static uint64_t i;
     for(i = 0; i < size; ++i)
     {
-      std::get<0>(output[i]) += std::get<0>(m_Delay.front());
-      std::get<1>(output[i]) += std::get<1>(m_Delay.front());
+      Left(output[i]) += Left(m_Delay.front());
+      Right(output[i]) += Right(m_Delay.front());
 
       m_Delay.pop_front();
     }
@@ -65,7 +65,7 @@ namespace Modifier
 
     while(samples > m_Delay.size())
     {
-      m_Delay.push_back(StereoData_t(0,0));
+      m_Delay.push_back(StereoData_t(SampleType_t(0), SampleType_t(0)));
     }
   }
 

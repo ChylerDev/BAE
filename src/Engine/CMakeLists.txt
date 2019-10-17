@@ -30,8 +30,14 @@ set(CMAKE_PREFIX_PATH ${PLATFORM_LIB_DIR} ${CMAKE_PREFIX_PATH})
 
 if(WIN32)
   find_library(PortAudio portaudio_x64)
+  if(${CMAKE_CONFIGURATION_TYPES} STREQUAL "Debug")
+	find_library(RIFF RIFF_d)
+  else()
+	find_library(RIFF RIFF)
+  endif()
 else()
   find_library(PortAudio portaudio)
+  find_library(RIFF RIFF)
   find_package(Threads REQUIRED)
 endif()
 
@@ -70,6 +76,7 @@ set(tools_files
       ${CMAKE_SOURCE_DIR}/Tools/MethodTable.cpp ${CMAKE_SOURCE_DIR}/Tools/MethodTable.hpp
       ${CMAKE_SOURCE_DIR}/Tools/Resampler.cpp ${CMAKE_SOURCE_DIR}/Tools/Resampler.hpp
       ${CMAKE_SOURCE_DIR}/Tools/WAVWriter.cpp ${CMAKE_SOURCE_DIR}/Tools/WAVWriter.hpp
+      ${CMAKE_SOURCE_DIR}/Tools/Util.cpp ${CMAKE_SOURCE_DIR}/Tools/Util.hpp
 )
 set(engine_files
       ${CMAKE_SOURCE_DIR}/Types.hpp ${CMAKE_SOURCE_DIR}/Macro.hpp
@@ -93,10 +100,9 @@ add_library(${PROJECT_NAME} STATIC
 )
 
 target_link_libraries(${PROJECT_NAME}
-                        ${PortAudio}
-                        Trace
-                        RIFF
-                        ${CMAKE_THREAD_LIBS_INIT}
+						${PortAudio}
+						${RIFF}
+						${CMAKE_THREAD_LIBS_INIT}
 )
 
 if(WIN32)

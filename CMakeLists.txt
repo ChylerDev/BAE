@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(Engine)
+project(AE)
 
 if(MSVC)
   set(COMPILER_FLAGS "/DWin32 /D_WINDOWS /W4 /WX /GR /EHsc" CACHE STRING "Set compiler flags here")
@@ -17,7 +17,5 @@ endif()
 
 set(CMAKE_CXX_FLAGS "${COMPILER_FLAGS} ${DEBUG_FLAGS}")
 
-add_subdirectory(src/Libraries/RIFF-Util)
-add_subdirectory(src/Libraries/Logging)
 add_subdirectory(src/Engine)
 add_subdirectory(src/Tests)

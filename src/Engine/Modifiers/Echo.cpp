@@ -30,7 +30,7 @@ namespace Modifier
     uint64_t sample_delay,
     Math_t decay_ratio
   ) : Base(false),
-    m_Echo(sample_delay, StereoData_t(0,0)), m_Ratio(decay_ratio)
+    m_Echo(sample_delay, StereoData_t(SampleType_t(0), SampleType_t(0))), m_Ratio(decay_ratio)
   {
   }
 
@@ -40,8 +40,8 @@ namespace Modifier
     m_Echo.pop_front();
 
     StereoData_t out = StereoData_t(
-      std::get<0>(wet) * m_Ratio + std::get<0>(dry),
-      std::get<1>(wet) * m_Ratio + std::get<1>(dry)
+      SampleType_t(Left(wet) * m_Ratio + Left(dry)),
+      SampleType_t(Right(wet) * m_Ratio + Right(dry))
     );
 
     m_Echo.push_back(out);
@@ -57,15 +57,15 @@ namespace Modifier
     {
       static StereoData_t out;
       out = StereoData_t(
-        std::get<0>(m_Echo.front()) * m_Ratio + std::get<0>(input[i]),
-        std::get<1>(m_Echo.front()) * m_Ratio + std::get<1>(input[i])
+        SampleType_t(Left(m_Echo.front()) * m_Ratio + Left(input[i])),
+        SampleType_t(Right(m_Echo.front()) * m_Ratio + Right(input[i]))
       );
 
       m_Echo.pop_front();
       m_Echo.push_back(out);
 
-      std::get<0>(output[i]) += std::get<0>(out);
-      std::get<1>(output[i]) += std::get<1>(out);
+      Left(output[i]) += Left(out);
+      Right(output[i]) += Right(out);
     }
   }
 

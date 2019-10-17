@@ -62,15 +62,15 @@ namespace Modifier
   {
     StereoData_t y;
 
-    std::get<0>(y) = SampleType_t(
-      m_A0 * (std::get<0>(x) - std::get<0>(m_X2)) +
-      m_B1 * std::get<0>(m_Y1) -
-      m_B2 * std::get<0>(m_Y2)
+    Left(y) = SampleType_t(
+      m_A0 * (Left(x) - Left(m_X2)) +
+      m_B1 * Left(m_Y1) -
+      m_B2 * Left(m_Y2)
     );
-    std::get<1>(y) = SampleType_t(
-      m_A0 * (std::get<1>(x) - std::get<1>(m_X2)) +
-      m_B1 * std::get<1>(m_Y1) -
-      m_B2 * std::get<1>(m_Y2)
+    Right(y) = SampleType_t(
+      m_A0 * (Right(x) - Right(m_X2)) +
+      m_B1 * Right(m_Y1) -
+      m_B2 * Right(m_Y2)
     );
 
     m_Y2 = m_Y1;
@@ -87,15 +87,15 @@ namespace Modifier
 
     for(i = 0; i < size; ++i)
     {
-      std::get<0>(output[i]) += SampleType_t(
-        m_A0 * (std::get<0>(input[i]) - std::get<0>(m_X2)) +
-        m_B1 * std::get<0>(m_Y1) -
-        m_B2 * std::get<0>(m_Y2)
+      Left(output[i]) += SampleType_t(
+        m_A0 * (Left(input[i]) - Left(m_X2)) +
+        m_B1 * Left(m_Y1) -
+        m_B2 * Left(m_Y2)
       );
-      std::get<1>(output[i]) += SampleType_t(
-        m_A0 * (std::get<1>(input[i]) - std::get<1>(m_X2)) +
-        m_B1 * std::get<1>(m_Y1) -
-        m_B2 * std::get<1>(m_Y2)
+      Right(output[i]) += SampleType_t(
+        m_A0 * (Right(input[i]) - Right(m_X2)) +
+        m_B1 * Right(m_Y1) -
+        m_B2 * Right(m_Y2)
       );
 
       m_Y2 = m_Y1;
@@ -120,25 +120,24 @@ namespace AudioEngine
 namespace Modifier
 {
 
-  TODO("Once FixedPoint supports operator/, change doubles to Math_t/SampleType_t")
   void BandPass::Reset()
   {
     #if 1
-      double fL, fH;
+      Math_t fL, fH;
 
-      double a = 1;
-      double b = double(-m_CentralFrequency)/double(m_Quality);
-      double c = double(-m_CentralFrequency*m_CentralFrequency);
+      Math_t a = 1;
+      Math_t b = -m_CentralFrequency/m_Quality;
+      Math_t c = -m_CentralFrequency*m_CentralFrequency;
 
-      double fL_q1 = (-b + std::sqrt(b*b - 4*a*c)) / (2*a);
-      double fL_q2 = (-b - std::sqrt(b*b - 4*a*c)) / (2*a);
+      Math_t fL_q1 = (-b + std::sqrt(b*b - 4*a*c)) / (2*a);
+      Math_t fL_q2 = (-b - std::sqrt(b*b - 4*a*c)) / (2*a);
 
       fL = (fL_q1 > 0 ? fL_q1 : fL_q2);
       fH = fL + b;
 
       ////////
 
-      double thetaL, thetaH, aL, aH, bL, bH;
+      Math_t thetaL, thetaH, aL, aH, bL, bH;
 
       thetaL = std::tan(PI*fL*INC_RATE);
       thetaH = std::tan(PI*fH*INC_RATE);
@@ -154,9 +153,9 @@ namespace Modifier
       m_B1 = bL + bH;
       m_B2 = bL * bH;
     #else
-      double theta = std::tan(PI*m_CentralFrequency*INC_RATE);
-      double thetasq = theta*theta;
-      double norm = 1.0/(m_Quality * thetasq + theta + m_Quality);
+      Math_t theta = std::tan(PI*m_CentralFrequency*INC_RATE);
+      Math_t thetasq = theta*theta;
+      Math_t norm = 1.0/(m_Quality * thetasq + theta + m_Quality);
 
       m_A0 = theta*norm;
       m_B1 = 2 * m_Quality * (1-thetasq)*norm;

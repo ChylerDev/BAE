@@ -45,13 +45,13 @@ namespace Modifier
 
     for(auto const & x : m_Zeros)
     {
-      std::get<0>(output) += std::get<0>(m_Inputs[std::get<0>(x)]) * std::get<1>(x);
-      std::get<1>(output) += std::get<1>(m_Inputs[std::get<0>(x)]) * std::get<1>(x);
+      Left(output) += Left(m_Inputs[std::get<0>(x)]) * Right(x);
+      Right(output) += Right(m_Inputs[std::get<0>(x)]) * Right(x);
     }
     for(auto const & y : m_Poles)
     {
-      std::get<0>(output) += std::get<0>(m_Outputs[std::get<0>(y)]) * std::get<1>(y);
-      std::get<1>(output) += std::get<1>(m_Outputs[std::get<0>(y)]) * std::get<1>(y);
+      Left(output) += std::get<0>(m_Outputs[std::get<0>(y)]) * Right(y);
+      Right(output) += Right(m_Outputs[std::get<0>(y)]) * Right(y);
     }
 
     m_Outputs.push_front(output);
@@ -73,20 +73,20 @@ namespace Modifier
 
       for(auto const & x : m_Zeros)
       {
-        std::get<0>(out) += std::get<0>(m_Inputs[std::get<0>(x)]) * std::get<1>(x);
-        std::get<1>(out) += std::get<1>(m_Inputs[std::get<0>(x)]) * std::get<1>(x);
+        Left(out) += Left(m_Inputs[Left(x)]) * Right(x);
+        Right(out) += Right(m_Inputs[Left(x)]) * Right(x);
       }
       for(auto const & y : m_Poles)
       {
-        std::get<0>(out) += std::get<0>(m_Outputs[std::get<0>(y)]) * std::get<1>(y);
-        std::get<1>(out) += std::get<1>(m_Outputs[std::get<0>(y)]) * std::get<1>(y);
+        Left(out) += Left(m_Outputs[Left(y)]) * Right(y);
+        Right(out) += Right(m_Outputs[Left(y)]) * Right(y);
       }
 
       m_Outputs.pop_back();
       m_Outputs.push_front(out);
 
-      std::get<0>(output[i]) += std::get<0>(out);
-      std::get<1>(output[i]) += std::get<1>(out);
+      Left(output[i]) += Left(out);
+      Right(output[i]) += Right(out);
     }
   }
 

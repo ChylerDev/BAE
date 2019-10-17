@@ -37,7 +37,7 @@ namespace Tools
   {
   private:
 
-    using Index_t = Math::FixedPoint<47,16>;
+    using Index_t = FixedPoint::FixedPoint<47,16>;
 
     // Members              ///////////////////////
 

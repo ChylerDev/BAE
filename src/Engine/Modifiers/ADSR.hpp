@@ -47,14 +47,14 @@ namespace Modifier
 
     // Members              ///////////////////////
 
-    Math::FixedPoint<7,24> m_Attack;
-    Math::FixedPoint<7,24> m_Decay;
-    Math::FixedPoint<7,24> m_Sustain;
-    Math::FixedPoint<7,24> m_Release;
+    FixedPoint::FixedPoint<7,24> m_Attack;
+    FixedPoint::FixedPoint<7,24> m_Decay;
+    FixedPoint::FixedPoint<7,24> m_Sustain;
+    FixedPoint::FixedPoint<7,24> m_Release;
 
     state m_State;
 
-    Math::FixedPoint<7,24> m_Gain;
+    FixedPoint::FixedPoint<7,24> m_Gain;
 
     MethodTable_t m_Table;
 

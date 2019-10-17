@@ -117,7 +117,7 @@ namespace Core
     {
       for(auto & node : nodes.second)
       {
-        std::fill(buffer.get(), buffer.get()+size, StereoData_t(0,0));
+        std::fill(buffer.get(), buffer.get()+size, StereoData_t(SampleType_t(0), SampleType_t(0)));
 
         node->block->SendBlock(buffer.get(), node->input.get(), size);
 
@@ -125,20 +125,20 @@ namespace Core
         {
           for(i = 0; i < size; ++i)
           {
-             LEFT(output[i]) +=  LEFT(buffer[i]) * m_Gain;
-            RIGHT(output[i]) += RIGHT(buffer[i]) * m_Gain;
+             Left(output[i]) += SampleType_t(Left(buffer[i]) * m_Gain);
+            Right(output[i]) += SampleType_t(Right(buffer[i]) * m_Gain);
           }
         }
 
-        std::fill(node->input.get(), node->input.get()+size, StereoData_t(0,0));
+        std::fill(node->input.get(), node->input.get()+size, StereoData_t(SampleType_t(0), SampleType_t(0)));
 
         for(auto & o : node->outputs)
         {
           for(i = 0; i < size; ++i)
           {
-            LEFT((o->input)[i]) +=
-              LEFT(buffer[i]);
-            RIGHT(o->input[i]) += RIGHT(buffer[i]);
+            Left((o->input)[i]) +=
+              Left(buffer[i]);
+            Right(o->input[i]) += Right(buffer[i]);
           }
         }
       }

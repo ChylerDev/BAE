@@ -70,8 +70,8 @@ namespace Generator
 
       static StereoData_t out;
       out = MONO_TO_STEREO(m_Inc);
-      std::get<0>(buffer[i]) += std::get<0>(out);
-      std::get<1>(buffer[i]) += std::get<1>(out);
+      Left(buffer[i]) += Left(out);
+      Right(buffer[i]) += Right(out);
     }
   }
 

@@ -40,7 +40,7 @@ namespace Generator
 
     // Members              ///////////////////////
 
-    std::uniform_int_distribution<SampleType_t::Int_t> m_Distribution;
+    std::uniform_int_distribution<int16_t> m_Distribution;
     std::default_random_engine m_Engine;
 
   public:

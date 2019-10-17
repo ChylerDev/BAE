@@ -32,7 +32,7 @@ namespace Generator
 
   Sine::Sine(Math_t f) : Base(false),
     irate(INC_RATE*double(f)),
-    y1(std::sin(double(PI2 * irate))), y2(), beta(),
+    y1(SampleType_t(std::sin(double(PI2 * irate)))), y2(), beta(),
     m_Table()
   {
     m_Table["SetFrequency"] = [this](void * freq){ SetFrequency(*reinterpret_cast<Math_t*>(freq)); };
@@ -42,7 +42,7 @@ namespace Generator
 
   StereoData_t Sine::SendSample(void)
   {
-    SampleType_t y = beta * y1 - y2;
+    SampleType_t y = SampleType_t(beta * y1 - y2);
 
     y2 = y1;
     y1 = y;
@@ -58,14 +58,14 @@ namespace Generator
     {
       static SampleType_t sample;
 
-      sample = beta * y1 - y2;
+      sample = SampleType_t(beta * y1 - y2);
       y2 = y1;
       y1 = sample;
 
       static StereoData_t out;
       out = MONO_TO_STEREO(sample);
-      std::get<0>(buffer[i]) += std::get<0>(out);
-      std::get<1>(buffer[i]) += std::get<1>(out);
+      Left(buffer[i]) += Left(out);
+      Right(buffer[i]) += Right(out);
     }
   }
 

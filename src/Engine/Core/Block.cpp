@@ -35,7 +35,7 @@ namespace Core
     m_Interaction(
       [this](StereoData_t*o, StereoData_t*g, StereoData_t*m, uint64_t s)
       { UNREFERENCED_PARAMETER(m); static uint64_t i;
-        for(i=0;i<s;++i){ LEFT(o[i])+=LEFT(g[i]), RIGHT(o[i])+=RIGHT(g[i]); } }
+        for(i=0;i<s;++i){ Left(o[i])+=Left(g[i]), Right(o[i])+=Right(g[i]); } }
     )
   {
   }
@@ -46,7 +46,7 @@ namespace Core
     m_Interaction(
       [this](StereoData_t*o, StereoData_t*g, StereoData_t*m, uint64_t s)
       { UNREFERENCED_PARAMETER(g); static uint64_t i;
-        for(i=0;i<s;++i){ LEFT(o[i])+=LEFT(m[i]), RIGHT(o[i])+=RIGHT(m[i]); } }
+        for(i=0;i<s;++i){ Left(o[i])+=Left(m[i]), Right(o[i])+=Right(m[i]); } }
     )
   {
   }
@@ -66,24 +66,24 @@ namespace Core
         {
           for(i = 0; i < s; ++i)
           {
-            LEFT(o[i]) += LEFT(m[i]),
-            RIGHT(o[i]) += RIGHT(m[i]);
+            Left(o[i]) += Left(m[i]),
+            Right(o[i]) += Right(m[i]);
           }
         }
         else if(this->m_Modifier->IsBase())
         {
           for(i = 0; i < s; ++i)
           {
-            LEFT(o[i]) += LEFT(g[i]),
-            RIGHT(o[i]) += RIGHT(g[i]);
+            Left(o[i]) += Left(g[i]),
+            Right(o[i]) += Right(g[i]);
           }
         }
         else
         {
           for(i = 0; i < s; ++i)
           {
-            LEFT(o[i]) += LEFT(g[i]) * LEFT(m[i]);
-            RIGHT(o[i]) += RIGHT(g[i]) * RIGHT(m[i]);
+            Left(o[i]) += Left(g[i]) * Left(m[i]);
+            Right(o[i]) += Right(g[i]) * Right(m[i]);
           }
         }
       }
@@ -133,8 +133,8 @@ namespace Core
     static aStereoData_t generator_buf(new StereoData_t[size]);
     static aStereoData_t  modifier_buf(new StereoData_t[size]);
 
-    std::fill(generator_buf.get(), generator_buf.get()+size, StereoData_t(0,0));
-    std::fill( modifier_buf.get(),  modifier_buf.get()+size, StereoData_t(0,0));
+    std::fill(generator_buf.get(), generator_buf.get()+size, StereoData_t(SampleType_t(0),SampleType_t(0)));
+    std::fill( modifier_buf.get(),  modifier_buf.get()+size, StereoData_t(SampleType_t(0),SampleType_t(0)));
 
     m_Modifier->FilterBlock(input, modifier_buf.get(), size);
     m_Generator->SendBlock(generator_buf.get(),  size);

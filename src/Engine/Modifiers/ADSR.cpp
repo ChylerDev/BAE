@@ -26,10 +26,9 @@ namespace AudioEngine
 namespace Modifier
 {
 
-  TODO("Fix double casts")
   ADSR::ADSR(uint64_t a, uint64_t d, Math_t s, uint64_t r) : Base(false),
-    m_Attack(1.0/double(a)), m_Decay(double(s-1)/double(d)),
-    m_Sustain(s), m_Release(double(-s)/double(r)),
+    m_Attack(1.0/a), m_Decay(s-1/d),
+    m_Sustain(s), m_Release(-s/r),
     m_State(state::attack), m_Gain(0),
     m_Table()
   {
@@ -73,12 +72,12 @@ namespace Modifier
         break;
       case state::invalid:
       default:
-        return StereoData_t(0,0);
+        return StereoData_t(SampleType_t(0), SampleType_t(0));
         break;
     };
     return StereoData_t(
-      SampleType_t(std::get<0>(sample) * m_Gain),
-      SampleType_t(std::get<1>(sample) * m_Gain)
+      SampleType_t(Left(sample) * m_Gain),
+      SampleType_t(Right(sample) * m_Gain)
     );
   }
 
@@ -122,8 +121,8 @@ namespace Modifier
           break;
       };
 
-      std::get<0>(output[i]) += std::get<0>(input[i]) * m_Gain;
-      std::get<1>(output[i]) += std::get<1>(input[i]) * m_Gain;
+      Left(output[i]) += Left(input[i]) * m_Gain;
+      Right(output[i]) += Right(input[i]) * m_Gain;
     }
   }
 
