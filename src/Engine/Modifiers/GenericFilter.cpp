@@ -45,13 +45,13 @@ namespace Modifier
 
     for(auto const & x : m_Zeros)
     {
-      Left(output) += Left(m_Inputs[std::get<0>(x)]) * Right(x);
-      Right(output) += Right(m_Inputs[std::get<0>(x)]) * Right(x);
+      Left(output) += SampleType_t(Left(m_Inputs[std::get<0>(x)]) * std::get<1>(x));
+      Right(output) += SampleType_t(Right(m_Inputs[std::get<0>(x)]) * std::get<1>(x));
     }
     for(auto const & y : m_Poles)
     {
-      Left(output) += std::get<0>(m_Outputs[std::get<0>(y)]) * Right(y);
-      Right(output) += Right(m_Outputs[std::get<0>(y)]) * Right(y);
+      Left(output) += SampleType_t(Left(m_Outputs[std::get<0>(y)]) * std::get<1>(y));
+      Right(output) += SampleType_t(Right(m_Outputs[std::get<0>(y)]) * std::get<1>(y));
     }
 
     m_Outputs.push_front(output);
@@ -73,13 +73,13 @@ namespace Modifier
 
       for(auto const & x : m_Zeros)
       {
-        Left(out) += Left(m_Inputs[Left(x)]) * Right(x);
-        Right(out) += Right(m_Inputs[Left(x)]) * Right(x);
+        Left(out) += SampleType_t(Left(m_Inputs[std::get<0>(x)]) * std::get<1>(x));
+        Right(out) += SampleType_t(Right(m_Inputs[std::get<0>(x)]) * std::get<1>(x));
       }
       for(auto const & y : m_Poles)
       {
-        Left(out) += Left(m_Outputs[Left(y)]) * Right(y);
-        Right(out) += Right(m_Outputs[Left(y)]) * Right(y);
+        Left(out) += SampleType_t(Left(m_Outputs[std::get<0>(y)]) * std::get<1>(y));
+        Right(out) += SampleType_t(Right(m_Outputs[std::get<0>(y)]) * std::get<1>(y));
       }
 
       m_Outputs.pop_back();

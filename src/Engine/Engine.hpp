@@ -17,7 +17,7 @@
 #include "Macro.hpp"
 #include "Types.hpp"
 
-#include "Tools/Util.hpp"
+#include "Util.hpp"
 
 #include <portaudio/portaudio.h>
 

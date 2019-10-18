@@ -76,10 +76,10 @@ set(tools_files
       ${CMAKE_SOURCE_DIR}/Tools/MethodTable.cpp ${CMAKE_SOURCE_DIR}/Tools/MethodTable.hpp
       ${CMAKE_SOURCE_DIR}/Tools/Resampler.cpp ${CMAKE_SOURCE_DIR}/Tools/Resampler.hpp
       ${CMAKE_SOURCE_DIR}/Tools/WAVWriter.cpp ${CMAKE_SOURCE_DIR}/Tools/WAVWriter.hpp
-      ${CMAKE_SOURCE_DIR}/Tools/Util.cpp ${CMAKE_SOURCE_DIR}/Tools/Util.hpp
-)
+	  )
 set(engine_files
       ${CMAKE_SOURCE_DIR}/Types.hpp ${CMAKE_SOURCE_DIR}/Macro.hpp
+      ${CMAKE_SOURCE_DIR}/Util.hpp
       ${CMAKE_SOURCE_DIR}/Engine.hpp
 )
 

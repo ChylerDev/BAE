@@ -92,7 +92,7 @@ namespace Generator
 
   void Sine::Reset()
   {
-    beta = 2 * std::cos(double(2*PI * irate));
+    beta = Math_t(2 * std::cos(double(2*PI * irate)));
   }
 
 } // namespace Generator

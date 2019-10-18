@@ -38,7 +38,7 @@ namespace Tools
   {
     if(size_t(m_Index) >= m_Data.size() && m_LoopEnd == 0)
     {
-      return StereoData_t(0,0);
+      return StereoData_t(SampleType_t(0), SampleType_t(0));
     }
 
     SampleType_t fraction(m_Index - uint64_t(m_Index));
