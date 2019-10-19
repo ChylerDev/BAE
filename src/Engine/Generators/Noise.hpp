@@ -2,9 +2,9 @@
 \file             Noise.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __NOISE_HPP
@@ -16,7 +16,7 @@
 
 #include <random>
 
-#include "Base.hpp"
+#include "GeneratorBase.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -30,41 +30,39 @@ namespace AudioEngine
 {
 namespace Generator
 {
+	/*! ************************************************************************
+	\brief
+	***************************************************************************/
+	class Noise : public GeneratorBase
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-  *****************************************************************************/
-  class Noise : public Base
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		std::uniform_int_distribution<int16_t> m_Distribution;
+		std::default_random_engine m_Engine;
 
-    std::uniform_int_distribution<int16_t> m_Distribution;
-    std::default_random_engine m_Engine;
+	public:
 
-  public:
+		// Con-/De- structors   ///////////////////////
 
-    // Con-/De- structors   ///////////////////////
+		virtual ~Noise() = default;
 
-    Noise();
-    virtual ~Noise() = default;
+		// Operators            ///////////////////////
 
-    // Operators            ///////////////////////
+		// Accossors/Mutators   ///////////////////////
 
-    // Accossors/Mutators   ///////////////////////
+		// Functions            ///////////////////////
 
-    // Functions            ///////////////////////
+		virtual StereoData_t SendSample(void);
+		virtual void SendBlock(StereoData_t * buffer, uint64_t size);
 
-    virtual StereoData_t SendSample(void);
-    virtual void SendBlock(StereoData_t * buffer, uint64_t size);
+	private:
 
-  private:
+		// Functions                  ///////////////////////
 
-    // Functions                  ///////////////////////
-
-  }; // class Noise
-
+		Noise();
+	}; // class Noise
 } // namespace Generator
 } // namespace AudioEngine
 

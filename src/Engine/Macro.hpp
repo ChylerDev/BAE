@@ -189,4 +189,11 @@
   #endif  // _MSC_VER || __clang__ || __GNUC__
 #endif  // POP_WARNINGS
 
+#ifndef TYPEDEF_SHARED
+    #include <memory>
+        /// Creates an alias for std::shared_ptr instantiated with the given type
+    #define TYPEDEF_SHARED(type) using type##Ptr = std::shared_ptr<type>
+#endif  // TYPEDEF_SHARED
+
+
 #endif  // __MACRO_HPP

@@ -2,9 +2,9 @@
 \file             WAV.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __WAV_HPP
@@ -18,7 +18,7 @@
 
 #include "../Engine.hpp"
 
-#include "Base.hpp"
+#include "GeneratorBase.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -32,116 +32,114 @@ namespace AudioEngine
 {
 namespace Generator
 {
+	/*! ************************************************************************
+	\brief
+		Plays audio from a WAV file.
 
-  /*! **************************************************************************
-  \brief
-    Plays audio from a WAV file.
+		Supported formats: 8-bit, 16-bit, and 24-bit audio. 48kHz only for now,
+		resampler will be added soon.
+	***************************************************************************/
+	class WAV : public GeneratorBase
+	{
+	private:
 
-    Supported formats: 8-bit, 16-bit, and 24-bit audio. 48kHz only for now,
-    resampler will be added soon.
-  *****************************************************************************/
-  class WAV : public Base
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		Resampler_t m_Resampler;
 
-    Resampler_t m_Resampler;
+		MethodTable_t m_Table;
 
-    MethodTable_t m_Table;
+	public:
 
-  public:
+		// Con-/De- structors   ///////////////////////
 
-    // Con-/De- structors   ///////////////////////
+		/*! ********************************************************************
+		\brief
+			Default destructor.
+		***********************************************************************/
+		virtual ~WAV() = default;
 
-    /*! ************************************************************************
-    \brief
-      Default constructor. If no data is provided in calling WAV::ReadFile, then
-      WAV::SendSample will only output 0 data.
-    ***************************************************************************/
-    WAV();
+		// Operators            ///////////////////////
 
-    /*! ************************************************************************
-    \brief
-      Path to a WAV file.
+		// Accossors/Mutators   ///////////////////////
 
-    \param path
-      The path.
-    ***************************************************************************/
-    WAV(std::string const & path);
+		// Functions            ///////////////////////
 
-    /*! ************************************************************************
-    \brief
-      std::vector with the contents of a WAV file.
+		/*! ********************************************************************
+		\brief
+			Reads a file from the disk and parses it for the WAV data.
 
-    \param wav_data
-      The WAV data
-    ***************************************************************************/
-    WAV(std::vector<char> const & wav_data);
+		\param path
+			The path to the file.
+		***********************************************************************/
+		void ReadFile(std::string const & path);
 
-    /*! ************************************************************************
-    \brief
-      Integer argc parameter passed into main. Uses the functions in Input.*pp
-      to access the command-line parameters.
+		/*! ********************************************************************
+		\brief
+			Sends a single sample to Core::Driver for output to the OS.
 
-    \param argc
-      Parameter passed into main.
-    ***************************************************************************/
-    WAV(int argc);
+		\return
+			The stereo sample data.
+		***********************************************************************/
+		virtual StereoData_t SendSample(void);
+		virtual void SendBlock(StereoData_t * buffer, uint64_t size);
 
-    /*! ************************************************************************
-    \brief
-      Default destructor.
-    ***************************************************************************/
-    virtual ~WAV() = default;
+		virtual MethodTable_t const & GetMethodTable() const;
 
-    // Operators            ///////////////////////
+	private:
 
-    // Accossors/Mutators   ///////////////////////
+		struct WAVHeader
+		{                         // (offset) = description
+			uint16_t AudioFormat;     // (00) = 1
+			uint16_t ChannelCount;    // (02) = 1 or 2
+			uint32_t SamplingRate;    // (04) = (ex. 44.1kHz, 48kHz, 96kHz, 192kHz)
+			uint32_t BytesPerSecond;  // (08) = SamplingRate * BytesPerSample
+			uint16_t BytesPerSample;  // (12) = BitsPerSample/8 * ChannelCount
+			uint16_t BitsPerSample;   // (14) = 8 or 16
+		};
 
-    // Functions            ///////////////////////
+		// Functions                  ///////////////////////
 
-    /*! ************************************************************************
-    \brief
-      Reads a file from the disk and parses it for the WAV data.
+		/*! ********************************************************************
+		\brief
+			Default constructor. If no data is provided in calling
+			WAV::ReadFile, then WAV::SendSample will only output 0 data.
+		***********************************************************************/
+		WAV();
 
-    \param path
-      The path to the file.
-    ***************************************************************************/
-    void ReadFile(std::string const & path);
+		/*! ********************************************************************
+		\brief
+			Path to a WAV file.
 
-    /*! ************************************************************************
-    \brief
-      Sends a single sample to Core::Driver for output to the OS.
+		\param path
+			The path.
+		***********************************************************************/
+		WAV(std::string const & path);
 
-    \return
-      The stereo sample data.
-    ***************************************************************************/
-    virtual StereoData_t SendSample(void);
-    virtual void SendBlock(StereoData_t * buffer, uint64_t size);
+		/*! ********************************************************************
+		\brief
+			std::vector with the contents of a WAV file.
 
-    virtual MethodTable_t const & GetMethodTable() const;
+		\param wav_data
+			The WAV data
+		***********************************************************************/
+		WAV(std::vector<char> const & wav_data);
 
-  private:
+		/*! ********************************************************************
+		\brief
+			Integer argc parameter passed into main. Uses the functions in
+			Input.*pp to access the command-line parameters.
 
-    struct WAVHeader
-    {                       // (offset) = description
-      uint16_t AudioFormat;     // (00) = 1
-      uint16_t ChannelCount;    // (02) = 1 or 2
-      uint32_t SamplingRate;    // (04) = (ex. 44.1kHz, 48kHz, 96kHz, 192kHz)
-      uint32_t BytesPerSecond;  // (08) = SamplingRate * BytesPerSample
-      uint16_t BytesPerSample;  // (12) = BitsPerSample/8 * ChannelCount
-      uint16_t BitsPerSample;   // (14) = 8 or 16
-    };
+		\param argc
+			Parameter passed into main.
+		***********************************************************************/
+		WAV(int argc);
 
-    // Functions                  ///////////////////////
+		void ParseWAV(char const * array, int size);
 
-    void ParseWAV(char const * array, int size);
+		void SetupMethodTable();
 
-    void SetupMethodTable();
-
-  }; // class WAV
-
+	}; // class WAV
 } // namespace Generator
 } // namespace AudioEngine
 

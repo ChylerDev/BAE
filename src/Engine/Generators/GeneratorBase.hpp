@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             Triangle.hpp
+\file             GeneratorBase.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  Audio Engine
@@ -7,14 +7,19 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __TRIANGLE_HPP
-#define __TRIANGLE_HPP
+#ifndef __GENERATORBASE_HPP
+#define __GENERATORBASE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
+#include <functional>
+#include <unordered_map>
+#include <string>
+
 #include "../Engine.hpp"
 
-#include "GeneratorBase.hpp"
+#include "../Tools/MethodTable.hpp"
+#include "GeneratorFactory.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -31,22 +36,20 @@ namespace Generator
 	/*! ************************************************************************
 	\brief
 	***************************************************************************/
-	class Triangle : public GeneratorBase
+	class GeneratorBase: public Tools::MethodTable
 	{
 	private:
 
 		// Members              ///////////////////////
 
-		Math_t m_Irate;
-		Math_t m_Inc;
-
-		MethodTable_t m_Table;
+		bool is_base;
 
 	public:
 
 		// Con-/De- structors   ///////////////////////
 
-		virtual ~Triangle() = default;
+		GeneratorBase(bool b) : is_base(b) {};
+		virtual ~GeneratorBase() = default;
 
 		// Operators            ///////////////////////
 
@@ -54,21 +57,23 @@ namespace Generator
 
 		// Functions            ///////////////////////
 
-		void SetFrequency(Math_t freq);
+		virtual StereoData_t SendSample(void) { return StereoData_t(0.f, 0.f); };
+		virtual void SendBlock(StereoData_t * buffer, uint64_t size) { UNREFERENCED_PARAMETER(buffer); UNREFERENCED_PARAMETER(size); };
 
-		virtual StereoData_t SendSample(void);
-		virtual void SendBlock(StereoData_t * buffer, uint64_t size);
+		bool IsBase() { return is_base; };
 
-		virtual MethodTable_t const & GetMethodTable() const;
+		friend class GeneratorFactory;
 
 	private:
 
-		Triangle(Math_t freq);
+		// Functions                  ///////////////////////
 
-	}; // class Triangle
+	}; // class GeneratorBase
+
+	TYPEDEF_SHARED(GeneratorBase);
 } // namespace Generator
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __TRIANGLE_HPP
+#endif // __GENERATORBASE_HPP

@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             stub.cpp
+\file             GeneratorFactory.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  Audio Engine
@@ -8,6 +8,15 @@
 *******************************************************************************/
 
 // Include Files                          //////////////////////////////////////
+
+#include "GeneratorFactory.hpp"
+
+#include "Noise.hpp"
+#include "Sawtooth.hpp"
+#include "Sine.hpp"
+#include "Square.hpp"
+#include "Triangle.hpp"
+#include "WAV.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
@@ -21,10 +30,38 @@
 
 namespace AudioEngine
 {
-namespace stub
+namespace Generator
 {
+	GeneratorBasePtr GeneratorFactory::CreateNoise()
+	{
+		return std::make_shared<Noise>();
+	}
 
-} // namespace stub
+	GeneratorBasePtr GeneratorFactory::CreateSawtooth(Math_t freq)
+	{
+		return std::make_shared<Sawtooth>(freq);
+	}
+
+	GeneratorBasePtr GeneratorFactory::CreateSine(Math_t freq)
+	{
+		return std::make_shared<Sine>(freq);
+	}
+
+	GeneratorBasePtr GeneratorFactory::CreateSquare(Math_t freq)
+	{
+		return std::make_shared<Square>(freq);
+	}
+
+	GeneratorBasePtr GeneratorFactory::CreateTriangle(Math_t freq)
+	{
+		return std::make_shared<Triangle>(freq);
+	}
+
+	GeneratorBasePtr GeneratorFactory::CreateWAV()
+	{
+
+	}
+} // namespace Generator
 } // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////

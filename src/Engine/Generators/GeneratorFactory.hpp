@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             Triangle.hpp
+\file             GeneratorFactory.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  Audio Engine
@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __TRIANGLE_HPP
-#define __TRIANGLE_HPP
+#ifndef __GENERATORBASEY_HPP
+#define __GENERATORBASEY_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -30,45 +30,32 @@ namespace Generator
 {
 	/*! ************************************************************************
 	\brief
-	***************************************************************************/
-	class Triangle : public GeneratorBase
+	*******************h********************************************************/
+	class GeneratorFactory
 	{
 	private:
 
 		// Members              ///////////////////////
 
-		Math_t m_Irate;
-		Math_t m_Inc;
-
-		MethodTable_t m_Table;
-
 	public:
-
-		// Con-/De- structors   ///////////////////////
-
-		virtual ~Triangle() = default;
-
-		// Operators            ///////////////////////
-
-		// Accossors/Mutators   ///////////////////////
 
 		// Functions            ///////////////////////
 
-		void SetFrequency(Math_t freq);
-
-		virtual StereoData_t SendSample(void);
-		virtual void SendBlock(StereoData_t * buffer, uint64_t size);
-
-		virtual MethodTable_t const & GetMethodTable() const;
+		GeneratorBasePtr CreateNoise();
+		GeneratorBasePtr CreateSawtooth(Math_t freq);
+		GeneratorBasePtr CreateSine(Math_t freq);
+		GeneratorBasePtr CreateSquare(Math_t freq);
+		GeneratorBasePtr CreateTriangle(Math_t freq);
+		GeneratorBasePtr CreateWAV();
 
 	private:
 
-		Triangle(Math_t freq);
+		// Functions                  ///////////////////////
 
-	}; // class Triangle
+	}; // class GeneratorFactory
 } // namespace Generator
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __TRIANGLE_HPP
+#endif // __GENERATORBASEY_HPP
