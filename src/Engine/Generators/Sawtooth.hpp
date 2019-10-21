@@ -67,6 +67,7 @@ namespace Generator
 
 		Sawtooth(Math_t freq);
 	}; // class Sawtooth
+	TYPEDEF_SHARED(Sawtooth);
 } // namespace Generator
 } // namespace AudioEngine
 

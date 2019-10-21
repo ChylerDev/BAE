@@ -14,6 +14,9 @@
 
 #include "../Engine.hpp"
 
+#include <string>
+#include <vector>
+
 #include "GeneratorBase.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
@@ -41,12 +44,18 @@ namespace Generator
 
 		// Functions            ///////////////////////
 
-		GeneratorBasePtr CreateNoise();
-		GeneratorBasePtr CreateSawtooth(Math_t freq);
-		GeneratorBasePtr CreateSine(Math_t freq);
-		GeneratorBasePtr CreateSquare(Math_t freq);
-		GeneratorBasePtr CreateTriangle(Math_t freq);
-		GeneratorBasePtr CreateWAV();
+		static GeneratorBasePtr CreateBase();
+		static GeneratorBasePtr CreateNoise();
+		static GeneratorBasePtr CreateSawtooth(Math_t freq);
+		static GeneratorBasePtr CreateSine(Math_t freq);
+		static GeneratorBasePtr CreateSquare(Math_t freq);
+		static GeneratorBasePtr CreateTriangle(Math_t freq);
+		static GeneratorBasePtr CreateWAV();
+		static GeneratorBasePtr CreateWAV(std::string const & filepath);
+		static GeneratorBasePtr CreateWAV(std::vector<char> const & wav_data);
+		static GeneratorBasePtr CreateWAV(int argc);
+
+		~GeneratorFactory() = delete;
 
 	private:
 

@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             Input.cpp
+\file             stub.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  Audio Engine
@@ -9,21 +9,11 @@
 
 // Include Files                          //////////////////////////////////////
 
-#include "Input.hpp"
-
 // Private Macros                         //////////////////////////////////////
 
 // Private Enums                          //////////////////////////////////////
 
 // Private Objects                        //////////////////////////////////////
-
-namespace AudioEngine
-{
-namespace Tools
-{
-	static std::vector<std::string> s_Options;
-} // namespace Tools
-} // namespace AudioEngine
 
 // Private Function Declarations          //////////////////////////////////////
 
@@ -31,21 +21,10 @@ namespace Tools
 
 namespace AudioEngine
 {
-namespace Tools
+namespace stub
 {
-	void CreateOptions(int argc, char * argv[])
-	{
-		for(int i = 0; i < argc; ++i)
-		{
-			s_Options.push_back(argv[i]);
-		}
-	}
 
-	std::string const & GetOption(int i)
-	{
-		return s_Options[i];
-	}
-} // namespace Tools
+} // namespace stub
 } // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////

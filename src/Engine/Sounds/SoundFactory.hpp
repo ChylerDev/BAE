@@ -1,10 +1,10 @@
 /*! ****************************************************************************
-\file             stub.hpp
+\file             SoundFactory.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __STUB_HPP
@@ -14,6 +14,8 @@
 
 #include "../Engine.hpp"
 
+#include "SoundBase.hpp"
+
 // Public Macros                ////////////////////////////////////////////////
 
 // Forward References           ////////////////////////////////////////////////
@@ -22,35 +24,31 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace stub
+namespace AudioEngine
 {
+namespace Sound
+{
+	/*! ************************************************************************
+	\brief
+	***************************************************************************/
+	class SoundFactory
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-  *****************************************************************************/
-  class stub
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+	public:
+		// Functions            ///////////////////////
 
-  public:
+		~SoundFactory() = delete;
 
-    // Con-/De- structors   ///////////////////////
+	private:
 
-    // Operators            ///////////////////////
+		// Functions                  ///////////////////////
 
-    // Accossors/Mutators   ///////////////////////
-
-    // Functions            ///////////////////////
-
-  private:
-
-    // Functions                  ///////////////////////
-
-  }; // class stub
-
-} // namespace stub
+	}; // class SoundFactory
+} // namespace Sound
+} // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 

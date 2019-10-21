@@ -2,3 +2,5 @@ build*/
 bin/
 
 \.vscode/
+target/
+Cargo.lock

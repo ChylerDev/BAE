@@ -76,6 +76,16 @@ namespace Generator
 
 		/*! ********************************************************************
 		\brief
+			Loads the supplied WAV data and sets up the object to play the audio
+			data.
+
+		\param wav_data
+			The WAV data
+		***********************************************************************/
+		void LoadWAV(std::vector<char> const & wav_data);
+
+		/*! ********************************************************************
+		\brief
 			Sends a single sample to Core::Driver for output to the OS.
 
 		\return
@@ -140,6 +150,7 @@ namespace Generator
 		void SetupMethodTable();
 
 	}; // class WAV
+	TYPEDEF_SHARED(WAV);
 } // namespace Generator
 } // namespace AudioEngine
 

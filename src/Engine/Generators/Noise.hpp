@@ -63,6 +63,7 @@ namespace Generator
 
 		Noise();
 	}; // class Noise
+	TYPEDEF_SHARED(Noise);
 } // namespace Generator
 } // namespace AudioEngine
 

@@ -2,19 +2,19 @@
 \file             Envelope.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __STUB_HPP
-#define __STUB_HPP
+#ifndef __ENVELOPE_HPP
+#define __ENVELOPE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
 #include "../Engine.hpp"
 
-#include "Base.hpp"
+#include "ModifierBase.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -28,45 +28,45 @@ namespace AudioEngine
 {
 namespace Modifier
 {
+	/*! ************************************************************************
+	\brief
+	***************************************************************************/
+	class EnvelopeFollower : public ModifierBase
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-  *****************************************************************************/
-  class EnvelopeFollower : public Base
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		Math_t m_AU, m_BU;
+		Math_t m_AD, m_BD;
+		StereoData_t m_X1, m_Y1;
 
-    Math_t m_AU, m_BU;
-    Math_t m_AD, m_BD;
-    StereoData_t m_X1, m_Y1;
+	public:
 
-  public:
+		// Con-/De- structors   ///////////////////////
 
-    // Con-/De- structors   ///////////////////////
+		virtual ~EnvelopeFollower();
 
-    EnvelopeFollower(Math_t fd, Math_t fu);
-    virtual ~EnvelopeFollower();
+		// Operators            ///////////////////////
 
-    // Operators            ///////////////////////
+		virtual StereoData_t FilterSample(StereoData_t const & x);
+		virtual void FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size);
 
-    virtual StereoData_t FilterSample(StereoData_t const & x);
-    virtual void FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size);
+		// Accossors/Mutators   ///////////////////////
 
-    // Accossors/Mutators   ///////////////////////
+		// Functions            ///////////////////////
 
-    // Functions            ///////////////////////
+	private:
 
-  private:
+		// Functions                  ///////////////////////
 
-    // Functions                  ///////////////////////
+		EnvelopeFollower(Math_t fd, Math_t fu);
 
-  }; // class EnvelopeFollower
-
+	}; // class EnvelopeFollower
+	TYPEDEF_SHARED(EnvelopeFollower);
 } // namespace Modifier
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __STUB_HPP
+#endif // __ENVELOPE_HPP

@@ -66,6 +66,7 @@ namespace Generator
 		Triangle(Math_t freq);
 
 	}; // class Triangle
+	TYPEDEF_SHARED(Triangle);
 } // namespace Generator
 } // namespace AudioEngine
 

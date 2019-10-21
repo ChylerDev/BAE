@@ -2,9 +2,9 @@
 \file             MethodTable.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __METHODTABLE_HPP
@@ -26,42 +26,41 @@ namespace AudioEngine
 {
 namespace Tools
 {
+	/*! ************************************************************************
+	\brief
+		For functions that take multiple parameters, the values should be packed
+		in a tuple. If the function also returns a value, that should be the
+		first element in the tuple, and thus can always be obtained by calling
+		std::get<0> on the packed values.
+	***************************************************************************/
+	class MethodTable
+	{
+	protected:
 
-  /*! **************************************************************************
-  \brief
-    For functions that take multiple parameters, the values should be packed in
-    a tuple. If the function also returns a value, that should be the first
-    element in the tuple, and thus can always be obtained by calling std::get<0>
-    on the packed values.
-  *****************************************************************************/
-  class MethodTable
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		MethodTable_t s_Table;
 
-    static MethodTable_t const s_Table;
+	public:
 
-  public:
+		// Con-/De- structors   ///////////////////////
 
-    // Con-/De- structors   ///////////////////////
+		MethodTable();
+		virtual ~MethodTable() = default;
 
-    virtual ~MethodTable() = default;
+		// Operators            ///////////////////////
 
-    // Operators            ///////////////////////
+		virtual Void_fn operator[](std::string const &) const;
 
-    // Accossors/Mutators   ///////////////////////
+		// Accossors/Mutators   ///////////////////////
 
-    // Functions            ///////////////////////
+		// Functions            ///////////////////////
 
-    virtual MethodTable_t const & GetMethodTable() const;
+	private:
 
-  private:
+		// Functions                  ///////////////////////
 
-    // Functions                  ///////////////////////
-
-  }; // class MethodTable
-
+	}; // class MethodTable
 } // namespace Tools
 } // namespace AudioEngine
 

@@ -23,55 +23,7 @@
 
 // Public Macros                ////////////////////////////////////////////////
 
-#define PTR(x) std::shared_ptr<x>
-
 // Forward References           ////////////////////////////////////////////////
-
-namespace AudioEngine
-{
-  namespace Core
-  {
-
-    class Recorder;
-    class Driver;
-    class Block;
-    class Sound;
-
-  } // namespace Core
-  namespace Generator
-  {
-
-    class Base;
-    class Sine;
-    class Square;
-    class WAV;
-
-  } // namespace Generator
-  namespace Modifier
-  {
-
-    class Base;
-    class BandPass;
-    class EnvelopeFollower;
-    class Gain;
-    class GenericFilter;
-    class LowPass;
-
-  } // namespace Modifier
-  namespace Sounds
-  {
-
-    class Base;
-    class Vocoder;
-
-  }
-  namespace Tools
-  {
-
-    class Resampler;
-
-  } // namespace Tools
-} // namespace AudioEngine
 
 // Public Types                 ////////////////////////////////////////////////
 
@@ -80,43 +32,16 @@ namespace AudioEngine
 
   using Math_t = double;//FixedPoint::FixedPoint<15,16>;
   using SampleType_t = float;//FixedPoint::Audio16Bit_t;
-    // StereoData_t[0] = left; StereoData_t[1] = right;
   using StereoData_t = std::tuple<SampleType_t,SampleType_t>;
-  using pStereoData_t = PTR(StereoData_t);
-  using aStereoData_t = PTR(StereoData_t[]);
+  using pStereoData_t = std::shared_ptr<StereoData_t>;
+  using aStereoData_t = std::shared_ptr<StereoData_t[]>;
 
   using Track_t = std::vector<StereoData_t>;
 
   using AudioCallback_t = std::function<StereoData_t(void)>;
 
-  using MethodTable_t = std::unordered_map<std::string,std::function<void(void*)>>;
-
-    // Core
-  using Recorder_t = PTR(Core::Recorder);
-  using Driver_t   = PTR(Core::Driver);
-  using Block_t    = PTR(Core::Block);
-  using Sound_t    = PTR(Core::Sound);
-
-    // Generator
-  using GenBase_t = PTR(Generator::Base);
-  using Sine_t    = PTR(Generator::Sine);
-  using Square_t  = PTR(Generator::Square);
-  using WAV_t     = PTR(Generator::WAV);
-
-    // Modifier
-  using ModBase_t  = PTR(Modifier::Base);
-  using BandPass_t = PTR(Modifier::BandPass);
-  using Envelope_t = PTR(Modifier::EnvelopeFollower);
-  using Gain_t     = PTR(Modifier::Gain);
-  using Filter_t   = PTR(Modifier::GenericFilter);
-  using LowPass_t  = PTR(Modifier::LowPass);
-
-    // Sounds
-  using SoundsBase_t = PTR(Sounds::Base);
-  using Vocoder_t    = PTR(Sounds::Vocoder);
-
-    // Tools
-  using Resampler_t = PTR(Tools::Resampler);
+  using Void_fn = std::function<void(void*)>;
+  using MethodTable_t = std::unordered_map<std::string, Void_fn>;
 
 } // namespace AudioEngine
 

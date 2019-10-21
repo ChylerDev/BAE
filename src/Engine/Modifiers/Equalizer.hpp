@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             Gain.hpp
+\file             Equalizer.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  Audio Engine
@@ -7,10 +7,13 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __GAIN_HPP
-#define __GAIN_HPP
+#ifndef __EQUALIZER_HPP
+#define __EQUALIZER_HPP
 
 // Include Files                ////////////////////////////////////////////////
+
+#include <tuple>
+#include <vector>
 
 #include "../Engine.hpp"
 
@@ -31,57 +34,35 @@ namespace Modifier
 	/*! ************************************************************************
 	\brief
 	***************************************************************************/
-	class Gain : public ModifierBase
+	class Equalizer
 	{
 	private:
 
 		// Members              ///////////////////////
 
-		Math_t m_Gain;
-
-		MethodTable_t m_Table;
-
 	public:
 
 		// Con-/De- structors   ///////////////////////
 
-		virtual ~Gain() = default;
+		Equalizer(int band_count, Math_t lower, Math_t upper, Math_t Q);
 
 		// Operators            ///////////////////////
 
 		// Accossors/Mutators   ///////////////////////
 
-		void SetGain(Math_t gain);
-		Math_t GetGain() const;
-
 		// Functions            ///////////////////////
 
-		/*! ********************************************************************
-		\brief
-			Takes input sample and filters it, returning the result.
-
-		\param input
-			The input sample.
-
-		\return
-			The filtered sample.
-		***********************************************************************/
-		virtual StereoData_t FilterSample(StereoData_t const & input);
-		virtual void FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size);
-
-		virtual MethodTable_t const & GetMethodTable() const;
+		void SetGain(int band, Math_t gain);
 
 	private:
 
 		// Functions                  ///////////////////////
 
-		Gain(Math_t gain = DEFAULT_GAIN);
-
-	}; // class Gain
-	TYPEDEF_SHARED(Gain);
+	}; // class Equalizer
+	TYPEDEF_SHARED(Equalizer);
 } // namespace Modifier
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __GAIN_HPP
+#endif // __EQUALIZER_HPP

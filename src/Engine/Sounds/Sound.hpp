@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             Gain.hpp
+\file             Sound.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  Audio Engine
@@ -7,14 +7,18 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __GAIN_HPP
-#define __GAIN_HPP
+#ifndef __SOUND_HPP
+#define __SOUND_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
-#include "../Engine.hpp"
+#include <deque>
+#include <map>
+#include <memory>
+#include <tuple>
+#include <vector>
 
-#include "ModifierBase.hpp"
+#include "../Engine.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -26,62 +30,77 @@
 
 namespace AudioEngine
 {
-namespace Modifier
+namespace Core
 {
 	/*! ************************************************************************
 	\brief
 	***************************************************************************/
-	class Gain : public ModifierBase
+	class Sound
 	{
+
+	public:
+
+		using Graph_t =
+			std::map<
+				uint32_t,
+				std::vector<Node_t>
+			>;
+
 	private:
 
 		// Members              ///////////////////////
 
-		Math_t m_Gain;
+		Graph_t m_NodeGraph;
 
-		MethodTable_t m_Table;
+		Math_t m_Gain;
 
 	public:
 
+		template <typename ...Args>
+		static inline Sound_t Create(Args &&... params)
+		{
+			return std::make_shared<Sound>(params...);
+		}
+
 		// Con-/De- structors   ///////////////////////
 
-		virtual ~Gain() = default;
+		Sound(Math_t gain = DEFAULT_GAIN);
+
+		~Sound() = default;
 
 		// Operators            ///////////////////////
 
 		// Accossors/Mutators   ///////////////////////
 
-		void SetGain(Math_t gain);
-		Math_t GetGain() const;
+		Graph_t & GetGraph();
+		Graph_t const & GetGraph() const;
+
+		Block_t & GetBlock(Node_t const &);
+		Block_t const & GetBlock(Node_t const &) const;
+
+		Sound & SetOutputGain(Math_t gain);
 
 		// Functions            ///////////////////////
 
-		/*! ********************************************************************
-		\brief
-			Takes input sample and filters it, returning the result.
+		Sound & AddBlock(
+			Block_t const & block,
+			uint32_t pos,
+			bool targets_output = false
+		);
 
-		\param input
-			The input sample.
+		Sound & SetTarget(Block_t const & block, uint32_t pos_b, Block_t const & target, uint32_t pos_t);
+		Sound & SetTarget(Node_t const & source, Node_t const & dest);
 
-		\return
-			The filtered sample.
-		***********************************************************************/
-		virtual StereoData_t FilterSample(StereoData_t const & input);
-		virtual void FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size);
-
-		virtual MethodTable_t const & GetMethodTable() const;
+		void SendBlock(StereoData_t * output, uint64_t size);
 
 	private:
 
 		// Functions                  ///////////////////////
 
-		Gain(Math_t gain = DEFAULT_GAIN);
-
-	}; // class Gain
-	TYPEDEF_SHARED(Gain);
-} // namespace Modifier
+	}; // class Sound
+} // namespace Core
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __GAIN_HPP
+#endif // __SOUND_HPP

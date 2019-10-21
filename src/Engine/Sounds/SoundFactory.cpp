@@ -1,13 +1,15 @@
 /*! ****************************************************************************
-\file             stub.cpp
+\file             SoundFactory.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 // Include Files                          //////////////////////////////////////
+
+#include "SoundFactory.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
@@ -19,9 +21,12 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace stub
+namespace AudioEngine
+{
+namespace Sound
 {
 
-} // namespace stub
+} // namespace Sound
+} // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////

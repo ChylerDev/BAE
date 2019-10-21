@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             WAVWriter.hpp
+\file             stub.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  Audio Engine
@@ -7,12 +7,10 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __WAVWRITER_HPP
-#define __WAVWRITER_HPP
+#ifndef __STUB_HPP
+#define __STUB_HPP
 
 // Include Files                ////////////////////////////////////////////////
-
-#include <RIFF-Util/RIFF.hpp>
 
 #include "../Engine.hpp"
 
@@ -26,22 +24,49 @@
 
 namespace AudioEngine
 {
-namespace Tools
+namespace Core
 {
-	/*! ************************************************************************
-	\brief
-		To be used in tandom with the recording system built into Core::Driver.
 
-	\param
-		The audio to be formatted into WAVE (RIFF) data.
+  class Recorder
+  {
+    private:
 
-	\return
-		The formatted data.
-	***************************************************************************/
-	RIFF::vector_t WriteWAV(Track_t const & audio);
-} // namespace Tools
+      // Members              ///////////////////////
+
+      Track_t m_Track;
+
+      std::deque<Track_t> m_NewSamples;
+
+    public:
+
+      template<typename ...Args>
+      static inline Recorder_t Create(Args &&... params)
+      {
+        return std::make_shared<Recorder>(params...);
+      }
+
+      // Con-/De- structors   ///////////////////////
+
+      Recorder();
+      ~Recorder();
+
+      // Operators            ///////////////////////
+
+      // Accossors/Mutators   ///////////////////////
+
+      // Functions            ///////////////////////
+
+      void SendSamples(Track_t const & samples);
+
+      Track_t GetRecording();
+
+  };
+
+  //static AudioEngine::Modifier::Vocoder v(4);
+
+} // namespace Core
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __WAVWRITER_HPP
+#endif // __STUB_HPP

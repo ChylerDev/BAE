@@ -95,6 +95,7 @@ namespace Generator
 		Square(Math_t freq);
 
 	}; // class Square
+	TYPEDEF_SHARED(Square);
 } // namespace Generator
 } // namespace AudioEngine
 

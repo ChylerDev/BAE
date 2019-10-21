@@ -34,6 +34,11 @@ namespace Generator
 {
 	GeneratorBasePtr GeneratorFactory::CreateNoise()
 	{
+		return std::make_shared<GeneratorBase>();
+	}
+
+	GeneratorBasePtr GeneratorFactory::CreateNoise()
+	{
 		return std::make_shared<Noise>();
 	}
 
@@ -59,7 +64,22 @@ namespace Generator
 
 	GeneratorBasePtr GeneratorFactory::CreateWAV()
 	{
+		return std::make_shared<WAV>();
+	}
 
+	GeneratorBasePtr GeneratorFactory::CreateWAV(std::string const & filepath)
+	{
+		return std::make_shared<WAV>(filepath);
+	}
+
+	GeneratorBasePtr GeneratorFactory::CreateWAV(std::vector<char> const & wav_data)
+	{
+		return std::make_shared<WAV>(wav_data);
+	}
+
+	GeneratorBasePtr GeneratorFactory::CreateWAV(int argc)
+	{
+		return std::make_shared<WAV>(argc);
 	}
 } // namespace Generator
 } // namespace AudioEngine

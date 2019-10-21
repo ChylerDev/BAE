@@ -102,6 +102,7 @@ namespace Generator
 		void Reset(void);
 
 	}; // class Sine
+	TYPEDEF_SHARED(Sine);
 } // namespace Generator
 } // namespace AudioEngine
 

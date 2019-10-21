@@ -18,6 +18,9 @@
 
 #include "../Engine.hpp"
 
+#include "../Generators/GeneratorBase.hpp"
+#include "../Modifiers/ModifierBase.hpp"
+
 // Public Macros                ////////////////////////////////////////////////
 
 // Forward References           ////////////////////////////////////////////////
@@ -41,22 +44,19 @@ namespace Core
       // void interactor(StereoData_t * OutputBuffer, StereoData_t * GeneratorBuffer, StereoData_t * ModifierBuffer, uint64_t buffer size)
     using Interaction_t = std::function<void(StereoData_t*, StereoData_t*, StereoData_t*, uint64_t)>;
 
+    using GenBasePtr = Generator::GeneratorBasePtr;
+    using ModBasePtr = Modifier::ModifierBasePtr;
+
   private:
 
     // Members              ///////////////////////
 
-    GenBase_t m_Generator;
-    ModBase_t m_Modifier;
+    GenBasePtr m_Generator;
+    ModBasePtr m_Modifier;
 
     Interaction_t m_Interaction;
 
   public:
-
-    template<typename ...Args>
-    static inline Block_t Create(Args &&... params)
-    {
-      return std::make_shared<Block>(params...);
-    }
 
     // Con-/De- structors   ///////////////////////
 
@@ -70,7 +70,7 @@ namespace Core
     \param gen
       The generator used for the block.
     ***************************************************************************/
-    Block(GenBase_t const & gen);
+    Block(GenBasePtr const & gen);
 
     /*! ************************************************************************
     \brief
@@ -82,7 +82,7 @@ namespace Core
     \param mod
       The modifier used for the block.
     ***************************************************************************/
-    Block(ModBase_t const & mod);
+    Block(ModBasePtr const & mod);
 
     /*! ************************************************************************
     \brief
@@ -97,7 +97,7 @@ namespace Core
     \param mod
       The modifier used for the block.
     ***************************************************************************/
-    Block(GenBase_t const & gen, ModBase_t const & mod);
+    Block(GenBasePtr const & gen, ModBasePtr const & mod);
 
     /*! ************************************************************************
     \brief
@@ -115,8 +115,8 @@ namespace Core
       second argument is the sample from the modifier.
     ***************************************************************************/
     Block(
-      GenBase_t const & gen,
-      ModBase_t const & mod,
+      GenBasePtr const & gen,
+      ModBasePtr const & mod,
       Interaction_t const & interactor
     );
 
@@ -124,10 +124,10 @@ namespace Core
 
     // Accossors/Mutators   ///////////////////////
 
-    GenBase_t & GetGenerator();
-    ModBase_t & GetModifier();
-    GenBase_t const & GetGenerator() const;
-    ModBase_t const & GetModifier() const;
+    GenBasePtr & GetGenerator();
+    ModBasePtr & GetModifier();
+    GenBasePtr const & GetGenerator() const;
+    ModBasePtr const & GetModifier() const;
 
     // Functions            ///////////////////////
 

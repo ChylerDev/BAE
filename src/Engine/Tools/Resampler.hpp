@@ -2,9 +2,9 @@
 \file             Resampler.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __RESAMPLER_HPP
@@ -29,79 +29,82 @@ namespace AudioEngine
 {
 namespace Tools
 {
+	/*! ************************************************************************
+	\brief
+	***************************************************************************/
+	class Resampler
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-  *****************************************************************************/
-  class Resampler
-  {
-  private:
+		using Index_t = Math_t;
 
-    using Index_t = FixedPoint::FixedPoint<47,16>;
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		std::vector<StereoData_t> m_Data;
 
-    std::vector<StereoData_t> m_Data;
+		Index_t m_Index;
+		Math_t const m_IndexIncrement;
+		Math_t m_PlaybackSpeed;
 
-    Index_t m_Index;
-    Math_t const m_IndexIncrement;
+		uint64_t m_LoopStart, m_LoopEnd;
 
-    uint64_t m_LoopStart, m_LoopEnd;
+	public:
 
-  public:
+		// Con-/De- structors   ///////////////////////
 
-    template<typename ...Args>
-    static inline Resampler_t Create(Args &&... params)
-    {
-      return std::make_shared<Resampler>(params...);
-    }
+		/*! ********************************************************************
+		\brief
+			Constructor for the resampler.
 
-    // Con-/De- structors   ///////////////////////
+		\param AudioData
+			A const reference to the audio data.
 
-    /*! ************************************************************************
-    \brief
-      Constructor for the resampler.
+		\param SourceSampleRate
+			The sample rate of the source data.
 
-    \param AudioData
-      A const reference to the audio data.
+		\param LoopStart
+			The sample to start looping from. Defaults to 0.
 
-    \param SourceSampleRate
-      The sample rate of the source data.
+		\param LoopEnd
+			The sample at the loop point to loop back to LoopStart. Defaults to
+			0, which is interpretted as no looping.
+		***********************************************************************/
+		Resampler(std::vector<StereoData_t> const & AudioData,
+				  int32_t SourceSampleRate,
+				  uint64_t LoopStart = 0, uint64_t LoopEnd = 0
+		);
 
-    \param LoopStart
-      The sample to start looping from. Defaults to 0.
+		// Operators            ///////////////////////
 
-    \param LoopEnd
-      The sample at the loop point to loop back to LoopStart. Defaults to 0,
-      which is interpretted as no looping.
-    ***************************************************************************/
-    Resampler(std::vector<StereoData_t> const & AudioData,
-              int32_t SourceSampleRate,
-              uint64_t LoopStart = 0, uint64_t LoopEnd = 0
-    );
+		// Accossors/Mutators   ///////////////////////
 
-    // Operators            ///////////////////////
+		/*! ********************************************************************
+		\brief
+			Sets the playback speed.
+			1.0 is original playback speed.
+		
+		\param playback_speed
+			The playback speed
+		***********************************************************************/
+		void SetPlaybackSpeed(Math_t playback_speed = 1.0);
 
-    // Accossors/Mutators   ///////////////////////
+		// Functions            ///////////////////////
 
-    // Functions            ///////////////////////
+		/*! ********************************************************************
+		\brief
+			Sends a single sample to Core::Driver for output to the OS.
 
-    /*! ************************************************************************
-    \brief
-      Sends a single sample to Core::Driver for output to the OS.
+		\return
+			The stereo sample data.
+		***********************************************************************/
+		StereoData_t SendSample();
+		void SendBlock(StereoData_t * buffer, uint64_t size);
 
-    \return
-      The stereo sample data.
-    ***************************************************************************/
-    StereoData_t SendSample();
-    void SendBlock(StereoData_t * buffer, uint64_t size);
+	private:
 
-  private:
+		// Functions                  ///////////////////////
 
-    // Functions                  ///////////////////////
-
-  }; // class Resampler
-
+	}; // class Resampler
 } // namespace Tools
 } // namespace AudioEngine
 

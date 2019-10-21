@@ -2,9 +2,9 @@
 \file             Echo.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __ECHO_HPP
@@ -16,7 +16,7 @@
 
 #include <deque>
 
-#include "Base.hpp"
+#include "ModifierBase.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -30,41 +30,41 @@ namespace AudioEngine
 {
 namespace Modifier
 {
+	/*! ************************************************************************
+	\brief
+	***************************************************************************/
+	class Echo : public ModifierBase
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-  *****************************************************************************/
-  class Echo : public Base
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		std::deque<StereoData_t> m_Echo;
+		Math_t m_Ratio;
 
-    std::deque<StereoData_t> m_Echo;
-    Math_t m_Ratio;
+	public:
 
-  public:
+		// Con-/De- structors   ///////////////////////
 
-    // Con-/De- structors   ///////////////////////
+		virtual ~Echo() = default;
 
-    Echo(uint64_t sample_delay, Math_t decay_ratio);
-    virtual ~Echo() = default;
+		// Operators            ///////////////////////
 
-    // Operators            ///////////////////////
+		// Accossors/Mutators   ///////////////////////
 
-    // Accossors/Mutators   ///////////////////////
+		// Functions            ///////////////////////
 
-    // Functions            ///////////////////////
+		virtual StereoData_t FilterSample(StereoData_t const & sample);
+		virtual void FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size);
 
-    virtual StereoData_t FilterSample(StereoData_t const & sample);
-    virtual void FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size);
+	private:
 
-  private:
+		// Functions                  ///////////////////////
 
-    // Functions                  ///////////////////////
+		Echo(uint64_t sample_delay, Math_t decay_ratio);
 
-  }; // class Echo
-
+	}; // class Echo
+	TYPEDEF_SHARED(Echo);
 } // namespace Modifier
 } // namespace AudioEngine
 

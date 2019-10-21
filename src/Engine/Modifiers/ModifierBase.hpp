@@ -1,20 +1,23 @@
 /*! ****************************************************************************
-\file             Gain.hpp
+\file             ModifierBase.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  Audio Engine
+\par    Project:  AudioEngine
 
-\copyright        Copyright © 2019 Chyler Morrison
+\copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
-#ifndef __GAIN_HPP
-#define __GAIN_HPP
+#ifndef __MODIFIERBASE_HPP
+#define __MODIFIERBASE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
+#include <cstring>
+
 #include "../Engine.hpp"
 
-#include "ModifierBase.hpp"
+#include "../Tools/MethodTable.hpp"
+#include "ModifierFactory.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -31,28 +34,24 @@ namespace Modifier
 	/*! ************************************************************************
 	\brief
 	***************************************************************************/
-	class Gain : public ModifierBase
+	class ModifierBase: public Tools::MethodTable
 	{
 	private:
 
 		// Members              ///////////////////////
 
-		Math_t m_Gain;
-
-		MethodTable_t m_Table;
+		bool is_base;
 
 	public:
 
 		// Con-/De- structors   ///////////////////////
 
-		virtual ~Gain() = default;
+		ModifierBase(bool b) : is_base(b) {};
+		virtual ~ModifierBase() = default;
 
 		// Operators            ///////////////////////
 
 		// Accossors/Mutators   ///////////////////////
-
-		void SetGain(Math_t gain);
-		Math_t GetGain() const;
 
 		// Functions            ///////////////////////
 
@@ -66,22 +65,23 @@ namespace Modifier
 		\return
 			The filtered sample.
 		***********************************************************************/
-		virtual StereoData_t FilterSample(StereoData_t const & input);
-		virtual void FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size);
+		virtual StereoData_t FilterSample(StereoData_t const & input) { return input; };
+		virtual void FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size)
+		{ std::copy_n(input, size, output); };
 
-		virtual MethodTable_t const & GetMethodTable() const;
+		bool IsBase() { return is_base; };
+
+		friend class ModifierFactory;
 
 	private:
 
 		// Functions                  ///////////////////////
 
-		Gain(Math_t gain = DEFAULT_GAIN);
-
-	}; // class Gain
-	TYPEDEF_SHARED(Gain);
+	}; // class ModifierBase
+	TYPEDEF_SHARED(ModifierBase);
 } // namespace Modifier
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __GAIN_HPP
+#endif // __MODIFIERBASE_HPP

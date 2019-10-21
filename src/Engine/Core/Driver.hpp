@@ -2,9 +2,9 @@
 \file             Driver.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __DRIVER_HPP
@@ -21,7 +21,7 @@
 // Public Macros                ////////////////////////////////////////////////
 
 #ifndef MAX_BUFFER
-  #define MAX_BUFFER (SAMPLE_RATE/10)
+	#define MAX_BUFFER (SAMPLE_RATE/10)
 #endif
 
 // Forward References           ////////////////////////////////////////////////
@@ -34,138 +34,116 @@ namespace AudioEngine
 {
 namespace Core
 {
+	/*! ************************************************************************
+	\brief
+		Initiates Port Audio and handles all related calls.
+	***************************************************************************/
+	class Driver
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-    Initiates Port Audio and handles all related calls.
-  *****************************************************************************/
-  class Driver
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		PaStreamParameters m_Params;
+		PaStream * m_Stream;
 
-    PaStreamParameters m_Params;
-    PaStream * m_Stream;
+		Track_t m_OutputTrack;
 
-    Track_t m_OutputTrack;
+		std::vector<Sound_t> m_Sounds;
 
-    std::vector<AudioCallback_t> m_AudioCallbacks;
-    std::vector<Sound_t> m_Sounds;
+		Math_t m_Gain;
+		bool m_Running;
 
-    Math_t m_Gain;
-    bool m_Running;
+		bool m_Recording;
 
-    Recorder_t m_Recorder;
-    bool m_Recording;
+	public:
 
-  public:
+		// Con-/De- structors   ///////////////////////
 
-    template<typename ...Args>
-    static inline Driver_t Create(Args &&... params)
-    {
-      return std::make_shared<Driver>(params...);
-    }
+		/*! ********************************************************************
+		\brief
+			Constructs an audio driver object.
 
-    // Con-/De- structors   ///////////////////////
+		\param gain
+			The linear gain to be used when summing all audio values.
+		***********************************************************************/
+		Driver(Math_t gain = DEFAULT_GAIN);
 
-    /*! ************************************************************************
-    \brief
-      Constructs an audio driver object.
+		Driver(Driver const &) = delete;
+		Driver(Driver &&) noexcept = default;
 
-    \param gain
-      The linear gain to be used when summing all audio values.
-    ***************************************************************************/
-    Driver(Math_t gain = DEFAULT_GAIN);
+		/*! ********************************************************************
+		\brief
+			Destructor.
+		***********************************************************************/
+		~Driver();
 
-    Driver(Driver const &) = delete;
-    Driver(Driver &&) noexcept = default;
+		// Operators            ///////////////////////
 
-    /*! ************************************************************************
-    \brief
-      Destructor.
-    ***************************************************************************/
-    ~Driver();
+		Driver & operator=(Driver const &) = delete;
+		Driver & operator=(Driver &&) noexcept = default;
 
-    // Operators            ///////////////////////
+		// Accossors/Mutators   ///////////////////////
 
-    Driver & operator=(Driver const &) = delete;
-    Driver & operator=(Driver &&) noexcept = default;
+		// Functions            ///////////////////////
 
-    // Accossors/Mutators   ///////////////////////
+		void AddSound(Sound_t const & sound);
 
-    // Functions            ///////////////////////
+		/*! ********************************************************************
+		\brief
+			Sets the gain to be used when summing all the audio values.
 
-    /*! ************************************************************************
-    \brief
-      Adds an audio callback to the list of callbacks to check.
+		\param gain
+			The linear gain value to be set.
+		***********************************************************************/
+		void SetGain(Math_t gain = DEFAULT_GAIN);
 
-    \param cb
-      The callback to be added to the list.
-    ***************************************************************************/
-    void AddAudioCallback(AudioCallback_t const & cb);
+		/*! ********************************************************************
+		\brief
+			Sets the threaded runner to stop grabbing data.
+		***********************************************************************/
+		void Shutdown();
 
-    void AddSound(Sound_t const & sound);
+	private:
 
-    void StartRecording();
+		// Functions                  ///////////////////////
 
-    Track_t StopRecording();
+		/*! ********************************************************************
+		\brief
+			Callback function for writing data to the speakers or reding data
+			from the microphones.
 
-    /*! ************************************************************************
-    \brief
-      Sets the gain to be used when summing all the audio values.
+		\param input
+			Array of input audio data.
 
-    \param gain
-      The linear gain value to be set.
-    ***************************************************************************/
-    void SetGain(Math_t gain = DEFAULT_GAIN);
+		\param output
+			Array of output audio data.
 
-    /*! ************************************************************************
-    \brief
-      Sets the threaded runner to stop grabbing data.
-    ***************************************************************************/
-    void Shutdown();
+		\param frameCount
+			The number of sample frames to be processed by the stream callback.
 
-  private:
+		\param timeInfo
+			Timesamps indicating the ADC capture time of the first sample in the
+			input buffer, the DAC output time of the first sample in the output
+			buffer, and the time the callback was invoked.
 
-    // Functions                  ///////////////////////
+		\param statusFlags
+			Flags indicating whether input/output buffers have been inserted or
+			will be dropped to overcome underflow or overflow conditions.
 
-    /*! ************************************************************************
-    \brief
-      Callback function for writing data to the speakers or reding data from the
-      microphones.
+		\param userData
+			The the user-supplied data given when Pa_OpenStream was called.
 
-    \param input
-      Array of input audio data.
-
-    \param output
-      Array of output audio data.
-
-    \param frameCount
-      The number of sample frames to be processed by the stream callback.
-
-    \param timeInfo
-      Timesamps indicating the ADC capture time of the first sample in the input
-      buffer, the DAC output time of the first sample in the output buffer, and
-      the time the callback was invoked.
-
-    \param statusFlags
-      Flags indicating whether input/output buffers have been inserted or will
-      be dropped to overcome underflow or overflow conditions.
-
-    \param userData
-      The the user-supplied data given when Pa_OpenStream was called.
-
-    \return
-      A PaStreamCallbackResult enum value.
-    ***************************************************************************/
-    static int s_WriteCallback(void const * input, void * output,
-                               unsigned long frameCount,
-                               PaStreamCallbackTimeInfo const * timeInfo,
-                               PaStreamCallbackFlags statusFlags,
-                               void * userData);
-  }; // class Driver
-
+		\return
+			A PaStreamCallbackResult enum value.
+		***********************************************************************/
+		static int s_WriteCallback(void const * input, void * output,
+															 unsigned long frameCount,
+															 PaStreamCallbackTimeInfo const * timeInfo,
+															 PaStreamCallbackFlags statusFlags,
+															 void * userData);
+	}; // class Driver
+	TYPEDEF_SHARED(Driver);
 } // namespace Core
 } // namespace AudioEngine
 

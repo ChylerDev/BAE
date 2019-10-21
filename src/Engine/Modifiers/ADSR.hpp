@@ -2,9 +2,9 @@
 \file             ADSR.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __ADSR_HPP
@@ -14,7 +14,7 @@
 
 #include "../Engine.hpp"
 
-#include "Base.hpp"
+#include "ModifierBase.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -28,78 +28,77 @@ namespace AudioEngine
 {
 namespace Modifier
 {
+	/*! ************************************************************************
+	\brief
+	***************************************************************************/
+	class ADSR : public ModifierBase
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-  *****************************************************************************/
-  class ADSR : public Base
-  {
-  private:
+		enum state : int8_t
+		{
+			attack,
+			decay,
+			sustain,
+			release,
+			invalid = -1,
+		};
 
-    enum state : int8_t
-    {
-      attack,
-      decay,
-      sustain,
-      release,
-      invalid = -1,
-    };
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		FixedPoint::FixedPoint<7,24> m_Attack;
+		FixedPoint::FixedPoint<7,24> m_Decay;
+		FixedPoint::FixedPoint<7,24> m_Sustain;
+		FixedPoint::FixedPoint<7,24> m_Release;
 
-    FixedPoint::FixedPoint<7,24> m_Attack;
-    FixedPoint::FixedPoint<7,24> m_Decay;
-    FixedPoint::FixedPoint<7,24> m_Sustain;
-    FixedPoint::FixedPoint<7,24> m_Release;
+		state m_State;
 
-    state m_State;
+		FixedPoint::FixedPoint<7,24> m_Gain;
 
-    FixedPoint::FixedPoint<7,24> m_Gain;
+		MethodTable_t m_Table;
 
-    MethodTable_t m_Table;
+	public:
 
-  public:
+		// Con-/De- structors   ///////////////////////
 
-    // Con-/De- structors   ///////////////////////
+		virtual ~ADSR() = default;
 
-    /*! ************************************************************************
-    \brief
-      Simple linear ADSR envelope filter.
+		// Operators            ///////////////////////
 
-    \param attack
-      Time to increase gain from 0 to 1 in samples.
+		// Accossors/Mutators   ///////////////////////
 
-    \param decay
-      Time to decrease gain from 0 to sustain in samples.
+		// Functions            ///////////////////////
 
-    \param sustain
-      The gain level of the sustain phase.
+		void Release(void);
 
-    \param release
-      Time to decrease from sustain to 0 in samples.
-    ***************************************************************************/
-    ADSR(uint64_t attack, uint64_t decay, Math_t sustain, uint64_t release);
-    virtual ~ADSR() = default;
+		virtual StereoData_t FilterSample(StereoData_t const & input);
+		virtual void FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size);
 
-    // Operators            ///////////////////////
+		virtual MethodTable_t const & GetMethodTable() const;
 
-    // Accossors/Mutators   ///////////////////////
+	private:
 
-    // Functions            ///////////////////////
+		// Functions                  ///////////////////////
 
-    void Release(void);
+		/*! ********************************************************************
+		\brief
+			Simple linear ADSR envelope filter.
 
-    virtual StereoData_t FilterSample(StereoData_t const & input);
-    virtual void FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size);
+		\param attack
+			Time to increase gain from 0 to 1 in samples.
 
-    virtual MethodTable_t const & GetMethodTable() const;
+		\param decay
+			Time to decrease gain from 0 to sustain in samples.
 
-  private:
+		\param sustain
+			The gain level of the sustain phase.
 
-    // Functions                  ///////////////////////
-
-  }; // class ADSR
-
+		\param release
+			Time to decrease from sustain to 0 in samples.
+		***********************************************************************/
+		ADSR(uint64_t attack, uint64_t decay, Math_t sustain, uint64_t release);
+	}; // class ADSR
+	TYPEDEF_SHARED(ADSR);
 } // namespace Modifier
 } // namespace AudioEngine
 
