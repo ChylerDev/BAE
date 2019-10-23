@@ -65,8 +65,8 @@ namespace Modifier
 		\return
 			The filtered sample.
 		***********************************************************************/
-		virtual StereoData_t FilterSample(StereoData_t const & input) { return input; };
-		virtual void FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size)
+		virtual StereoData FilterSample(StereoData const & input) { return input; };
+		virtual void FilterBlock(StereoData * input, StereoData * output, uint64_t size)
 		{ std::copy_n(input, size, output); };
 
 		bool IsBase() { return is_base; };

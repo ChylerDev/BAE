@@ -2,15 +2,18 @@
 \file             Sound.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 // Include Files                          //////////////////////////////////////
 
 #include "Block.hpp"
 #include "Sound.hpp"
+
+#include "../Modifiers/ModifierFactory.hpp"
+#include "SoundFactory.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
@@ -24,128 +27,86 @@
 
 namespace AudioEngine
 {
-namespace Core
+namespace Sound
 {
+	Sound::Sound(Math_t input_gain, Math_t output_gain) :
+		m_Graph(),
+		m_InputGain(Modifier::ModifierFactory::CreateGain(input_gain)),
+		m_OutputGain(Modifier::ModifierFactory::CreateGain(output_gain))
+	{
+		m_Graph.push_back(
+			Edge(
+				std::deque<BlockPtr>(1, SoundFactory::CreateBlock(m_InputGain)),
+				Combinator(Combinator::Addition),
+				std::deque<BlockPtr>()
+			)
+		);
+		m_Graph.push_back(
+			Edge(
+				std::deque<BlockPtr>(),
+				Combinator(Combinator::Addition),
+				std::deque<BlockPtr>(1, SoundFactory::CreateBlock(m_OutputGain))
+			)
+		);
+	}
 
-  Sound::Sound(Math_t gain) :
-    m_NodeGraph(), m_Gain(gain)
-  {
-  }
+	Sound & Sound::AddEdge(Edge const & e, bool takes_input = false, bool sends_output = false)
+	{
+		if(takes_input)
+		{
+			auto & out = std::get<2>(m_Graph.front());
+			out.insert(out.end(), std::get<0>(e).begin(), std::get<0>(e).end());
+		}
+		else if(sends_output)
+		{
+			auto & in = std::get<0>(m_Graph.back());
+			in.insert(in.end(), std::get<2>(e).begin(), std::get<2>(e).end());
+		}
+		else
+		{
+			m_Graph.insert(m_Graph.end()-1, e);
+		}
 
-  Sound::Graph_t & Sound::GetGraph()
-  {
-    return m_NodeGraph;
-  }
+		return *this;
+	}
 
-  Sound::Graph_t const & Sound::GetGraph() const
-  {
-    return m_NodeGraph;
-  }
+	Sound & Sound::SetInputGain(Math_t gain)
+	{
+		(*m_InputGain)("SetGain", &gain);
+		return *this;
+	}
 
-  Block_t & Sound::GetBlock(Node_t const & node)
-  {
-    return node->block;
-  }
+	Sound & Sound::SetOutputGain(Math_t gain)
+	{
+		(*m_OutputGain)("SetGain", &gain);
+		return *this;
+	}
 
-  Block_t const & Sound::GetBlock(Node_t const & node) const
-  {
-    return node->block;
-  }
+	StereoData Sound::Process(StereoData input)
+	{
+		std::get<0>(m_Graph.front()).front()->PrimeInput(input);
 
-  Sound & Sound::SetOutputGain(Math_t gain)
-  {
-    m_Gain = gain;
-    return *this;
-  }
+		for(auto & e : m_Graph)
+		{
+			std::deque<StereoData> outputs;
 
-  Sound & Sound::AddBlock(
-    Block_t const & block,
-    uint32_t pos,
-    bool targets_output
-  )
-  {
-    m_NodeGraph[pos].push_back(
-      std::make_shared<Node>(
-        aStereoData_t(new StereoData_t[8192]),
-        block, std::deque<Node_t>(), targets_output
-      )
-    );
+			for(auto & in : std::get<0>(e))
+			{
+				in->Process();
+				outputs.push_back(in->LastOutput());
+			}
 
-    return *this;
-  }
+			input = std::get<1>(e).Process(outputs.begin(), outputs.end());
 
-  Sound & Sound::SetTarget(Block_t const & block, uint32_t pos_b, Block_t const & target, uint32_t pos_t)
-  {
-    Node_t source;
-    Node_t dest;
+			for(auto & out : std::get<2>(e))
+			{
+				out->PrimeInput(input);
+			}
+		}
 
-    for(auto & node : m_NodeGraph[pos_b])
-    {
-      if(node->block == block)
-      {
-        source = node;
-        break;
-      }
-    }
-    for(auto & node : m_NodeGraph[pos_t])
-    {
-      if(node->block == target)
-      {
-        dest = node;
-        break;
-      }
-    }
-
-    SetTarget(source, dest);
-
-    return *this;
-  }
-
-  Sound & Sound::SetTarget(Node_t const & source, Node_t const & dest)
-  {
-    source->outputs.push_back(dest);
-
-    return *this;
-  }
-
-  void Sound::SendBlock(StereoData_t * output, uint64_t size)
-  {
-    static aStereoData_t buffer(new StereoData_t[size]);
-    static uint64_t i;
-
-    for(auto & nodes : m_NodeGraph)
-    {
-      for(auto & node : nodes.second)
-      {
-        std::fill(buffer.get(), buffer.get()+size, StereoData_t(SampleType_t(0), SampleType_t(0)));
-
-        node->block->SendBlock(buffer.get(), node->input.get(), size);
-
-        if(node->final_output)
-        {
-          for(i = 0; i < size; ++i)
-          {
-             Left(output[i]) += SampleType_t(Left(buffer[i]) * m_Gain);
-            Right(output[i]) += SampleType_t(Right(buffer[i]) * m_Gain);
-          }
-        }
-
-        std::fill(node->input.get(), node->input.get()+size, StereoData_t(SampleType_t(0), SampleType_t(0)));
-
-        for(auto & o : node->outputs)
-        {
-          for(i = 0; i < size; ++i)
-          {
-            Left((o->input)[i]) +=
-              Left(buffer[i]);
-            Right(o->input[i]) += Right(buffer[i]);
-          }
-        }
-      }
-    }
-  }
-
-} // namespace Core
+		return std::get<2>(m_Graph.back()).back()->LastOutput();
+	}
+} // namespace Sound
 } // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////

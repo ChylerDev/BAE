@@ -30,24 +30,24 @@ namespace Generator
 	{
 	}
 
-	StereoData_t Noise::SendSample()
+	StereoData Noise::SendSample()
 	{
-		SampleType_t sample;
-		sample = m_Distribution(m_Engine)/SampleType_t(0x8000);
+		SampleType sample;
+		sample = m_Distribution(m_Engine)/SampleType(0x8000);
 
 		return MONO_TO_STEREO(sample);
 	}
 
-	void Noise::SendBlock(StereoData_t * buffer, uint64_t size)
+	void Noise::SendBlock(StereoData * buffer, uint64_t size)
 	{
 		static uint64_t i = 0;
 		for(i = 0; i < size; ++i)
 		{
-			static SampleType_t sample;
+			static SampleType sample;
 
-			sample = m_Distribution(m_Engine)/SampleType_t(0x8000);
+			sample = m_Distribution(m_Engine)/SampleType(0x8000);
 
-			static StereoData_t out;
+			static StereoData out;
 			out = MONO_TO_STEREO(sample);
 			Left(buffer[i]) += Left(out);
 			Right(buffer[i]) += Right(out);

@@ -35,7 +35,7 @@ namespace Modifier
 	{
 	private:
 
-		enum state : int8_t
+		enum State : int8_t
 		{
 			attack,
 			decay,
@@ -46,14 +46,14 @@ namespace Modifier
 
 		// Members              ///////////////////////
 
-		FixedPoint::FixedPoint<7,24> m_Attack;
-		FixedPoint::FixedPoint<7,24> m_Decay;
-		FixedPoint::FixedPoint<7,24> m_Sustain;
-		FixedPoint::FixedPoint<7,24> m_Release;
+		Math_t m_Attack;
+		Math_t m_Decay;
+		Math_t m_Sustain;
+		Math_t m_Release;
 
-		state m_State;
+		State m_State;
 
-		FixedPoint::FixedPoint<7,24> m_Gain;
+		Math_t m_Gain;
 
 		MethodTable_t m_Table;
 
@@ -71,8 +71,8 @@ namespace Modifier
 
 		void Release(void);
 
-		virtual StereoData_t FilterSample(StereoData_t const & input);
-		virtual void FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size);
+		virtual StereoData FilterSample(StereoData const & input);
+		virtual void FilterBlock(StereoData * input, StereoData * output, uint64_t size);
 
 		virtual MethodTable_t const & GetMethodTable() const;
 

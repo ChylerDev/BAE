@@ -47,9 +47,9 @@ namespace Modifier
 		Reset();
 	}
 
-	StereoData_t LowPass::FilterSample(StereoData_t const & input)
+	StereoData LowPass::FilterSample(StereoData const & input)
 	{
-		StereoData_t output(
+		StereoData output(
 			float(m_Coefficients[0] * Left(input) +
 						m_Coefficients[1] * Left(m_Outputs[0]) +
 						m_Coefficients[2] * Left(m_Outputs[1]) +
@@ -70,13 +70,13 @@ namespace Modifier
 		return output;
 	}
 
-	void LowPass::FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size)
+	void LowPass::FilterBlock(StereoData * input, StereoData * output, uint64_t size)
 	{
 		static uint64_t i;
 
 		for(i = 0; i < size; ++i)
 		{
-			static StereoData_t out;
+			static StereoData out;
 
 			Left(output[i]) += Left(out) = 
 				float(m_Coefficients[0] * Left(input[i]) +
@@ -93,11 +93,6 @@ namespace Modifier
 			m_Outputs[0] = out;
 		}
 	}
-
-	MethodTable_t const & LowPass::GetMethodTable() const
-	{
-		return m_Table;
-	}
 } // namespace Modifier
 } // namespace AudioEngine
 
@@ -109,11 +104,11 @@ namespace Modifier
 {
 	void LowPass::Reset()
 	{
-		static double angle, K, T, x, y, z, g;
+		static Math_t angle, K, T, x, y, z, g;
 
-		angle = (PI/6)*double(4 - m_Resonance);
+		angle = (PI/6)*Math_t(4 - m_Resonance);
 		K = 1 - 2*std::cos(angle);
-		T = double(m_Cutoff) * INC_RATE;
+		T = Math_t(m_Cutoff) * INC_RATE;
 		x = K*T;
 		y = K*T*T;
 		z = T*T*T;

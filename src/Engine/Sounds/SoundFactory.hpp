@@ -14,7 +14,9 @@
 
 #include "../Engine.hpp"
 
-#include "SoundBase.hpp"
+#include "../Modifiers/ModifierBase.hpp"
+#include "../Generators/GeneratorBase.hpp"
+#include "Sound.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -38,9 +40,13 @@ namespace Sound
 		// Members              ///////////////////////
 
 	public:
+
 		// Functions            ///////////////////////
 
 		~SoundFactory() = delete;
+
+		static BlockPtr CreateBlock(Generator::GeneratorBasePtr);
+		static BlockPtr CreateBlock(Modifier::ModifierBasePtr);
 
 	private:
 

@@ -41,20 +41,20 @@ namespace Modifier
 		return m_Gain;
 	}
 
-	StereoData_t Gain::FilterSample(StereoData_t const & input)
+	StereoData Gain::FilterSample(StereoData const & input)
 	{
-		return StereoData_t(SampleType_t(Left(input) * m_Gain),
-												SampleType_t(Right(input) * m_Gain));
+		return StereoData(SampleType(Left(input) * m_Gain),
+												SampleType(Right(input) * m_Gain));
 	}
 
-	void Gain::FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size)
+	void Gain::FilterBlock(StereoData * input, StereoData * output, uint64_t size)
 	{
 		static uint64_t i;
 
 		for(i = 0; i < size; ++i)
 		{
-			Left(output[i]) += SampleType_t(Left(input[i]) * m_Gain);
-			Right(output[i]) += SampleType_t(Right(input[i]) * m_Gain);
+			Left(output[i]) += SampleType(Left(input[i]) * m_Gain);
+			Right(output[i]) += SampleType(Right(input[i]) * m_Gain);
 		}
 	}
 

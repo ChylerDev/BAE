@@ -62,7 +62,7 @@ namespace Generator
 	{
 		SetupMethodTable();
 
-		ReadFile(Tools::GetOptions().at(argc));
+		ReadFile(Tools::GetOption(argc));
 	}
 
 	void WAV::ReadFile(std::string const & path)
@@ -98,16 +98,16 @@ namespace Generator
 		ParseWAV(wav_data.data(), int(wav_data.size()));
 	}
 
-	StereoData_t WAV::SendSample()
+	StereoData WAV::SendSample()
 	{
 		if(m_Resampler)
 		{
 			return m_Resampler->SendSample();
 		}
-		return StereoData_t(SampleType_t(0), SampleType_t(0));
+		return StereoData(SampleType(0), SampleType(0));
 	}
 
-	void WAV::SendBlock(StereoData_t * buffer, uint64_t size)
+	void WAV::SendBlock(StereoData * buffer, uint64_t size)
 	{
 		m_Resampler->SendBlock(buffer, size);
 	}
@@ -150,26 +150,26 @@ namespace Generator
 
 			// Get the data chunk
 		RIFF::vector_t data_vec = riff.GetChunk(CONSTRUCT_BYTE_STR("data"));
-		std::vector<StereoData_t> AudioData;
+		std::vector<StereoData> AudioData;
 		AudioData.reserve(data_vec.size() / header->BytesPerSample);
 
 			// Parse data
 		char const * data = reinterpret_cast<char *>(&data_vec[0]);
 		while(data < reinterpret_cast<char *>(&data_vec[0] + data_vec.size()))
 		{
-			StereoData_t sample;
+			StereoData sample;
 
 			if(header->BitsPerSample == 8)
 			{
 				if(header->ChannelCount == 1)
 				{
 					Left(sample) = Right(sample) =
-						SampleType_t(((*data) << 8) * SQRT_HALF)/SampleType_t(0x8000);
+						SampleType(((*data) << 8) * SQRT_HALF)/SampleType(0x8000);
 				}
 				else
 				{
-					Left(sample) = SampleType_t((*data) << 8)/SampleType_t(0x8000);
-					Right(sample) = SampleType_t((*(data+1)) << 8)/SampleType_t(0x8000);
+					Left(sample) = SampleType((*data) << 8)/SampleType(0x8000);
+					Right(sample) = SampleType((*(data+1)) << 8)/SampleType(0x8000);
 				}
 			}
 			else  // assume 16-bit audio is being used
@@ -178,12 +178,12 @@ namespace Generator
 				if(header->ChannelCount == 1)
 				{
 					Left(sample) = Right(sample) =
-						SampleType_t((*rdata) * SQRT_HALF)/SampleType_t(0x8000);
+						SampleType((*rdata) * SQRT_HALF)/SampleType(0x8000);
 				}
 				else
 				{
-					Left(sample) = *rdata / SampleType_t(0x8000);
-					Right(sample) = *(rdata+1) / SampleType_t(0x8000);
+					Left(sample) = *rdata / SampleType(0x8000);
+					Right(sample) = *(rdata+1) / SampleType(0x8000);
 				}
 			}
 
@@ -191,7 +191,7 @@ namespace Generator
 			data += header->BytesPerSample;
 		}
 
-		m_Resampler = Tools::Resampler::Create(
+		m_Resampler = std::make_shared<Tools::Resampler>(
 			AudioData, header->SamplingRate, 0, AudioData.size()-1
 		);
 	}

@@ -36,7 +36,7 @@ namespace Generator
 		m_Irate = 2 * double(freq) * INC_RATE;
 	}
 
-	StereoData_t Sawtooth::SendSample()
+	StereoData Sawtooth::SendSample()
 	{
 		m_Inc += m_Irate;
 
@@ -48,7 +48,7 @@ namespace Generator
 		return MONO_TO_STEREO(m_Inc);
 	}
 
-	void Sawtooth::SendBlock(StereoData_t * buffer, uint64_t size)
+	void Sawtooth::SendBlock(StereoData * buffer, uint64_t size)
 	{
 		static uint64_t i = 0;
 
@@ -61,7 +61,7 @@ namespace Generator
 			m_Inc -= 2;
 		}
 
-		static StereoData_t out;
+		static StereoData out;
 		out = MONO_TO_STEREO(m_Inc);
 		Left(buffer[i]) += Left(out);
 		Right(buffer[i]) += Right(out);

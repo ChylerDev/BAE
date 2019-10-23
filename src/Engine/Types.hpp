@@ -2,9 +2,9 @@
 \file             Types.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __TYPES_HPP
@@ -18,9 +18,6 @@
 #include <memory>
 #include <tuple>
 
-#define FIXED_POINT_RAW_ACCESS
-#include <FixedPoint/FixedPoint.hpp>
-
 // Public Macros                ////////////////////////////////////////////////
 
 // Forward References           ////////////////////////////////////////////////
@@ -29,20 +26,17 @@
 
 namespace AudioEngine
 {
+	using Math_t = double;//FixedPoint::FixedPoint<15,16>;
+	using SampleType = float;//FixedPoint::Audio16Bit_t;
+	TYPEDEF_SHARED(SampleType);
+	using StereoData = std::tuple<SampleType,SampleType>;
+	TYPEDEF_SHARED(StereoData);
+	using Track_t = std::vector<StereoData>;
 
-  using Math_t = double;//FixedPoint::FixedPoint<15,16>;
-  using SampleType_t = float;//FixedPoint::Audio16Bit_t;
-  using StereoData_t = std::tuple<SampleType_t,SampleType_t>;
-  using pStereoData_t = std::shared_ptr<StereoData_t>;
-  using aStereoData_t = std::shared_ptr<StereoData_t[]>;
+	using AudioCallback_t = std::function<StereoData(void)>;
 
-  using Track_t = std::vector<StereoData_t>;
-
-  using AudioCallback_t = std::function<StereoData_t(void)>;
-
-  using Void_fn = std::function<void(void*)>;
-  using MethodTable_t = std::unordered_map<std::string, Void_fn>;
-
+	using Void_fn = std::function<void(void*)>;
+	using MethodTable_t = std::unordered_map<std::string, Void_fn>;
 } // namespace AudioEngine
 
 #endif  // __TYPES_HPP

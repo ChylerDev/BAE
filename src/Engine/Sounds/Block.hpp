@@ -2,9 +2,9 @@
 \file             Block.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __BLOCK_HPP
@@ -31,117 +31,81 @@
 
 namespace AudioEngine
 {
-namespace Core
+namespace Sound
 {
+	/*! ************************************************************************
+	\brief
+	***************************************************************************/
+	class Block
+	{
+	public:
 
-  /*! **************************************************************************
-  \brief
-  *****************************************************************************/
-  class Block
-  {
-  public:
+			// StereoData interactor(StereoData GeneratorBuffer, StereoData ModifierBuffer)
+		using Interaction_f = std::function<StereoData(StereoData, StereoData)>;
 
-      // void interactor(StereoData_t * OutputBuffer, StereoData_t * GeneratorBuffer, StereoData_t * ModifierBuffer, uint64_t buffer size)
-    using Interaction_t = std::function<void(StereoData_t*, StereoData_t*, StereoData_t*, uint64_t)>;
+		using GenBasePtr = Generator::GeneratorBasePtr;
+		using ModBasePtr = Modifier::ModifierBasePtr;
 
-    using GenBasePtr = Generator::GeneratorBasePtr;
-    using ModBasePtr = Modifier::ModifierBasePtr;
+	private:
 
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		GenBasePtr m_Generator;
+		ModBasePtr m_Modifier;
 
-    GenBasePtr m_Generator;
-    ModBasePtr m_Modifier;
+		Interaction_f m_Interaction;
 
-    Interaction_t m_Interaction;
+		StereoData m_Input;
+		StereoData m_Output;
 
-  public:
+	public:
 
-    // Con-/De- structors   ///////////////////////
+		// Con-/De- structors   ///////////////////////
 
-    /*! ************************************************************************
-    \brief
-      Block constructor.
+		/*! ********************************************************************
+		\brief
+			Block constructor.
 
-      The default interactor will be used, which is defined as forwarding the
-      generator's output.
+		\param gen
+			The generator used for the block.
 
-    \param gen
-      The generator used for the block.
-    ***************************************************************************/
-    Block(GenBasePtr const & gen);
+		\param mod
+			The modifier used for the block.
 
-    /*! ************************************************************************
-    \brief
-      Block constructor.
+		\param interactor
+			The function that defines how the output of the generator and the
+			modifier are combined. The first argument is the sample from the
+			generator, and the second argument is the sample from the modifier.
+		***********************************************************************/
+		Block(
+			GenBasePtr const & gen,
+			ModBasePtr const & mod,
+			Interaction_f const & interactor
+		);
 
-      The default interactor will be used, which is defined forwarding the
-      modifier's output.
+		// Operators            ///////////////////////
 
-    \param mod
-      The modifier used for the block.
-    ***************************************************************************/
-    Block(ModBasePtr const & mod);
+		// Accossors/Mutators   ///////////////////////
 
-    /*! ************************************************************************
-    \brief
-      Block constructor.
+		GenBasePtr & GetGenerator();
+		ModBasePtr & GetModifier();
+		GenBasePtr const & GetGenerator() const;
+		ModBasePtr const & GetModifier() const;
 
-      The default interactor will be used, which is defined as multiplying the
-      generated sample by the filtered sample.
+		void PrimeInput(StereoData input);
+		StereoData LastOutput();
 
-    \param gen
-      The generator used for the block.
+		// Functions            ///////////////////////
 
-    \param mod
-      The modifier used for the block.
-    ***************************************************************************/
-    Block(GenBasePtr const & gen, ModBasePtr const & mod);
+		void Process();
 
-    /*! ************************************************************************
-    \brief
-      Block constructor.
+	private:
 
-    \param gen
-      The generator used for the block.
+		// Functions                  ///////////////////////
 
-    \param mod
-      The modifier used for the block.
-
-    \param interactor
-      The function that defines how the output of the generator and the modifier
-      are combined. The first argument is the sample from the generator, and the
-      second argument is the sample from the modifier.
-    ***************************************************************************/
-    Block(
-      GenBasePtr const & gen,
-      ModBasePtr const & mod,
-      Interaction_t const & interactor
-    );
-
-    // Operators            ///////////////////////
-
-    // Accossors/Mutators   ///////////////////////
-
-    GenBasePtr & GetGenerator();
-    ModBasePtr & GetModifier();
-    GenBasePtr const & GetGenerator() const;
-    ModBasePtr const & GetModifier() const;
-
-    // Functions            ///////////////////////
-
-    Block & SetInteractor(Interaction_t const & interactor);
-
-    void SendBlock(StereoData_t * output, StereoData_t * input, uint64_t size);
-
-  private:
-
-    // Functions                  ///////////////////////
-
-  }; // class Block
-
-} // namespace Core
+	}; // class Block
+	TYPEDEF_SHARED(Block);
+} // namespace Sound
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////

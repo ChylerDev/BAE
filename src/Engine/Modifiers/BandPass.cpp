@@ -57,16 +57,16 @@ namespace Modifier
 		Reset();
 	}
 
-	StereoData_t BandPass::FilterSample(StereoData_t const & x)
+	StereoData BandPass::FilterSample(StereoData const & x)
 	{
-		StereoData_t y;
+		StereoData y;
 
-		Left(y) = SampleType_t(
+		Left(y) = SampleType(
 			m_A0 * (Left(x) - Left(m_X2)) +
 			m_B1 * Left(m_Y1) -
 			m_B2 * Left(m_Y2)
 		);
-		Right(y) = SampleType_t(
+		Right(y) = SampleType(
 			m_A0 * (Right(x) - Right(m_X2)) +
 			m_B1 * Right(m_Y1) -
 			m_B2 * Right(m_Y2)
@@ -80,18 +80,18 @@ namespace Modifier
 		return y;
 	}
 
-	void BandPass::FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size)
+	void BandPass::FilterBlock(StereoData * input, StereoData * output, uint64_t size)
 	{
 		static uint64_t i;
 
 		for(i = 0; i < size; ++i)
 		{
-			Left(output[i]) += SampleType_t(
+			Left(output[i]) += SampleType(
 				m_A0 * (Left(input[i]) - Left(m_X2)) +
 				m_B1 * Left(m_Y1) -
 				m_B2 * Left(m_Y2)
 			);
-			Right(output[i]) += SampleType_t(
+			Right(output[i]) += SampleType(
 				m_A0 * (Right(input[i]) - Right(m_X2)) +
 				m_B1 * Right(m_Y1) -
 				m_B2 * Right(m_Y2)

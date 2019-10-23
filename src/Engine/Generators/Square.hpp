@@ -66,8 +66,8 @@ namespace Generator
 		\return
 			The stereo sample data.
 		***********************************************************************/
-		virtual StereoData_t SendSample(void);
-		virtual void SendBlock(StereoData_t * buffer, uint64_t size);
+		virtual StereoData SendSample(void);
+		virtual void SendBlock(StereoData * buffer, uint64_t size);
 
 		/*! ********************************************************************
 		\brief

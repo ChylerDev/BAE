@@ -49,30 +49,30 @@ namespace Modifier
 	{
 	}
 
-	StereoData_t EnvelopeFollower::FilterSample(StereoData_t const & x)
+	StereoData EnvelopeFollower::FilterSample(StereoData const & x)
 	{
-		StereoData_t y;
+		StereoData y;
 
 		if(+(Left(x)) > Left(m_Y1))
 		{
-			Left(y) = SampleType_t(m_AU * +(Left(x)) + m_BU*Left(m_Y1));
-			// Left(y) = SampleType_t(m_AU * (+(Left(x)) + +(Left(m_X1))) + m_BU * Left(m_Y1));
+			Left(y) = SampleType(m_AU * +(Left(x)) + m_BU*Left(m_Y1));
+			// Left(y) = SampleType(m_AU * (+(Left(x)) + +(Left(m_X1))) + m_BU * Left(m_Y1));
 		}
 		else
 		{
-			Left(y) = SampleType_t(m_AD * +(Left(x)) + m_BD*Left(m_Y1));
-			// Left(y) = SampleType_t(m_AD * (+(Left(x)) + +(Left(m_X1))) + m_BD * Left(m_Y1));
+			Left(y) = SampleType(m_AD * +(Left(x)) + m_BD*Left(m_Y1));
+			// Left(y) = SampleType(m_AD * (+(Left(x)) + +(Left(m_X1))) + m_BD * Left(m_Y1));
 		}
 
 		if(+(Right(x)) > Right(m_Y1))
 		{
-			Right(y) = SampleType_t(m_AU * +(Right(x)) + m_BU*Right(m_Y1));
-			// Right(y) = SampleType_t(m_AU * (+(Right(x)) + +(Right(m_X1))) + m_BU * Right(m_Y1));
+			Right(y) = SampleType(m_AU * +(Right(x)) + m_BU*Right(m_Y1));
+			// Right(y) = SampleType(m_AU * (+(Right(x)) + +(Right(m_X1))) + m_BU * Right(m_Y1));
 		}
 		else
 		{
-			Right(y) = SampleType_t(m_AD * +(Right(x)) + m_BD*Right(m_Y1));
-			// Right(y) = SampleType_t(m_AD * (+(Right(x)) + +(Right(m_X1))) + m_BD * Right(m_Y1));
+			Right(y) = SampleType(m_AD * +(Right(x)) + m_BD*Right(m_Y1));
+			// Right(y) = SampleType(m_AD * (+(Right(x)) + +(Right(m_X1))) + m_BD * Right(m_Y1));
 		}
 
 		m_Y1 = y;
@@ -81,35 +81,35 @@ namespace Modifier
 		return y;
 	}
 
-	void EnvelopeFollower::FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size)
+	void EnvelopeFollower::FilterBlock(StereoData * input, StereoData * output, uint64_t size)
 	{
 		static uint64_t i;
 
 		for(i = 0; i < size; ++i)
 		{
-			static StereoData_t sample;
+			static StereoData sample;
 
 			if(+(Left(input[i])) > Left(m_Y1))
 			{
-				Left(sample) = SampleType_t(
+				Left(sample) = SampleType(
 					m_AU * (+(Left(input[i])) + +(Left(m_X1))) + m_BU * Left(m_Y1)
 				);
 			}
 			else
 			{
-				Left(sample) = SampleType_t(
+				Left(sample) = SampleType(
 					m_AD * (+(Left(input[i])) + +(Left(m_X1))) + m_BD * Left(m_Y1)
 				);
 			}
 			if(+(Right(input[i])) > Right(m_Y1))
 			{
-				Right(sample) = SampleType_t(
+				Right(sample) = SampleType(
 					m_AU * (+(Right(input[i])) + +(Right(m_X1))) + m_BU * Right(m_Y1)
 				);
 			}
 			else
 			{
-				Right(sample) = SampleType_t(
+				Right(sample) = SampleType(
 					m_AD * (+(Right(input[i])) + +(Right(m_X1))) + m_BD * Right(m_Y1)
 				);
 			}

@@ -12,16 +12,6 @@
 
 // Public Macros                ////////////////////////////////////////////////
 
-#ifndef METHOD
-  #define METHOD(obj, func, type, val) { type t(val); (obj).GetMethodTable().at(#func)(&t); }
-#endif
-#ifndef METHOD_RET
-  #define METHOD_RET(obj, func, rettype) [&, obj]()->rettype{rettype t; obj.GetMethodTable().at(#func)(&t); return t;}()
-#endif
-#ifndef METHOD_PARAM_RET
-  #define METHOD_PARAM_RET(obj, func, rettype, val) [&, obj, val]()->rettype{obj.GetMethodTable().at(#func)(val); return std::get<0>(*val);}()
-#endif
-
 #ifndef SAMPLE_RATE
   #define SAMPLE_RATE 48'000
 #endif
@@ -77,11 +67,11 @@
 #endif
 
 #ifndef MONO_TO_STEREO
-  #define MONO_TO_STEREO(x) StereoData_t(SampleType_t((x)*SQRT_HALF),SampleType_t((x)*SQRT_HALF))
+  #define MONO_TO_STEREO(x) StereoData(SampleType((x)*SQRT_HALF),SampleType((x)*SQRT_HALF))
 #endif
 
 #ifndef STEREO_TO_MONO
-  #define STEREO_TO_MONO(x) SampleType_t((std::get<0>(x) + std::get<1>(x))/SQRT_HALF)
+  #define STEREO_TO_MONO(x) SampleType((std::get<0>(x) + std::get<1>(x))/SQRT_HALF)
 #endif
 
 #ifndef TO_STR

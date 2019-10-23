@@ -26,22 +26,22 @@
 
 namespace AudioEngine
 {
-	constexpr SampleType_t & Left(StereoData_t& s)
+	constexpr SampleType & Left(StereoData& s)
 	{
 		return std::get<0>(s);
 	}
 
-	constexpr SampleType_t const& Left(StereoData_t const& s)
+	constexpr SampleType const& Left(StereoData const& s)
 	{
 		return std::get<0>(s);
 	}
 
-	constexpr SampleType_t & Right(StereoData_t& s)
+	constexpr SampleType & Right(StereoData& s)
 	{
 		return std::get<1>(s);
 	}
 
-	constexpr SampleType_t const& Right(StereoData_t const& s)
+	constexpr SampleType const& Right(StereoData const& s)
 	{
 		return std::get<1>(s);
 	}

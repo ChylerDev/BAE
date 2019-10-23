@@ -38,7 +38,7 @@ namespace Generator
 		m_Irate = 4 * double(freq) * INC_RATE;
 	}
 
-	StereoData_t Triangle::SendSample(void)
+	StereoData Triangle::SendSample(void)
 	{
 		m_Inc += m_Irate;
 
@@ -52,7 +52,7 @@ namespace Generator
 		return MONO_TO_STEREO(m_Inc);
 	}
 
-	void Triangle::SendBlock(StereoData_t * buffer, uint64_t size)
+	void Triangle::SendBlock(StereoData * buffer, uint64_t size)
 	{
 		static uint64_t i;
 
@@ -67,7 +67,7 @@ namespace Generator
 				m_Inc = (m_Inc >= 1) ? (2-m_Inc) : (-2-m_Inc);
 			}
 
-			static StereoData_t out;
+			static StereoData out;
 			out = MONO_TO_STEREO(m_Inc);
 			Left(buffer[i]) += Left(out);
 			Right(buffer[i]) += Right(out);

@@ -39,7 +39,7 @@ namespace Modifier
 
 		Math_t m_AU, m_BU;
 		Math_t m_AD, m_BD;
-		StereoData_t m_X1, m_Y1;
+		StereoData m_X1, m_Y1;
 
 	public:
 
@@ -49,8 +49,8 @@ namespace Modifier
 
 		// Operators            ///////////////////////
 
-		virtual StereoData_t FilterSample(StereoData_t const & x);
-		virtual void FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size);
+		virtual StereoData FilterSample(StereoData const & x);
+		virtual void FilterBlock(StereoData * input, StereoData * output, uint64_t size);
 
 		// Accossors/Mutators   ///////////////////////
 

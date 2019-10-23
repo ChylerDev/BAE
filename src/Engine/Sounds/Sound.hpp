@@ -20,6 +20,9 @@
 
 #include "../Engine.hpp"
 
+#include "Combinator.hpp"
+#include "Block.hpp"
+
 // Public Macros                ////////////////////////////////////////////////
 
 // Forward References           ////////////////////////////////////////////////
@@ -30,7 +33,7 @@
 
 namespace AudioEngine
 {
-namespace Core
+namespace Sound
 {
 	/*! ************************************************************************
 	\brief
@@ -40,31 +43,23 @@ namespace Core
 
 	public:
 
-		using Graph_t =
-			std::map<
-				uint32_t,
-				std::vector<Node_t>
-			>;
+		//                       inputs                  combinator  outputs
+		using Edge = std::tuple< std::deque< BlockPtr >, Combinator, std::deque< BlockPtr > >;
+		using Graph = std::deque< Edge >;
 
 	private:
 
 		// Members              ///////////////////////
 
-		Graph_t m_NodeGraph;
+		Graph m_Graph;
 
-		Math_t m_Gain;
+		Modifier::ModifierBasePtr m_InputGain;
+		Modifier::ModifierBasePtr m_OutputGain;
 
 	public:
-
-		template <typename ...Args>
-		static inline Sound_t Create(Args &&... params)
-		{
-			return std::make_shared<Sound>(params...);
-		}
-
 		// Con-/De- structors   ///////////////////////
 
-		Sound(Math_t gain = DEFAULT_GAIN);
+		Sound(Math_t input_gain = Math_t(1.0), Math_t output_gain = DEFAULT_GAIN);
 
 		~Sound() = default;
 
@@ -72,33 +67,21 @@ namespace Core
 
 		// Accossors/Mutators   ///////////////////////
 
-		Graph_t & GetGraph();
-		Graph_t const & GetGraph() const;
+		Sound & AddEdge(Edge const & e, bool takes_input = false, bool sends_output = false);
 
-		Block_t & GetBlock(Node_t const &);
-		Block_t const & GetBlock(Node_t const &) const;
-
+		Sound & SetInputGain(Math_t gain);
 		Sound & SetOutputGain(Math_t gain);
 
 		// Functions            ///////////////////////
 
-		Sound & AddBlock(
-			Block_t const & block,
-			uint32_t pos,
-			bool targets_output = false
-		);
-
-		Sound & SetTarget(Block_t const & block, uint32_t pos_b, Block_t const & target, uint32_t pos_t);
-		Sound & SetTarget(Node_t const & source, Node_t const & dest);
-
-		void SendBlock(StereoData_t * output, uint64_t size);
-
+		StereoData Process(StereoData input);
 	private:
 
 		// Functions                  ///////////////////////
 
 	}; // class Sound
-} // namespace Core
+	TYPEDEF_SHARED(Sound);
+} // namespace Sound
 } // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////

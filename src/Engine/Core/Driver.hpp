@@ -18,6 +18,8 @@
 
 #include "../Engine.hpp"
 
+#include "../Sounds/Sound.hpp"
+
 // Public Macros                ////////////////////////////////////////////////
 
 #ifndef MAX_BUFFER
@@ -44,17 +46,11 @@ namespace Core
 
 		// Members              ///////////////////////
 
-		PaStreamParameters m_Params;
-		PaStream * m_Stream;
-
 		Track_t m_OutputTrack;
 
-		std::vector<Sound_t> m_Sounds;
+		std::vector<Sound::SoundPtr> m_Sounds;
 
 		Math_t m_Gain;
-		bool m_Running;
-
-		bool m_Recording;
 
 	public:
 
@@ -64,10 +60,13 @@ namespace Core
 		\brief
 			Constructs an audio driver object.
 
+		\param track_size
+			The size of the output track in samples.
+
 		\param gain
 			The linear gain to be used when summing all audio values.
 		***********************************************************************/
-		Driver(Math_t gain = DEFAULT_GAIN);
+		Driver(uint64_t track_size, Math_t gain = DEFAULT_GAIN);
 
 		Driver(Driver const &) = delete;
 		Driver(Driver &&) noexcept = default;
@@ -85,9 +84,14 @@ namespace Core
 
 		// Accossors/Mutators   ///////////////////////
 
-		// Functions            ///////////////////////
+		/*! ********************************************************************
+		\brief
+			Adds the given sound to the internal list of tracked sounds.
 
-		void AddSound(Sound_t const & sound);
+		\param sound
+			The sound to add.
+		***********************************************************************/
+		void AddSound(Sound::SoundPtr const & sound);
 
 		/*! ********************************************************************
 		\brief
@@ -98,50 +102,23 @@ namespace Core
 		***********************************************************************/
 		void SetGain(Math_t gain = DEFAULT_GAIN);
 
+		Track_t const & GetOutputTrack() const;
+
+		// Functions            ///////////////////////
+
 		/*! ********************************************************************
 		\brief
-			Sets the threaded runner to stop grabbing data.
+			Processes audio and returns a track of the calculated samples.
+
+		\return
+			The calculated samples
 		***********************************************************************/
-		void Shutdown();
+		void Process();
 
 	private:
 
 		// Functions                  ///////////////////////
 
-		/*! ********************************************************************
-		\brief
-			Callback function for writing data to the speakers or reding data
-			from the microphones.
-
-		\param input
-			Array of input audio data.
-
-		\param output
-			Array of output audio data.
-
-		\param frameCount
-			The number of sample frames to be processed by the stream callback.
-
-		\param timeInfo
-			Timesamps indicating the ADC capture time of the first sample in the
-			input buffer, the DAC output time of the first sample in the output
-			buffer, and the time the callback was invoked.
-
-		\param statusFlags
-			Flags indicating whether input/output buffers have been inserted or
-			will be dropped to overcome underflow or overflow conditions.
-
-		\param userData
-			The the user-supplied data given when Pa_OpenStream was called.
-
-		\return
-			A PaStreamCallbackResult enum value.
-		***********************************************************************/
-		static int s_WriteCallback(void const * input, void * output,
-															 unsigned long frameCount,
-															 PaStreamCallbackTimeInfo const * timeInfo,
-															 PaStreamCallbackFlags statusFlags,
-															 void * userData);
 	}; // class Driver
 	TYPEDEF_SHARED(Driver);
 } // namespace Core

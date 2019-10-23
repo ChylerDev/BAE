@@ -50,7 +50,7 @@ namespace Tools
 
 		// Operators            ///////////////////////
 
-		virtual Void_fn operator[](std::string const &) const;
+		virtual Void_fn operator()(std::string const & fn, void * val = nullptr);
 
 		// Accossors/Mutators   ///////////////////////
 

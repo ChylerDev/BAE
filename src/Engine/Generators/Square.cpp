@@ -38,7 +38,7 @@ namespace Generator
 		m_Table["SetFrequency"] = [this](void * freq){ SetFrequency(*reinterpret_cast<Math_t*>(freq)); };
 	}
 
-	StereoData_t Square::SendSample(void)
+	StereoData Square::SendSample(void)
 	{
 		double y = 1;
 
@@ -57,21 +57,21 @@ namespace Generator
 		return MONO_TO_STEREO(y);
 	}
 
-	void Square::SendBlock(StereoData_t * buffer, uint64_t size)
+	void Square::SendBlock(StereoData * buffer, uint64_t size)
 	{
 		static uint64_t i;
 
 		for(i = 0; i < size; ++i)
 		{
-			static SampleType_t sample;
-			sample = SampleType_t((m_Ind >= m_Inv && m_Ind < 2*m_Inv) ? -1 : 1);
+			static SampleType sample;
+			sample = SampleType((m_Ind >= m_Inv && m_Ind < 2*m_Inv) ? -1 : 1);
 
 			if(m_Ind >= 2*m_Inv)
 			{
 				(++m_Ind) -= 2*m_Inv;
 			}
 
-			static StereoData_t out;
+			static StereoData out;
 			out = MONO_TO_STEREO(sample);
 			Left(buffer[i]) += Left(out);
 			Right(buffer[i]) += Right(out);

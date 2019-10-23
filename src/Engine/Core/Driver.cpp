@@ -20,21 +20,6 @@
 
 // Private Macros                         //////////////////////////////////////
 
-#ifdef _DEBUG
-	#define PA_ERROR_CHECK(code, badtxt, goodtxt)   \
-	{                                               \
-		if(code != paNoError)                       \
-		{                                           \
-			std::cerr << badtxt << '\n';            \
-			std::cerr << Pa_GetErrorText(code);     \
-			exit(-1);                               \
-		}                                           \
-		std::cout << goodtxt << '\n';               \
-	}
-#else
-	#define PA_ERROR_CHECK(code, badtxt, goodtxt)
-#endif
-
 // Private Enums                          //////////////////////////////////////
 
 // Private Enums                          //////////////////////////////////////
@@ -49,44 +34,17 @@ namespace AudioEngine
 {
 namespace Core
 {
-PUSH_WARNINGS()
-GCC_DISABLE_WARNING("-Wold-style-cast")
-
-	Driver::Driver(Math_t gain) :
-		m_Params(), m_Stream(nullptr), m_OutputTrack(), m_Sounds(),
-		m_Gain(gain), m_Running(true), m_Recording(false)
+	Driver::Driver(uint64_t track_size, Math_t gain) :
+		m_OutputTrack(), m_Sounds(), m_Gain(gain)
 	{
-		m_OutputTrack.reserve(MAX_BUFFER);
-
-		auto code = Pa_Initialize();
-		PA_ERROR_CHECK(code, "PortAudio failed to initialize", "PortAudio initialized");
-
-		m_Params.device = Pa_GetDefaultOutputDevice();
-		m_Params.channelCount = 2;
-		m_Params.sampleFormat = paFloat32;
-		m_Params.suggestedLatency = Pa_GetDeviceInfo(m_Params.device)->defaultHighOutputLatency;
-		m_Params.hostApiSpecificStreamInfo = nullptr;
-
-		code = Pa_OpenStream(&m_Stream, nullptr, &m_Params, SAMPLE_RATE, 0, 0,
-												 &Driver::s_WriteCallback, this);
-		PA_ERROR_CHECK(code, "Failed to open the audio stream", "Opened the audio stream");
-
-		code = Pa_StartStream(m_Stream);
-		PA_ERROR_CHECK(code, "Failed to start the audio stream", "Started the audio stream");
+		m_OutputTrack.reserve(track_size);
 	}
-
-POP_WARNINGS()
 
 	Driver::~Driver()
 	{
-		auto code = Pa_CloseStream(m_Stream);
-		PA_ERROR_CHECK(code, "Failed to close the audio stream", "Closed the audio stream");
-
-		code = Pa_Terminate();
-		PA_ERROR_CHECK(code, "PortAudio failed to terminate", "PortAudio terminated");
 	}
 
-	void Driver::AddSound(Sound_t const & sound)
+	void Driver::AddSound(Sound::SoundPtr const & sound)
 	{
 		m_Sounds.push_back(sound);
 	}
@@ -96,88 +54,28 @@ POP_WARNINGS()
 		m_Gain = gain;
 	}
 
-	void Driver::Shutdown()
+	Track_t const & Driver::GetOutputTrack() const
 	{
-		m_Running = false;
+		return m_OutputTrack;
+	}
+
+	void Driver::Process()
+	{
+		for(auto & sample: m_OutputTrack)
+		{
+			for(auto & sound: m_Sounds)
+			{
+				StereoData out = sound->Process(StereoData(SampleType(0), SampleType(0)));
+
+				Left(sample)  += Left(out);
+				Right(sample) += Right(out);
+			}
+
+			Left(sample)  *= m_Gain;
+			Right(sample) *= m_Gain;
+		}
 	}
 } // namespace Core
 } // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////
-
-namespace AudioEngine
-{
-namespace Core
-{
-PUSH_WARNINGS()
-GCC_DISABLE_WARNING("-Wold-style-cast")
-
-	int Driver::s_WriteCallback(void const * input, void * output,
-															unsigned long frameCount,
-															PaStreamCallbackTimeInfo const * timeInfo,
-															PaStreamCallbackFlags statusFlags,
-															void * userData)
-	{
-		UNREFERENCED_PARAMETER(timeInfo);
-		UNREFERENCED_PARAMETER(input);
-
-		#ifdef _DEBUG
-			if(frameCount > MAX_BUFFER)
-			{
-				std::cerr << "PortAudio frame count is larger than the allowed buffer size. "
-						  << "This is a guaranteed underflow scenario!!!\n";
-			}
-		#endif
-
-		#ifdef _DEBUG
-			static unsigned long old_count = 0;
-
-			if(old_count != frameCount)
-			{
-				std::cout << "PortAudio buffer size: " << frameCount << '\n';
-				old_count = frameCount;
-			}
-		#endif
-
-			// Convert input data to usable type
-		Driver * obj = reinterpret_cast<Driver *>(userData);
-		SampleType_t * out = reinterpret_cast<SampleType_t*>(output);
-
-		obj->m_OutputTrack.assign(frameCount, StereoData_t(SampleType_t(0), SampleType_t(0)));
-
-		for(auto & s : obj->m_Sounds)
-		{
-			s->SendBlock(obj->m_OutputTrack.data(), obj->m_OutputTrack.size());
-		}
-
-		static uint64_t i;
-		for(i = 0; i < frameCount; ++i)
-		{
-			out[2*i] = (SampleType_t(Left(obj->m_OutputTrack[i]) * obj->m_Gain));
-			out[2*i+1] = (SampleType_t(Right(obj->m_OutputTrack[i]) * obj->m_Gain));
-		}
-
-			// Do over/underflow checks
-		if(statusFlags & paOutputUnderflow)
-		{
-				// UNDERFLOW!!!
-			std::cerr << "Audio system is experiencing data underflow, "
-													 << "zero-data will be inserted to keep up!\n";
-		}
-		else if(statusFlags & paOutputOverflow)
-		{
-				// OVERFLOW!!!
-			std::cerr << "Audio system is experiencing data overflow, "
-													 << "some data will be discarded to keep up!\n";
-		}
-
-		if(obj->m_Running)
-		{
-			return paContinue;
-		}
-		return paComplete;
-	}
-
-POP_WARNINGS()
-} // namespace Core
-} // namespace AudioEngine

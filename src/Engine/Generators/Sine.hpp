@@ -39,7 +39,7 @@ namespace Generator
 		// Members              ///////////////////////
 
 		Math_t irate;
-		SampleType_t y1, y2;
+		SampleType y1, y2;
 		Math_t beta;
 
 		MethodTable_t m_Table;
@@ -67,8 +67,8 @@ namespace Generator
 		\return
 			The stereo sample data.
 		***********************************************************************/
-		virtual StereoData_t SendSample(void);
-		virtual void SendBlock(StereoData_t * buffer, uint64_t size);
+		virtual StereoData SendSample(void);
+		virtual void SendBlock(StereoData * buffer, uint64_t size);
 
 		/*! ********************************************************************
 		\brief

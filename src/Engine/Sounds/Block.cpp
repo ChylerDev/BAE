@@ -2,15 +2,15 @@
 \file             Block.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 // Include Files                          //////////////////////////////////////
 
-#include "../Generators/Base.hpp"
-#include "../Modifiers/Base.hpp"
+#include "../Generators/GeneratorBase.hpp"
+#include "../Modifiers/ModifierBase.hpp"
 
 #include "Block.hpp"
 
@@ -26,123 +26,54 @@
 
 namespace AudioEngine
 {
-namespace Core
+namespace Sound
 {
+	Block::Block(
+		GenBasePtr const & gen,
+		ModBasePtr const & mod,
+		Interaction_f const & interactor
+	) :
+		m_Generator(gen),
+		m_Modifier(mod),
+		m_Interaction(interactor)
+	{
+	}
 
-  Block::Block(GenBase_t const & gen) :
-    m_Generator(gen),
-    m_Modifier(Modifier::Base::Create<Modifier::Base>(true)),
-    m_Interaction(
-      [this](StereoData_t*o, StereoData_t*g, StereoData_t*m, uint64_t s)
-      { UNREFERENCED_PARAMETER(m); static uint64_t i;
-        for(i=0;i<s;++i){ Left(o[i])+=Left(g[i]), Right(o[i])+=Right(g[i]); } }
-    )
-  {
-  }
+	Block::GenBasePtr & Block::GetGenerator()
+	{
+		return m_Generator;
+	}
 
-  Block::Block(ModBase_t const & mod) :
-    m_Generator(Generator::Base::Create<Generator::Base>(true)),
-    m_Modifier(mod),
-    m_Interaction(
-      [this](StereoData_t*o, StereoData_t*g, StereoData_t*m, uint64_t s)
-      { UNREFERENCED_PARAMETER(g); static uint64_t i;
-        for(i=0;i<s;++i){ Left(o[i])+=Left(m[i]), Right(o[i])+=Right(m[i]); } }
-    )
-  {
-  }
+	Block::ModBasePtr & Block::GetModifier()
+	{
+		return m_Modifier;
+	}
 
-  Block::Block(
-    GenBase_t const & gen,
-    ModBase_t const & mod
-  ) :
-    m_Generator(gen),
-    m_Modifier(mod),
-    m_Interaction(
-      [this](StereoData_t*o, StereoData_t*g, StereoData_t*m, uint64_t s)
-      {
-        static uint64_t i;
+	Block::GenBasePtr const & Block::GetGenerator() const
+	{
+		return m_Generator;
+	}
 
-        if(this->m_Generator->IsBase())
-        {
-          for(i = 0; i < s; ++i)
-          {
-            Left(o[i]) += Left(m[i]),
-            Right(o[i]) += Right(m[i]);
-          }
-        }
-        else if(this->m_Modifier->IsBase())
-        {
-          for(i = 0; i < s; ++i)
-          {
-            Left(o[i]) += Left(g[i]),
-            Right(o[i]) += Right(g[i]);
-          }
-        }
-        else
-        {
-          for(i = 0; i < s; ++i)
-          {
-            Left(o[i]) += Left(g[i]) * Left(m[i]);
-            Right(o[i]) += Right(g[i]) * Right(m[i]);
-          }
-        }
-      }
-    )
-  {
-  }
+	Block::ModBasePtr const & Block::GetModifier() const
+	{
+		return m_Modifier;
+	}
 
-  Block::Block(
-    GenBase_t const & gen,
-    ModBase_t const & mod,
-    Interaction_t const & interactor
-  ) :
-    m_Generator(gen),
-    m_Modifier(mod),
-    m_Interaction(interactor)
-  {
-  }
+	void Block::PrimeInput(StereoData in)
+	{
+		m_Input = in;
+	}
 
-  GenBase_t & Block::GetGenerator()
-  {
-    return m_Generator;
-  }
+	StereoData Block::LastOutput()
+	{
+		return m_Output;
+	}
 
-  ModBase_t & Block::GetModifier()
-  {
-    return m_Modifier;
-  }
-
-  GenBase_t const & Block::GetGenerator() const
-  {
-    return m_Generator;
-  }
-
-  ModBase_t const & Block::GetModifier() const
-  {
-    return m_Modifier;
-  }
-
-  Block & Block::SetInteractor(Interaction_t const & interactor)
-  {
-    m_Interaction = interactor;
-    return *this;
-  }
-
-  void Block::SendBlock(StereoData_t * output, StereoData_t * input, uint64_t size)
-  {
-    static aStereoData_t generator_buf(new StereoData_t[size]);
-    static aStereoData_t  modifier_buf(new StereoData_t[size]);
-
-    std::fill(generator_buf.get(), generator_buf.get()+size, StereoData_t(SampleType_t(0),SampleType_t(0)));
-    std::fill( modifier_buf.get(),  modifier_buf.get()+size, StereoData_t(SampleType_t(0),SampleType_t(0)));
-
-    m_Modifier->FilterBlock(input, modifier_buf.get(), size);
-    m_Generator->SendBlock(generator_buf.get(),  size);
-
-    m_Interaction(output, generator_buf.get(), modifier_buf.get(), size);
-  }
-
-} // namespace Core
+	void Block::Process()
+	{
+		m_Output = m_Interaction(m_Generator->SendSample(), m_Modifier->FilterSample(m_Input));
+	}
+} // namespace Sound
 } // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////

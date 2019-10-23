@@ -25,7 +25,7 @@ namespace AudioEngine
 {
 namespace Tools
 {
-	Resampler::Resampler(std::vector<StereoData_t> const & AudioData,
+	Resampler::Resampler(std::vector<StereoData> const & AudioData,
 						 int32_t SourceSampleRate,
 						 uint64_t LoopStart, uint64_t LoopEnd) :
 		m_Data(AudioData), m_Index(0), m_IndexIncrement(SourceSampleRate*INC_RATE),
@@ -38,25 +38,25 @@ namespace Tools
 		m_PlaybackSpeed = playback;
 	}
 
-	StereoData_t Resampler::SendSample()
+	StereoData Resampler::SendSample()
 	{
 		if(size_t(m_Index) >= m_Data.size() && m_LoopEnd == 0)
 		{
-			return StereoData_t(SampleType_t(0), SampleType_t(0));
+			return StereoData(SampleType(0), SampleType(0));
 		}
 
-		SampleType_t fraction(m_Index - uint64_t(m_Index));
+		SampleType fraction(m_Index - uint64_t(m_Index));
 
-		SampleType_t l_x1(Left(m_Data[uint64_t(m_Index)]));
-		SampleType_t l_x2(Left(m_Data[uint64_t(m_Index)+1]));
+		SampleType l_x1(Left(m_Data[uint64_t(m_Index)]));
+		SampleType l_x2(Left(m_Data[uint64_t(m_Index)+1]));
 
-		SampleType_t r_x1(Right(m_Data[uint64_t(m_Index)]));
-		SampleType_t r_x2(Right(m_Data[uint64_t(m_Index)+1]));
+		SampleType r_x1(Right(m_Data[uint64_t(m_Index)]));
+		SampleType r_x2(Right(m_Data[uint64_t(m_Index)+1]));
 
-		SampleType_t l(l_x1 + fraction * (l_x2 - l_x1));
-		SampleType_t r(r_x1 + fraction * (r_x2 - r_x1));
+		SampleType l(l_x1 + fraction * (l_x2 - l_x1));
+		SampleType r(r_x1 + fraction * (r_x2 - r_x1));
 
-		StereoData_t sample(l, r);
+		StereoData sample(l, r);
 
 		m_Index += m_IndexIncrement * m_PlaybackSpeed;
 
@@ -68,7 +68,7 @@ namespace Tools
 		return sample;
 	}
 
-	void Resampler::SendBlock(StereoData_t * buffer, uint64_t size)
+	void Resampler::SendBlock(StereoData * buffer, uint64_t size)
 	{
 		static uint64_t i;
 

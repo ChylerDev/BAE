@@ -57,8 +57,8 @@ namespace Generator
 
 		// Functions            ///////////////////////
 
-		virtual StereoData_t SendSample(void) { return StereoData_t(0.f, 0.f); };
-		virtual void SendBlock(StereoData_t * buffer, uint64_t size) { UNREFERENCED_PARAMETER(buffer); UNREFERENCED_PARAMETER(size); };
+		virtual StereoData SendSample(void) { return StereoData(0.f, 0.f); };
+		virtual void SendBlock(StereoData * buffer, uint64_t size) { UNREFERENCED_PARAMETER(buffer); UNREFERENCED_PARAMETER(size); };
 
 		bool IsBase() { return is_base; };
 

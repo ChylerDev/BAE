@@ -31,7 +31,7 @@ namespace Generator
 {
 	Sine::Sine(Math_t f) : GeneratorBase(false),
 		irate(INC_RATE*double(f)),
-		y1(SampleType_t(std::sin(double(PI2 * irate)))), y2(), beta(),
+		y1(SampleType(std::sin(double(PI2 * irate)))), y2(), beta(),
 		m_Table()
 	{
 		m_Table["SetFrequency"] = [this](void * freq){ SetFrequency(*reinterpret_cast<Math_t*>(freq)); };
@@ -39,9 +39,9 @@ namespace Generator
 		Reset();
 	}
 
-	StereoData_t Sine::SendSample(void)
+	StereoData Sine::SendSample(void)
 	{
-		SampleType_t y = SampleType_t(beta * y1 - y2);
+		SampleType y = SampleType(beta * y1 - y2);
 
 		y2 = y1;
 		y1 = y;
@@ -49,19 +49,19 @@ namespace Generator
 		return MONO_TO_STEREO(y);
 	}
 
-	void Sine::SendBlock(StereoData_t * buffer, uint64_t size)
+	void Sine::SendBlock(StereoData * buffer, uint64_t size)
 	{
 		static uint64_t i = 0;
 
 		for(i = 0; i < size; ++i)
 		{
-			static SampleType_t sample;
+			static SampleType sample;
 
-			sample = SampleType_t(beta * y1 - y2);
+			sample = SampleType(beta * y1 - y2);
 			y2 = y1;
 			y1 = sample;
 
-			static StereoData_t out;
+			static StereoData out;
 			out = MONO_TO_STEREO(sample);
 			Left(buffer[i]) += Left(out);
 			Right(buffer[i]) += Right(out);

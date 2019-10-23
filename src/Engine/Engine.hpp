@@ -19,6 +19,4 @@
 
 #include "Util.hpp"
 
-#include <portaudio/portaudio.h>
-
 #endif // __ENGINE_HPP

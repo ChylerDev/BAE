@@ -40,7 +40,7 @@ namespace Tools
 
 		// Members              ///////////////////////
 
-		std::vector<StereoData_t> m_Data;
+		std::vector<StereoData> m_Data;
 
 		Index_t m_Index;
 		Math_t const m_IndexIncrement;
@@ -69,7 +69,7 @@ namespace Tools
 			The sample at the loop point to loop back to LoopStart. Defaults to
 			0, which is interpretted as no looping.
 		***********************************************************************/
-		Resampler(std::vector<StereoData_t> const & AudioData,
+		Resampler(std::vector<StereoData> const & AudioData,
 				  int32_t SourceSampleRate,
 				  uint64_t LoopStart = 0, uint64_t LoopEnd = 0
 		);
@@ -97,8 +97,8 @@ namespace Tools
 		\return
 			The stereo sample data.
 		***********************************************************************/
-		StereoData_t SendSample();
-		void SendBlock(StereoData_t * buffer, uint64_t size);
+		StereoData SendSample();
+		void SendBlock(StereoData * buffer, uint64_t size);
 
 	private:
 

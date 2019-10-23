@@ -39,7 +39,7 @@ namespace Modifier
 
 		// Members              ///////////////////////
 
-		std::deque<StereoData_t> m_Echo;
+		std::deque<StereoData> m_Echo;
 		Math_t m_Ratio;
 
 	public:
@@ -54,8 +54,8 @@ namespace Modifier
 
 		// Functions            ///////////////////////
 
-		virtual StereoData_t FilterSample(StereoData_t const & sample);
-		virtual void FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size);
+		virtual StereoData FilterSample(StereoData const & sample);
+		virtual void FilterBlock(StereoData * input, StereoData * output, uint64_t size);
 
 	private:
 
