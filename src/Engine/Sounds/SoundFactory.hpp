@@ -43,6 +43,7 @@ namespace Sound
 
 		// Functions            ///////////////////////
 
+		static SoundPtr CreateEmptySound();
 		static SoundPtr CreateBasicGenerator(Generator::GeneratorBasePtr const &);
 		static SoundPtr CreateBasicModifier(Modifier::ModifierBasePtr const &);
 		static SoundPtr CreateEqualizer(uint32_t band_count, Math_t lower = Math_t(20), Math_t upper = Math_t(20'000));

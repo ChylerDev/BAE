@@ -45,22 +45,22 @@ namespace Tools
 		{
 			data.push_back(
 				static_cast<RIFF::byte_t>(
-					static_cast<uint16_t>(Left(a)) & 0x00'FF
+					uint16_t(Left(a)*0x8000) & 0x00'FF
 				)
 			);
 			data.push_back(
 				static_cast<RIFF::byte_t>(
-					(static_cast<uint16_t>(Left(a)) & 0xFF'00) >> 8
+					(uint16_t(Left(a)*0x8000) & 0xFF'00) >> 8
 				)
 			);
 			data.push_back(
 				static_cast<RIFF::byte_t>(
-					static_cast<uint16_t>(Right(a)) & 0xFF
+					uint16_t(Right(a)*0x8000) & 0xFF
 				)
 			);
 			data.push_back(
 				static_cast<RIFF::byte_t>(
-					(static_cast<uint16_t>(Right(a)) & 0xFF'00) >> 8
+					(uint16_t(Right(a)*0x8000) & 0xFF'00) >> 8
 				)
 			);
 		}

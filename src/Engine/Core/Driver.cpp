@@ -60,6 +60,9 @@ namespace Core
 
 	void Driver::Process()
 	{
+			// Reset output track
+		std::fill(m_OutputTrack.begin(), m_OutputTrack.end(), StereoData(SampleType(0),SampleType(0)));
+
 		for(auto & sample: m_OutputTrack)
 		{
 			for(auto & sound: m_Sounds)

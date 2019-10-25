@@ -48,25 +48,6 @@ namespace Generator
 		return MONO_TO_STEREO(y);
 	}
 
-	void Sine::SendBlock(StereoData * buffer, uint64_t size)
-	{
-		static uint64_t i = 0;
-
-		for(i = 0; i < size; ++i)
-		{
-			static SampleType sample;
-
-			sample = SampleType(beta * y1 - y2);
-			y2 = y1;
-			y1 = sample;
-
-			static StereoData out;
-			out = MONO_TO_STEREO(sample);
-			Left(buffer[i]) += Left(out);
-			Right(buffer[i]) += Right(out);
-		}
-	}
-
 	void Sine::SetFrequency(Math_t f)
 	{
 		irate = INC_RATE * double(f);

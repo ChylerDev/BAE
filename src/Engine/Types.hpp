@@ -27,7 +27,7 @@
 namespace AudioEngine
 {
 	using Math_t = double;//FixedPoint::FixedPoint<15,16>;
-	using SampleType = float;//FixedPoint::Audio16Bit_t;
+	using SampleType = Math_t;//FixedPoint::Audio16Bit_t;
 	TYPEDEF_SHARED(SampleType);
 	using StereoData = std::tuple<SampleType,SampleType>;
 	TYPEDEF_SHARED(StereoData);

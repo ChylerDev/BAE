@@ -30,6 +30,11 @@ namespace AudioEngine
 {
 namespace Sound
 {
+	SoundPtr SoundFactory::CreateEmptySound()
+	{
+		return SoundPtr(new Sound());
+	}
+
 	SoundPtr SoundFactory::CreateBasicGenerator(Generator::GeneratorBasePtr const & gen)
 	{
 			// Create the base sound

@@ -26,7 +26,7 @@
 #endif
 
 #ifndef DEFAULT_GAIN
-	#define DEFAULT_GAIN Math_t(0.5)
+	#define DEFAULT_GAIN Math_t(1.0)
 #endif
 
 #ifndef EPSILON
