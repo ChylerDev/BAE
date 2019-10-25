@@ -34,7 +34,7 @@ namespace AudioEngine
 namespace Core
 {
 	Driver::Driver(uint64_t track_size, Math_t gain) :
-		m_OutputTrack(), m_Sounds(), m_Gain(gain)
+		m_OutputTrack(track_size, StereoData(SampleType(0),SampleType(0))), m_Sounds(), m_Gain(gain)
 	{
 		m_OutputTrack.reserve(track_size);
 	}

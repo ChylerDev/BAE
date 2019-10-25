@@ -67,8 +67,8 @@ namespace Sound
 				case Addition:
 					while(first != last)
 					{
-						Left(output) += Left(first);
-						Right(output) += Right(first);
+						Left(output) += Left(*first);
+						Right(output) += Right(*first);
 
 						++first;
 					}
@@ -76,8 +76,8 @@ namespace Sound
 				case Multiplication:
 					while(first != last)
 					{
-						Left(output) *= Left(first);
-						Right(output) *= Right(first);
+						Left(output) *= Left(*first);
+						Right(output) *= Right(*first);
 
 						++first;
 					}

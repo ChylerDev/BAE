@@ -40,7 +40,7 @@ namespace Sound
 	{
 	public:
 
-			// StereoData interactor(StereoData GeneratorBuffer, StereoData ModifierBuffer)
+			// StereoData interactor(StereoData GeneratorSample, StereoData ModifierSample)
 		using Interaction_f = std::function<StereoData(StereoData, StereoData)>;
 
 		using GenBasePtr = Generator::GeneratorBasePtr;

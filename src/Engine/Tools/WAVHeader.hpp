@@ -40,10 +40,8 @@ namespace Tools
 			uint16_t cc = 2,			// Channel count
 			uint32_t R = SAMPLE_RATE,	// Sampling rate
 			uint16_t bps = 16			// Bits per sample
-		) : AudioFormat(af), ChannelCount(cc), SamplingRate(R),
-			BytesPerSecond((bps >> 3) * cc * R), BytesPerSample((bps >> 3) * cc),
-			BitsPerSample(bps)
-		{};
+		);
+		~WAVHeader() = default;
 	};
 } // namespace Tools
 } // namespace AudioEngine

@@ -30,7 +30,7 @@ namespace Tools
 	{
 		RIFF::Writer writer(CONSTRUCT_BYTE_STR("WAVE"));
 
-		WAVHeader header();
+		WAVHeader header;
 
 		RIFF::vector_t format;
 		format.assign(

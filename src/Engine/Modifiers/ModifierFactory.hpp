@@ -59,7 +59,7 @@ namespace Modifier
 		static ModifierBasePtr CreateEnvelopeFollower(Math_t fd, Math_t fu);
 		static ModifierBasePtr CreateGain(Math_t gain = DEFAULT_GAIN);
 		static ModifierBasePtr CreateGenericFilter(ZeroContainer const & zeros,
-											PoleContainer const & poles);
+												   PoleContainer const & poles);
 		static ModifierBasePtr CreateLowPass(Math_t cutoff, Math_t resonance);
 
 		~ModifierFactory() = delete;

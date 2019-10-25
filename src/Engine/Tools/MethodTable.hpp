@@ -45,7 +45,7 @@ namespace Tools
 
 		// Con-/De- structors   ///////////////////////
 
-		MethodTable();
+		MethodTable() = default;
 		virtual ~MethodTable() = default;
 
 		// Operators            ///////////////////////

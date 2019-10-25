@@ -38,16 +38,16 @@ namespace Sound
 	{
 		m_Graph.push_back(
 			CreateEdge(
-				std::deque<Edge::E_Block>(1, Edge::E_Block(SoundFactory::CreateBlock(m_InputGain))),
+				std::deque<Edge::E_BlockPtr>(1, Edge::E_BlockPtr(new Edge::E_Block(SoundFactory::CreateBlock(m_InputGain)))),
 				Combinator(Combinator::Addition),
-				std::deque<Edge::E_Block>()
+				std::deque<Edge::E_BlockPtr>()
 			)
 		);
 		m_Graph.push_back(
 			CreateEdge(
-				std::deque<Edge::E_Block>(),
+				std::deque<Edge::E_BlockPtr>(),
 				Combinator(Combinator::Addition),
-				std::deque<Edge::E_Block>(1, Edge::E_Block(SoundFactory::CreateBlock(m_OutputGain)))
+				std::deque<Edge::E_BlockPtr>(1, Edge::E_BlockPtr(new Edge::E_Block(SoundFactory::CreateBlock(m_OutputGain))))
 			)
 		);
 	}
@@ -85,26 +85,29 @@ namespace Sound
 		{
 			e->Process();
 		}
+
+		m_Graph.back()->outputs.back()->block->Process();
+		m_Output = m_Graph.back()->outputs.back()->block->LastOutput();
 	}
 
 	StereoData Sound::LastOutput()
 	{
-		return m_Graph.back()->outputs.back().block->LastOutput();
+		return m_Graph.back()->outputs.back()->block->LastOutput();
 	}
 
-	Sound::EdgePtr Sound::CreateEdge(std::deque<Edge::E_Block> const & in, Combinator const & comb, std::deque<Edge::E_Block> const & out)
+	Sound::EdgePtr Sound::CreateEdge(std::deque<Edge::E_BlockPtr> const & in, Combinator const & comb, std::deque<Edge::E_BlockPtr> const & out)
 	{
 		return std::make_shared<Sound::Edge>(in, comb, out);
 	}
 
-	Sound::Edge::E_Block Sound::CreateE_Block(SoundPtr const & s)
+	Sound::Edge::E_BlockPtr Sound::CreateE_Block(SoundPtr const & s)
 	{
-		return Edge::E_Block(s);
+		return Edge::E_BlockPtr(new Edge::E_Block(s));
 	}
 
-	Sound::Edge::E_Block Sound::CreateE_Block(BlockPtr const & b)
+	Sound::Edge::E_BlockPtr Sound::CreateE_Block(BlockPtr const & b)
 	{
-		return Edge::E_Block(b);
+		return Edge::E_BlockPtr(new Edge::E_Block(b));
 	}
 } // namespace Sound
 } // namespace AudioEngine

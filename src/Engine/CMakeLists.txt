@@ -12,9 +12,6 @@ set(PROJECT_INC_DIR ${PROJECT_SOURCE_DIR}/../../inc)
 
 include_directories(
 	${PROJECT_INC_DIR}
-	${PROJECT_SOURCE_DIR}/../Libraries/RIFF-Util/inc
-	${PROJECT_SOURCE_DIR}/../Libraries/Logging/inc
-	${PROJECT_SOURCE_DIR}/../Libraries/FixedPoint/inc
 )
 
 if(WIN32)
@@ -36,9 +33,7 @@ if(WIN32)
 		find_library(RIFF RIFF)
 	endif()
 else()
-	find_library(PortAudio portaudio)
 	find_library(RIFF RIFF)
-	find_package(Threads REQUIRED)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -62,7 +57,6 @@ set(modifier_files
 	${CMAKE_SOURCE_DIR}/Modifiers/Delay.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Delay.hpp
 	${CMAKE_SOURCE_DIR}/Modifiers/Echo.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Echo.hpp
 	${CMAKE_SOURCE_DIR}/Modifiers/Envelope.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Envelope.hpp
-	${CMAKE_SOURCE_DIR}/Modifiers/Equalizer.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Equalizer.hpp
 	${CMAKE_SOURCE_DIR}/Modifiers/Gain.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Gain.hpp
 	${CMAKE_SOURCE_DIR}/Modifiers/GenericFilter.cpp ${CMAKE_SOURCE_DIR}/Modifiers/GenericFilter.hpp
 	${CMAKE_SOURCE_DIR}/Modifiers/LowPass.cpp ${CMAKE_SOURCE_DIR}/Modifiers/LowPass.hpp
@@ -79,7 +73,7 @@ set(tools_files
 	${CMAKE_SOURCE_DIR}/Tools/Input.cpp ${CMAKE_SOURCE_DIR}/Tools/Input.hpp
 	${CMAKE_SOURCE_DIR}/Tools/MethodTable.cpp ${CMAKE_SOURCE_DIR}/Tools/MethodTable.hpp
 	${CMAKE_SOURCE_DIR}/Tools/Resampler.cpp ${CMAKE_SOURCE_DIR}/Tools/Resampler.hpp
-	${CMAKE_SOURCE_DIR}/Tools/WAVHeader.hpp
+	${CMAKE_SOURCE_DIR}/Tools/WAVHeader.cpp ${CMAKE_SOURCE_DIR}/Tools/WAVHeader.hpp
 	${CMAKE_SOURCE_DIR}/Tools/WAVWriter.cpp ${CMAKE_SOURCE_DIR}/Tools/WAVWriter.hpp
 )
 set(engine_files
@@ -111,9 +105,7 @@ add_library(${PROJECT_NAME} STATIC
 )
 
 target_link_libraries(${PROJECT_NAME}
-	${PortAudio}
 	${RIFF}
-	${CMAKE_THREAD_LIBS_INIT}
 )
 
 if(WIN32)

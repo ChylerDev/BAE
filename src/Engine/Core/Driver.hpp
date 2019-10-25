@@ -68,7 +68,7 @@ namespace Core
 		***********************************************************************/
 		Driver(uint64_t track_size, Math_t gain = DEFAULT_GAIN);
 
-		Driver(Driver const &) = delete;
+		Driver(Driver const &) = default;
 		Driver(Driver &&) noexcept = default;
 
 		/*! ********************************************************************
@@ -79,7 +79,7 @@ namespace Core
 
 		// Operators            ///////////////////////
 
-		Driver & operator=(Driver const &) = delete;
+		Driver & operator=(Driver const &) = default;
 		Driver & operator=(Driver &&) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////

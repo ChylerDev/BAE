@@ -12,7 +12,6 @@
 
 // Include Files                ////////////////////////////////////////////////
 
-#include <tuple>
 #include <vector>
 
 #include "../Engine.hpp"
@@ -40,11 +39,14 @@ namespace Modifier
 
 		// Members              ///////////////////////
 
+		std::vector<Math_t> m_BandGains;
+		std::vector<BandPassPtr> m_Bands;
+
 	public:
 
 		// Con-/De- structors   ///////////////////////
 
-		Equalizer(int band_count, Math_t lower, Math_t upper, Math_t Q);
+		Equalizer(int band_count, Math_t lower, Math_t upper);
 
 		// Operators            ///////////////////////
 
@@ -59,6 +61,8 @@ namespace Modifier
 	private:
 
 		// Functions                  ///////////////////////
+
+		void Reset();
 
 	}; // class Equalizer
 	TYPEDEF_SHARED(Equalizer);

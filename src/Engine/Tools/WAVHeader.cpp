@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             Input.cpp
+\file             WAVHeader.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  Audio Engine
@@ -9,21 +9,13 @@
 
 // Include Files                          //////////////////////////////////////
 
-#include "Input.hpp"
+#include "WAVHeader.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
 // Private Enums                          //////////////////////////////////////
 
 // Private Objects                        //////////////////////////////////////
-
-namespace AudioEngine
-{
-namespace Tools
-{
-	static std::vector<std::string> s_Options;
-} // namespace Tools
-} // namespace AudioEngine
 
 // Private Function Declarations          //////////////////////////////////////
 
@@ -33,18 +25,11 @@ namespace AudioEngine
 {
 namespace Tools
 {
-	void InitOptions(int argc, char * argv[])
-	{
-		for(int i = 0; i < argc; ++i)
-		{
-			s_Options.push_back(argv[i]);
-		}
-	}
-
-	std::string const & GetOption(int i)
-	{
-		return s_Options[i];
-	}
+	WAVHeader::WAVHeader(uint16_t af, uint16_t cc, uint32_t R, uint16_t bps):
+		AudioFormat(af), ChannelCount(cc), SamplingRate(R),
+		BytesPerSecond((bps >> 3) * cc * R), BytesPerSample((bps >> 3) * cc),
+		BitsPerSample(bps)
+	{	}
 } // namespace Tools
 } // namespace AudioEngine
 
