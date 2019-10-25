@@ -2,9 +2,9 @@
 \file             Gain.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 // Include Files                          //////////////////////////////////////
@@ -25,27 +25,38 @@ namespace AudioEngine
 {
 namespace Modifier
 {
+	Gain::Gain(Math_t gain) : ModifierBase(false), m_Gain(gain)
+	{
+		m_Table["SetGain"] = [this](void * g){ SetGain(*reinterpret_cast<Math_t*>(g)); };
+		m_Table["GetGain"] = [this](void * g){ *reinterpret_cast<Math_t*>(g) = GetGain(); };
+	}
 
-  Gain::Gain(float gain) : Base(false), m_Gain(gain)
-  {
-  }
+	void Gain::SetGain(Math_t gain)
+	{
+		m_Gain = gain;
+	}
 
-  void Gain::SetGain(float gain)
-  {
-    m_Gain = gain;
-  }
+	Math_t Gain::GetGain() const
+	{
+		return m_Gain;
+	}
 
-  float Gain::GetGain() const
-  {
-    return m_Gain;
-  }
+	StereoData Gain::FilterSample(StereoData const & input)
+	{
+		return StereoData(SampleType(Left(input) * m_Gain),
+												SampleType(Right(input) * m_Gain));
+	}
 
-  StereoData_t Gain::FilterSample(StereoData_t const & input)
-  {
-    return StereoData_t(std::get<0>(input) * m_Gain,
-                        std::get<1>(input) * m_Gain);
-  }
+	void Gain::FilterBlock(StereoData * input, StereoData * output, uint64_t size)
+	{
+		static uint64_t i;
 
+		for(i = 0; i < size; ++i)
+		{
+			Left(output[i]) += SampleType(Left(input[i]) * m_Gain);
+			Right(output[i]) += SampleType(Right(input[i]) * m_Gain);
+		}
+	}
 } // namespace Modifier
 } // namespace AudioEngine
 

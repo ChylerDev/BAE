@@ -15,19 +15,8 @@
 #include <chrono>
 
 #include "../Engine/Engine.hpp"
+#include "../Engine/Tools/WAVHeader.hpp"
 
-#include "../Engine/Core/Driver.hpp"
-#include "../Engine/Core/Node.hpp"
-#include "../Engine/Core/Sound.hpp"
-#include "../Engine/Generators/Base.hpp"
-#include "../Engine/Generators/Sine.hpp"
-#include "../Engine/Generators/Square.hpp"
-#include "../Engine/Generators/WAV.hpp"
-#include "../Engine/Sounds/Vocoder.hpp"
-#include "../Engine/Tools/Input.hpp"
-#include "../Engine/Tools/WAVWriter.hpp"
-
-#include <Trace/Trace.hpp>
 #include <RIFF-Util/RIFF.hpp>
 
 // Private Macros                         //////////////////////////////////////
@@ -42,55 +31,153 @@
 
 int main(int argc, char * argv[])
 {
-  using Tone_t = AudioEngine::Square_t;
+	using clock = std::chrono::high_resolution_clock;
 
-  AudioEngine::Tools::CreateOptions(argc, argv);
+	AudioEngine::Tools::InitOptions(argc, argv);
 
-  AudioEngine::pDriver_t driver = AudioEngine::Driver_t::Create(0.125f);
+	{
+		AudioEngine::Core::DriverPtr driver = AudioEngine::Core::DriverPtr(new AudioEngine::Core::Driver(MAX_BUFFER));
+		AudioEngine::Track_t output;
+		output.reserve(SAMPLE_RATE);
+		clock clk;
 
-  #if 1
+		std::cout << "Simple sine test - 1 second @ 440Hz\n";
 
-    AudioEngine::pNode_t gen;
+		driver->AddSound(
+			AudioEngine::Sound::SoundFactory::CreateBasicGenerator(
+				AudioEngine::Generator::GeneratorFactory::CreateSine(440)
+			)
+		);
 
-    if(argc > 1)
-    {
-      Log::Trace::out[stc] << "Reading from WAV file\n";
-      gen = AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<AudioEngine::WAV_t>(AudioEngine::Tools::GetOptions().at(1)));
-    }
-    else
-    {
-      Log::Trace::out[stc] << "Generating sine tone\n";
-      gen = AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(55.f));
-    }
+		AudioEngine::Track_t const & driver_output = driver->GetOutputTrack();
 
-    AudioEngine::pVocoder_t v = AudioEngine::Vocoder_t::Create(gen, 4);
-    driver->AddSound(v->ToSound());
+		auto before = clk.now();
+		for(uint64_t i = 0; i < SAMPLE_RATE/MAX_BUFFER; ++i)
+		{
+			driver->Process();
 
-  #else
+			output.insert(output.end(), driver_output.begin(), driver_output.end());
+		}
+		auto after = clk.now();
+		auto difference = after - before;
+		std::cout << "Generated 1 second of audio in "
+				  << (difference.count() / 1000000000.0)
+				  << " seconds\n";
 
-    AudioEngine::pSound_t sound = AudioEngine::Sound_t::Create();
+		auto WAVData = AudioEngine::Tools::WriteWAV(output);
 
-    sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(220.f)), 0, true);
-    sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(440.f)), 0, true);
-    sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(660.f)), 0, true);
-    sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(880.f)), 0, true);
-    sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(1100.f)), 0, true);
-    sound->AddNode(AudioEngine::Node_t::Create(AudioEngine::GenBase_t::Create<Tone_t>(1320.f)), 0, true);
+		std::ofstream WAVFile("sine.440.1s.wav", std::ios_base::binary);
 
-    driver->AddSound(sound);
+		WAVFile.write(reinterpret_cast<char const*>(WAVData.data()), WAVData.size());
+		WAVFile.flush();
+		WAVFile.close();
 
-  #endif
+		std::cout << "Sine test finished\n";
+	}
 
-  driver->StartRecording();
+	{
+		auto driver = AudioEngine::Core::DriverPtr(new AudioEngine::Core::Driver(MAX_BUFFER));
+		AudioEngine::Track_t output;
+		output.reserve(SAMPLE_RATE);
+		clock clk;
 
-  std::cin.get();
+		std::cout << "Simple Square wave test - 1 second @ 880Hz\n";
 
-  std::basic_ofstream<RIFF::byte_t> file("wave_out.wav", std::ios_base::binary);
-  file << AudioEngine::Tools::WriteWAV(driver->StopRecording());
+		driver->AddSound(
+			AudioEngine::Sound::SoundFactory::CreateBasicGenerator(
+				AudioEngine::Generator::GeneratorFactory::CreateSquare(880)
+			)
+		);
 
-  driver->Shutdown();
+		AudioEngine::Track_t const & driver_output = driver->GetOutputTrack();
 
-  return 0;
+		auto before = clk.now();
+		for(uint64_t i = 0; i < SAMPLE_RATE/MAX_BUFFER; ++i)
+		{
+			driver->Process();
+
+			output.insert(output.end(), driver_output.begin(), driver_output.end());
+		}
+		auto after = clk.now();
+		auto difference = after - before;
+		std::cout << "Generated 1 second of audio in "
+				  << (difference.count() / 1000000000.0)
+				  << " seconds\n";
+
+		auto WAVData = AudioEngine::Tools::WriteWAV(output);
+
+		std::ofstream WAVFile("square.880.1s.wav", std::ios_base::binary);
+
+		WAVFile.write(reinterpret_cast<char const*>(WAVData.data()), WAVData.size());
+		WAVFile.flush();
+		WAVFile.close();
+
+		std::cout << "Square test finished\n";
+	}
+
+	{
+		auto driver = AudioEngine::Core::DriverPtr(new AudioEngine::Core::Driver(MAX_BUFFER));
+		AudioEngine::Track_t output;
+		output.reserve(SAMPLE_RATE);
+		clock clk;
+
+		std::cout << "Square @ 440Hz fed into a Low Pass filter cutoff at 880Hz\n";
+
+		auto sound = AudioEngine::Sound::SoundFactory::CreateEmptySound();
+		auto & graph = sound->GetGraph();
+
+		auto square = AudioEngine::Sound::SoundFactory::CreateBlock(
+				AudioEngine::Generator::GeneratorFactory::CreateSquare(440)
+		);
+		auto lp = AudioEngine::Sound::SoundFactory::CreateBlock(
+				AudioEngine::Modifier::ModifierFactory::CreateLowPass(880, 0)
+		);
+
+		auto g = std::deque<AudioEngine::Sound::Sound::Edge::E_BlockPtr>(
+			1, AudioEngine::Sound::Sound::CreateE_Block(square)
+		);
+		auto m = std::deque<AudioEngine::Sound::Sound::Edge::E_BlockPtr>(
+			1, AudioEngine::Sound::Sound::CreateE_Block(lp)
+		);
+
+		auto edge = AudioEngine::Sound::Sound::CreateEdge(
+			g,
+			AudioEngine::Sound::Combinator(AudioEngine::Sound::Combinator::Addition),
+			m
+		);
+
+		graph.insert(graph.end()-1, edge);
+		graph.back()->inputs.push_back(m.front());
+
+		driver->AddSound(sound);
+
+		AudioEngine::Track_t const & driver_output = driver->GetOutputTrack();
+
+		auto before = clk.now();
+		for(uint64_t i = 0; i < SAMPLE_RATE/MAX_BUFFER; ++i)
+		{
+			driver->Process();
+
+			output.insert(output.end(), driver_output.begin(), driver_output.end());
+		}
+		auto after = clk.now();
+		auto difference = after - before;
+		std::cout << "Generated 1 second of audio in "
+				  << (difference.count() / 1000000000.0)
+				  << " seconds\n";
+
+		auto WAVData = AudioEngine::Tools::WriteWAV(output);
+
+		std::ofstream WAVFile("square.440.lowpass.880.1s.wav", std::ios_base::binary);
+
+		WAVFile.write(reinterpret_cast<char const*>(WAVData.data()), WAVData.size());
+		WAVFile.flush();
+		WAVFile.close();
+
+		std::cout << "Filtered square test finished\n";
+	}
+
+	return 0;
 }
 
 // Private Functions                      //////////////////////////////////////

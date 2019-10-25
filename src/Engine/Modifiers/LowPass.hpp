@@ -2,9 +2,9 @@
 \file             LowPass.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __LOW_PASS_HPP
@@ -14,7 +14,7 @@
 
 #include "../Engine.hpp"
 
-#include "Base.hpp"
+#include "ModifierBase.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -28,89 +28,95 @@ namespace AudioEngine
 {
 namespace Modifier
 {
+	/*! ************************************************************************
+	\brief
+	***************************************************************************/
+	class LowPass : public ModifierBase
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-  *****************************************************************************/
-  class LowPass : public Base
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		Math_t m_Cutoff;
+		Math_t m_Resonance;
+		Math_t m_Coefficients[4];
+		StereoData m_Outputs[3];
 
-    double m_Cutoff;
-    double m_Resonance;
-    double m_Coefficients[4];
-    StereoData_t m_Outputs[3];
-    bool m_IsDirty;
 
-  public:
 
-    // Con-/De- structors   ///////////////////////
+	public:
 
-    /*! ************************************************************************
-    \brief
-      Constructor.
+		// Con-/De- structors   ///////////////////////
 
-    \param cutoff
-      The cutoff frequency in Hz.
+		/*! ********************************************************************
+		\brief
+			Default destructor.
+		***********************************************************************/
+		virtual ~LowPass() = default;
 
-    \param resonance
-      The resonance angle of the filter, value can be in range [0,1/6]. No
-      safety checks are performed.
-    ***************************************************************************/
-    LowPass(float cutoff, float resonance);
+		// Operators            ///////////////////////
 
-    /*! ************************************************************************
-    \brief
-      Default destructor.
-    ***************************************************************************/
-    virtual ~LowPass() = default;
+		// Accossors/Mutators   ///////////////////////
 
-    // Operators            ///////////////////////
+		/*! ********************************************************************
+		\brief
+			Sets the cutoff frequency of the filter.
 
-    // Accossors/Mutators   ///////////////////////
+		\param cutoff
+			The cutoff frequency.
+		***********************************************************************/
+		void SetCutoff(Math_t cutoff);
 
-    /*! ************************************************************************
-    \brief
-      Sets the cutoff frequency of the filter.
+		/*! ********************************************************************
+		\brief
+			Sets the resonance angle of the filter.
 
-    \param cutoff
-      The cutoff frequency.
-    ***************************************************************************/
-    void SetCutoff(float cutoff);
+		\param resonance
+			The resonance angle, in range [0,1/6]. No safety checks are
+			performed.
+		***********************************************************************/
+		void SetResonance(Math_t resonance);
 
-    /*! ************************************************************************
-    \brief
-      Sets the resonance angle of the filter.
+		// Functions            ///////////////////////
 
-    \param resonance
-      The resonance angle, in range [0,1/6]. No safety checks are performed.
-    ***************************************************************************/
-    void SetResonance(float resonance);
+		/*! ********************************************************************
+		\brief
+			Takes input sample and filters it, returning the result.
 
-    // Functions            ///////////////////////
+		\param input
+			The input sample.
 
-    /*! ************************************************************************
-    \brief
-      Takes input sample and filters it, returning the result.
+		\return
+			The filtered sample.
+		***********************************************************************/
+		virtual StereoData FilterSample(StereoData const & input);
+		virtual void FilterBlock(StereoData * input, StereoData * output, uint64_t size);
 
-    \param input
-      The input sample.
 
-    \return
-      The filtered sample.
-    ***************************************************************************/
-    virtual StereoData_t FilterSample(StereoData_t const & input);
 
-  private:
+		friend class ModifierFactory;
 
-    // Functions                  ///////////////////////
+	private:
 
-    void Reset();
+		// Functions                  ///////////////////////
 
-  }; // class LowPass
+		/*! ********************************************************************
+		\brief
+			Constructor.
 
+		\param cutoff
+			The cutoff frequency in Hz.
+
+		\param resonance
+			The resonance angle of the filter, value can be in range [0,1/6]. No
+			safety checks are performed.
+		***********************************************************************/
+		LowPass(Math_t cutoff, Math_t resonance);
+
+		void Reset();
+
+	}; // class LowPass
+	TYPEDEF_SHARED(LowPass);
 } // namespace Modifier
 } // namespace AudioEngine
 

@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(Engine)
+project(AE)
 
 if(MSVC)
   set(COMPILER_FLAGS "/DWin32 /D_WINDOWS /W4 /WX /GR /EHsc" CACHE STRING "Set compiler flags here")
-  set(DEBUG_FLAG "")
+  set(DEBUG_FLAGS "")
 else()
   set(COMPILER_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wconversion\
   -Winline -Wfloat-equal -Wundef -Wshadow -Wpointer-arith -Wcast-align\
@@ -12,12 +12,10 @@ else()
   -Wduplicated-cond -Wnull-dereference -Wold-style-cast -Wdouble-promotion\
   -Wformat=2 -Wpedantic -Weffc++ -g -std=c++1z -fPIC ${CMAKE_CXX_FLAGS}"
                       CACHE STRING "Set compiler flags here")
-  set(DEBUG_FLAG "-D_DEBUG -pg" CACHE STRING "\"-D_DEBUG -pg\" or \"-DNDEBUG -O4 -g\"")
+  set(DEBUG_FLAGS "-D_DEBUG -pg" CACHE STRING "\"-D_DEBUG -pg\" or \"-DNDEBUG -O4 -g\"")
 endif()
 
 set(CMAKE_CXX_FLAGS "${COMPILER_FLAGS} ${DEBUG_FLAGS}")
 
-add_subdirectory(src/Libraries/RIFF-Util)
-add_subdirectory(src/Libraries/Logging)
 add_subdirectory(src/Engine)
 add_subdirectory(src/Tests)

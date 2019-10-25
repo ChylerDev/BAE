@@ -2,9 +2,9 @@
 \file             Sine.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __SQUARE_HPP
@@ -14,7 +14,7 @@
 
 #include "../Engine.hpp"
 
-#include "Base.hpp"
+#include "GeneratorBase.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -28,70 +28,76 @@ namespace AudioEngine
 {
 namespace Generator
 {
+	/*! ************************************************************************
+	\brief
+		Generates square wave data at the given frequency.
+	***************************************************************************/
+	class Square : public GeneratorBase
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-    Generates square wave data at the given frequency.
-  *****************************************************************************/
-  class Square : public Base
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		Math_t m_Ind;
+		Math_t m_Inv;
 
-    double m_Ind;
-    double m_Inv;
 
-  public:
 
-    // Con-/De- structors   ///////////////////////
+	public:
 
-    /*! ************************************************************************
-    \brief
-      Creates an object that outputs a simple square wave without using
-      inefficient functions like std::sin.
+		// Con-/De- structors   ///////////////////////
 
-    \param freq
-      The frequency for the square wav to output at.
-    ***************************************************************************/
-    Square(float freq);
+		/*! ********************************************************************
+		\brief
+			Default destructor.
+		***********************************************************************/
+		virtual ~Square() = default;
 
-    /*! ************************************************************************
-    \brief
-      Default destructor.
-    ***************************************************************************/
-    virtual ~Square() = default;
+		// Operators            ///////////////////////
 
-    // Operators            ///////////////////////
+		// Accossors/Mutators   ///////////////////////
 
-    // Accossors/Mutators   ///////////////////////
+		// Functions            ///////////////////////
 
-    // Functions            ///////////////////////
+		/*! ********************************************************************
+		\brief
+			Sends a single sample to Core::Driver for output to the OS.
 
-    /*! ************************************************************************
-    \brief
-      Sends a single sample to Core::Driver for output to the OS.
+		\return
+			The stereo sample data.
+		***********************************************************************/
+		virtual StereoData SendSample(void);
+		virtual void SendBlock(StereoData * buffer, uint64_t size);
 
-    \return
-      The stereo sample data.
-    ***************************************************************************/
-    virtual StereoData_t SendSample(void);
+		/*! ********************************************************************
+		\brief
+			Sets the frequency to a new value.
 
-    /*! ************************************************************************
-    \brief
-      Sets the frequency to a new value.
+		\param freq
+			The new frequency.
+		***********************************************************************/
+		void SetFrequency(Math_t freq);
 
-    \param freq
-      The new frequency.
-    ***************************************************************************/
-    virtual void SetFrequency(float freq);
 
-  private:
 
-    // Functions                  ///////////////////////
+		friend class GeneratorFactory;
 
-  }; // class Square
+	private:
 
+		// Functions                  ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Creates an object that outputs a simple square wave without using
+			inefficient functions like std::sin.
+
+		\param freq
+			The frequency for the square wav to output at.
+		***********************************************************************/
+		Square(Math_t freq);
+
+	}; // class Square
+	TYPEDEF_SHARED(Square);
 } // namespace Generator
 } // namespace AudioEngine
 

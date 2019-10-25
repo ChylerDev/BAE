@@ -2,9 +2,9 @@
 \file             Gain.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __GAIN_HPP
@@ -14,7 +14,7 @@
 
 #include "../Engine.hpp"
 
-#include "Base.hpp"
+#include "ModifierBase.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -28,52 +28,59 @@ namespace AudioEngine
 {
 namespace Modifier
 {
+	/*! ************************************************************************
+	\brief
+	***************************************************************************/
+	class Gain : public ModifierBase
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-  *****************************************************************************/
-  class Gain : public Base
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		Math_t m_Gain;
 
-    float m_Gain;
 
-  public:
 
-    // Con-/De- structors   ///////////////////////
+	public:
 
-    Gain(float gain = DEFAULT_GAIN);
-    virtual ~Gain() = default;
+		// Con-/De- structors   ///////////////////////
 
-    // Operators            ///////////////////////
+		virtual ~Gain() = default;
 
-    // Accossors/Mutators   ///////////////////////
+		// Operators            ///////////////////////
 
-    void SetGain(float gain);
-    float GetGain() const;
+		// Accossors/Mutators   ///////////////////////
 
-    // Functions            ///////////////////////
+		void SetGain(Math_t gain);
+		Math_t GetGain() const;
 
-    /*! ************************************************************************
-    \brief
-      Takes input sample and filters it, returning the result.
+		// Functions            ///////////////////////
 
-    \param input
-      The input sample.
+		/*! ********************************************************************
+		\brief
+			Takes input sample and filters it, returning the result.
 
-    \return
-      The filtered sample.
-    ***************************************************************************/
-    virtual StereoData_t FilterSample(StereoData_t const & input);
+		\param input
+			The input sample.
 
-  private:
+		\return
+			The filtered sample.
+		***********************************************************************/
+		virtual StereoData FilterSample(StereoData const & input);
+		virtual void FilterBlock(StereoData * input, StereoData * output, uint64_t size);
 
-    // Functions                  ///////////////////////
 
-  }; // class Gain
 
+		friend class ModifierFactory;
+
+	private:
+
+		// Functions                  ///////////////////////
+
+		Gain(Math_t gain = DEFAULT_GAIN);
+
+	}; // class Gain
+	TYPEDEF_SHARED(Gain);
 } // namespace Modifier
 } // namespace AudioEngine
 

@@ -2,9 +2,9 @@
 \file             stub.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __STUB_HPP
@@ -22,35 +22,36 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace stub
 {
+	/*! ************************************************************************
+	\brief
+	***************************************************************************/
+	class stub
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-  *****************************************************************************/
-  class stub
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+	public:
 
-  public:
+		// Con-/De- structors   ///////////////////////
 
-    // Con-/De- structors   ///////////////////////
+		// Operators            ///////////////////////
 
-    // Operators            ///////////////////////
+		// Accossors/Mutators   ///////////////////////
 
-    // Accossors/Mutators   ///////////////////////
+		// Functions            ///////////////////////
 
-    // Functions            ///////////////////////
+	private:
 
-  private:
+		// Functions                  ///////////////////////
 
-    // Functions                  ///////////////////////
-
-  }; // class stub
-
+	}; // class stub
 } // namespace stub
+} // namespace AudioEngine
 
 // Public Functions             ////////////////////////////////////////////////
 

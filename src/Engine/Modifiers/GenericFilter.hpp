@@ -2,9 +2,9 @@
 \file             GenericFilter.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __GENERIC_FILTER_HPP
@@ -18,7 +18,7 @@
 
 #include "../Engine.hpp"
 
-#include "Base.hpp"
+#include "ModifierBase.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -32,83 +32,85 @@ namespace AudioEngine
 {
 namespace Modifier
 {
+	/*! ************************************************************************
+	\brief
+		Generic audio filter with simple poles.
+	***************************************************************************/
+	class GenericFilter : public ModifierBase
+	{
+	public:
 
-  /*! **************************************************************************
-  \brief
-    Generic audio filter with simple poles.
-  *****************************************************************************/
-  class GenericFilter : public Base
-  {
-  public:
+		using ZeroContainer = std::vector<std::tuple<uint32_t,Math_t>>;
+		using PoleContainer = std::vector<std::tuple<uint32_t,Math_t>>;
 
-    using ZeroContainer = std::vector<std::tuple<uint32_t,float>>;
-    using PoleContainer = std::vector<std::tuple<uint32_t,float>>;
+	private:
+		
+		using SampleContainer = std::deque<StereoData>;
 
-  private:
-    
-    using SampleContainer = std::deque<StereoData_t>;
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+			/// Vector of tuples, tuple of the x subscript and its coefficient
+		ZeroContainer m_Zeros;
+			/// Vector of tuples, tuple of the y subscript and its coefficient
+		PoleContainer m_Poles;
 
-      /// Vector of tuples, tuple of the x subscript and its coefficient
-    ZeroContainer m_Zeros;
-      /// Vector of tuples, tuple of the y subscript and its coefficient
-    PoleContainer m_Poles;
+		SampleContainer m_Inputs;
+		SampleContainer m_Outputs;
 
-    SampleContainer m_Inputs;
-    SampleContainer m_Outputs;
+		uint32_t m_MaxXSubscript;
+		uint32_t m_MaxYSubscript;
 
-    uint32_t m_MaxXSubscript;
-    uint32_t m_MaxYSubscript;
+	public:
 
-  public:
+		// Con-/De- structors   ///////////////////////
 
-    // Con-/De- structors   ///////////////////////
+		/*! ********************************************************************
+		\brief
+			Default destructor
+		***********************************************************************/
+		virtual ~GenericFilter() = default;
 
-    /*! ************************************************************************
-    \brief
-      Constructor.
+		// Operators            ///////////////////////
 
-    \param zeros
-      Container a tuple of the x subscript and its coefficient.
-      Expected to be ordered lowest to highest by subscript.
+		// Accossors/Mutators   ///////////////////////
 
-    \param poles
-      Container of a tuple of the the y subscript and its coefficient.
-      Expected to be ordered lowest to highest by subscript.
-    ***************************************************************************/
-    GenericFilter(ZeroContainer const & zeros, PoleContainer const & poles);
+		// Functions            ///////////////////////
 
-    /*! ************************************************************************
-    \brief
-      Default destructor
-    ***************************************************************************/
-    virtual ~GenericFilter() = default;
+		/*! ********************************************************************
+		\brief
+			Takes input sample and filters it, returning the result.
 
-    // Operators            ///////////////////////
+		\param input
+			The input sample.
 
-    // Accossors/Mutators   ///////////////////////
+		\return
+			The filtered sample.
+		***********************************************************************/
+		virtual StereoData FilterSample(StereoData const & input);
+		virtual void FilterBlock(StereoData * input, StereoData * output, uint64_t size);
 
-    // Functions            ///////////////////////
+		friend class ModifierFactory;
 
-    /*! ************************************************************************
-    \brief
-      Takes input sample and filters it, returning the result.
+	private:
 
-    \param input
-      The input sample.
+		// Functions                  ///////////////////////
 
-    \return
-      The filtered sample.
-    ***************************************************************************/
-    virtual StereoData_t FilterSample(StereoData_t const & input);
+		/*! ********************************************************************
+		\brief
+			Constructor.
 
-  private:
+		\param zeros
+			Container a tuple of the x subscript and its coefficient.
+			Expected to be ordered lowest to highest by subscript.
 
-    // Functions                  ///////////////////////
+		\param poles
+			Container of a tuple of the the y subscript and its coefficient.
+			Expected to be ordered lowest to highest by subscript.
+		***********************************************************************/
+		GenericFilter(ZeroContainer const & zeros, PoleContainer const & poles);
 
-  }; // class GenericFilter
-
+	}; // class GenericFilter
+	TYPEDEF_SHARED(GenericFilter);
 } // namespace Modifier
 } // namespace AudioEngine
 

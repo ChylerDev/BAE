@@ -2,9 +2,9 @@
 \file             Driver.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __DRIVER_HPP
@@ -18,10 +18,12 @@
 
 #include "../Engine.hpp"
 
+#include "../Sounds/Sound.hpp"
+
 // Public Macros                ////////////////////////////////////////////////
 
 #ifndef MAX_BUFFER
-  #define MAX_BUFFER (SAMPLE_RATE/10)
+	#define MAX_BUFFER (SAMPLE_RATE/10)
 #endif
 
 // Forward References           ////////////////////////////////////////////////
@@ -34,138 +36,91 @@ namespace AudioEngine
 {
 namespace Core
 {
+	/*! ************************************************************************
+	\brief
+		Initiates Port Audio and handles all related calls.
+	***************************************************************************/
+	class Driver
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-    Initiates Port Audio and handles all related calls.
-  *****************************************************************************/
-  class Driver
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		Track_t m_OutputTrack;
 
-    PaStreamParameters m_Params;
-    PaStream * m_Stream;
+		std::vector<Sound::SoundPtr> m_Sounds;
 
-    Track_t m_OutputTrack;
+		Math_t m_Gain;
 
-    std::vector<AudioCallback_t> m_AudioCallbacks;
-    std::vector<pSound_t> m_Sounds;
+	public:
 
-    float m_Gain;
-    bool m_Running;
+		// Con-/De- structors   ///////////////////////
 
-    pRecorder_t m_Recorder;
-    bool m_Recording;
+		/*! ********************************************************************
+		\brief
+			Constructs an audio driver object.
 
-  public:
+		\param track_size
+			The size of the output track in samples.
 
-    template<typename ...Args>
-    static inline pDriver_t Create(Args &&... params)
-    {
-      return std::make_shared<Driver>(params...);
-    };
+		\param gain
+			The linear gain to be used when summing all audio values.
+		***********************************************************************/
+		Driver(uint64_t track_size, Math_t gain = DEFAULT_GAIN);
 
-    // Con-/De- structors   ///////////////////////
+		Driver(Driver const &) = default;
+		Driver(Driver &&) noexcept = default;
 
-    /*! ************************************************************************
-    \brief
-      Constructs an audio driver object.
+		/*! ********************************************************************
+		\brief
+			Destructor.
+		***********************************************************************/
+		~Driver();
 
-    \param gain
-      The linear gain to be used when summing all audio values.
-    ***************************************************************************/
-    Driver(float gain = DEFAULT_GAIN);
+		// Operators            ///////////////////////
 
-    Driver(Driver const &) = delete;
-    Driver(Driver &&) noexcept = default;
+		Driver & operator=(Driver const &) = default;
+		Driver & operator=(Driver &&) noexcept = default;
 
-    /*! ************************************************************************
-    \brief
-      Destructor.
-    ***************************************************************************/
-    ~Driver();
+		// Accossors/Mutators   ///////////////////////
 
-    // Operators            ///////////////////////
+		/*! ********************************************************************
+		\brief
+			Adds the given sound to the internal list of tracked sounds.
 
-    Driver & operator=(Driver const &) = delete;
-    Driver & operator=(Driver &&) noexcept = default;
+		\param sound
+			The sound to add.
+		***********************************************************************/
+		void AddSound(Sound::SoundPtr const & sound);
 
-    // Accossors/Mutators   ///////////////////////
+		/*! ********************************************************************
+		\brief
+			Sets the gain to be used when summing all the audio values.
 
-    // Functions            ///////////////////////
+		\param gain
+			The linear gain value to be set.
+		***********************************************************************/
+		void SetGain(Math_t gain = DEFAULT_GAIN);
 
-    /*! ************************************************************************
-    \brief
-      Adds an audio callback to the list of callbacks to check.
+		Track_t const & GetOutputTrack() const;
 
-    \param cb
-      The callback to be added to the list.
-    ***************************************************************************/
-    void AddAudioCallback(AudioCallback_t const & cb);
+		// Functions            ///////////////////////
 
-    void AddSound(pSound_t const & sound);
+		/*! ********************************************************************
+		\brief
+			Processes audio and returns a track of the calculated samples.
 
-    void StartRecording();
+		\return
+			The calculated samples
+		***********************************************************************/
+		void Process();
 
-    Track_t StopRecording();
+	private:
 
-    /*! ************************************************************************
-    \brief
-      Sets the gain to be used when summing all the audio values.
+		// Functions                  ///////////////////////
 
-    \param gain
-      The linear gain value to be set.
-    ***************************************************************************/
-    void SetGain(float gain = DEFAULT_GAIN);
-
-    /*! ************************************************************************
-    \brief
-      Sets the threaded runner to stop grabbing data.
-    ***************************************************************************/
-    void Shutdown();
-
-  private:
-
-    // Functions                  ///////////////////////
-
-    /*! ************************************************************************
-    \brief
-      Callback function for writing data to the speakers or reding data from the
-      microphones.
-
-    \param input
-      Array of input audio data.
-
-    \param output
-      Array of output audio data.
-
-    \param frameCount
-      The number of sample frames to be processed by the stream callback.
-
-    \param timeInfo
-      Timesamps indicating the ADC capture time of the first sample in the input
-      buffer, the DAC output time of the first sample in the output buffer, and
-      the time the callback was invoked.
-
-    \param statusFlags
-      Flags indicating whether input/output buffers have been inserted or will
-      be dropped to overcome underflow or overflow conditions.
-
-    \param userData
-      The the user-supplied data given when Pa_OpenStream was called.
-
-    \return
-      A PaStreamCallbackResult enum value.
-    ***************************************************************************/
-    static int s_WriteCallback(void const * input, void * output,
-                               unsigned long frameCount,
-                               PaStreamCallbackTimeInfo const * timeInfo,
-                               PaStreamCallbackFlags statusFlags,
-                               void * userData);
-  }; // class Driver
-
+	}; // class Driver
+	TYPEDEF_SHARED(Driver);
 } // namespace Core
 } // namespace AudioEngine
 
