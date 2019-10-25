@@ -2,9 +2,9 @@
 \file             Echo.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 // Include Files                          //////////////////////////////////////
@@ -25,50 +25,48 @@ namespace AudioEngine
 {
 namespace Modifier
 {
+	Echo::Echo(
+		uint64_t sample_delay,
+		Math_t decay_ratio
+	) : ModifierBase(false),
+		m_Echo(sample_delay, StereoData(SampleType(0), SampleType(0))), m_Ratio(decay_ratio)
+	{
+	}
 
-  Echo::Echo(
-    uint64_t sample_delay,
-    Math_t decay_ratio
-  ) : Base(false),
-    m_Echo(sample_delay, StereoData_t(SampleType_t(0), SampleType_t(0))), m_Ratio(decay_ratio)
-  {
-  }
+	StereoData Echo::FilterSample(StereoData const & dry)
+	{
+		StereoData wet = m_Echo.front();
+		m_Echo.pop_front();
 
-  StereoData_t Echo::FilterSample(StereoData_t const & dry)
-  {
-    StereoData_t wet = m_Echo.front();
-    m_Echo.pop_front();
+		StereoData out = StereoData(
+			SampleType(Left(wet) * m_Ratio + Left(dry)),
+			SampleType(Right(wet) * m_Ratio + Right(dry))
+		);
 
-    StereoData_t out = StereoData_t(
-      SampleType_t(Left(wet) * m_Ratio + Left(dry)),
-      SampleType_t(Right(wet) * m_Ratio + Right(dry))
-    );
+		m_Echo.push_back(out);
 
-    m_Echo.push_back(out);
+		return out;
+	}
 
-    return out;
-  }
+	void Echo::FilterBlock(StereoData * input, StereoData * output, uint64_t size)
+	{
+		static uint64_t i;
 
-  void Echo::FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size)
-  {
-    static uint64_t i;
+		for(i = 0; i < size; ++i)
+		{
+			static StereoData out;
+			out = StereoData(
+				SampleType(Left(m_Echo.front()) * m_Ratio + Left(input[i])),
+				SampleType(Right(m_Echo.front()) * m_Ratio + Right(input[i]))
+			);
 
-    for(i = 0; i < size; ++i)
-    {
-      static StereoData_t out;
-      out = StereoData_t(
-        SampleType_t(Left(m_Echo.front()) * m_Ratio + Left(input[i])),
-        SampleType_t(Right(m_Echo.front()) * m_Ratio + Right(input[i]))
-      );
+			m_Echo.pop_front();
+			m_Echo.push_back(out);
 
-      m_Echo.pop_front();
-      m_Echo.push_back(out);
-
-      Left(output[i]) += Left(out);
-      Right(output[i]) += Right(out);
-    }
-  }
-
+			Left(output[i]) += Left(out);
+			Right(output[i]) += Right(out);
+		}
+	}
 } // namespace Modifier
 } // namespace AudioEngine
 

@@ -2,9 +2,9 @@
 \file             Delay.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 // Include Files                          //////////////////////////////////////
@@ -25,55 +25,48 @@ namespace AudioEngine
 {
 namespace Modifier
 {
+	Delay::Delay(uint64_t samples) : ModifierBase(false),
+		m_Delay(samples, StereoData(SampleType(0), SampleType(0)))
+	{
+		m_Table["SetDelay"] = [this](void * s){ SetDelay(*reinterpret_cast<uint64_t*>(s)); };
+	}
 
-  Delay::Delay(uint64_t samples) : Base(false),
-    m_Delay(samples, StereoData_t(SampleType_t(0), SampleType_t(0))), m_Table()
-  {
-    m_Table["SetDelay"] = [this](void * s){ SetDelay(*reinterpret_cast<uint64_t*>(s)); };
-  }
+	StereoData Delay::FilterSample(StereoData const & sample)
+	{
+		m_Delay.push_back(sample);
 
-  StereoData_t Delay::FilterSample(StereoData_t const & sample)
-  {
-    m_Delay.push_back(sample);
+		StereoData s = m_Delay.front();
+		m_Delay.pop_front();
 
-    StereoData_t s = m_Delay.front();
-    m_Delay.pop_front();
+		return s;
+	}
 
-    return s;
-  }
+	void Delay::FilterBlock(StereoData * input, StereoData * output, uint64_t size)
+	{
+		m_Delay.insert(m_Delay.end(), input, input + size);
 
-  void Delay::FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size)
-  {
-    m_Delay.insert(m_Delay.end(), input, input + size);
+		static uint64_t i;
+		for(i = 0; i < size; ++i)
+		{
+			Left(output[i]) += Left(m_Delay.front());
+			Right(output[i]) += Right(m_Delay.front());
 
-    static uint64_t i;
-    for(i = 0; i < size; ++i)
-    {
-      Left(output[i]) += Left(m_Delay.front());
-      Right(output[i]) += Right(m_Delay.front());
+			m_Delay.pop_front();
+		}
+	}
 
-      m_Delay.pop_front();
-    }
-  }
+	void Delay::SetDelay(uint64_t samples)
+	{
+		while(samples < m_Delay.size())
+		{
+			m_Delay.pop_back();
+		}
 
-  void Delay::SetDelay(uint64_t samples)
-  {
-    while(samples < m_Delay.size())
-    {
-      m_Delay.pop_back();
-    }
-
-    while(samples > m_Delay.size())
-    {
-      m_Delay.push_back(StereoData_t(SampleType_t(0), SampleType_t(0)));
-    }
-  }
-
-  MethodTable_t const & Delay::GetMethodTable() const
-  {
-    return m_Table;
-  }
-
+		while(samples > m_Delay.size())
+		{
+			m_Delay.push_back(StereoData(SampleType(0), SampleType(0)));
+		}
+	}
 } // namespace Modifier
 } // namespace AudioEngine
 

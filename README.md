@@ -1,9 +1,10 @@
 # AudioEngine
 
-Simply, an audio engine designed to play sounds in real time. Built off of PortAudio to enable cross-platform compatibility.
+Simply, an audio engine designed tocompute sounds using basic generators and modifiers combined in a graph structure
 
 ---
 ## Building
+
 ### Windows
 
 To create a project solution, download and open CMake (version 3.8 or newer). set the root directory of this repository as the source code location, then set repository root/build as the build location for the binaries.

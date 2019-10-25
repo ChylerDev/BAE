@@ -2,9 +2,9 @@
 \file             MethodTable.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 // Include Files                          //////////////////////////////////////
@@ -17,16 +17,6 @@
 
 // Private Objects                        //////////////////////////////////////
 
-namespace AudioEngine
-{
-namespace Tools
-{
-
-  MethodTable_t const MethodTable::s_Table;
-
-} // namespace Tools
-} // namespace AudioEngine
-
 // Private Function Declarations          //////////////////////////////////////
 
 // Public Functions                       //////////////////////////////////////
@@ -35,12 +25,10 @@ namespace AudioEngine
 {
 namespace Tools
 {
-
-  MethodTable_t const & MethodTable::GetMethodTable() const
-  {
-    return s_Table;
-  }
-
+	void MethodTable::operator()(std::string const & name, void * val)
+	{
+		m_Table.at(name)(val);
+	}
 } // namespace Tools
 } // namespace AudioEngine
 

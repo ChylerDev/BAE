@@ -2,9 +2,9 @@
 \file             stub.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 // Include Files                          //////////////////////////////////////
@@ -19,9 +19,12 @@
 
 // Public Functions                       //////////////////////////////////////
 
+namespace AudioEngine
+{
 namespace stub
 {
 
 } // namespace stub
+} // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////

@@ -2,9 +2,9 @@
 \file             Triangle.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __TRIANGLE_HPP
@@ -14,7 +14,7 @@
 
 #include "../Engine.hpp"
 
-#include "Base.hpp"
+#include "GeneratorBase.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -28,47 +28,47 @@ namespace AudioEngine
 {
 namespace Generator
 {
+	/*! ************************************************************************
+	\brief
+	***************************************************************************/
+	class Triangle : public GeneratorBase
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-  *****************************************************************************/
-  class Triangle : public Base
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		Math_t m_Irate;
+		Math_t m_Inc;
 
-    Math_t m_Irate;
-    Math_t m_Inc;
 
-    MethodTable_t m_Table;
 
-  public:
+	public:
 
-    // Con-/De- structors   ///////////////////////
+		// Con-/De- structors   ///////////////////////
 
-    Triangle(Math_t freq);
-    virtual ~Triangle() = default;
+		virtual ~Triangle() = default;
 
-    // Operators            ///////////////////////
+		// Operators            ///////////////////////
 
-    // Accossors/Mutators   ///////////////////////
+		// Accossors/Mutators   ///////////////////////
 
-    // Functions            ///////////////////////
+		// Functions            ///////////////////////
 
-    void SetFrequency(Math_t freq);
+		void SetFrequency(Math_t freq);
 
-    virtual StereoData_t SendSample(void);
-    virtual void SendBlock(StereoData_t * buffer, uint64_t size);
+		virtual StereoData SendSample(void);
+		virtual void SendBlock(StereoData * buffer, uint64_t size);
 
-    virtual MethodTable_t const & GetMethodTable() const;
 
-  private:
 
-    // Functions                  ///////////////////////
+		friend class GeneratorFactory;
 
-  }; // class Triangle
+	private:
 
+		Triangle(Math_t freq);
+
+	}; // class Triangle
+	TYPEDEF_SHARED(Triangle);
 } // namespace Generator
 } // namespace AudioEngine
 

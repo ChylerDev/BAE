@@ -2,9 +2,9 @@
 \file             Sawtooth.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __SAWTOOTH_HPP
@@ -14,7 +14,7 @@
 
 #include "../Engine.hpp"
 
-#include "Base.hpp"
+#include "GeneratorBase.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -28,47 +28,46 @@ namespace AudioEngine
 {
 namespace Generator
 {
+	/*! ************************************************************************
+	\brief
+	***************************************************************************/
+	class Sawtooth : public GeneratorBase
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-  *****************************************************************************/
-  class Sawtooth : public Base
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		Math_t m_Irate;
+		Math_t m_Inc;
 
-    Math_t m_Irate;
-    Math_t m_Inc;
+	public:
 
-    MethodTable_t m_Table;
+		// Con-/De- structors   ///////////////////////
 
-  public:
+		virtual ~Sawtooth() = default;
 
-    // Con-/De- structors   ///////////////////////
+		// Operators            ///////////////////////
 
-    Sawtooth(Math_t freq);
-    virtual ~Sawtooth() = default;
+		// Accossors/Mutators   ///////////////////////
 
-    // Operators            ///////////////////////
+		// Functions            ///////////////////////
 
-    // Accossors/Mutators   ///////////////////////
+		void SetFrequency(Math_t freq);
 
-    // Functions            ///////////////////////
+		virtual StereoData SendSample(void);
+		virtual void SendBlock(StereoData * buffer, uint64_t size);
 
-    void SetFrequency(Math_t freq);
 
-    virtual StereoData_t SendSample(void);
-    virtual void SendBlock(StereoData_t * buffer, uint64_t size);
 
-    virtual MethodTable_t const & GetMethodTable() const;
+		friend class GeneratorFactory;
 
-  private:
+	private:
 
-    // Functions                  ///////////////////////
+		// Functions                  ///////////////////////
 
-  }; // class Sawtooth
-
+		Sawtooth(Math_t freq);
+	}; // class Sawtooth
+	TYPEDEF_SHARED(Sawtooth);
 } // namespace Generator
 } // namespace AudioEngine
 

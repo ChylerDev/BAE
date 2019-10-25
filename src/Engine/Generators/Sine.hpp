@@ -2,9 +2,9 @@
 \file             Sine.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __SINE_HPP
@@ -14,7 +14,7 @@
 
 #include "../Engine.hpp"
 
-#include "Base.hpp"
+#include "GeneratorBase.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -28,82 +28,78 @@ namespace AudioEngine
 {
 namespace Generator
 {
+	/*! ************************************************************************
+	\brief
+		Generates sine data at the given frequency.
+	***************************************************************************/
+	class Sine : public GeneratorBase
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-    Generates sine data at the given frequency.
-  *****************************************************************************/
-  class Sine : public Base
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		Math_t irate;
+		SampleType y1, y2;
+		Math_t beta;
 
-    Math_t irate;
-    SampleType_t y1, y2;
-    Math_t beta;
+	public:
 
-    MethodTable_t m_Table;
+		// Con-/De- structors   ///////////////////////
 
-  public:
+		/*! ********************************************************************
+		\brief
+			Default destructor.
+		***********************************************************************/
+		virtual ~Sine() = default;
 
-    // Con-/De- structors   ///////////////////////
+		// Operators            ///////////////////////
 
-    /*! ************************************************************************
-    \brief
-      Creates an object that outputs a simple sine wave without using inefficient
-      functions like std::sin.
+		// Accossors/Mutators   ///////////////////////
 
-    \param freq
-      The frequency for the sine-wav to output at.
-    ***************************************************************************/
-    Sine(Math_t freq);
+		// Functions            ///////////////////////
 
-    /*! ************************************************************************
-    \brief
-      Default destructor.
-    ***************************************************************************/
-    virtual ~Sine() = default;
+		/*! ********************************************************************
+		\brief
+			Sends a single sample to Core::Driver for output to the OS.
 
-    // Operators            ///////////////////////
+		\return
+			The stereo sample data.
+		***********************************************************************/
+		virtual StereoData SendSample(void);
 
-    // Accossors/Mutators   ///////////////////////
+		/*! ********************************************************************
+		\brief
+			Sets the frequency to a new value.
 
-    // Functions            ///////////////////////
+		\param freq
+			The new frequency.
+		***********************************************************************/
+		void SetFrequency(Math_t freq);
 
-    /*! ************************************************************************
-    \brief
-      Sends a single sample to Core::Driver for output to the OS.
+		friend class GeneratorFactory;
 
-    \return
-      The stereo sample data.
-    ***************************************************************************/
-    virtual StereoData_t SendSample(void);
-    virtual void SendBlock(StereoData_t * buffer, uint64_t size);
+	private:
 
-    /*! ************************************************************************
-    \brief
-      Sets the frequency to a new value.
+		/*! ********************************************************************
+		\brief
+			Creates an object that outputs a simple sine wave without using
+			inefficient functions like std::sin.
 
-    \param freq
-      The new frequency.
-    ***************************************************************************/
-    void SetFrequency(Math_t freq);
+		\param freq
+			The frequency for the sine-wav to output at.
+		***********************************************************************/
+		Sine(Math_t freq);
 
-    virtual MethodTable_t const & GetMethodTable() const;
+		// Functions                  ///////////////////////
 
-  private:
+		/*! ********************************************************************
+		\brief
+			Sets all the coefficients for calculating samples.
+		***********************************************************************/
+		void Reset(void);
 
-    // Functions                  ///////////////////////
-
-    /*! ************************************************************************
-    \brief
-      Sets all the coefficients for calculating samples.
-    ***************************************************************************/
-    void Reset(void);
-
-  }; // class Sine
-
+	}; // class Sine
+	TYPEDEF_SHARED(Sine);
 } // namespace Generator
 } // namespace AudioEngine
 

@@ -2,9 +2,9 @@
 \file             WAVWriter.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __WAVWRITER_HPP
@@ -28,19 +28,17 @@ namespace AudioEngine
 {
 namespace Tools
 {
+	/*! ************************************************************************
+	\brief
+		To be used in tandom with the recording system built into Core::Driver.
 
-  /*! **************************************************************************
-  \brief
-    To be used in tandom with the recording system built into Core::Driver.
+	\param
+		The audio to be formatted into WAVE (RIFF) data.
 
-  \param
-    The audio to be formatted into WAVE (RIFF) data.
-
-  \return
-    The formatted data.
-  *****************************************************************************/
-  RIFF::vector_t WriteWAV(Track_t const & audio);
-
+	\return
+		The formatted data.
+	***************************************************************************/
+	RIFF::vector_t WriteWAV(Track_t const & audio);
 } // namespace Tools
 } // namespace AudioEngine
 

@@ -2,9 +2,9 @@
 \file             BandPass.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef __BAND_PASS_HPP
@@ -14,7 +14,7 @@
 
 #include "../Engine.hpp"
 
-#include "Base.hpp"
+#include "ModifierBase.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -28,53 +28,51 @@ namespace AudioEngine
 {
 namespace Modifier
 {
+	/*! ************************************************************************
+	\brief
+	***************************************************************************/
+	class BandPass : public ModifierBase
+	{
+	private:
 
-  /*! **************************************************************************
-  \brief
-  *****************************************************************************/
-  class BandPass : public Base
-  {
-  private:
+		// Members              ///////////////////////
 
-    // Members              ///////////////////////
+		Math_t m_CentralFrequency;
+		Math_t m_Quality;
+		Math_t m_A0, m_B1, m_B2;
+		StereoData m_X1, m_X2, m_Y1, m_Y2;
 
-    Math_t m_CentralFrequency;
-    Math_t m_Quality;
-    Math_t m_A0, m_B1, m_B2;
-    StereoData_t m_X1, m_X2, m_Y1, m_Y2;
+	public:
 
-    MethodTable_t m_Table;
+		// Con-/De- structors   ///////////////////////
 
-  public:
+		virtual ~BandPass();
 
-    // Con-/De- structors   ///////////////////////
+		// Operators            ///////////////////////
 
-    BandPass(Math_t f, Math_t Q = 1);
-    virtual ~BandPass();
+		// Accossors/Mutators   ///////////////////////
 
-    // Operators            ///////////////////////
+		void SetFrequency(Math_t f);
 
-    // Accossors/Mutators   ///////////////////////
+		void SetQuality(Math_t Q);
 
-    void SetFrequency(Math_t f);
+		// Functions            ///////////////////////
 
-    void SetQuality(Math_t Q);
+		virtual StereoData FilterSample(StereoData const & x);
+		virtual void FilterBlock(StereoData * input, StereoData * output, uint64_t size);
 
-    // Functions            ///////////////////////
+		friend class ModifierFactory;
 
-    virtual StereoData_t FilterSample(StereoData_t const & x);
-    virtual void FilterBlock(StereoData_t * input, StereoData_t * output, uint64_t size);
+	private:
 
-    virtual MethodTable_t const & GetMethodTable() const;
+		// Functions                  ///////////////////////
 
-  private:
+		BandPass(Math_t f, Math_t Q = 1);
 
-    // Functions                  ///////////////////////
+		void Reset(void);
 
-    void Reset(void);
-
-  }; // class BandPass
-
+	}; // class BandPass
+	TYPEDEF_SHARED(BandPass);
 } // namespace Modifier
 } // namespace AudioEngine
 
