@@ -39,7 +39,7 @@ namespace Tools
 
 		// Members              ///////////////////////
 
-		MethodTable_t s_Table;
+		MethodTable_t m_Table;
 
 	public:
 
@@ -50,7 +50,7 @@ namespace Tools
 
 		// Operators            ///////////////////////
 
-		virtual Void_fn operator()(std::string const & fn, void * val = nullptr);
+		virtual void operator()(std::string const & fn, void * val = nullptr);
 
 		// Accossors/Mutators   ///////////////////////
 

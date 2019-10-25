@@ -25,7 +25,7 @@ namespace AudioEngine
 {
 namespace Modifier
 {
-	Gain::Gain(Math_t gain) : ModifierBase(false), m_Gain(gain), m_Table()
+	Gain::Gain(Math_t gain) : ModifierBase(false), m_Gain(gain)
 	{
 		m_Table["SetGain"] = [this](void * g){ SetGain(*reinterpret_cast<Math_t*>(g)); };
 		m_Table["GetGain"] = [this](void * g){ *reinterpret_cast<Math_t*>(g) = GetGain(); };
@@ -56,11 +56,6 @@ namespace Modifier
 			Left(output[i]) += SampleType(Left(input[i]) * m_Gain);
 			Right(output[i]) += SampleType(Right(input[i]) * m_Gain);
 		}
-	}
-
-	MethodTable_t const & Gain::GetMethodTable() const
-	{
-		return m_Table;
 	}
 } // namespace Modifier
 } // namespace AudioEngine

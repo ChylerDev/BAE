@@ -32,54 +32,54 @@ namespace AudioEngine
 {
 namespace Generator
 {
-	GeneratorBasePtr GeneratorFactory::CreateNoise()
+	GeneratorBasePtr GeneratorFactory::CreateBase()
 	{
-		return std::make_shared<GeneratorBase>();
+		return GeneratorBasePtr(new GeneratorBase());
 	}
 
 	GeneratorBasePtr GeneratorFactory::CreateNoise()
 	{
-		return std::make_shared<Noise>();
+		return GeneratorBasePtr(new Noise());
 	}
 
 	GeneratorBasePtr GeneratorFactory::CreateSawtooth(Math_t freq)
 	{
-		return std::make_shared<Sawtooth>(freq);
+		return GeneratorBasePtr(new Sawtooth(freq));
 	}
 
 	GeneratorBasePtr GeneratorFactory::CreateSine(Math_t freq)
 	{
-		return std::make_shared<Sine>(freq);
+		return GeneratorBasePtr(new Sine(freq));
 	}
 
 	GeneratorBasePtr GeneratorFactory::CreateSquare(Math_t freq)
 	{
-		return std::make_shared<Square>(freq);
+		return GeneratorBasePtr(new Square(freq));
 	}
 
 	GeneratorBasePtr GeneratorFactory::CreateTriangle(Math_t freq)
 	{
-		return std::make_shared<Triangle>(freq);
+		return GeneratorBasePtr(new Triangle(freq));
 	}
 
 	GeneratorBasePtr GeneratorFactory::CreateWAV()
 	{
-		return std::make_shared<WAV>();
+		return GeneratorBasePtr(new WAV());
 	}
 
 	GeneratorBasePtr GeneratorFactory::CreateWAV(std::string const & filepath)
 	{
-		return std::make_shared<WAV>(filepath);
+		return GeneratorBasePtr(new WAV(filepath));
 	}
 
 	GeneratorBasePtr GeneratorFactory::CreateWAV(std::vector<char> const & wav_data)
 	{
-		return std::make_shared<WAV>(wav_data);
+		return GeneratorBasePtr(new WAV(wav_data));
 	}
 
 	GeneratorBasePtr GeneratorFactory::CreateWAV(int argc)
 	{
-		return std::make_shared<WAV>(argc);
+		return GeneratorBasePtr(new WAV(argc));
 	}
 } // namespace Generator
 } // namespace AudioEngine

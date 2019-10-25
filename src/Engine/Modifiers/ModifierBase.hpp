@@ -46,7 +46,7 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
-		ModifierBase(bool b) : is_base(b) {};
+		ModifierBase(bool b = true) : is_base(b) {};
 		virtual ~ModifierBase() = default;
 
 		// Operators            ///////////////////////
@@ -66,8 +66,6 @@ namespace Modifier
 			The filtered sample.
 		***********************************************************************/
 		virtual StereoData FilterSample(StereoData const & input) { return input; };
-		virtual void FilterBlock(StereoData * input, StereoData * output, uint64_t size)
-		{ std::copy_n(input, size, output); };
 
 		bool IsBase() { return is_base; };
 

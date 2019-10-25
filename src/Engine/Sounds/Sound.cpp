@@ -14,6 +14,8 @@
 
 #include "../Modifiers/ModifierFactory.hpp"
 #include "SoundFactory.hpp"
+#include "Combinator.hpp"
+#include "Sound.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
@@ -35,39 +37,29 @@ namespace Sound
 		m_OutputGain(Modifier::ModifierFactory::CreateGain(output_gain))
 	{
 		m_Graph.push_back(
-			Edge(
-				std::deque<BlockPtr>(1, SoundFactory::CreateBlock(m_InputGain)),
+			CreateEdge(
+				std::deque<Edge::E_Block>(1, Edge::E_Block(SoundFactory::CreateBlock(m_InputGain))),
 				Combinator(Combinator::Addition),
-				std::deque<BlockPtr>()
+				std::deque<Edge::E_Block>()
 			)
 		);
 		m_Graph.push_back(
-			Edge(
-				std::deque<BlockPtr>(),
+			CreateEdge(
+				std::deque<Edge::E_Block>(),
 				Combinator(Combinator::Addition),
-				std::deque<BlockPtr>(1, SoundFactory::CreateBlock(m_OutputGain))
+				std::deque<Edge::E_Block>(1, Edge::E_Block(SoundFactory::CreateBlock(m_OutputGain)))
 			)
 		);
 	}
 
-	Sound & Sound::AddEdge(Edge const & e, bool takes_input = false, bool sends_output = false)
+	Sound::Graph & Sound::GetGraph()
 	{
-		if(takes_input)
-		{
-			auto & out = std::get<2>(m_Graph.front());
-			out.insert(out.end(), std::get<0>(e).begin(), std::get<0>(e).end());
-		}
-		else if(sends_output)
-		{
-			auto & in = std::get<0>(m_Graph.back());
-			in.insert(in.end(), std::get<2>(e).begin(), std::get<2>(e).end());
-		}
-		else
-		{
-			m_Graph.insert(m_Graph.end()-1, e);
-		}
+		return m_Graph;
+	}
 
-		return *this;
+	Sound::Graph const & Sound::GetGraph() const
+	{
+		return m_Graph;
 	}
 
 	Sound & Sound::SetInputGain(Math_t gain)
@@ -82,29 +74,37 @@ namespace Sound
 		return *this;
 	}
 
-	StereoData Sound::Process(StereoData input)
+	void Sound::PrimeInput(StereoData in)
 	{
-		std::get<0>(m_Graph.front()).front()->PrimeInput(input);
+		m_Graph.front()->PrimeInput(in);
+	}
 
+	void Sound::Process()
+	{
 		for(auto & e : m_Graph)
 		{
-			std::deque<StereoData> outputs;
-
-			for(auto & in : std::get<0>(e))
-			{
-				in->Process();
-				outputs.push_back(in->LastOutput());
-			}
-
-			input = std::get<1>(e).Process(outputs.begin(), outputs.end());
-
-			for(auto & out : std::get<2>(e))
-			{
-				out->PrimeInput(input);
-			}
+			e->Process();
 		}
+	}
 
-		return std::get<2>(m_Graph.back()).back()->LastOutput();
+	StereoData Sound::LastOutput()
+	{
+		return m_Graph.back()->outputs.back().block->LastOutput();
+	}
+
+	Sound::EdgePtr Sound::CreateEdge(std::deque<Edge::E_Block> const & in, Combinator const & comb, std::deque<Edge::E_Block> const & out)
+	{
+		return std::make_shared<Sound::Edge>(in, comb, out);
+	}
+
+	Sound::Edge::E_Block Sound::CreateE_Block(SoundPtr const & s)
+	{
+		return Edge::E_Block(s);
+	}
+
+	Sound::Edge::E_Block Sound::CreateE_Block(BlockPtr const & b)
+	{
+		return Edge::E_Block(b);
 	}
 } // namespace Sound
 } // namespace AudioEngine

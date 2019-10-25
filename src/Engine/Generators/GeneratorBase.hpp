@@ -48,7 +48,7 @@ namespace Generator
 
 		// Con-/De- structors   ///////////////////////
 
-		GeneratorBase(bool b) : is_base(b) {};
+		GeneratorBase(bool b = true) : is_base(b) {};
 		virtual ~GeneratorBase() = default;
 
 		// Operators            ///////////////////////

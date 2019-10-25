@@ -54,6 +54,8 @@ namespace Modifier
 
 		void SetGain(int band, Math_t gain);
 
+		friend class ModifierFactory;
+
 	private:
 
 		// Functions                  ///////////////////////

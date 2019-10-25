@@ -18,6 +18,7 @@
 
 #include "../Tools/Input.hpp"
 #include "../Tools/Resampler.hpp"
+#include "../Tools/WAVHeader.hpp"
 
 #include "WAV.hpp"
 
@@ -36,13 +37,13 @@ namespace AudioEngine
 namespace Generator
 {
 	WAV::WAV() : GeneratorBase(false),
-		m_Resampler(), m_Table()
+		m_Resampler()
 	{
 		SetupMethodTable();
 	}
 
 	WAV::WAV(std::string const & path) : GeneratorBase(false),
-		m_Resampler(), m_Table()
+		m_Resampler()
 	{
 		SetupMethodTable();
 
@@ -50,7 +51,7 @@ namespace Generator
 	}
 
 	WAV::WAV(std::vector<char> const & data) : GeneratorBase(false),
-		m_Resampler(), m_Table()
+		m_Resampler()
 	{
 		SetupMethodTable();
 
@@ -58,7 +59,7 @@ namespace Generator
 	}
 
 	WAV::WAV(int argc) : GeneratorBase(false),
-		m_Resampler(), m_Table()
+		m_Resampler()
 	{
 		SetupMethodTable();
 
@@ -111,11 +112,6 @@ namespace Generator
 	{
 		m_Resampler->SendBlock(buffer, size);
 	}
-
-	MethodTable_t const & WAV::GetMethodTable() const
-	{
-		return m_Table;
-	}
 } // namespace Generator
 } // namespace AudioEngine
 
@@ -140,13 +136,13 @@ namespace Generator
 
 			// Get the format chunk, check that it's size is correct
 		RIFF::vector_t fmt = riff.GetChunk(CONSTRUCT_BYTE_STR("fmt "));
-		if(fmt.size() != sizeof(WAVHeader))
+		if(fmt.size() != sizeof(Tools::WAVHeader))
 		{
 			std::cerr << "Error reading WAVE data, malformed header chunk\n";
 			return;
 		}
 			// Cast the data as a header object for easier use
-		WAVHeader const * header = reinterpret_cast<WAVHeader const *>(fmt.data());
+		Tools::WAVHeader const * header = reinterpret_cast<Tools::WAVHeader const *>(fmt.data());
 
 			// Get the data chunk
 		RIFF::vector_t data_vec = riff.GetChunk(CONSTRUCT_BYTE_STR("data"));

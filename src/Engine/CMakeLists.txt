@@ -45,8 +45,6 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(core_files
 	${CMAKE_SOURCE_DIR}/Core/Driver.cpp ${CMAKE_SOURCE_DIR}/Core/Driver.hpp
-	${CMAKE_SOURCE_DIR}/Core/Block.cpp ${CMAKE_SOURCE_DIR}/Core/Block.hpp
-	${CMAKE_SOURCE_DIR}/Core/Sound.cpp ${CMAKE_SOURCE_DIR}/Core/Sound.hpp
 )
 set(gen_files
 	${CMAKE_SOURCE_DIR}/Generators/GeneratorBase.hpp
@@ -64,6 +62,7 @@ set(modifier_files
 	${CMAKE_SOURCE_DIR}/Modifiers/Delay.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Delay.hpp
 	${CMAKE_SOURCE_DIR}/Modifiers/Echo.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Echo.hpp
 	${CMAKE_SOURCE_DIR}/Modifiers/Envelope.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Envelope.hpp
+	${CMAKE_SOURCE_DIR}/Modifiers/Equalizer.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Equalizer.hpp
 	${CMAKE_SOURCE_DIR}/Modifiers/Gain.cpp ${CMAKE_SOURCE_DIR}/Modifiers/Gain.hpp
 	${CMAKE_SOURCE_DIR}/Modifiers/GenericFilter.cpp ${CMAKE_SOURCE_DIR}/Modifiers/GenericFilter.hpp
 	${CMAKE_SOURCE_DIR}/Modifiers/LowPass.cpp ${CMAKE_SOURCE_DIR}/Modifiers/LowPass.hpp
@@ -84,10 +83,15 @@ set(tools_files
 	${CMAKE_SOURCE_DIR}/Tools/WAVWriter.cpp ${CMAKE_SOURCE_DIR}/Tools/WAVWriter.hpp
 )
 set(engine_files
-	${CMAKE_SOURCE_DIR}/Types.hpp
-	${CMAKE_SOURCE_DIR}/Macro.hpp
-	${CMAKE_SOURCE_DIR}/Util.hpp
+	${CMAKE_SOURCE_DIR}/Core.hpp
+	${CMAKE_SOURCE_DIR}/Generators.hpp
+	${CMAKE_SOURCE_DIR}/Modifiers.hpp
+	${CMAKE_SOURCE_DIR}/Sounds.hpp
+	${CMAKE_SOURCE_DIR}/Tools.hpp
 	${CMAKE_SOURCE_DIR}/Engine.hpp
+	${CMAKE_SOURCE_DIR}/Macro.hpp
+	${CMAKE_SOURCE_DIR}/Types.hpp
+	${CMAKE_SOURCE_DIR}/Util.hpp
 )
 
 source_group("Core" FILES ${core_files})
@@ -116,6 +120,8 @@ if(WIN32)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	set_target_properties(${PROJECT_NAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS true)
 endif()
+
+add_definitions(-DAE_BUILD)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_directory

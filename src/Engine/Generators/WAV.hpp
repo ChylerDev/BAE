@@ -19,6 +19,8 @@
 #include "../Engine.hpp"
 
 #include "GeneratorBase.hpp"
+#include "../Tools/MethodTable.hpp"
+#include "../Tools/Resampler.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -45,9 +47,7 @@ namespace Generator
 
 		// Members              ///////////////////////
 
-		Resampler_t m_Resampler;
-
-		MethodTable_t m_Table;
+		Tools::ResamplerPtr m_Resampler;
 
 	public:
 
@@ -94,19 +94,11 @@ namespace Generator
 		virtual StereoData SendSample(void);
 		virtual void SendBlock(StereoData * buffer, uint64_t size);
 
-		virtual MethodTable_t const & GetMethodTable() const;
+
+
+		friend class GeneratorFactory;
 
 	private:
-
-		struct WAVHeader
-		{                         // (offset) = description
-			uint16_t AudioFormat;     // (00) = 1
-			uint16_t ChannelCount;    // (02) = 1 or 2
-			uint32_t SamplingRate;    // (04) = (ex. 44.1kHz, 48kHz, 96kHz, 192kHz)
-			uint32_t BytesPerSecond;  // (08) = SamplingRate * BytesPerSample
-			uint16_t BytesPerSample;  // (12) = BitsPerSample/8 * ChannelCount
-			uint16_t BitsPerSample;   // (14) = 8 or 16
-		};
 
 		// Functions                  ///////////////////////
 

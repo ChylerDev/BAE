@@ -30,8 +30,7 @@ namespace Modifier
 	BandPass::BandPass(Math_t f, Math_t Q) :
 		ModifierBase(false), m_CentralFrequency(f), m_Quality(Q),
 		m_A0(), m_B1(), m_B2(),
-		m_X1(), m_X2(), m_Y1(), m_Y2(),
-		m_Table()
+		m_X1(), m_X2(), m_Y1(), m_Y2()
 	{
 		m_Table["SetFrequency"] = [this](void * freq){ SetFrequency(*reinterpret_cast<Math_t*>(freq)); };
 		m_Table["SetQuality"] = [this](void * qual){ SetQuality(*reinterpret_cast<Math_t*>(qual)); };
@@ -102,11 +101,6 @@ namespace Modifier
 			m_X2 = m_X1;
 			m_X1 = input[i];
 		}
-	}
-
-	MethodTable_t const & BandPass::GetMethodTable() const
-	{
-		return m_Table;
 	}
 } // namespace Modifier
 } // namespace AudioEngine

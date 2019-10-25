@@ -27,6 +27,15 @@
 
 // Forward References           ////////////////////////////////////////////////
 
+namespace AudioEngine
+{
+namespace Sound
+{
+	class Sound;
+	TYPEDEF_SHARED(Sound);
+}
+}
+
 // Public Enums                 ////////////////////////////////////////////////
 
 // Public Objects               ////////////////////////////////////////////////
@@ -43,9 +52,63 @@ namespace Sound
 
 	public:
 
-		//                       inputs                  combinator  outputs
-		using Edge = std::tuple< std::deque< BlockPtr >, Combinator, std::deque< BlockPtr > >;
-		using Graph = std::deque< Edge >;
+		struct Edge
+		{
+			struct E_Block
+			{
+				union
+				{
+					SoundPtr sound;
+					BlockPtr block;
+				};
+				bool const is_sound;
+
+				E_Block(SoundPtr const & s):
+					sound(s), is_sound(true)
+				{};
+				E_Block(BlockPtr const & b):
+					block(b), is_sound(false)
+				{};
+				E_Block(E_Block const & o) : is_sound(o.is_sound)
+				{
+					if(is_sound)
+					{
+						sound = o.sound;
+					}
+					else
+					{
+						block = o.block;
+					}
+				}
+				~E_Block()
+				{
+					is_sound ? sound.~SoundPtr() : block.~BlockPtr();
+				};
+			};
+			TYPEDEF_SHARED(E_Block);
+
+			std::deque<E_Block> inputs;
+			Combinator combinator;
+			std::deque<E_Block> outputs;
+
+			Edge(std::deque<E_Block> const & in, Combinator const & comb, std::deque<E_Block> const & out):
+				inputs(in), combinator(comb), outputs(out)
+			{};
+
+			void Process()
+			{};
+
+			void PrimeInput(StereoData in)
+			{
+				for(auto & eb : inputs)
+				{
+					eb.is_sound ? eb.sound->PrimeInput(in) : eb.block->PrimeInput(in);
+				}
+			};
+		};
+		TYPEDEF_SHARED(Edge);
+
+		using Graph = std::deque< EdgePtr >;
 
 	private:
 
@@ -55,6 +118,9 @@ namespace Sound
 
 		Modifier::ModifierBasePtr m_InputGain;
 		Modifier::ModifierBasePtr m_OutputGain;
+
+		StereoData m_Input;
+		StereoData m_Output;
 
 	public:
 		// Con-/De- structors   ///////////////////////
@@ -67,20 +133,27 @@ namespace Sound
 
 		// Accossors/Mutators   ///////////////////////
 
-		Sound & AddEdge(Edge const & e, bool takes_input = false, bool sends_output = false);
+		Graph & GetGraph();
+		Graph const & GetGraph() const;
 
 		Sound & SetInputGain(Math_t gain);
 		Sound & SetOutputGain(Math_t gain);
 
 		// Functions            ///////////////////////
 
-		StereoData Process(StereoData input);
+		void PrimeInput(StereoData);
+		void Process();
+		StereoData LastOutput();
+
+		static EdgePtr CreateEdge(std::deque<Edge::E_Block> const & in, Combinator const & comb, std::deque<Edge::E_Block> const & out);
+		static Edge::E_Block CreateE_Block(SoundPtr const &);
+		static Edge::E_Block CreateE_Block(BlockPtr const &);
+
 	private:
 
 		// Functions                  ///////////////////////
 
 	}; // class Sound
-	TYPEDEF_SHARED(Sound);
 } // namespace Sound
 } // namespace AudioEngine
 

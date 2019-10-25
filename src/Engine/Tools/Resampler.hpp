@@ -105,6 +105,7 @@ namespace Tools
 		// Functions                  ///////////////////////
 
 	}; // class Resampler
+	TYPEDEF_SHARED(Resampler);
 } // namespace Tools
 } // namespace AudioEngine
 

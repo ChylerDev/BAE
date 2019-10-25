@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             stub.cpp
+\file             Equalizer.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  Audio Engine
@@ -8,6 +8,8 @@
 *******************************************************************************/
 
 // Include Files                          //////////////////////////////////////
+
+#include "Equalizer.hpp"
 
 // Private Macros                         //////////////////////////////////////
 
@@ -21,10 +23,10 @@
 
 namespace AudioEngine
 {
-namespace stub
+namespace Modifier
 {
 
-} // namespace stub
+} // namespace Modifier
 } // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////

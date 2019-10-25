@@ -28,8 +28,7 @@ namespace Modifier
 	ADSR::ADSR(uint64_t a, uint64_t d, Math_t s, uint64_t r) : ModifierBase(false),
 		m_Attack(1.0/a), m_Decay(s-1/d),
 		m_Sustain(s), m_Release(-s/r),
-		m_State(State::attack), m_Gain(0),
-		m_Table()
+		m_State(State::attack), m_Gain(0)
 	{
 		m_Table["Release"] = [this](void *){ Release(); };
 	}
@@ -120,14 +119,9 @@ namespace Modifier
 					break;
 			};
 
-			Left(output[i]) += Left(input[i]) * m_Gain;
-			Right(output[i]) += Right(input[i]) * m_Gain;
+			 Left(output[i]) += SampleType( Left(input[i]) * m_Gain);
+			Right(output[i]) += SampleType(Right(input[i]) * m_Gain);
 		}
-	}
-
-	MethodTable_t const & ADSR::GetMethodTable() const
-	{
-		return m_Table;
 	}
 } // namespace Modifier
 } // namespace AudioEngine

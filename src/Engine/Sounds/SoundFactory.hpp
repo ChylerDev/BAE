@@ -45,8 +45,10 @@ namespace Sound
 
 		~SoundFactory() = delete;
 
-		static BlockPtr CreateBlock(Generator::GeneratorBasePtr);
-		static BlockPtr CreateBlock(Modifier::ModifierBasePtr);
+		static SoundPtr CreateBasicGenerator(Generator::GeneratorBasePtr const &);
+		static SoundPtr CreateBasicModifier(Modifier::ModifierBasePtr const &);
+		static BlockPtr CreateBlock(Generator::GeneratorBasePtr const &);
+		static BlockPtr CreateBlock(Modifier::ModifierBasePtr const &);
 
 	private:
 

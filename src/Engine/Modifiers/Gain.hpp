@@ -39,7 +39,7 @@ namespace Modifier
 
 		Math_t m_Gain;
 
-		MethodTable_t m_Table;
+
 
 	public:
 
@@ -69,7 +69,9 @@ namespace Modifier
 		virtual StereoData FilterSample(StereoData const & input);
 		virtual void FilterBlock(StereoData * input, StereoData * output, uint64_t size);
 
-		virtual MethodTable_t const & GetMethodTable() const;
+
+
+		friend class ModifierFactory;
 
 	private:
 

@@ -41,7 +41,7 @@ namespace Generator
 		Math_t m_Ind;
 		Math_t m_Inv;
 
-		MethodTable_t m_Table;
+
 
 	public:
 
@@ -78,7 +78,9 @@ namespace Generator
 		***********************************************************************/
 		void SetFrequency(Math_t freq);
 
-		virtual MethodTable_t const & GetMethodTable() const;
+
+
+		friend class GeneratorFactory;
 
 	private:
 

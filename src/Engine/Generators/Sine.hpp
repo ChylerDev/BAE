@@ -42,7 +42,7 @@ namespace Generator
 		SampleType y1, y2;
 		Math_t beta;
 
-		MethodTable_t m_Table;
+
 
 	public:
 
@@ -79,7 +79,9 @@ namespace Generator
 		***********************************************************************/
 		void SetFrequency(Math_t freq);
 
-		virtual MethodTable_t const & GetMethodTable() const;
+
+
+		friend class GeneratorFactory;
 
 	private:
 

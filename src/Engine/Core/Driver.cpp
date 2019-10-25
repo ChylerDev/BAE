@@ -15,7 +15,6 @@
 #include <queue>
 #include <thread>
 
-#include "Sound.hpp"
 #include "Driver.hpp"
 
 // Private Macros                         //////////////////////////////////////
@@ -65,14 +64,16 @@ namespace Core
 		{
 			for(auto & sound: m_Sounds)
 			{
-				StereoData out = sound->Process(StereoData(SampleType(0), SampleType(0)));
+				sound->PrimeInput(StereoData(SampleType(0), SampleType(0)));
+				sound->Process();
+				StereoData out = sound->LastOutput();
 
-				Left(sample)  += Left(out);
+				 Left(sample) += Left(out);
 				Right(sample) += Right(out);
 			}
 
-			Left(sample)  *= m_Gain;
-			Right(sample) *= m_Gain;
+			 Left(sample) = SampleType( Left(sample) * m_Gain);
+			Right(sample) = SampleType(Right(sample) * m_Gain);
 		}
 	}
 } // namespace Core

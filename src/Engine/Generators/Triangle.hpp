@@ -40,7 +40,7 @@ namespace Generator
 		Math_t m_Irate;
 		Math_t m_Inc;
 
-		MethodTable_t m_Table;
+
 
 	public:
 
@@ -59,7 +59,9 @@ namespace Generator
 		virtual StereoData SendSample(void);
 		virtual void SendBlock(StereoData * buffer, uint64_t size);
 
-		virtual MethodTable_t const & GetMethodTable() const;
+
+
+		friend class GeneratorFactory;
 
 	private:
 

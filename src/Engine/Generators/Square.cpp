@@ -32,8 +32,7 @@ namespace AudioEngine
 namespace Generator
 {
 	Square::Square(Math_t f) : GeneratorBase(false),
-		m_Ind(0), m_Inv(SAMPLE_RATE/(2*f)),
-		m_Table()
+		m_Ind(0), m_Inv(SAMPLE_RATE/(2*f))
 	{
 		m_Table["SetFrequency"] = [this](void * freq){ SetFrequency(*reinterpret_cast<Math_t*>(freq)); };
 	}
@@ -81,11 +80,6 @@ namespace Generator
 	void Square::SetFrequency(Math_t f)
 	{
 		m_Inv = SAMPLE_RATE/(2*f);
-	}
-
-	MethodTable_t const & Square::GetMethodTable() const
-	{
-		return m_Table;
 	}
 } // namespace Generator
 } // namespace AudioEngine

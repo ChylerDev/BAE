@@ -16,7 +16,15 @@
 
 #include "Macro.hpp"
 #include "Types.hpp"
-
 #include "Util.hpp"
+
+// Kitchen Sink
+#ifndef AE_BUILD
+	#include "Core.hpp"
+	#include "Generators.hpp"
+	#include "Modifiers.hpp"
+	#include "Sounds.hpp"
+	#include "Tools.hpp"
+#endif
 
 #endif // __ENGINE_HPP

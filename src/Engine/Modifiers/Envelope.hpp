@@ -56,6 +56,8 @@ namespace Modifier
 
 		// Functions            ///////////////////////
 
+		friend class ModifierFactory;
+
 	private:
 
 		// Functions                  ///////////////////////

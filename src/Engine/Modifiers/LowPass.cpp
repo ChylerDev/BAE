@@ -27,7 +27,7 @@ namespace Modifier
 {
 	LowPass::LowPass(Math_t cutoff, Math_t resonance) : ModifierBase(false),
 		m_Cutoff(2*PI*cutoff), m_Resonance(resonance),
-		m_Coefficients(), m_Outputs(), m_Table()
+		m_Coefficients(), m_Outputs()
 	{
 		m_Table["SetCutoff"] = [this](void * c){ SetCutoff(*reinterpret_cast<Math_t*>(c)); };
 		m_Table["SetResonance"] = [this](void * r){ SetResonance(*reinterpret_cast<Math_t*>(r)); };

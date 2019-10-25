@@ -45,7 +45,7 @@ namespace Tools
 			return StereoData(SampleType(0), SampleType(0));
 		}
 
-		SampleType fraction(m_Index - uint64_t(m_Index));
+		SampleType fraction(SampleType(m_Index - uint64_t(m_Index)));
 
 		SampleType l_x1(Left(m_Data[uint64_t(m_Index)]));
 		SampleType l_x2(Left(m_Data[uint64_t(m_Index)+1]));
@@ -80,11 +80,11 @@ namespace Tools
 			}
 
 			Left(buffer[i])  += (Left(m_Data[uint64_t(m_Index)])) +
-								(m_Index - uint64_t(m_Index)) *
+								SampleType(m_Index - uint64_t(m_Index)) *
 								((Left(m_Data[uint64_t(m_Index)+1])) -
 								(Left(m_Data[uint64_t(m_Index)])));
 			Right(buffer[i]) += (Right(m_Data[uint64_t(m_Index)])) +
-								(m_Index - uint64_t(m_Index)) *
+								SampleType(m_Index - uint64_t(m_Index)) *
 								((Right(m_Data[uint64_t(m_Index)+1])) -
 								(Right(m_Data[uint64_t(m_Index)])));
 		}

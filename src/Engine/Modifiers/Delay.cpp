@@ -26,7 +26,7 @@ namespace AudioEngine
 namespace Modifier
 {
 	Delay::Delay(uint64_t samples) : ModifierBase(false),
-		m_Delay(samples, StereoData(SampleType(0), SampleType(0))), m_Table()
+		m_Delay(samples, StereoData(SampleType(0), SampleType(0)))
 	{
 		m_Table["SetDelay"] = [this](void * s){ SetDelay(*reinterpret_cast<uint64_t*>(s)); };
 	}
@@ -66,11 +66,6 @@ namespace Modifier
 		{
 			m_Delay.push_back(StereoData(SampleType(0), SampleType(0)));
 		}
-	}
-
-	MethodTable_t const & Delay::GetMethodTable() const
-	{
-		return m_Table;
 	}
 } // namespace Modifier
 } // namespace AudioEngine

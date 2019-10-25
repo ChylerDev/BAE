@@ -14,11 +14,18 @@
 
 #include "../Engine.hpp"
 
-#include "ModifierBase.hpp"
-
 // Public Macros                ////////////////////////////////////////////////
 
 // Forward References           ////////////////////////////////////////////////
+
+namespace AudioEngine
+{
+namespace Modifier
+{
+	class ModifierBase;
+	TYPEDEF_SHARED(ModifierBase);
+}
+}
 
 // Public Enums                 ////////////////////////////////////////////////
 

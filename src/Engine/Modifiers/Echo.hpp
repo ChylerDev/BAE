@@ -57,6 +57,8 @@ namespace Modifier
 		virtual StereoData FilterSample(StereoData const & sample);
 		virtual void FilterBlock(StereoData * input, StereoData * output, uint64_t size);
 
+		friend class ModifierFactory;
+
 	private:
 
 		// Functions                  ///////////////////////

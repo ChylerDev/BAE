@@ -25,9 +25,9 @@ namespace AudioEngine
 {
 namespace Tools
 {
-	Void_fn MethodTable::operator()(std::string const & name, void * val)
+	void MethodTable::operator()(std::string const & name, void * val)
 	{
-		s_Table.at(name)(val);
+		m_Table.at(name)(val);
 	}
 } // namespace Tools
 } // namespace AudioEngine

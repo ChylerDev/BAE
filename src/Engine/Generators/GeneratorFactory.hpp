@@ -17,11 +17,18 @@
 #include <string>
 #include <vector>
 
-#include "GeneratorBase.hpp"
-
 // Public Macros                ////////////////////////////////////////////////
 
 // Forward References           ////////////////////////////////////////////////
+
+namespace AudioEngine
+{
+namespace Generator
+{
+	class GeneratorBase;
+	TYPEDEF_SHARED(GeneratorBase);
+}
+}
 
 // Public Enums                 ////////////////////////////////////////////////
 
@@ -33,7 +40,7 @@ namespace Generator
 {
 	/*! ************************************************************************
 	\brief
-	*******************h********************************************************/
+	***************************************************************************/
 	class GeneratorFactory
 	{
 	private:

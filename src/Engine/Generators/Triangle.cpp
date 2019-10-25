@@ -26,7 +26,7 @@ namespace AudioEngine
 namespace Generator
 {
 	Triangle::Triangle(Math_t freq) : GeneratorBase(false),
-		m_Irate(4 * double(freq) * INC_RATE), m_Inc(), m_Table()
+		m_Irate(4 * double(freq) * INC_RATE), m_Inc()
 	{
 		m_Table["SetFrequency"] = [this](void * f){ SetFrequency(*reinterpret_cast<Math_t*>(f)); };
 	}
@@ -72,11 +72,6 @@ namespace Generator
 			Left(buffer[i]) += Left(out);
 			Right(buffer[i]) += Right(out);
 		}
-	}
-
-	MethodTable_t const & Triangle::GetMethodTable() const
-	{
-		return m_Table;
 	}
 } // namespace Generator
 } // namespace AudioEngine
