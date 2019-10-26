@@ -35,7 +35,8 @@ namespace Sound
 	) :
 		m_Generator(gen),
 		m_Modifier(mod),
-		m_Interaction(interactor)
+		m_Interaction(interactor),
+		m_Input(), m_Output()
 	{
 	}
 

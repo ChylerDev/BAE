@@ -42,8 +42,6 @@ namespace Modifier
 		Math_t m_Coefficients[4];
 		StereoData m_Outputs[3];
 
-
-
 	public:
 
 		// Con-/De- structors   ///////////////////////
@@ -90,9 +88,6 @@ namespace Modifier
 			The filtered sample.
 		***********************************************************************/
 		virtual StereoData FilterSample(StereoData const & input);
-		virtual void FilterBlock(StereoData * input, StereoData * output, uint64_t size);
-
-
 
 		friend class ModifierFactory;
 

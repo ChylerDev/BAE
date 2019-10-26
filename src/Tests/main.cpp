@@ -61,7 +61,7 @@ int main(int argc, char * argv[])
 		auto after = clk.now();
 		auto difference = after - before;
 		std::cout << "Generated 1 second of audio in "
-				  << (difference.count() / 1000000000.0)
+				  << (double(difference.count()) / 1'000'000'000.0)
 				  << " seconds\n";
 
 		auto WAVData = AudioEngine::Tools::WriteWAV(output);
@@ -81,11 +81,11 @@ int main(int argc, char * argv[])
 		output.reserve(SAMPLE_RATE);
 		clock clk;
 
-		std::cout << "Simple Square wave test - 1 second @ 880Hz\n";
+		std::cout << "Simple Square wave test - 1 second @ 440Hz\n";
 
 		driver->AddSound(
 			AudioEngine::Sound::SoundFactory::CreateBasicGenerator(
-				AudioEngine::Generator::GeneratorFactory::CreateSquare(880)
+				AudioEngine::Generator::GeneratorFactory::CreateSquare(440)
 			)
 		);
 
@@ -101,12 +101,12 @@ int main(int argc, char * argv[])
 		auto after = clk.now();
 		auto difference = after - before;
 		std::cout << "Generated 1 second of audio in "
-				  << (difference.count() / 1000000000.0)
+				  << (double(difference.count()) / 1'000'000'000.0)
 				  << " seconds\n";
 
 		auto WAVData = AudioEngine::Tools::WriteWAV(output);
 
-		std::ofstream WAVFile("square.880.1s.wav", std::ios_base::binary);
+		std::ofstream WAVFile("square.440.1s.wav", std::ios_base::binary);
 
 		WAVFile.write(reinterpret_cast<char const*>(WAVData.data()), WAVData.size());
 		WAVFile.flush();
@@ -163,7 +163,7 @@ int main(int argc, char * argv[])
 		auto after = clk.now();
 		auto difference = after - before;
 		std::cout << "Generated 1 second of audio in "
-				  << (difference.count() / 1000000000.0)
+				  << (double(difference.count()) / 1'000'000'000.0)
 				  << " seconds\n";
 
 		auto WAVData = AudioEngine::Tools::WriteWAV(output);

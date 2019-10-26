@@ -2,9 +2,9 @@
 \file             Macro.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 #ifndef _MACRO_HPP
@@ -15,14 +15,8 @@
 #ifndef SAMPLE_RATE
 	#define SAMPLE_RATE 48'000
 #endif
-#ifndef INC_RATE_F
-	#define INC_RATE_F (1.f/float(SAMPLE_RATE))
-#endif
 #ifndef INC_RATE
 	#define INC_RATE (1.0/double(SAMPLE_RATE))
-#endif
-#ifndef INC_RATE_FP
-	#define INC_RATE_FP Math::FixedPoint<0,31>(1.0/double(SAMPLE_RATE))
 #endif
 
 #ifndef DEFAULT_GAIN
@@ -33,10 +27,6 @@
 	/// Macro for the value at which we call the difference between two values effectively zero
  #define EPSILON (1.0/(1 << 16))
 #endif  // EPSILON
-#ifndef EPSILON_F
-	/// Macro for the value at which we call the difference between two values effectively zero
- #define EPSILON_F (1.0f/(1 << 16))
-#endif  // EPSILON_F
 
 #include <cmath>
 
@@ -45,12 +35,6 @@
 #endif
 #ifndef PI2
 	#define PI2 (2*PI)
-#endif
-#ifndef PI_F
-	#define PI_F std::acos(-1.f)
-#endif
-#ifndef PI2_F
-	#define PI2_F (2*PI_F)
 #endif
 #ifndef LOG_10
 	#define LOG_10 std::log(10.0f)
@@ -67,20 +51,20 @@
 #endif
 
 #ifndef MONO_TO_STEREO
-	#define MONO_TO_STEREO(x) StereoData(SampleType((x)*SQRT_HALF),SampleType((x)*SQRT_HALF))
+	#define MONO_TO_STEREO(x) StereoData(SampleType(Math_t(x)*SQRT_HALF),SampleType(Math_t(x)*SQRT_HALF))
 #endif
 
 #ifndef STEREO_TO_MONO
-	#define STEREO_TO_MONO(x) SampleType((std::get<0>(x) + std::get<1>(x))/SQRT_HALF)
+	#define STEREO_TO_MONO(x) SampleType(Math_t(std::get<0>(x) + std::get<1>(x))/SQRT_HALF)
 #endif
 
 #ifndef TO_STR
-	/// Creates string from "p". E.g. TO_STR(HEAP_SIZE) creates the string "HEAP_SIZE"
- #define TO_STR(p) #p
+		/// Creates string from "p". E.g. TO_STR(HEAP_SIZE) creates the string "HEAP_SIZE"
+	#define TO_STR(p) #p
 #endif  // TO_STR
 #ifndef PRINT
-	/// Creates string from what "p" defines. E.g. PRINT(HEAP_SIZE) creates the string "1024" if `#define HEAP_SIZE 1024`
- #define PRINT(p) TO_STR(p)
+		/// Creates string from what "p" defines. E.g. PRINT(HEAP_SIZE) creates the string "1024" if `#define HEAP_SIZE 1024`
+	#define PRINT(p) TO_STR(p)
 #endif // PRINT
 
 #ifndef DO_PRAGMA
@@ -184,6 +168,5 @@
 				/// Creates an alias for std::shared_ptr instantiated with the given type
 		#define TYPEDEF_SHARED(type) using type##Ptr = std::shared_ptr<type>
 #endif  // TYPEDEF_SHARED
-
 
 #endif  // __MACRO_HPP

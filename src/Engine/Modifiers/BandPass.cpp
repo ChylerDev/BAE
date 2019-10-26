@@ -61,14 +61,14 @@ namespace Modifier
 		StereoData y;
 
 		Left(y) = SampleType(
-			m_A0 * (Left(x) - Left(m_X2)) +
-			m_B1 * Left(m_Y1) -
-			m_B2 * Left(m_Y2)
+			m_A0 * Math_t(Left(x) - Left(m_X2)) +
+			m_B1 * Math_t(Left(m_Y1)) -
+			m_B2 * Math_t(Left(m_Y2))
 		);
 		Right(y) = SampleType(
-			m_A0 * (Right(x) - Right(m_X2)) +
-			m_B1 * Right(m_Y1) -
-			m_B2 * Right(m_Y2)
+			m_A0 * Math_t(Right(x) - Right(m_X2)) +
+			m_B1 * Math_t(Right(m_Y1)) -
+			m_B2 * Math_t(Right(m_Y2))
 		);
 
 		m_Y2 = m_Y1;
@@ -77,30 +77,6 @@ namespace Modifier
 		m_X1 = x;
 
 		return y;
-	}
-
-	void BandPass::FilterBlock(StereoData * input, StereoData * output, uint64_t size)
-	{
-		static uint64_t i;
-
-		for(i = 0; i < size; ++i)
-		{
-			Left(output[i]) += SampleType(
-				m_A0 * (Left(input[i]) - Left(m_X2)) +
-				m_B1 * Left(m_Y1) -
-				m_B2 * Left(m_Y2)
-			);
-			Right(output[i]) += SampleType(
-				m_A0 * (Right(input[i]) - Right(m_X2)) +
-				m_B1 * Right(m_Y1) -
-				m_B2 * Right(m_Y2)
-			);
-
-			m_Y2 = m_Y1;
-			m_Y1 = output[i];
-			m_X2 = m_X1;
-			m_X1 = input[i];
-		}
 	}
 } // namespace Modifier
 } // namespace AudioEngine
@@ -113,45 +89,35 @@ namespace Modifier
 {
 	void BandPass::Reset()
 	{
-		#if 1
-			Math_t fL, fH;
+		Math_t fL, fH;
 
-			Math_t a = 1;
-			Math_t b = -m_CentralFrequency/m_Quality;
-			Math_t c = -m_CentralFrequency*m_CentralFrequency;
+		Math_t a = 1;
+		Math_t b = -m_CentralFrequency/m_Quality;
+		Math_t c = -m_CentralFrequency*m_CentralFrequency;
 
-			Math_t fL_q1 = (-b + std::sqrt(b*b - 4*a*c)) / (2*a);
-			Math_t fL_q2 = (-b - std::sqrt(b*b - 4*a*c)) / (2*a);
+		Math_t fL_q1 = (-b + std::sqrt(b*b - 4*a*c)) / (2*a);
+		Math_t fL_q2 = (-b - std::sqrt(b*b - 4*a*c)) / (2*a);
 
-			fL = (fL_q1 > 0 ? fL_q1 : fL_q2);
-			fH = fL + b;
+		fL = (fL_q1 > 0 ? fL_q1 : fL_q2);
+		fH = fL + b;
 
-			////////
+		////////
 
-			Math_t thetaL, thetaH, aL, aH, bL, bH;
+		Math_t thetaL, thetaH, aL, aH, bL, bH;
 
-			thetaL = std::tan(PI*fL*INC_RATE);
-			thetaH = std::tan(PI*fH*INC_RATE);
+		thetaL = std::tan(PI*fL*INC_RATE);
+		thetaH = std::tan(PI*fH*INC_RATE);
 
-			aL = 1 / (1+thetaL);
-			aH = 1 / (1+thetaH);
+		aL = 1 / (1+thetaL);
+		aH = 1 / (1+thetaH);
 
-			bL = (1-thetaL) / (1+thetaL);
-			bH = (1-thetaH) / (1+thetaH);
+		bL = (1-thetaL) / (1+thetaL);
+		bH = (1-thetaH) / (1+thetaH);
 
-			m_A0 = (1-aL) * aH;
+		m_A0 = (1-aL) * aH;
 
-			m_B1 = bL + bH;
-			m_B2 = bL * bH;
-		#else
-			Math_t theta = std::tan(PI*m_CentralFrequency*INC_RATE);
-			Math_t thetasq = theta*theta;
-			Math_t norm = 1.0/(m_Quality * thetasq + theta + m_Quality);
-
-			m_A0 = theta*norm;
-			m_B1 = 2 * m_Quality * (1-thetasq)*norm;
-			m_B2 = (m_Quality*thetasq - theta+m_Quality)*norm;
-		#endif
+		m_B1 = bL + bH;
+		m_B2 = bL * bH;
 	}
 } // namespace Modifier
 } // namespace AudioEngine

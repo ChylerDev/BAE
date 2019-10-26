@@ -46,7 +46,7 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
-		ModifierBase(bool b = true) : is_base(b) {};
+		ModifierBase(bool b = true) : MethodTable(), is_base(b) {};
 		virtual ~ModifierBase() = default;
 
 		// Operators            ///////////////////////

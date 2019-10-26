@@ -98,7 +98,6 @@ namespace Tools
 			The stereo sample data.
 		***********************************************************************/
 		StereoData SendSample();
-		void SendBlock(StereoData * buffer, uint64_t size);
 
 	private:
 

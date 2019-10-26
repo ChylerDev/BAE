@@ -50,7 +50,6 @@ namespace Modifier
 		// Operators            ///////////////////////
 
 		virtual StereoData FilterSample(StereoData const & x);
-		virtual void FilterBlock(StereoData * input, StereoData * output, uint64_t size);
 
 		// Accossors/Mutators   ///////////////////////
 

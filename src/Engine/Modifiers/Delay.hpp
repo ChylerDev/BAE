@@ -41,8 +41,6 @@ namespace Modifier
 
 		std::deque<StereoData> m_Delay;
 
-
-
 	public:
 
 		// Con-/De- structors   ///////////////////////
@@ -58,9 +56,6 @@ namespace Modifier
 		void SetDelay(uint64_t samples);
 
 		virtual StereoData FilterSample(StereoData const & input);
-		virtual void FilterBlock(StereoData * input, StereoData * output, uint64_t size);
-
-
 
 		friend class ModifierFactory;
 

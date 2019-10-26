@@ -55,9 +55,6 @@ namespace Generator
 		void SetFrequency(Math_t freq);
 
 		virtual StereoData SendSample(void);
-		virtual void SendBlock(StereoData * buffer, uint64_t size);
-
-
 
 		friend class GeneratorFactory;
 

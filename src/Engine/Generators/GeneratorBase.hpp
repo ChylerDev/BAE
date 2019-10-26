@@ -48,7 +48,7 @@ namespace Generator
 
 		// Con-/De- structors   ///////////////////////
 
-		GeneratorBase(bool b = true) : is_base(b) {};
+		GeneratorBase(bool b = true) : MethodTable(), is_base(b) {};
 		virtual ~GeneratorBase() = default;
 
 		// Operators            ///////////////////////
@@ -58,7 +58,6 @@ namespace Generator
 		// Functions            ///////////////////////
 
 		virtual StereoData SendSample(void) { return StereoData(0.f, 0.f); };
-		virtual void SendBlock(StereoData * buffer, uint64_t size) { UNREFERENCED_PARAMETER(buffer); UNREFERENCED_PARAMETER(size); };
 
 		bool IsBase() { return is_base; };
 

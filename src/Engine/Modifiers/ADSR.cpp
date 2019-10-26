@@ -26,8 +26,8 @@ namespace AudioEngine
 namespace Modifier
 {
 	ADSR::ADSR(uint64_t a, uint64_t d, Math_t s, uint64_t r) : ModifierBase(false),
-		m_Attack(1.0/a), m_Decay(s-1/d),
-		m_Sustain(s), m_Release(-s/r),
+		m_Attack(1.0/Math_t(a)), m_Decay(s-1/Math_t(d)),
+		m_Sustain(s), m_Release(-s/Math_t(r)),
 		m_State(State::attack), m_Gain(0)
 	{
 		m_Table["Release"] = [this](void *){ Release(); };
@@ -74,54 +74,9 @@ namespace Modifier
 				break;
 		};
 		return StereoData(
-			SampleType(Left(sample) * m_Gain),
-			SampleType(Right(sample) * m_Gain)
+			SampleType(Math_t( Left(sample)) * m_Gain),
+			SampleType(Math_t(Right(sample)) * m_Gain)
 		);
-	}
-
-	void ADSR::FilterBlock(StereoData * input, StereoData * output, uint64_t size)
-	{
-		static uint64_t i;
-
-		for(i = 0; i < size; ++i)
-		{
-			switch(m_State)
-			{
-				case State::attack:
-					m_Gain += m_Attack;
-					if(m_Gain >= 1)
-					{
-						m_State = State::decay;
-						m_Gain = 1;
-					}
-					break;
-				case State::decay:
-					m_Gain += m_Decay;
-					if(m_Gain <= m_Sustain)
-					{
-						m_State = State::sustain;
-						m_Gain = m_Sustain;
-					}
-					break;
-				case State::sustain:
-					break;
-				case State::release:
-					m_Gain += m_Release;
-					if(m_Gain <= 0)
-					{
-						m_State = State::invalid;
-						m_Gain = 0;
-					}
-					break;
-				case State::invalid:
-				default:
-					return;
-					break;
-			};
-
-			 Left(output[i]) += SampleType( Left(input[i]) * m_Gain);
-			Right(output[i]) += SampleType(Right(input[i]) * m_Gain);
-		}
 	}
 } // namespace Modifier
 } // namespace AudioEngine

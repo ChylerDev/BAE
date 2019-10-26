@@ -50,14 +50,15 @@ namespace Modifier
 	StereoData LowPass::FilterSample(StereoData const & input)
 	{
 		StereoData output(
-			float(m_Coefficients[0] * Left(input) +
-						m_Coefficients[1] * Left(m_Outputs[0]) +
-						m_Coefficients[2] * Left(m_Outputs[1]) +
-						m_Coefficients[3] * Left(m_Outputs[2])),
-			float(m_Coefficients[0] * Right(input) +
-						m_Coefficients[1] * Right(m_Outputs[0]) +
-						m_Coefficients[2] * Right(m_Outputs[1]) +
-						m_Coefficients[3] * Right(m_Outputs[2]))
+			SampleType(m_Coefficients[0] * Math_t(Left(input)) +
+					   m_Coefficients[1] * Math_t(Left(m_Outputs[0])) +
+					   m_Coefficients[2] * Math_t(Left(m_Outputs[1])) +
+					   m_Coefficients[3] * Math_t(Left(m_Outputs[2]))),
+
+			SampleType(m_Coefficients[0] * Math_t(Right(input)) +
+					   m_Coefficients[1] * Math_t(Right(m_Outputs[0])) +
+					   m_Coefficients[2] * Math_t(Right(m_Outputs[1])) +
+					   m_Coefficients[3] * Math_t(Right(m_Outputs[2])))
 		);
 
 		//std::memmove(m_Outputs+1, m_Outputs, sizeof(*m_Outputs));
@@ -68,30 +69,6 @@ namespace Modifier
 		m_Outputs[0] = output;
 
 		return output;
-	}
-
-	void LowPass::FilterBlock(StereoData * input, StereoData * output, uint64_t size)
-	{
-		static uint64_t i;
-
-		for(i = 0; i < size; ++i)
-		{
-			static StereoData out;
-
-			Left(output[i]) += Left(out) = 
-				float(m_Coefficients[0] * Left(input[i]) +
-							m_Coefficients[1] * Left(m_Outputs[0]) +
-							m_Coefficients[2] * Left(m_Outputs[1]) +
-							m_Coefficients[3] * Left(m_Outputs[2]));
-			Left(output[i]) += Right(out) = 
-				float(m_Coefficients[0] * Right(input[i]) +
-							m_Coefficients[1] * Right(m_Outputs[0]) +
-							m_Coefficients[2] * Right(m_Outputs[1]) +
-							m_Coefficients[3] * Right(m_Outputs[2]));
-
-			std::move(m_Outputs+1, m_Outputs+4, m_Outputs);
-			m_Outputs[0] = out;
-		}
 	}
 } // namespace Modifier
 } // namespace AudioEngine
