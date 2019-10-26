@@ -75,8 +75,8 @@ namespace Core
 				Right(sample) += Right(out);
 			}
 
-			 Left(sample) = SampleType( Left(sample) * m_Gain);
-			Right(sample) = SampleType(Right(sample) * m_Gain);
+			 Left(sample) = SampleType(Math_t( Left(sample)) * m_Gain);
+			Right(sample) = SampleType(Math_t(Right(sample)) * m_Gain);
 		}
 	}
 } // namespace Core

@@ -40,7 +40,7 @@ namespace Generator
 
 	StereoData Sine::SendSample(void)
 	{
-		SampleType y = SampleType(beta * y1 - y2);
+		SampleType y = SampleType(beta * Math_t(y1) - Math_t(y2));
 
 		y2 = y1;
 		y1 = y;

@@ -25,6 +25,11 @@ namespace AudioEngine
 {
 namespace Tools
 {
+	MethodTable::MethodTable() :
+		m_Table()
+	{
+	}
+
 	void MethodTable::operator()(std::string const & name, void * val)
 	{
 		m_Table.at(name)(val);

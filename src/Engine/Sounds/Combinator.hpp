@@ -82,7 +82,9 @@ namespace Sound
 						++first;
 					}
 					break;
-			}
+				default:
+					break;
+			};
 
 			return output;
 		}

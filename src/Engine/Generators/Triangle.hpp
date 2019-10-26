@@ -40,8 +40,6 @@ namespace Generator
 		Math_t m_Irate;
 		Math_t m_Inc;
 
-
-
 	public:
 
 		// Con-/De- structors   ///////////////////////
@@ -57,9 +55,6 @@ namespace Generator
 		void SetFrequency(Math_t freq);
 
 		virtual StereoData SendSample(void);
-		virtual void SendBlock(StereoData * buffer, uint64_t size);
-
-
 
 		friend class GeneratorFactory;
 

@@ -43,19 +43,8 @@ namespace Modifier
 
 	StereoData Gain::FilterSample(StereoData const & input)
 	{
-		return StereoData(SampleType(Left(input) * m_Gain),
-												SampleType(Right(input) * m_Gain));
-	}
-
-	void Gain::FilterBlock(StereoData * input, StereoData * output, uint64_t size)
-	{
-		static uint64_t i;
-
-		for(i = 0; i < size; ++i)
-		{
-			Left(output[i]) += SampleType(Left(input[i]) * m_Gain);
-			Right(output[i]) += SampleType(Right(input[i]) * m_Gain);
-		}
+		return StereoData(SampleType(Math_t( Left(input)) * m_Gain),
+						  SampleType(Math_t(Right(input)) * m_Gain));
 	}
 } // namespace Modifier
 } // namespace AudioEngine

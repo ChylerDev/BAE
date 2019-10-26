@@ -107,11 +107,6 @@ namespace Generator
 		}
 		return StereoData(SampleType(0), SampleType(0));
 	}
-
-	void WAV::SendBlock(StereoData * buffer, uint64_t size)
-	{
-		m_Resampler->SendBlock(buffer, size);
-	}
 } // namespace Generator
 } // namespace AudioEngine
 

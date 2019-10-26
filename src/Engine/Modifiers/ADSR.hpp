@@ -55,8 +55,6 @@ namespace Modifier
 
 		Math_t m_Gain;
 
-
-
 	public:
 
 		// Con-/De- structors   ///////////////////////
@@ -72,7 +70,6 @@ namespace Modifier
 		void Release(void);
 
 		virtual StereoData FilterSample(StereoData const & input);
-		virtual void FilterBlock(StereoData * input, StereoData * output, uint64_t size);
 
 		friend class ModifierFactory;
 

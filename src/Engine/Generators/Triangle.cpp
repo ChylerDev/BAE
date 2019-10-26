@@ -51,28 +51,6 @@ namespace Generator
 
 		return MONO_TO_STEREO(m_Inc);
 	}
-
-	void Triangle::SendBlock(StereoData * buffer, uint64_t size)
-	{
-		static uint64_t i;
-
-		for(i = 0; i < size; ++i)
-		{
-			m_Inc += m_Irate;
-
-			if(m_Inc >= 1 || m_Inc <= -1)
-			{
-				m_Irate = -m_Irate;
-
-				m_Inc = (m_Inc >= 1) ? (2-m_Inc) : (-2-m_Inc);
-			}
-
-			static StereoData out;
-			out = MONO_TO_STEREO(m_Inc);
-			Left(buffer[i]) += Left(out);
-			Right(buffer[i]) += Right(out);
-		}
-	}
 } // namespace Generator
 } // namespace AudioEngine
 

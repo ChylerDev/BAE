@@ -45,7 +45,7 @@ namespace Tools
 			return StereoData(SampleType(0), SampleType(0));
 		}
 
-		SampleType fraction(SampleType(m_Index - uint64_t(m_Index)));
+		SampleType fraction(SampleType(m_Index - Math_t(uint64_t(m_Index))));
 
 		SampleType l_x1(Left(m_Data[uint64_t(m_Index)]));
 		SampleType l_x2(Left(m_Data[uint64_t(m_Index)+1]));
@@ -60,34 +60,12 @@ namespace Tools
 
 		m_Index += m_IndexIncrement * m_PlaybackSpeed;
 
-		if(m_Index >= m_LoopEnd && m_LoopEnd != 0)
+		if(m_Index >= Math_t(m_LoopEnd) && m_LoopEnd != 0)
 		{
-			m_Index -= (m_LoopEnd - m_LoopStart);
+			m_Index -= Math_t(m_LoopEnd - m_LoopStart);
 		}
 
 		return sample;
-	}
-
-	void Resampler::SendBlock(StereoData * buffer, uint64_t size)
-	{
-		static uint64_t i;
-
-		for(i = 0; i < size; ++i)
-		{
-			if(size_t(m_Index) >= m_Data.size() && m_LoopEnd == 0)
-			{
-				return;
-			}
-
-			Left(buffer[i])  += (Left(m_Data[uint64_t(m_Index)])) +
-								SampleType(m_Index - uint64_t(m_Index)) *
-								((Left(m_Data[uint64_t(m_Index)+1])) -
-								(Left(m_Data[uint64_t(m_Index)])));
-			Right(buffer[i]) += (Right(m_Data[uint64_t(m_Index)])) +
-								SampleType(m_Index - uint64_t(m_Index)) *
-								((Right(m_Data[uint64_t(m_Index)+1])) -
-								(Right(m_Data[uint64_t(m_Index)])));
-		}
 	}
 } // namespace Tools
 } // namespace AudioEngine

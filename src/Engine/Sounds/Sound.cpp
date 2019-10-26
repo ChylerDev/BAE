@@ -34,7 +34,8 @@ namespace Sound
 	Sound::Sound(Math_t input_gain, Math_t output_gain) :
 		m_Graph(),
 		m_InputGain(Modifier::ModifierFactory::CreateGain(input_gain)),
-		m_OutputGain(Modifier::ModifierFactory::CreateGain(output_gain))
+		m_OutputGain(Modifier::ModifierFactory::CreateGain(output_gain)),
+		m_Input(), m_Output()
 	{
 		m_Graph.push_back(
 			CreateEdge(

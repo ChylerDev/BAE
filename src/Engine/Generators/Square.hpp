@@ -41,8 +41,6 @@ namespace Generator
 		Math_t m_Ind;
 		Math_t m_Inv;
 
-
-
 	public:
 
 		// Con-/De- structors   ///////////////////////
@@ -67,7 +65,6 @@ namespace Generator
 			The stereo sample data.
 		***********************************************************************/
 		virtual StereoData SendSample(void);
-		virtual void SendBlock(StereoData * buffer, uint64_t size);
 
 		/*! ********************************************************************
 		\brief
@@ -77,8 +74,6 @@ namespace Generator
 			The new frequency.
 		***********************************************************************/
 		void SetFrequency(Math_t freq);
-
-
 
 		friend class GeneratorFactory;
 
