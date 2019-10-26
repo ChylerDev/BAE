@@ -13,50 +13,66 @@
 // Public Macros                ////////////////////////////////////////////////
 
 #ifndef SAMPLE_RATE
+		/// The sample rate GAE runs at
 	#define SAMPLE_RATE 48'000
-#endif
+#endif // SAMPLE_RATE
 #ifndef INC_RATE
+		/// Inverse of the sample rate
 	#define INC_RATE (1.0/double(SAMPLE_RATE))
-#endif
+#endif // INC_RATE
 
 #ifndef DEFAULT_GAIN
-	#define DEFAULT_GAIN Math_t(1.0)
-#endif
+		/// Default amplification of the engine
+	#define DEFAULT_GAIN Math_t(0.5)
+#endif // DEFAULT_GAIN
+
+#ifndef MAX_BUFFER
+		/// Macro for the maximum buffer size to allow for high performant audio, which is currently defined as 10ms
+	#define MAX_BUFFER (SAMPLE_RATE/100)
+#endif // MAX_BUFFER
 
 #ifndef EPSILON
-	/// Macro for the value at which we call the difference between two values effectively zero
- #define EPSILON (1.0/(1 << 16))
+		/// Macro for the value at which we call the difference between two values effectively zero
+	#define EPSILON (1.0/(1 << 16))
 #endif  // EPSILON
 
 #include <cmath>
 
 #ifndef PI
+		/// It's uhh, it's Pi, the mathematical constant
 	#define PI std::acos(-1.0)
-#endif
+#endif // PI
 #ifndef PI2
+		/// 2 * Pi, I hope I don't have to explain further
 	#define PI2 (2*PI)
-#endif
+#endif // PI2
 #ifndef LOG_10
+		/// Logarithm of 10, for easy conversion of unknown bases to base 10
 	#define LOG_10 std::log(10.0f)
-#endif
+#endif // LOG_10
 #ifndef SQRT_HALF
+		/// sqrt(0.5) for easy use
 	#define SQRT_HALF std::sqrt(0.5)
-#endif
+#endif // SQRT_HALF
 
 #ifndef DB_TO_LINEAR
+		/// Converts logarithmic decibels to linear gain
 	#define DB_TO_LINEAR(dB) std::pow(10.0, dB/20.0)
-#endif
+#endif // DB_TO_LINEAR
 #ifndef LINEAR_TO_DB
+		/// Converts linear gain to logarithmic decibels
 	#define LINEAR_TO_DB(g) (20.0*std::log(g)/LOG_10)
-#endif
+#endif // LINEAR_TO_DB
 
 #ifndef MONO_TO_STEREO
+		/// Converts monophonic audio sample to stereophonic
 	#define MONO_TO_STEREO(x) StereoData(SampleType(Math_t(x)*SQRT_HALF),SampleType(Math_t(x)*SQRT_HALF))
-#endif
+#endif // MONO_TO_STEREO
 
 #ifndef STEREO_TO_MONO
+		/// Converts stereophonic audio sample to monophonic
 	#define STEREO_TO_MONO(x) SampleType(Math_t(std::get<0>(x) + std::get<1>(x))/SQRT_HALF)
-#endif
+#endif // STEREO_TO_MONO
 
 #ifndef TO_STR
 		/// Creates string from "p". E.g. TO_STR(HEAP_SIZE) creates the string "HEAP_SIZE"
@@ -77,8 +93,8 @@
 	#else
 			// Do not assume any pragma format, swallow message
 		#define DO_PRAGMA(x)
-	#endif  // _MSC_VER || (__clang__ || __GNUC__)
-#endif  // DO_PRAGMA
+	#endif // _MSC_VER || (__clang__ || __GNUC__)
+#endif // DO_PRAGMA
 
 #ifndef TODO
 	#if defined(_MSC_VER)
@@ -88,10 +104,10 @@
 			/// Print the to-do message
 		#define TODO(x) DO_PRAGMA(message ("TODO - " TO_STR(x)))
 	#else
-			// If unkown compiler, don't assume any knowledge of pragma/messages
+			/// If unkown compiler, don't assume any knowledge of pragma/messages
 		#define TODO(x)
-	#endif  // _MSC_VER || (__clang__ || __GNUC__)
-#endif  //TODO
+	#endif // _MSC_VER || (__clang__ || __GNUC__)
+#endif //TODO
 
 #ifndef UNREFERENCED_PARAMETER
 	#ifdef _MSC_VER
@@ -114,10 +130,10 @@
 			/// Push warnings
 		#define PUSH_WARNINGS() DO_PRAGMA(GCC diagnostic push)
 	#else
-			/// Don't assume other compiler pragmas
+			// Don't assume other compiler pragmas
 		#define PUSH_WARNINGS()
-	#endif  // _MSC_VER || __clang__ || __GNUC__
-#endif  // PUSH_WARNINGS
+	#endif // _MSC_VER || __clang__ || __GNUC__
+#endif // PUSH_WARNINGS
 
 #ifndef MSVC_DISABLE_WARNING
 	#if defined(_MSC_VER)
@@ -126,8 +142,8 @@
 	#else
 			// Swallow message for non-VC++ compilers
 		#define MSVC_DISABLE_WARNING(x)
-	#endif
-#endif
+	#endif // _MSC_VER || __clang__ || __GNUC__
+#endif // MSVC_DISABLE_WARNINGS
 #ifndef CLANG_DISABLE_WARNING
 	#if defined(__clang__)
 			/// Disable given clang warning
@@ -135,8 +151,8 @@
 	#else
 			// Swallow message for non-clang compilers
 		#define CLANG_DISABLE_WARNING(x)
-	#endif
-#endif
+	#endif // _MSC_VER || __clang__ || __GNUC__
+#endif // CLANG_DISABLE_WARNING
 #ifndef GCC_DISABLE_WARNING
 	#if defined(__GNUC__)
 			/// Disable given gcc warning
@@ -144,8 +160,8 @@
 	#else
 			// Swallow message for non-gcc compilers
 		#define GCC_DISABLE_WARNING(x)
-	#endif
-#endif
+	#endif // _MSC_VER || __clang__ || __GNUC__
+#endif // GCC_DISABLE_WARNING
 
 #ifndef POP_WARNINGS
 	#if defined(_MSC_VER)
@@ -160,13 +176,13 @@
 	#else
 			// Don't assume other compiler pragmas
 		#define POP_WARNINGS()
-	#endif  // _MSC_VER || __clang__ || __GNUC__
-#endif  // POP_WARNINGS
+	#endif // _MSC_VER || __clang__ || __GNUC__
+#endif // POP_WARNINGS
 
 #ifndef TYPEDEF_SHARED
-		#include <memory>
-				/// Creates an alias for std::shared_ptr instantiated with the given type
-		#define TYPEDEF_SHARED(type) using type##Ptr = std::shared_ptr<type>
-#endif  // TYPEDEF_SHARED
+	#include <memory>
+		/// Creates an alias for std::shared_ptr instantiated with the given type
+	#define TYPEDEF_SHARED(type) using type##Ptr = std::shared_ptr<type>
+#endif // TYPEDEF_SHARED
 
-#endif  // __MACRO_HPP
+#endif // __MACRO_HPP

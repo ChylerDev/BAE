@@ -26,6 +26,10 @@ namespace AudioEngine
 {
 namespace Tools
 {
+	/*! ************************************************************************
+	\brief
+		A POD structure representing the structure of the header of a WAVE file.
+	***************************************************************************/
 	struct WAVHeader
 	{                         // (offset) = description
 		uint16_t AudioFormat;     // (00) = 1

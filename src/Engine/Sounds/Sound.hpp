@@ -49,11 +49,18 @@ namespace Sound
 	***************************************************************************/
 	class Sound
 	{
-
 	public:
-
+		/*! ********************************************************************
+		\brief
+			Structure representing the edges of the graph that defines a Sound.
+		***********************************************************************/
 		struct Edge
 		{
+			/*! ****************************************************************
+			\brief
+				Structure to abstract away the node of the Sound graph, allowing
+				for sounds and blocks to make up a sound.
+			*******************************************************************/
 			struct E_Block
 			{
 				union
