@@ -13,8 +13,8 @@
 // Include Files                ////////////////////////////////////////////////
 
 #include <functional>
+#include <unordered_map>
 #include <memory>
-#include <vector>
 
 #include "../Engine.hpp"
 
@@ -45,9 +45,11 @@ namespace Core
 			/// The output track to store the results of processing
 		Track_t m_OutputTrack;
 			/// All the sounds this driver is responsible for
-		std::vector<Sound::SoundPtr> m_Sounds;
+		std::unordered_map<uint64_t, Sound::SoundPtr> m_Sounds;
 			/// The output gain for the output samples
 		Math_t m_Gain;
+
+		static uint64_t s_IDCounter;
 
 	public:
 
@@ -87,8 +89,23 @@ namespace Core
 
 		\param sound
 			The sound to add.
+
+		\return
+			ID of the added sound.
 		***********************************************************************/
-		void AddSound(Sound::SoundPtr const & sound);
+		uint64_t AddSound(Sound::SoundPtr const & sound);
+
+		/*! ********************************************************************
+		\brief
+			Removes a sound from the Driver's processing.
+
+		\param id
+			The ID of the sound to be removed.
+
+		\return
+			The sound that was removed.
+		***********************************************************************/
+		Sound::SoundPtr RemoveSound(uint64_t id);
 
 		/*! ********************************************************************
 		\brief
@@ -123,6 +140,15 @@ namespace Core
 	private:
 
 		// Functions                  ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Returns an ID value for use within the driver.
+
+		\return
+			The generated ID value.
+		***********************************************************************/
+		static uint64_t GetID();
 
 	}; // class Driver
 

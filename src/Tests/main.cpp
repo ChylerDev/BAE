@@ -35,15 +35,15 @@ int main(int argc, char * argv[])
 
 	AudioEngine::Tools::InitOptions(argc, argv);
 
-	{
-		AudioEngine::Core::DriverPtr driver = AudioEngine::Core::DriverPtr(new AudioEngine::Core::Driver(MAX_BUFFER));
-		AudioEngine::Track_t output;
-		output.reserve(SAMPLE_RATE);
-		clock clk;
+	AudioEngine::Core::DriverPtr driver = AudioEngine::Core::DriverPtr(new AudioEngine::Core::Driver(MAX_BUFFER));
+	AudioEngine::Track_t output;
+	output.reserve(SAMPLE_RATE);
+	clock clk;
 
+	{
 		std::cout << "Simple sine test - 1 second @ 440Hz\n";
 
-		driver->AddSound(
+		auto SineID = driver->AddSound(
 			AudioEngine::Sound::SoundFactory::CreateBasicGenerator(
 				AudioEngine::Generator::GeneratorFactory::CreateSine(440)
 			)
@@ -72,18 +72,15 @@ int main(int argc, char * argv[])
 		WAVFile.flush();
 		WAVFile.close();
 
+		driver->RemoveSound(SineID);
+
 		std::cout << "Sine test finished\n";
 	}
 
 	{
-		auto driver = AudioEngine::Core::DriverPtr(new AudioEngine::Core::Driver(MAX_BUFFER));
-		AudioEngine::Track_t output;
-		output.reserve(SAMPLE_RATE);
-		clock clk;
-
 		std::cout << "Simple Square wave test - 1 second @ 440Hz\n";
 
-		driver->AddSound(
+		auto SquareID = driver->AddSound(
 			AudioEngine::Sound::SoundFactory::CreateBasicGenerator(
 				AudioEngine::Generator::GeneratorFactory::CreateSquare(440)
 			)
@@ -112,15 +109,12 @@ int main(int argc, char * argv[])
 		WAVFile.flush();
 		WAVFile.close();
 
+		driver->RemoveSound(SquareID);
+
 		std::cout << "Square test finished\n";
 	}
 
 	{
-		auto driver = AudioEngine::Core::DriverPtr(new AudioEngine::Core::Driver(MAX_BUFFER));
-		AudioEngine::Track_t output;
-		output.reserve(SAMPLE_RATE);
-		clock clk;
-
 		std::cout << "Square @ 440Hz fed into a Low Pass filter cutoff at 880Hz\n";
 
 		auto sound = AudioEngine::Sound::SoundFactory::CreateEmptySound();
@@ -149,7 +143,7 @@ int main(int argc, char * argv[])
 		graph.insert(graph.end()-1, edge);
 		graph.back()->inputs.push_back(m.front());
 
-		driver->AddSound(sound);
+		auto LPID = driver->AddSound(sound);
 
 		AudioEngine::Track_t const & driver_output = driver->GetOutputTrack();
 
@@ -173,6 +167,8 @@ int main(int argc, char * argv[])
 		WAVFile.write(reinterpret_cast<char const*>(WAVData.data()), WAVData.size());
 		WAVFile.flush();
 		WAVFile.close();
+
+		driver->RemoveSound(LPID);
 
 		std::cout << "Filtered square test finished\n";
 	}

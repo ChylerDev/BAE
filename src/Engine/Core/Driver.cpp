@@ -25,6 +25,14 @@
 
 // Private Objects                        //////////////////////////////////////
 
+namespace AudioEngine
+{
+namespace Core
+{
+	uint64_t Driver::s_IDCounter = 0;
+} // namespace Core
+} // namespace AudioEngine
+
 // Private Function Declarations          //////////////////////////////////////
 
 // Public Functions                       //////////////////////////////////////
@@ -34,7 +42,8 @@ namespace AudioEngine
 namespace Core
 {
 	Driver::Driver(uint64_t track_size, Math_t gain) :
-		m_OutputTrack(track_size, StereoData(SampleType(0),SampleType(0))), m_Sounds(), m_Gain(gain)
+		m_OutputTrack(track_size, StereoData(SampleType(0),SampleType(0))),
+		m_Sounds(), m_Gain(gain)
 	{
 		m_OutputTrack.reserve(track_size);
 	}
@@ -43,9 +52,18 @@ namespace Core
 	{
 	}
 
-	void Driver::AddSound(Sound::SoundPtr const & sound)
+	uint64_t Driver::AddSound(Sound::SoundPtr const & sound)
 	{
-		m_Sounds.push_back(sound);
+		uint64_t id = GetID();
+		m_Sounds[id] = sound;
+		return id;
+	}
+
+	Sound::SoundPtr Driver::RemoveSound(uint64_t id)
+	{
+		Sound::SoundPtr sound = m_Sounds[id];
+		m_Sounds.erase(id);
+		return sound;
 	}
 
 	void Driver::SetGain(Math_t gain)
@@ -67,9 +85,9 @@ namespace Core
 		{
 			for(auto & sound: m_Sounds)
 			{
-				sound->PrimeInput(StereoData(SampleType(0), SampleType(0)));
-				sound->Process();
-				StereoData out = sound->LastOutput();
+				sound.second->PrimeInput(StereoData(SampleType(0), SampleType(0)));
+				sound.second->Process();
+				StereoData out = sound.second->LastOutput();
 
 				 Left(sample) += Left(out);
 				Right(sample) += Right(out);
@@ -83,3 +101,14 @@ namespace Core
 } // namespace AudioEngine
 
 // Private Functions                      //////////////////////////////////////
+
+namespace AudioEngine
+{
+namespace Core
+{
+	uint64_t Driver::GetID()
+	{
+		return s_IDCounter++;
+	}
+} // namespace Core
+} // namespace AudioEngine
