@@ -42,10 +42,11 @@ namespace Core
 
 		// Members              ///////////////////////
 
+			/// The output track to store the results of processing
 		Track_t m_OutputTrack;
-
+			/// All the sounds this driver is responsible for
 		std::vector<Sound::SoundPtr> m_Sounds;
-
+			/// The output gain for the output samples
 		Math_t m_Gain;
 
 	public:
@@ -64,8 +65,8 @@ namespace Core
 		***********************************************************************/
 		Driver(uint64_t track_size, Math_t gain = DEFAULT_GAIN);
 
-		Driver(Driver const &) = default;
-		Driver(Driver &&) noexcept = default;
+		Driver(Driver const &) = default;       ///< Default copy constructor
+		Driver(Driver &&) noexcept = default;   ///< Default move constructor
 
 		/*! ********************************************************************
 		\brief
@@ -75,8 +76,8 @@ namespace Core
 
 		// Operators            ///////////////////////
 
-		Driver & operator=(Driver const &) = default;
-		Driver & operator=(Driver &&) noexcept = default;
+		Driver & operator=(Driver const &) = default;       ///< Default copy-assignment operator
+		Driver & operator=(Driver &&) noexcept = default;   ///< Default move-assignment operator
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -98,6 +99,14 @@ namespace Core
 		***********************************************************************/
 		void SetGain(Math_t gain = DEFAULT_GAIN);
 
+		/*! ********************************************************************
+		\brief
+			Returns the track used for writing audio output after it has been
+			processed.
+
+		\return
+			Track_t containing the output of the latest process call.
+		***********************************************************************/
 		Track_t const & GetOutputTrack() const;
 
 		// Functions            ///////////////////////
@@ -116,6 +125,8 @@ namespace Core
 		// Functions                  ///////////////////////
 
 	}; // class Driver
+
+		/// Typedef for a std::shared_ptr instantiated with the Driver class
 	TYPEDEF_SHARED(Driver);
 } // namespace Core
 } // namespace AudioEngine
