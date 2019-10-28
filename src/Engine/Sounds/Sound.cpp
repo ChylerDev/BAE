@@ -12,6 +12,7 @@
 #include "Block.hpp"
 #include "Sound.hpp"
 
+#include "../Core/Driver.hpp"
 #include "../Modifiers/ModifierFactory.hpp"
 #include "SoundFactory.hpp"
 #include "Combinator.hpp"
@@ -35,7 +36,8 @@ namespace Sound
 		m_Graph(),
 		m_InputGain(Modifier::ModifierFactory::CreateGain(input_gain)),
 		m_OutputGain(Modifier::ModifierFactory::CreateGain(output_gain)),
-		m_Input(), m_Output()
+		m_Input(), m_Output(),
+		m_Driver(), m_ID(static_cast<uint64_t>(-1)), m_IsPaused(false)
 	{
 		m_Graph.push_back(
 			CreateEdge(
@@ -75,6 +77,27 @@ namespace Sound
 		return *this;
 	}
 
+	void Sound::Pause()
+	{
+		m_IsPaused = true;
+	}
+
+	void Sound::Unpause()
+	{
+		m_IsPaused = false;
+	}
+
+	void Sound::Register(SoundPtr const & self, Core::DriverPtr const & driver)
+	{
+		m_Driver = driver;
+		m_ID = m_Driver->AddSound(self);
+	}
+
+	void Sound::Unregister()
+	{
+		m_Driver->RemoveSound(m_ID);
+	}
+
 	void Sound::PrimeInput(StereoData in)
 	{
 		m_Graph.front()->PrimeInput(in);
@@ -82,6 +105,12 @@ namespace Sound
 
 	void Sound::Process()
 	{
+		if(m_IsPaused)
+		{
+			m_Output = StereoData();
+			return;
+		}
+
 		for(auto & e : m_Graph)
 		{
 			e->Process();

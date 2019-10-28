@@ -1,4 +1,4 @@
-# AudioEngine
+# Graph Audio Engine (GAE)
 
 Simply, an audio engine designed tocompute sounds using basic generators (sound sources) and modifiers (filters) combined in a graph structure.
 

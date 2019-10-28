@@ -33,6 +33,9 @@ namespace Sound
 {
 	class Sound;
 	TYPEDEF_SHARED(Sound);
+
+	class Driver;
+	TYPEDEF_SHARED(Driver);
 }
 }
 
@@ -49,11 +52,18 @@ namespace Sound
 	***************************************************************************/
 	class Sound
 	{
-
 	public:
-
+		/*! ********************************************************************
+		\brief
+			Structure representing the edges of the graph that defines a Sound.
+		***********************************************************************/
 		struct Edge
 		{
+			/*! ****************************************************************
+			\brief
+				Structure to abstract away the node of the Sound graph, allowing
+				for sounds and blocks to make up a sound.
+			*******************************************************************/
 			struct E_Block
 			{
 				union
@@ -152,6 +162,10 @@ namespace Sound
 		StereoData m_Input;
 		StereoData m_Output;
 
+		Core::DriverPtr m_Driver;
+		uint64_t m_ID;
+		bool m_IsPaused;
+
 	public:
 		// Con-/De- structors   ///////////////////////
 
@@ -169,7 +183,13 @@ namespace Sound
 		Sound & SetInputGain(Math_t gain);
 		Sound & SetOutputGain(Math_t gain);
 
+		void Pause();
+		void Unpause();
+
 		// Functions            ///////////////////////
+
+		void Register(SoundPtr const & self, Core::DriverPtr const & driver);
+		void Unregister();
 
 		void PrimeInput(StereoData);
 		void Process();
