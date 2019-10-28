@@ -43,11 +43,11 @@ int main(int argc, char * argv[])
 	{
 		std::cout << "Simple sine test - 1 second @ 440Hz\n";
 
-		auto SineID = driver->AddSound(
-			AudioEngine::Sound::SoundFactory::CreateBasicGenerator(
-				AudioEngine::Generator::GeneratorFactory::CreateSine(440)
-			)
+		auto sine = AudioEngine::Sound::SoundFactory::CreateBasicGenerator(
+			AudioEngine::Generator::GeneratorFactory::CreateSine(440)
 		);
+		sine->Register(sine, driver);
+		sine->Unpause();
 
 		AudioEngine::Track_t const & driver_output = driver->GetOutputTrack();
 
@@ -72,7 +72,7 @@ int main(int argc, char * argv[])
 		WAVFile.flush();
 		WAVFile.close();
 
-		driver->RemoveSound(SineID);
+		sine->Unregister();
 
 		std::cout << "Sine test finished\n";
 	}
@@ -80,11 +80,11 @@ int main(int argc, char * argv[])
 	{
 		std::cout << "Simple Square wave test - 1 second @ 440Hz\n";
 
-		auto SquareID = driver->AddSound(
-			AudioEngine::Sound::SoundFactory::CreateBasicGenerator(
-				AudioEngine::Generator::GeneratorFactory::CreateSquare(440)
-			)
+		auto square = AudioEngine::Sound::SoundFactory::CreateBasicGenerator(
+			AudioEngine::Generator::GeneratorFactory::CreateSquare(440)
 		);
+		square->Register(square, driver);
+		square->Unpause();
 
 		AudioEngine::Track_t const & driver_output = driver->GetOutputTrack();
 
@@ -109,7 +109,7 @@ int main(int argc, char * argv[])
 		WAVFile.flush();
 		WAVFile.close();
 
-		driver->RemoveSound(SquareID);
+		square->Unregister();
 
 		std::cout << "Square test finished\n";
 	}
@@ -143,7 +143,8 @@ int main(int argc, char * argv[])
 		graph.insert(graph.end()-1, edge);
 		graph.back()->inputs.push_back(m.front());
 
-		auto LPID = driver->AddSound(sound);
+		sound->Register(sound, driver);
+		sound->Unpause();
 
 		AudioEngine::Track_t const & driver_output = driver->GetOutputTrack();
 
@@ -168,7 +169,7 @@ int main(int argc, char * argv[])
 		WAVFile.flush();
 		WAVFile.close();
 
-		driver->RemoveSound(LPID);
+		sound->Unregister();
 
 		std::cout << "Filtered square test finished\n";
 	}
