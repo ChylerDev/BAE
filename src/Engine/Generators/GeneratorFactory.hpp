@@ -40,6 +40,8 @@ namespace Generator
 {
 	/*! ************************************************************************
 	\brief
+		Creates pointers to generators handled by std::shared_ptr to prevent
+		memory leaks.
 	***************************************************************************/
 	class GeneratorFactory
 	{
@@ -51,18 +53,100 @@ namespace Generator
 
 		// Functions            ///////////////////////
 
-		static GeneratorBasePtr CreateBase();
-		static GeneratorBasePtr CreateNoise();
-		static GeneratorBasePtr CreateSawtooth(Math_t freq);
-		static GeneratorBasePtr CreateSine(Math_t freq);
-		static GeneratorBasePtr CreateSquare(Math_t freq);
-		static GeneratorBasePtr CreateTriangle(Math_t freq);
-		static GeneratorBasePtr CreateWAV();
-		static GeneratorBasePtr CreateWAV(std::string const & filepath);
-		static GeneratorBasePtr CreateWAV(std::vector<char> const & wav_data);
-		static GeneratorBasePtr CreateWAV(int argc);
+		/*! ********************************************************************
+		\brief
+			Creates a GeneratorBase object.
 
-		~GeneratorFactory() = delete;
+		\return
+			GeneratorBasePtr containing the created object.
+		***********************************************************************/
+		static GeneratorBasePtr CreateBase();
+
+		/*! ********************************************************************
+		\brief
+			Creates a Noise object.
+
+		\return
+			GeneratorBasePtr containing the created object.
+		***********************************************************************/
+		static GeneratorBasePtr CreateNoise();
+
+		/*! ********************************************************************
+		\brief
+			Creates a Sawtooth object.
+
+		\param freq
+			The frequency for the sawtooth.
+
+		\return
+			GeneratorBasePtr containing the created object.
+		***********************************************************************/
+		static GeneratorBasePtr CreateSawtooth(Math_t freq);
+
+		/*! ********************************************************************
+		\brief
+			Creates a Sine object.
+
+		\param freq
+			The frequency for the sine.
+
+		\return
+			GeneratorBasePtr containing the created object.
+		***********************************************************************/
+		static GeneratorBasePtr CreateSine(Math_t freq);
+
+		/*! ********************************************************************
+		\brief
+			Creates a Square object.
+
+		\param freq
+			The frequency for the square.
+
+		\return
+			GeneratorBasePtr containing the created object.
+		***********************************************************************/
+		static GeneratorBasePtr CreateSquare(Math_t freq);
+
+		/*! ********************************************************************
+		\brief
+			Creates a Triangle object.
+
+		\param freq
+			The frequency for the triangle.
+
+		\return
+			GeneratorBasePtr containing the created object.
+		***********************************************************************/
+		static GeneratorBasePtr CreateTriangle(Math_t freq);
+
+		/*! ********************************************************************
+		\brief
+			Creates a WAV object with no WAV data.
+
+		\return
+			GeneratorBasePtr containing the created object.
+		***********************************************************************/
+		static GeneratorBasePtr CreateWAV();
+
+		/*! ********************************************************************
+		\brief
+			Creates a WAV object with a file name to open for reading.
+
+		\return
+			GeneratorBasePtr containing the created object.
+		***********************************************************************/
+		static GeneratorBasePtr CreateWAV(std::string const & filepath);
+
+		/*! ********************************************************************
+		\brief
+			Creates a WAV object with a vector containing the audio WAV data.
+
+		\return
+			GeneratorBasePtr containing the created object.
+		***********************************************************************/
+		static GeneratorBasePtr CreateWAV(std::vector<char> const & wav_data);
+
+		~GeneratorFactory() = delete; ///< Deleted destructor, ensuring an instance of this class can never be created.
 
 	private:
 

@@ -35,6 +35,9 @@ namespace Generator
 {
 	/*! ************************************************************************
 	\brief
+		General base class for all generator (sounds) to inherit from. Any
+		derived classes with extra methods that may need to be acquired can be
+		accessed through their setup of the Tools::MethodTable.
 	***************************************************************************/
 	class GeneratorBase: public Tools::MethodTable
 	{
@@ -42,14 +45,23 @@ namespace Generator
 
 		// Members              ///////////////////////
 
+			/// Simple boolean to detect if the object is a GeneratorBase or not
 		bool is_base;
 
 	public:
 
 		// Con-/De- structors   ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Constructor.
+
+		\param b
+			True if this object is a GeneratorBase object.
+		***********************************************************************/
 		GeneratorBase(bool b = true) : MethodTable(), is_base(b) {};
-		virtual ~GeneratorBase() = default;
+
+		virtual ~GeneratorBase() = default; ///< Default destructor.
 
 		// Operators            ///////////////////////
 
@@ -57,8 +69,22 @@ namespace Generator
 
 		// Functions            ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Calculates the sample. For the base class this is simply 0.
+
+		\return
+			0.
+		***********************************************************************/
 		virtual StereoData SendSample(void) { return StereoData(0.f, 0.f); };
 
+		/*! ********************************************************************
+		\brief
+			Returns boolean for if the object is a GeneratorBase or not.
+
+		\return
+			True if the object is a GeneratorBase
+		***********************************************************************/
 		bool IsBase() { return is_base; };
 
 		friend class GeneratorFactory;
@@ -69,6 +95,7 @@ namespace Generator
 
 	}; // class GeneratorBase
 
+		/// Alias for a std::shared_ptr instantiated with the GeneratorBase class
 	TYPEDEF_SHARED(GeneratorBase);
 } // namespace Generator
 } // namespace OCAE

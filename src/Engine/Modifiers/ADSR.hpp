@@ -95,6 +95,8 @@ namespace Modifier
 		***********************************************************************/
 		ADSR(uint64_t attack, uint64_t decay, Math_t sustain, uint64_t release);
 	}; // class ADSR
+
+		/// Alias for a std::shared_ptr instantiated with the ADSR class
 	TYPEDEF_SHARED(ADSR);
 } // namespace Modifier
 } // namespace OCAE
