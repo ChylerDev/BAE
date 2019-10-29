@@ -25,7 +25,7 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
@@ -54,11 +54,11 @@ namespace Generator
 		Reset();
 	}
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
@@ -67,4 +67,4 @@ namespace Generator
 		beta = Math_t(2 * std::cos(double(2*PI * irate)));
 	}
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE

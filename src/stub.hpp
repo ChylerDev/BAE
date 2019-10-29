@@ -22,7 +22,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace stub
 {
@@ -51,7 +51,7 @@ namespace stub
 
 	}; // class stub
 } // namespace stub
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

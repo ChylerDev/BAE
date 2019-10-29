@@ -26,7 +26,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
@@ -67,7 +67,7 @@ namespace Modifier
 	}; // class Equalizer
 	TYPEDEF_SHARED(Equalizer);
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

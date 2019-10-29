@@ -21,7 +21,7 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
@@ -52,6 +52,6 @@ namespace Generator
 		return MONO_TO_STEREO(m_Inc);
 	}
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

@@ -28,7 +28,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Core
 {
@@ -155,7 +155,7 @@ namespace Core
 		/// Typedef for a std::shared_ptr instantiated with the Driver class
 	TYPEDEF_SHARED(Driver);
 } // namespace Core
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

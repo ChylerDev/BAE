@@ -18,7 +18,7 @@
 
 // Forward References           ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
@@ -31,7 +31,7 @@ namespace Modifier
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
@@ -70,7 +70,7 @@ namespace Modifier
 
 	}; // class ModifierFactory
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

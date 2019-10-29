@@ -25,7 +25,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Tools
 {
@@ -106,7 +106,7 @@ namespace Tools
 	}; // class Resampler
 	TYPEDEF_SHARED(Resampler);
 } // namespace Tools
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

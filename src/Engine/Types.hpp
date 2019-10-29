@@ -24,7 +24,7 @@
 
 // Public Types                 ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 	using Math_t = double;
 	using SampleType = float;
@@ -37,6 +37,6 @@ namespace AudioEngine
 
 	using Void_fn = std::function<void(void*)>;
 	using MethodTable_t = std::unordered_map<std::string, Void_fn>;
-} // namespace AudioEngine
+} // namespace OCAE
 
 #endif  // __TYPES_HPP

@@ -13,7 +13,7 @@
 // Public Macros                ////////////////////////////////////////////////
 
 #ifndef SAMPLE_RATE
-		/// The sample rate GAE runs at
+		/// The sample rate OCAE runs at
 	#define SAMPLE_RATE 48'000
 #endif // SAMPLE_RATE
 #ifndef INC_RATE

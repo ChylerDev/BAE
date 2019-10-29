@@ -29,7 +29,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Sound
 {
@@ -106,7 +106,7 @@ namespace Sound
 	}; // class Block
 	TYPEDEF_SHARED(Block);
 } // namespace Sound
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

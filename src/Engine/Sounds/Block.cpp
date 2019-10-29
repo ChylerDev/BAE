@@ -24,7 +24,7 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Sound
 {
@@ -75,6 +75,6 @@ namespace Sound
 		m_Output = m_Interaction(m_Generator->SendSample(), m_Modifier->FilterSample(m_Input));
 	}
 } // namespace Sound
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

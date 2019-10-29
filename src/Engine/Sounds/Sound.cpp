@@ -28,7 +28,7 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Sound
 {
@@ -245,11 +245,11 @@ namespace Sound
 	{
 	}
 } // namespace Sound
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Sound
 {
@@ -297,4 +297,4 @@ namespace Sound
 		m_OutputGain = std::any_cast<BlockPtr>(m_Graph.back()->outputs.back())->GetModifier();
 	}
 } // namespace Sound
-} // namespace AudioEngine
+} // namespace OCAE

@@ -22,7 +22,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Tools
 {
@@ -62,7 +62,7 @@ namespace Tools
 
 	}; // class MethodTable
 } // namespace Tools
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

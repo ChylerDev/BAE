@@ -28,7 +28,7 @@
 
 // Forward References           ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Sound
 {
@@ -46,7 +46,7 @@ namespace Core
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Sound
 {
@@ -209,7 +209,7 @@ namespace Sound
 
 	}; // class Sound
 } // namespace Sound
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

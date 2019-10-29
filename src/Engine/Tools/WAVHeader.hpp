@@ -22,7 +22,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Tools
 {
@@ -48,7 +48,7 @@ namespace Tools
 		~WAVHeader() = default;
 	};
 } // namespace Tools
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

@@ -27,7 +27,7 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
@@ -61,6 +61,6 @@ namespace Generator
 		m_Inv = SAMPLE_RATE/(2*f);
 	}
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

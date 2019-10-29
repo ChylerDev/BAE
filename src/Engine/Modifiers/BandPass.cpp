@@ -23,7 +23,7 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
@@ -79,11 +79,11 @@ namespace Modifier
 		return y;
 	}
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
@@ -120,4 +120,4 @@ namespace Modifier
 		m_B2 = bL * bH;
 	}
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE

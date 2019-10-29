@@ -32,7 +32,7 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
@@ -108,11 +108,11 @@ namespace Generator
 		return StereoData(SampleType(0), SampleType(0));
 	}
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
@@ -187,4 +187,4 @@ namespace Generator
 		);
 	}
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE

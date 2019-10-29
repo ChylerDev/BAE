@@ -28,7 +28,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
@@ -111,7 +111,7 @@ namespace Modifier
 	}; // class GenericFilter
 	TYPEDEF_SHARED(GenericFilter);
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

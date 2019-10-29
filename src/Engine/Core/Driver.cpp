@@ -25,19 +25,19 @@
 
 // Private Objects                        //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Core
 {
 	uint64_t Driver::s_IDCounter = 0;
 } // namespace Core
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Function Declarations          //////////////////////////////////////
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Core
 {
@@ -98,11 +98,11 @@ namespace Core
 		}
 	}
 } // namespace Core
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Core
 {
@@ -111,4 +111,4 @@ namespace Core
 		return s_IDCounter++;
 	}
 } // namespace Core
-} // namespace AudioEngine
+} // namespace OCAE

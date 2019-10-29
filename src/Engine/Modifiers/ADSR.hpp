@@ -24,7 +24,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
@@ -97,8 +97,8 @@ namespace Modifier
 	}; // class ADSR
 	TYPEDEF_SHARED(ADSR);
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
-// Public Functions             ////////////////////////////////////////////////
+// Public FunctOCAE      ////////////////////////////////////////////////
 
 #endif // __ADSR_HPP

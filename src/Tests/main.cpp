@@ -2,7 +2,7 @@
 \file             main.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  OCAE
 
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
@@ -31,23 +31,23 @@ int main(int argc, char * argv[])
 {
 	using clock = std::chrono::high_resolution_clock;
 
-	AudioEngine::Tools::InitOptions(argc, argv);
+	OCAE::Tools::InitOptions(argc, argv);
 
-	AudioEngine::Core::DriverPtr driver = AudioEngine::Core::DriverPtr(new AudioEngine::Core::Driver(MAX_BUFFER));
-	AudioEngine::Track_t output;
+	OCAE::Core::DriverPtr driver = OCAE::Core::DriverPtr(new OCAE::Core::Driver(MAX_BUFFER));
+	OCAE::Track_t output;
 	output.reserve(SAMPLE_RATE);
 	clock clk;
 
 	{
 		std::cout << "Simple sine test - 1 second @ 440Hz\n";
 
-		auto sine = AudioEngine::Sound::SoundFactory::CreateBasicGenerator(
-			AudioEngine::Generator::GeneratorFactory::CreateSine(440)
+		auto sine = OCAE::Sound::SoundFactory::CreateBasicGenerator(
+			OCAE::Generator::GeneratorFactory::CreateSine(440)
 		);
-		AudioEngine::Sound::Sound::Register(sine, driver);
+		OCAE::Sound::Sound::Register(sine, driver);
 		sine->Unpause();
 
-		AudioEngine::Track_t const & driver_output = driver->GetOutputTrack();
+		OCAE::Track_t const & driver_output = driver->GetOutputTrack();
 
 		auto before = clk.now();
 		for(uint64_t i = 0; i < SAMPLE_RATE/MAX_BUFFER; ++i)
@@ -62,7 +62,7 @@ int main(int argc, char * argv[])
 				  << (double(difference.count()) / 1'000'000'000.0)
 				  << " seconds\n";
 
-		auto WAVData = AudioEngine::Tools::WriteWAV(output);
+		auto WAVData = OCAE::Tools::WriteWAV(output);
 
 		std::ofstream WAVFile("sine.440.1s.wav", std::ios_base::binary);
 
@@ -71,7 +71,7 @@ int main(int argc, char * argv[])
 		WAVFile.close();
 		output.clear();
 
-		AudioEngine::Sound::Sound::Unregister(sine);
+		OCAE::Sound::Sound::Unregister(sine);
 
 		std::cout << "Sine test finished\n\n";
 	}
@@ -79,13 +79,13 @@ int main(int argc, char * argv[])
 	{
 		std::cout << "Simple Square wave test - 1 second @ 440Hz\n";
 
-		auto square = AudioEngine::Sound::SoundFactory::CreateBasicGenerator(
-			AudioEngine::Generator::GeneratorFactory::CreateSquare(440)
+		auto square = OCAE::Sound::SoundFactory::CreateBasicGenerator(
+			OCAE::Generator::GeneratorFactory::CreateSquare(440)
 		);
-		AudioEngine::Sound::Sound::Register(square, driver);
+		OCAE::Sound::Sound::Register(square, driver);
 		square->Unpause();
 
-		AudioEngine::Track_t const & driver_output = driver->GetOutputTrack();
+		OCAE::Track_t const & driver_output = driver->GetOutputTrack();
 
 		auto before = clk.now();
 		for(uint64_t i = 0; i < SAMPLE_RATE/MAX_BUFFER; ++i)
@@ -100,7 +100,7 @@ int main(int argc, char * argv[])
 				  << (double(difference.count()) / 1'000'000'000.0)
 				  << " seconds\n";
 
-		auto WAVData = AudioEngine::Tools::WriteWAV(output);
+		auto WAVData = OCAE::Tools::WriteWAV(output);
 
 		std::ofstream WAVFile("square.440.1s.wav", std::ios_base::binary);
 
@@ -109,7 +109,7 @@ int main(int argc, char * argv[])
 		WAVFile.close();
 		output.clear();
 
-		AudioEngine::Sound::Sound::Unregister(square);
+		OCAE::Sound::Sound::Unregister(square);
 
 		std::cout << "Square test finished\n\n";
 	}
@@ -117,36 +117,36 @@ int main(int argc, char * argv[])
 	{
 		std::cout << "Square @ 440Hz fed into a Low Pass filter cutoff at 880Hz\n";
 
-		auto sound = AudioEngine::Sound::SoundFactory::CreateEmptySound();
+		auto sound = OCAE::Sound::SoundFactory::CreateEmptySound();
 		auto & graph = sound->GetGraph();
 
-		auto square = AudioEngine::Sound::SoundFactory::CreateBlock(
-				AudioEngine::Generator::GeneratorFactory::CreateSquare(440)
+		auto square = OCAE::Sound::SoundFactory::CreateBlock(
+				OCAE::Generator::GeneratorFactory::CreateSquare(440)
 		);
-		auto lp = AudioEngine::Sound::SoundFactory::CreateBlock(
-				AudioEngine::Modifier::ModifierFactory::CreateLowPass(880, 0)
-		);
-
-		auto g = std::deque<AudioEngine::Sound::Sound::Edge::E_BlockPtr>(
-			1, AudioEngine::Sound::Sound::CreateE_Block(square)
-		);
-		auto m = std::deque<AudioEngine::Sound::Sound::Edge::E_BlockPtr>(
-			1, AudioEngine::Sound::Sound::CreateE_Block(lp)
+		auto lp = OCAE::Sound::SoundFactory::CreateBlock(
+				OCAE::Modifier::ModifierFactory::CreateLowPass(880, 0)
 		);
 
-		auto edge = AudioEngine::Sound::Sound::CreateEdge(
+		auto g = std::deque<OCAE::Sound::Sound::Edge::E_BlockPtr>(
+			1, OCAE::Sound::Sound::CreateE_Block(square)
+		);
+		auto m = std::deque<OCAE::Sound::Sound::Edge::E_BlockPtr>(
+			1, OCAE::Sound::Sound::CreateE_Block(lp)
+		);
+
+		auto edge = OCAE::Sound::Sound::CreateEdge(
 			g,
-			AudioEngine::Sound::Combinator(AudioEngine::Sound::Combinator::Addition),
+			OCAE::Sound::Combinator(OCAE::Sound::Combinator::Addition),
 			m
 		);
 
 		graph.insert(graph.end()-1, edge);
 		graph.back()->inputs.push_back(m.front());
 
-		AudioEngine::Sound::Sound::Register(sound, driver);
+		OCAE::Sound::Sound::Register(sound, driver);
 		sound->Unpause();
 
-		AudioEngine::Track_t const & driver_output = driver->GetOutputTrack();
+		OCAE::Track_t const & driver_output = driver->GetOutputTrack();
 
 		auto before = clk.now();
 		for(uint64_t i = 0; i < SAMPLE_RATE/MAX_BUFFER; ++i)
@@ -161,7 +161,7 @@ int main(int argc, char * argv[])
 				  << (double(difference.count()) / 1'000'000'000.0)
 				  << " seconds\n";
 
-		auto WAVData = AudioEngine::Tools::WriteWAV(output);
+		auto WAVData = OCAE::Tools::WriteWAV(output);
 
 		std::ofstream WAVFile("square.440.lowpass.880.1s.wav", std::ios_base::binary);
 
@@ -170,7 +170,7 @@ int main(int argc, char * argv[])
 		WAVFile.close();
 		output.clear();
 
-		AudioEngine::Sound::Sound::Unregister(sound);
+		OCAE::Sound::Sound::Unregister(sound);
 
 		std::cout << "Filtered square test finished\n\n";
 	}
@@ -178,36 +178,36 @@ int main(int argc, char * argv[])
 	{
 		std::cout << "Noise filtered at 400Hz test\n";
 
-		auto sound = AudioEngine::Sound::SoundFactory::CreateEmptySound();
+		auto sound = OCAE::Sound::SoundFactory::CreateEmptySound();
 		auto & graph = sound->GetGraph();
 
-		auto noise = AudioEngine::Sound::SoundFactory::CreateBlock(
-				AudioEngine::Generator::GeneratorFactory::CreateNoise()
+		auto noise = OCAE::Sound::SoundFactory::CreateBlock(
+				OCAE::Generator::GeneratorFactory::CreateNoise()
 		);
-		auto lp = AudioEngine::Sound::SoundFactory::CreateBlock(
-				AudioEngine::Modifier::ModifierFactory::CreateLowPass(400, 0)
-		);
-
-		auto g = std::deque<AudioEngine::Sound::Sound::Edge::E_BlockPtr>(
-			1, AudioEngine::Sound::Sound::CreateE_Block(noise)
-		);
-		auto m = std::deque<AudioEngine::Sound::Sound::Edge::E_BlockPtr>(
-			1, AudioEngine::Sound::Sound::CreateE_Block(lp)
+		auto lp = OCAE::Sound::SoundFactory::CreateBlock(
+				OCAE::Modifier::ModifierFactory::CreateLowPass(400, 0)
 		);
 
-		auto edge = AudioEngine::Sound::Sound::CreateEdge(
+		auto g = std::deque<OCAE::Sound::Sound::Edge::E_BlockPtr>(
+			1, OCAE::Sound::Sound::CreateE_Block(noise)
+		);
+		auto m = std::deque<OCAE::Sound::Sound::Edge::E_BlockPtr>(
+			1, OCAE::Sound::Sound::CreateE_Block(lp)
+		);
+
+		auto edge = OCAE::Sound::Sound::CreateEdge(
 			g,
-			AudioEngine::Sound::Combinator(AudioEngine::Sound::Combinator::Addition),
+			OCAE::Sound::Combinator(OCAE::Sound::Combinator::Addition),
 			m
 		);
 
 		graph.insert(graph.end()-1, edge);
 		graph.back()->inputs.push_back(m.front());
 
-		AudioEngine::Sound::Sound::Register(sound, driver);
+		OCAE::Sound::Sound::Register(sound, driver);
 		sound->Unpause();
 
-		AudioEngine::Track_t const & driver_output = driver->GetOutputTrack();
+		OCAE::Track_t const & driver_output = driver->GetOutputTrack();
 
 		auto before = clk.now();
 		for(uint64_t i = 0; i < SAMPLE_RATE/MAX_BUFFER; ++i)
@@ -222,7 +222,7 @@ int main(int argc, char * argv[])
 				  << (double(difference.count()) / 1'000'000'000.0)
 				  << " seconds\n";
 
-		auto WAVData = AudioEngine::Tools::WriteWAV(output);
+		auto WAVData = OCAE::Tools::WriteWAV(output);
 
 		std::ofstream WAVFile("noise.lowpass.400.1s.wav", std::ios_base::binary);
 
@@ -231,7 +231,7 @@ int main(int argc, char * argv[])
 		WAVFile.close();
 		output.clear();
 
-		AudioEngine::Sound::Sound::Unregister(sound);
+		OCAE::Sound::Sound::Unregister(sound);
 
 		std::cout << "Filtered noise test finished\n\n";
 	}

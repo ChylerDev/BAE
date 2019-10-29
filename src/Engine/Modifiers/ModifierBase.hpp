@@ -2,7 +2,7 @@
 \file             ModifierBase.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  OCAE
 
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
@@ -27,7 +27,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
@@ -78,7 +78,7 @@ namespace Modifier
 	}; // class ModifierBase
 	TYPEDEF_SHARED(ModifierBase);
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
