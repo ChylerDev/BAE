@@ -17,8 +17,6 @@
 #include "../Engine/Engine.hpp"
 #include "../Engine/Tools/WAVHeader.hpp"
 
-#include <RIFF-Util/RIFF.hpp>
-
 // Private Macros                         //////////////////////////////////////
 
 // Private Enums                          //////////////////////////////////////
@@ -46,7 +44,7 @@ int main(int argc, char * argv[])
 		auto sine = AudioEngine::Sound::SoundFactory::CreateBasicGenerator(
 			AudioEngine::Generator::GeneratorFactory::CreateSine(440)
 		);
-		sine->Register(sine, driver);
+		AudioEngine::Sound::Sound::Register(sine, driver);
 		sine->Unpause();
 
 		AudioEngine::Track_t const & driver_output = driver->GetOutputTrack();
@@ -71,10 +69,11 @@ int main(int argc, char * argv[])
 		WAVFile.write(reinterpret_cast<char const*>(WAVData.data()), WAVData.size());
 		WAVFile.flush();
 		WAVFile.close();
+		output.clear();
 
-		sine->Unregister();
+		AudioEngine::Sound::Sound::Unregister(sine);
 
-		std::cout << "Sine test finished\n";
+		std::cout << "Sine test finished\n\n";
 	}
 
 	{
@@ -83,7 +82,7 @@ int main(int argc, char * argv[])
 		auto square = AudioEngine::Sound::SoundFactory::CreateBasicGenerator(
 			AudioEngine::Generator::GeneratorFactory::CreateSquare(440)
 		);
-		square->Register(square, driver);
+		AudioEngine::Sound::Sound::Register(square, driver);
 		square->Unpause();
 
 		AudioEngine::Track_t const & driver_output = driver->GetOutputTrack();
@@ -108,10 +107,11 @@ int main(int argc, char * argv[])
 		WAVFile.write(reinterpret_cast<char const*>(WAVData.data()), WAVData.size());
 		WAVFile.flush();
 		WAVFile.close();
+		output.clear();
 
-		square->Unregister();
+		AudioEngine::Sound::Sound::Unregister(square);
 
-		std::cout << "Square test finished\n";
+		std::cout << "Square test finished\n\n";
 	}
 
 	{
@@ -143,7 +143,7 @@ int main(int argc, char * argv[])
 		graph.insert(graph.end()-1, edge);
 		graph.back()->inputs.push_back(m.front());
 
-		sound->Register(sound, driver);
+		AudioEngine::Sound::Sound::Register(sound, driver);
 		sound->Unpause();
 
 		AudioEngine::Track_t const & driver_output = driver->GetOutputTrack();
@@ -168,10 +168,72 @@ int main(int argc, char * argv[])
 		WAVFile.write(reinterpret_cast<char const*>(WAVData.data()), WAVData.size());
 		WAVFile.flush();
 		WAVFile.close();
+		output.clear();
 
-		sound->Unregister();
+		AudioEngine::Sound::Sound::Unregister(sound);
 
-		std::cout << "Filtered square test finished\n";
+		std::cout << "Filtered square test finished\n\n";
+	}
+
+	{
+		std::cout << "Noise filtered at 400Hz test\n";
+
+		auto sound = AudioEngine::Sound::SoundFactory::CreateEmptySound();
+		auto & graph = sound->GetGraph();
+
+		auto noise = AudioEngine::Sound::SoundFactory::CreateBlock(
+				AudioEngine::Generator::GeneratorFactory::CreateNoise()
+		);
+		auto lp = AudioEngine::Sound::SoundFactory::CreateBlock(
+				AudioEngine::Modifier::ModifierFactory::CreateLowPass(400, 0)
+		);
+
+		auto g = std::deque<AudioEngine::Sound::Sound::Edge::E_BlockPtr>(
+			1, AudioEngine::Sound::Sound::CreateE_Block(noise)
+		);
+		auto m = std::deque<AudioEngine::Sound::Sound::Edge::E_BlockPtr>(
+			1, AudioEngine::Sound::Sound::CreateE_Block(lp)
+		);
+
+		auto edge = AudioEngine::Sound::Sound::CreateEdge(
+			g,
+			AudioEngine::Sound::Combinator(AudioEngine::Sound::Combinator::Addition),
+			m
+		);
+
+		graph.insert(graph.end()-1, edge);
+		graph.back()->inputs.push_back(m.front());
+
+		AudioEngine::Sound::Sound::Register(sound, driver);
+		sound->Unpause();
+
+		AudioEngine::Track_t const & driver_output = driver->GetOutputTrack();
+
+		auto before = clk.now();
+		for(uint64_t i = 0; i < SAMPLE_RATE/MAX_BUFFER; ++i)
+		{
+			driver->Process();
+
+			output.insert(output.end(), driver_output.begin(), driver_output.end());
+		}
+		auto after = clk.now();
+		auto difference = after - before;
+		std::cout << "Generated 1 second of audio in "
+				  << (double(difference.count()) / 1'000'000'000.0)
+				  << " seconds\n";
+
+		auto WAVData = AudioEngine::Tools::WriteWAV(output);
+
+		std::ofstream WAVFile("noise.lowpass.400.1s.wav", std::ios_base::binary);
+
+		WAVFile.write(reinterpret_cast<char const*>(WAVData.data()), WAVData.size());
+		WAVFile.flush();
+		WAVFile.close();
+		output.clear();
+
+		AudioEngine::Sound::Sound::Unregister(sound);
+
+		std::cout << "Filtered noise test finished\n\n";
 	}
 
 	return 0;

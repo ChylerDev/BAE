@@ -26,7 +26,6 @@ link_directories(BEFORE ${PLATFORM_LIB_DIR})
 set(CMAKE_PREFIX_PATH ${PLATFORM_LIB_DIR} ${CMAKE_PREFIX_PATH})
 
 if(WIN32)
-	find_library(PortAudio portaudio_x64)
 	if(${CMAKE_CONFIGURATION_TYPES} STREQUAL "Debug")
 		find_library(RIFF RIFF_d)
 	else()

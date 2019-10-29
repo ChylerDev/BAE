@@ -77,7 +77,7 @@
 #ifndef TO_STR
 		/// Creates string from "p". E.g. TO_STR(HEAP_SIZE) creates the string "HEAP_SIZE"
 	#define TO_STR(p) #p
-#endif  // TO_STR
+#endif // TO_STR
 #ifndef PRINT
 		/// Creates string from what "p" defines. E.g. PRINT(HEAP_SIZE) creates the string "1024" if `#define HEAP_SIZE 1024`
 	#define PRINT(p) TO_STR(p)
