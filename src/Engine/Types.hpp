@@ -14,7 +14,6 @@
 
 #include <cstdint>
 
-#include <functional>
 #include <memory>
 #include <tuple>
 
@@ -32,11 +31,6 @@ namespace OCAE
 	using StereoData = std::tuple<SampleType,SampleType>;
 	TYPEDEF_SHARED(StereoData);
 	using Track_t = std::vector<StereoData>;
-
-	using AudioCallback_t = std::function<StereoData(void)>;
-
-	using Void_fn = std::function<void(void*)>;
-	using MethodTable_t = std::unordered_map<std::string, Void_fn>;
 } // namespace OCAE
 
 #endif  // __TYPES_HPP
