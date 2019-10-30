@@ -67,6 +67,17 @@ namespace Generator
 
 		/*! ********************************************************************
 		\brief
+			Sends a single sample to Core::Driver for output to the OS.
+
+		\return
+			The stereo sample data.
+		***********************************************************************/
+		virtual StereoData SendSample(void);
+
+		virtual bool IsBase() { return false; };
+
+		/*! ********************************************************************
+		\brief
 			Reads a file from the disk and parses it for the WAV data.
 
 		\param path
@@ -84,18 +95,9 @@ namespace Generator
 		***********************************************************************/
 		void LoadWAV(std::vector<char> const & wav_data);
 
-		/*! ********************************************************************
-		\brief
-			Sends a single sample to Core::Driver for output to the OS.
-
-		\return
-			The stereo sample data.
-		***********************************************************************/
-		virtual StereoData SendSample(void);
-
 		friend class GeneratorFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
 
@@ -136,7 +138,7 @@ namespace Generator
 
 		void ParseWAV(char const * array, int size);
 
-		void SetupMethodTable();
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
 
 	}; // class WAV
 	TYPEDEF_SHARED(WAV);

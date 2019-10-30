@@ -26,7 +26,7 @@ namespace OCAE
 namespace Modifier
 {
 	GenericFilter::GenericFilter(ZeroContainer const & zeros, PoleContainer const & poles) :
-		ModifierBase(false),
+		ModifierBase(),
 		m_Zeros(zeros), m_Poles(poles),
 		m_Inputs(std::get<0>(m_Zeros.back()), StereoData()),
 		m_Outputs(std::get<0>(m_Poles.back()), StereoData()),
@@ -58,6 +58,10 @@ namespace Modifier
 
 		return output;
 	}
+
+	std::vector<std::tuple<std::string, Void_fn>> GenericFilter::CreateMethodList()
+	{
+	};
 } // namespace Modifier
 } // namespace OCAE
 

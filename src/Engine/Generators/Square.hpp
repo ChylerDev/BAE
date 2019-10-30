@@ -66,6 +66,8 @@ namespace Generator
 		***********************************************************************/
 		virtual StereoData SendSample(void);
 
+		virtual bool IsBase() { return false; };
+
 		/*! ********************************************************************
 		\brief
 			Sets the frequency to a new value.
@@ -90,6 +92,8 @@ namespace Generator
 			The frequency for the square wav to output at.
 		***********************************************************************/
 		Square(Math_t freq);
+
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
 
 	}; // class Square
 	TYPEDEF_SHARED(Square);

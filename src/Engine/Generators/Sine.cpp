@@ -29,12 +29,10 @@ namespace OCAE
 {
 namespace Generator
 {
-	Sine::Sine(Math_t f) : GeneratorBase(false),
+	Sine::Sine(Math_t f) : GeneratorBase(),
 		irate(INC_RATE*double(f)),
 		y1(SampleType(std::sin(double(PI2 * irate)))), y2(), beta()
 	{
-		m_Table["SetFrequency"] = [this](void * freq){ SetFrequency(*reinterpret_cast<Math_t*>(freq)); };
-
 		Reset();
 	}
 
@@ -53,18 +51,24 @@ namespace Generator
 		irate = INC_RATE * double(f);
 		Reset();
 	}
-} // namespace Generator
-} // namespace OCAE
 
-// Private Functions                      //////////////////////////////////////
+	std::vector<std::tuple<std::string, Void_fn>> Sine::CreateMethodList()
+	{
+		return {
+			std::make_tuple(
+				std::string("SetFrequency"),
+				Void_fn([this](void * f){
+					SetFrequency(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(f)));
+				})
+			)
+		};
+	}
 
-namespace OCAE
-{
-namespace Generator
-{
 	void Sine::Reset()
 	{
 		beta = Math_t(2 * std::cos(double(2*PI * irate)));
 	}
 } // namespace Generator
 } // namespace OCAE
+
+// Private Functions                      //////////////////////////////////////

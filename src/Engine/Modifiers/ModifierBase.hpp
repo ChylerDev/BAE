@@ -40,13 +40,10 @@ namespace Modifier
 
 		// Members              ///////////////////////
 
-		bool is_base;
-
 	public:
 
 		// Con-/De- structors   ///////////////////////
 
-		ModifierBase(bool b = true) : MethodTable(), is_base(b) {};
 		virtual ~ModifierBase() = default;
 
 		// Operators            ///////////////////////
@@ -67,13 +64,17 @@ namespace Modifier
 		***********************************************************************/
 		virtual StereoData FilterSample(StereoData const & input) { return input; };
 
-		bool IsBase() { return is_base; };
+		virtual bool IsBase() { return true; };
 
 		friend class ModifierFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
+
+		ModifierBase() : MethodTable() {};
+
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() {};
 
 	}; // class ModifierBase
 	TYPEDEF_SHARED(ModifierBase);

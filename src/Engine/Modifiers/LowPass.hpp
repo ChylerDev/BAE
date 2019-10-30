@@ -89,9 +89,11 @@ namespace Modifier
 		***********************************************************************/
 		virtual StereoData FilterSample(StereoData const & input);
 
+		virtual bool IsBase() { return false; };
+
 		friend class ModifierFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
 
@@ -107,6 +109,8 @@ namespace Modifier
 			safety checks are performed.
 		***********************************************************************/
 		LowPass(Math_t cutoff, Math_t resonance);
+
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
 
 		void Reset();
 

@@ -25,7 +25,7 @@ namespace OCAE
 {
 namespace Modifier
 {
-	EnvelopeFollower::EnvelopeFollower(Math_t fd, Math_t fu) : ModifierBase(false),
+	EnvelopeFollower::EnvelopeFollower(Math_t fd, Math_t fu) : ModifierBase(),
 		m_AU(), m_BU(), m_AD(), m_BD(), m_X1(), m_Y1()
 	{
 		double theta_u = std::tan(PI * fu * INC_RATE);
@@ -67,6 +67,10 @@ namespace Modifier
 		m_X1 = x;
 
 		return y;
+	}
+
+	std::vector<std::tuple<std::string, Void_fn>> EnvelopeFollower::CreateMethodList()
+	{
 	}
 } // namespace Modifier
 } // namespace OCAE

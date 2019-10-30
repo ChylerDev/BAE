@@ -25,13 +25,10 @@ namespace OCAE
 {
 namespace Modifier
 {
-	LowPass::LowPass(Math_t cutoff, Math_t resonance) : ModifierBase(false),
+	LowPass::LowPass(Math_t cutoff, Math_t resonance) : ModifierBase(),
 		m_Cutoff(2*PI*cutoff), m_Resonance(resonance),
 		m_Coefficients(), m_Outputs()
 	{
-		m_Table["SetCutoff"] = [this](void * c){ SetCutoff(*reinterpret_cast<Math_t*>(c)); };
-		m_Table["SetResonance"] = [this](void * r){ SetResonance(*reinterpret_cast<Math_t*>(r)); };
-
 		Reset();
 	}
 
@@ -70,15 +67,29 @@ namespace Modifier
 
 		return output;
 	}
-} // namespace Modifier
-} // namespace OCAE
 
-// Private Functions                      //////////////////////////////////////
+	std::vector<std::tuple<std::string, Void_fn>> LowPass::CreateMethodList()
+	{
+		return {
+			std::make_tuple(
+				std::string("SetCutoff"),
+				Void_fn(
+					[this](void * p){
+						SetCutoff(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+					}
+				)
+			),
+			std::make_tuple(
+				std::string("SetResonance"),
+				Void_fn(
+					[this](void * p){
+						SetResonance(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+					}
+				)
+			)
+		};
+	}
 
-namespace OCAE
-{
-namespace Modifier
-{
 	void LowPass::Reset()
 	{
 		static Math_t angle, K, T, x, y, z, g;
@@ -98,3 +109,5 @@ namespace Modifier
 	}
 } // namespace Modifier
 } // namespace OCAE
+
+// Private Functions                      //////////////////////////////////////

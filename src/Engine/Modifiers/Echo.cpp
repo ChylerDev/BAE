@@ -25,10 +25,7 @@ namespace OCAE
 {
 namespace Modifier
 {
-	Echo::Echo(
-		uint64_t sample_delay,
-		Math_t decay_ratio
-	) : ModifierBase(false),
+	Echo::Echo(uint64_t sample_delay, Math_t decay_ratio) : ModifierBase(),
 		m_Echo(sample_delay, StereoData()), m_Ratio(decay_ratio)
 	{
 	}
@@ -46,6 +43,10 @@ namespace Modifier
 		m_Echo.push_back(out);
 
 		return out;
+	}
+
+	std::vector<std::tuple<std::string, Void_fn>> Echo::CreateMethodList()
+	{
 	}
 } // namespace Modifier
 } // namespace OCAE

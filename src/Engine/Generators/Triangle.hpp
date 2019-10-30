@@ -52,15 +52,19 @@ namespace Generator
 
 		// Functions            ///////////////////////
 
-		void SetFrequency(Math_t freq);
-
 		virtual StereoData SendSample(void);
+
+		virtual bool IsBase() { return false; };
+
+		void SetFrequency(Math_t freq);
 
 		friend class GeneratorFactory;
 
 	private:
 
 		Triangle(Math_t freq);
+
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
 
 	}; // class Triangle
 	TYPEDEF_SHARED(Triangle);

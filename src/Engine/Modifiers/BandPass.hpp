@@ -60,13 +60,17 @@ namespace Modifier
 
 		virtual StereoData FilterSample(StereoData const & x);
 
+		virtual bool IsBase() { return false; };
+
 		friend class ModifierFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
 
 		BandPass(Math_t f, Math_t Q = 1);
+
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
 
 		void Reset(void);
 

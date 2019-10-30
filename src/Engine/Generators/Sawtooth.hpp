@@ -56,6 +56,8 @@ namespace Generator
 
 		virtual StereoData SendSample(void);
 
+		virtual bool IsBase() { return false; };
+
 		friend class GeneratorFactory;
 
 	private:
@@ -63,6 +65,9 @@ namespace Generator
 		// Functions                  ///////////////////////
 
 		Sawtooth(Math_t freq);
+
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+
 	}; // class Sawtooth
 	TYPEDEF_SHARED(Sawtooth);
 } // namespace Generator

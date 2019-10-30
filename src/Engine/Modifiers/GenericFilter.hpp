@@ -44,7 +44,7 @@ namespace Modifier
 		using PoleContainer = std::vector<std::tuple<uint32_t,Math_t>>;
 
 	private:
-		
+
 		using SampleContainer = std::deque<StereoData>;
 
 		// Members              ///////////////////////
@@ -88,9 +88,11 @@ namespace Modifier
 		***********************************************************************/
 		virtual StereoData FilterSample(StereoData const & input);
 
+		virtual bool IsBase() { return false; };
+
 		friend class ModifierFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
 
@@ -107,6 +109,8 @@ namespace Modifier
 			Expected to be ordered lowest to highest by subscript.
 		***********************************************************************/
 		GenericFilter(ZeroContainer const & zeros, PoleContainer const & poles);
+
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
 
 	}; // class GenericFilter
 	TYPEDEF_SHARED(GenericFilter);

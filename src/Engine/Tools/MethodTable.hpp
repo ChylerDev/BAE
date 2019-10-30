@@ -12,9 +12,9 @@
 
 // Include Files                ////////////////////////////////////////////////
 
-#include <functional>
 #include <string>
 #include <tuple>
+#include <type_traits>
 #include <unordered_map>
 #include <vector>
 
@@ -51,7 +51,6 @@ namespace Tools
 	{
 	public:
 
-		using Void_fn = std::function<void(void*)>;
 		using MethodTable_t = std::unordered_map<std::string, Void_fn>;
 
 	protected:
@@ -79,7 +78,7 @@ namespace Tools
 			List of tuples for mapping a string to a function to initialize the
 			internal method table.
 		***********************************************************************/
-		MethodTable(std::vector<std::tuple<std::string, Void_fn>> list);
+		MethodTable(std::vector<std::tuple<std::string, Void_fn>> const & list);
 
 		virtual ~MethodTable() = default; ///< Default destructor.
 
@@ -109,26 +108,28 @@ namespace Tools
 		template<typename Ret, typename... Args>
 		Ret operator()(std::string const & fn, Args... args)
 		{
-
+			if(std::is_same_v<Ret, void>)
+			{
+				auto params = std::make_shared<Args...>(args...);
+				m_Table.at(fn, reinterpret_cast<void*>(&params));
+			}
+			else
+			{
+				auto params = std::make_shared<Ret, Args...>(Ret(), args...);
+				m_Table.at(fn, reinterpret_cast<void*>(&params));
+				return std::get<0>(params);
+			}
 		};
 
 		// Accossors/Mutators   ///////////////////////
 
 		// Functions            ///////////////////////
 
-	private:
+	protected:
 
-		// Functions                  ///////////////////////
+		// Functions            ///////////////////////
 
-		template<typename A, typename... Args>
-		std::tuple<A, Args...> MakeTuple(A a, Args... args)
-		{
-			if(sizeof...(args) == 1)
-			{
-				return 
-			}
-			return std::tuple(a, MakeTuple(args...));
-		}
+		void SetMethods(std::vector<std::tuple<std::string, Void_fn>> const & list);
 
 	}; // class MethodTable
 } // namespace Tools

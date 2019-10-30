@@ -25,10 +25,9 @@ namespace OCAE
 {
 namespace Modifier
 {
-	Delay::Delay(uint64_t samples) : ModifierBase(false),
+	Delay::Delay(uint64_t samples) : ModifierBase(),
 		m_Delay(samples, StereoData(SampleType(0), SampleType(0)))
 	{
-		m_Table["SetDelay"] = [this](void * s){ SetDelay(*reinterpret_cast<uint64_t*>(s)); };
 	}
 
 	StereoData Delay::FilterSample(StereoData const & sample)
@@ -52,6 +51,20 @@ namespace Modifier
 		{
 			m_Delay.push_back(StereoData(SampleType(0), SampleType(0)));
 		}
+	}
+
+	std::vector<std::tuple<std::string, Void_fn>> Delay::CreateMethodList()
+	{
+		return {
+			std::make_tuple(
+				std::string("SetDelay"),
+				Void_fn(
+					[this](void * p){
+						SetDelay(std::get<0>(*reinterpret_cast<std::tuple<uint64_t>*>(p)));
+					}
+				)
+			)
+		};
 	}
 } // namespace Modifier
 } // namespace OCAE

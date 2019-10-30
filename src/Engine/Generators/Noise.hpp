@@ -56,13 +56,18 @@ namespace Generator
 
 		virtual StereoData SendSample(void);
 
+		virtual bool IsBase() { return false; };
+
 		friend class GeneratorFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
 
 		Noise();
+
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() { return {}; };
+
 	}; // class Noise
 
 		/// Alias for a std::shared_ptr instantiated with the Noise class

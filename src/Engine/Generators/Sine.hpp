@@ -67,6 +67,8 @@ namespace Generator
 		***********************************************************************/
 		virtual StereoData SendSample(void);
 
+		virtual bool IsBase() { return false; };
+
 		/*! ********************************************************************
 		\brief
 			Sets the frequency to a new value.
@@ -78,7 +80,7 @@ namespace Generator
 
 		friend class GeneratorFactory;
 
-	private:
+	protected:
 
 		/*! ********************************************************************
 		\brief
@@ -91,6 +93,8 @@ namespace Generator
 		Sine(Math_t freq);
 
 		// Functions                  ///////////////////////
+
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
 
 		/*! ********************************************************************
 		\brief

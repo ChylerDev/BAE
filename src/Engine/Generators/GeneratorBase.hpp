@@ -45,21 +45,9 @@ namespace Generator
 
 		// Members              ///////////////////////
 
-			/// Simple boolean to detect if the object is a GeneratorBase or not
-		bool is_base;
-
 	public:
 
 		// Con-/De- structors   ///////////////////////
-
-		/*! ********************************************************************
-		\brief
-			Constructor.
-
-		\param b
-			True if this object is a GeneratorBase object.
-		***********************************************************************/
-		GeneratorBase(bool b = true) : MethodTable(), is_base(b) {};
 
 		virtual ~GeneratorBase() = default; ///< Default destructor.
 
@@ -85,13 +73,21 @@ namespace Generator
 		\return
 			True if the object is a GeneratorBase
 		***********************************************************************/
-		bool IsBase() { return is_base; };
+		virtual bool IsBase() { return true; };
 
 		friend class GeneratorFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Constructor.
+		***********************************************************************/
+		GeneratorBase() : MethodTable(CreateMethodList()) {};
+
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() {};
 
 	}; // class GeneratorBase
 
