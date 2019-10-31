@@ -113,16 +113,14 @@ namespace Sound
 		return m_Graph;
 	}
 
-	Sound & Sound::SetInputGain(Math_t gain)
+	void Sound::SetInputGain(Math_t gain)
 	{
 		m_InputGain->CallMethod("SetGain", gain);
-		return *this;
 	}
 
-	Sound & Sound::SetOutputGain(Math_t gain)
+	void Sound::SetOutputGain(Math_t gain)
 	{
 		m_OutputGain->CallMethod("SetGain", gain);
-		return *this;
 	}
 
 	void Sound::Pause()
@@ -181,6 +179,8 @@ namespace Sound
 
 	void Sound::Register(SoundPtr const & self, Core::DriverPtr const & driver)
 	{
+		if(self->m_ID != static_cast<uint64_t>(-1)) Unregister(self);
+
 		self->m_Driver = driver;
 		self->m_ID = self->m_Driver->AddSound(self);
 	}
