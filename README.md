@@ -16,6 +16,20 @@ Be sure to set the OCAE project as the startup project within Visual Studio!
 Coming soon
 
 ---
+## Usage
+
+It should be noted that the factories within this library use std::shared_ptr, which means that any pointer-level copying will not copy the managed objects. This means that improper care of copying could yield to, for example, a generator running twice
+per process loop which is likely not the intended use.
+
+---
 ## Note:
 
 The project will build the executibles and copy the necessary shared libs to repository root/bin for easy access of the binaries.
+
+---
+## Future Expanion
+
+* Modifiers to add:
+	* Pan
+	* Fade in/out
+	* Equalizer
