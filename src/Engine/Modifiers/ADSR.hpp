@@ -35,7 +35,7 @@ namespace Modifier
 	{
 	private:
 
-		enum State : int8_t
+		enum class State : int8_t
 		{
 			attack,
 			decay,

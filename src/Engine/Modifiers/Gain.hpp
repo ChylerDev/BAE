@@ -76,7 +76,7 @@ namespace Modifier
 
 		Gain(Math_t gain = DEFAULT_GAIN);
 
-		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() override;
 
 	}; // class Gain
 	TYPEDEF_SHARED(Gain);

@@ -14,6 +14,7 @@
 
 #include "../Core/Driver.hpp"
 #include "../Modifiers/ModifierFactory.hpp"
+#include "../Tools/MethodTable.hpp"
 #include "SoundFactory.hpp"
 #include "Combinator.hpp"
 #include "Sound.hpp"
@@ -114,13 +115,13 @@ namespace Sound
 
 	Sound & Sound::SetInputGain(Math_t gain)
 	{
-		(*m_InputGain)("SetGain", &gain);
+		m_InputGain->CallMethod("SetGain", gain);
 		return *this;
 	}
 
 	Sound & Sound::SetOutputGain(Math_t gain)
 	{
-		(*m_OutputGain)("SetGain", &gain);
+		m_OutputGain->CallMethod("SetGain", gain);
 		return *this;
 	}
 
@@ -186,6 +187,8 @@ namespace Sound
 
 	void Sound::Unregister(SoundPtr const & self)
 	{
+		if(self->m_ID == static_cast<uint64_t>(-1)) return;
+
 		self->m_Driver->RemoveSound(self->m_ID);
 		self->m_ID = static_cast<uint64_t>(-1);
 	}

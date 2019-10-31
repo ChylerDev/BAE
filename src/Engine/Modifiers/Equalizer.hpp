@@ -33,7 +33,7 @@ namespace Modifier
 	/*! ************************************************************************
 	\brief
 	***************************************************************************/
-	class Equalizer
+	class Equalizer : public ModifierBase
 	{
 	private:
 
@@ -45,6 +45,8 @@ namespace Modifier
 	public:
 
 		// Con-/De- structors   ///////////////////////
+
+		virtual ~Equalizer() = default;
 
 		// Operators            ///////////////////////
 

@@ -34,6 +34,7 @@ namespace Generator
 	Square::Square(Math_t f) : GeneratorBase(),
 		m_Ind(0), m_Inv(SAMPLE_RATE/(2*f))
 	{
+		SetMethods(CreateMethodList());
 	}
 
 	StereoData Square::SendSample(void)

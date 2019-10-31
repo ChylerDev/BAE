@@ -28,6 +28,7 @@ namespace Generator
 	Sawtooth::Sawtooth(Math_t freq) : GeneratorBase(),
 		m_Irate(2 * double(freq) * INC_RATE), m_Inc()
 	{
+		SetMethods(CreateMethodList());
 	}
 
 	void Sawtooth::SetFrequency(Math_t freq)

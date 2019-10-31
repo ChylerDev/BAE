@@ -25,7 +25,10 @@ namespace OCAE
 {
 namespace Modifier
 {
-
+	Equalizer::Equalizer(int band_count, Math_t lower, Math_t upper)
+	{
+		SetMethods(CreateMethodList());
+	}
 } // namespace Modifier
 } // namespace OCAE
 

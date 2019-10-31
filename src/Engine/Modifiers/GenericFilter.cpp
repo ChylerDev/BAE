@@ -61,7 +61,8 @@ namespace Modifier
 
 	std::vector<std::tuple<std::string, Void_fn>> GenericFilter::CreateMethodList()
 	{
-	};
+		return {};
+	}
 } // namespace Modifier
 } // namespace OCAE
 

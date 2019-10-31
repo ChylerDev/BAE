@@ -28,6 +28,7 @@ namespace Generator
 	Triangle::Triangle(Math_t freq) : GeneratorBase(),
 		m_Irate(4 * double(freq) * INC_RATE), m_Inc()
 	{
+		SetMethods(CreateMethodList());
 	}
 
 	void Triangle::SetFrequency(Math_t freq)

@@ -27,6 +27,7 @@ namespace Modifier
 {
 	Gain::Gain(Math_t gain) : ModifierBase(), m_Gain(gain)
 	{
+		SetMethods(CreateMethodList());
 	}
 
 	void Gain::SetGain(Math_t gain)

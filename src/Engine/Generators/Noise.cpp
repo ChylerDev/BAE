@@ -28,6 +28,7 @@ namespace Generator
 	Noise::Noise() : GeneratorBase(),
 		m_Distribution(-0x8000, 0x7FFF), m_Engine(std::random_device()())
 	{
+		SetMethods(CreateMethodList());
 	}
 
 	StereoData Noise::SendSample()

@@ -72,9 +72,9 @@ namespace Modifier
 
 		// Functions                  ///////////////////////
 
-		ModifierBase() : MethodTable() {};
+		ModifierBase() : MethodTable(CreateMethodList()) {};
 
-		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() {};
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() { return {}; };
 
 	}; // class ModifierBase
 	TYPEDEF_SHARED(ModifierBase);

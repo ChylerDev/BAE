@@ -76,11 +76,6 @@ namespace Generator
 	{
 		return GeneratorBasePtr(new WAV(wav_data));
 	}
-
-	GeneratorBasePtr GeneratorFactory::CreateWAV(int argc)
-	{
-		return GeneratorBasePtr(new WAV(argc));
-	}
 } // namespace Generator
 } // namespace OCAE
 

@@ -39,6 +39,7 @@ namespace Generator
 	WAV::WAV() : GeneratorBase(),
 		m_Resampler()
 	{
+		SetMethods(CreateMethodList());
 	}
 
 	WAV::WAV(std::string const & path) : GeneratorBase(),

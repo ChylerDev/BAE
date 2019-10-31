@@ -33,6 +33,7 @@ namespace Generator
 		irate(INC_RATE*double(f)),
 		y1(SampleType(std::sin(double(PI2 * irate)))), y2(), beta()
 	{
+		SetMethods(CreateMethodList());
 		Reset();
 	}
 

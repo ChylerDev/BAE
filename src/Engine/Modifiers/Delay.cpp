@@ -26,8 +26,9 @@ namespace OCAE
 namespace Modifier
 {
 	Delay::Delay(uint64_t samples) : ModifierBase(),
-		m_Delay(samples, StereoData(SampleType(0), SampleType(0)))
+		m_Delay(samples, StereoData())
 	{
+		SetMethods(CreateMethodList());
 	}
 
 	StereoData Delay::FilterSample(StereoData const & sample)

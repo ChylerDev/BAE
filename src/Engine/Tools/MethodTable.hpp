@@ -86,40 +86,28 @@ namespace Tools
 
 		/*! ********************************************************************
 		\brief
-			Calls a member function. If the provided function name does not
+			Calls a method. If the provided function name does not
 			exist within the map an exception will be thrown by
-			std::unordered_map.
-
-		\tparam Ret
-			The return type of the given method.
+			std::unordered_map. If the method is to return a value, the first
+			parameter must be a reference to a value that will store the
+			returned value.
 
 		\tparam Args
 			The arguments' types of the given method.
 
 		\param fn
-			The name of the member function.
+			The name of the method.
 
 		\param args
-			The parameters for the member function.
-
-		\return
-			The return value. May be void.
+			The parameters for the method.
 		***********************************************************************/
-		template<typename Ret, typename... Args>
-		Ret operator()(std::string const & fn, Args... args)
+		template<typename... Args>
+		void CallMethod(std::string const & fn, Args... args)
 		{
-			if(std::is_same_v<Ret, void>)
-			{
-				auto params = std::make_shared<Args...>(args...);
-				m_Table.at(fn, reinterpret_cast<void*>(&params));
-			}
-			else
-			{
-				auto params = std::make_shared<Ret, Args...>(Ret(), args...);
-				m_Table.at(fn, reinterpret_cast<void*>(&params));
-				return std::get<0>(params);
-			}
-		};
+			using tuple = std::tuple<typename std::remove_reference_t<Args>...>;
+			tuple params(args...);
+			m_Table.at(fn)(reinterpret_cast<void*>(&params));
+		}
 
 		// Accossors/Mutators   ///////////////////////
 

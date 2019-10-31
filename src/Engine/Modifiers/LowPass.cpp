@@ -29,6 +29,7 @@ namespace Modifier
 		m_Cutoff(2*PI*cutoff), m_Resonance(resonance),
 		m_Coefficients(), m_Outputs()
 	{
+		SetMethods(CreateMethodList());
 		Reset();
 	}
 
