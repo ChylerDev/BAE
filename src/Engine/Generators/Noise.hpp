@@ -26,7 +26,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
@@ -56,17 +56,24 @@ namespace Generator
 
 		virtual StereoData SendSample(void);
 
+		virtual bool IsBase() { return false; };
+
 		friend class GeneratorFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
 
 		Noise();
+
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() { return {}; };
+
 	}; // class Noise
+
+		/// Alias for a std::shared_ptr instantiated with the Noise class
 	TYPEDEF_SHARED(Noise);
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

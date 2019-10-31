@@ -21,16 +21,14 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
-	Echo::Echo(
-		uint64_t sample_delay,
-		Math_t decay_ratio
-	) : ModifierBase(false),
+	Echo::Echo(uint64_t sample_delay, Math_t decay_ratio) : ModifierBase(),
 		m_Echo(sample_delay, StereoData()), m_Ratio(decay_ratio)
 	{
+		SetMethods(CreateMethodList());
 	}
 
 	StereoData Echo::FilterSample(StereoData const & dry)
@@ -47,7 +45,12 @@ namespace Modifier
 
 		return out;
 	}
+
+	std::vector<std::tuple<std::string, Void_fn>> Echo::CreateMethodList()
+	{
+		return {};
+	}
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

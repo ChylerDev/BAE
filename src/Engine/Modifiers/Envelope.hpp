@@ -24,7 +24,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
@@ -49,24 +49,28 @@ namespace Modifier
 
 		// Operators            ///////////////////////
 
-		virtual StereoData FilterSample(StereoData const & x);
-
 		// Accossors/Mutators   ///////////////////////
 
 		// Functions            ///////////////////////
 
+		virtual StereoData FilterSample(StereoData const & x);
+
+		virtual bool IsBase() { return false; };
+
 		friend class ModifierFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
 
 		EnvelopeFollower(Math_t fd, Math_t fu);
 
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+
 	}; // class EnvelopeFollower
 	TYPEDEF_SHARED(EnvelopeFollower);
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

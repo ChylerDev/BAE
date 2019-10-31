@@ -24,7 +24,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
@@ -66,18 +66,22 @@ namespace Modifier
 		***********************************************************************/
 		virtual StereoData FilterSample(StereoData const & input);
 
+		virtual bool IsBase() { return false; };
+
 		friend class ModifierFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
 
 		Gain(Math_t gain = DEFAULT_GAIN);
 
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() override;
+
 	}; // class Gain
 	TYPEDEF_SHARED(Gain);
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

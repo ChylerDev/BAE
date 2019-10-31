@@ -22,10 +22,11 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace stub
 {
+	TODO("Finish this documentation");
 	/*! ************************************************************************
 	\brief
 	***************************************************************************/
@@ -51,7 +52,7 @@ namespace stub
 
 	}; // class stub
 } // namespace stub
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

@@ -22,7 +22,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Tools
 {
@@ -32,23 +32,41 @@ namespace Tools
 	***************************************************************************/
 	struct WAVHeader
 	{                         // (offset) = description
-		uint16_t AudioFormat;     // (00) = 1
-		uint16_t ChannelCount;    // (02) = 1 or 2
-		uint32_t SamplingRate;    // (04) = (ex. 44.1kHz, 48kHz, 96kHz, 192kHz)
-		uint32_t BytesPerSecond;  // (08) = SamplingRate * BytesPerSample
-		uint16_t BytesPerSample;  // (12) = BitsPerSample/8 * ChannelCount
-		uint16_t BitsPerSample;   // (14) = 8 or 16
+		uint16_t AudioFormat;     ///< Offset 00 = 1
+		uint16_t ChannelCount;    ///< Offset 02 = 1 or 2
+		uint32_t SamplingRate;    ///< Offset 04 = (ex. 44.1kHz, 48kHz, 96kHz, 192kHz)
+		uint32_t BytesPerSecond;  ///< Offset 08 = SamplingRate * BytesPerSample
+		uint16_t BytesPerSample;  ///< Offset 12 = BitsPerSample/8 * ChannelCount
+		uint16_t BitsPerSample;   ///< Offset 14 = 8 or 16
 
+		/*! ********************************************************************
+		\brief
+			Consturctor for a WAVE header, with default values for standard
+			16-bit audio data.
+
+		\param af
+			The audio format, should generally be left at 1.
+
+		\param cc
+			The channel count. OCAE uses two-channel audio.
+
+		\param R
+			The sampling rate. OCAE uses SAMPLE_RATE (probably defined as 48kHz).
+
+		\param bps
+			Bits per audio sample. We are using 16-bit audio as it is all of the
+			quality you should need.
+		***********************************************************************/
 		WAVHeader(
 			uint16_t af = 1,			// Audio format
 			uint16_t cc = 2,			// Channel count
 			uint32_t R = SAMPLE_RATE,	// Sampling rate
 			uint16_t bps = 16			// Bits per sample
 		);
-		~WAVHeader() = default;
+		~WAVHeader() = default;	///< Default destructor.
 	};
 } // namespace Tools
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

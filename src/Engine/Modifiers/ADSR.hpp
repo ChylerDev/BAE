@@ -24,7 +24,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
@@ -35,7 +35,7 @@ namespace Modifier
 	{
 	private:
 
-		enum State : int8_t
+		enum class State : int8_t
 		{
 			attack,
 			decay,
@@ -67,13 +67,15 @@ namespace Modifier
 
 		// Functions            ///////////////////////
 
-		void Release(void);
-
 		virtual StereoData FilterSample(StereoData const & input);
+
+		virtual bool IsBase() { return false; };
+
+		void Release(void);
 
 		friend class ModifierFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
 
@@ -94,11 +96,16 @@ namespace Modifier
 			Time to decrease from sustain to 0 in samples.
 		***********************************************************************/
 		ADSR(uint64_t attack, uint64_t decay, Math_t sustain, uint64_t release);
+
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+
 	}; // class ADSR
+
+		/// Alias for a std::shared_ptr instantiated with the ADSR class
 	TYPEDEF_SHARED(ADSR);
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
-// Public Functions             ////////////////////////////////////////////////
+// Public FunctOCAE      ////////////////////////////////////////////////
 
 #endif // __ADSR_HPP

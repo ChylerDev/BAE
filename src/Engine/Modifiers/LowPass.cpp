@@ -21,17 +21,15 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
-	LowPass::LowPass(Math_t cutoff, Math_t resonance) : ModifierBase(false),
+	LowPass::LowPass(Math_t cutoff, Math_t resonance) : ModifierBase(),
 		m_Cutoff(2*PI*cutoff), m_Resonance(resonance),
 		m_Coefficients(), m_Outputs()
 	{
-		m_Table["SetCutoff"] = [this](void * c){ SetCutoff(*reinterpret_cast<Math_t*>(c)); };
-		m_Table["SetResonance"] = [this](void * r){ SetResonance(*reinterpret_cast<Math_t*>(r)); };
-
+		SetMethods(CreateMethodList());
 		Reset();
 	}
 
@@ -70,15 +68,29 @@ namespace Modifier
 
 		return output;
 	}
-} // namespace Modifier
-} // namespace AudioEngine
 
-// Private Functions                      //////////////////////////////////////
+	std::vector<std::tuple<std::string, Void_fn>> LowPass::CreateMethodList()
+	{
+		return {
+			std::make_tuple(
+				std::string("SetCutoff"),
+				Void_fn(
+					[this](void * p){
+						SetCutoff(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+					}
+				)
+			),
+			std::make_tuple(
+				std::string("SetResonance"),
+				Void_fn(
+					[this](void * p){
+						SetResonance(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+					}
+				)
+			)
+		};
+	}
 
-namespace AudioEngine
-{
-namespace Modifier
-{
 	void LowPass::Reset()
 	{
 		static Math_t angle, K, T, x, y, z, g;
@@ -97,4 +109,6 @@ namespace Modifier
 		m_Coefficients[2] = -m_Coefficients[3] * (3 + x);
 	}
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
+
+// Private Functions                      //////////////////////////////////////

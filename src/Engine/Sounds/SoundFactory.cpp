@@ -26,7 +26,7 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Sound
 {
@@ -141,6 +141,6 @@ namespace Sound
 		return BlockPtr(new Block(gen, mod, interactor));
 	}
 } // namespace Sound
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

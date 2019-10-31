@@ -24,7 +24,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
@@ -66,6 +66,8 @@ namespace Generator
 		***********************************************************************/
 		virtual StereoData SendSample(void);
 
+		virtual bool IsBase() { return false; };
+
 		/*! ********************************************************************
 		\brief
 			Sets the frequency to a new value.
@@ -91,10 +93,12 @@ namespace Generator
 		***********************************************************************/
 		Square(Math_t freq);
 
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+
 	}; // class Square
 	TYPEDEF_SHARED(Square);
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

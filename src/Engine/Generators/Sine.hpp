@@ -24,7 +24,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
@@ -67,6 +67,8 @@ namespace Generator
 		***********************************************************************/
 		virtual StereoData SendSample(void);
 
+		virtual bool IsBase() { return false; };
+
 		/*! ********************************************************************
 		\brief
 			Sets the frequency to a new value.
@@ -78,7 +80,7 @@ namespace Generator
 
 		friend class GeneratorFactory;
 
-	private:
+	protected:
 
 		/*! ********************************************************************
 		\brief
@@ -92,6 +94,8 @@ namespace Generator
 
 		// Functions                  ///////////////////////
 
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+
 		/*! ********************************************************************
 		\brief
 			Sets all the coefficients for calculating samples.
@@ -101,7 +105,7 @@ namespace Generator
 	}; // class Sine
 	TYPEDEF_SHARED(Sine);
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

@@ -21,7 +21,7 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Tools
 {
@@ -31,6 +31,6 @@ namespace Tools
 		BitsPerSample(bps)
 	{	}
 } // namespace Tools
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

@@ -21,7 +21,7 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Tools
 {
@@ -30,11 +30,20 @@ namespace Tools
 	{
 	}
 
-	void MethodTable::operator()(std::string const & name, void * val)
+	MethodTable::MethodTable(std::vector<std::tuple<std::string, Void_fn>> const & list) :
+		m_Table()
 	{
-		m_Table.at(name)(val);
+		SetMethods(list);
+	}
+
+	void MethodTable::SetMethods(std::vector<std::tuple<std::string, Void_fn>> const & list)
+	{
+		for(auto & m : list)
+		{
+			m_Table[std::get<0>(m)] = std::get<1>(m);
+		}
 	}
 } // namespace Tools
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

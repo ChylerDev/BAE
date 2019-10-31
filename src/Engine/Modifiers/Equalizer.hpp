@@ -26,14 +26,14 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
 	/*! ************************************************************************
 	\brief
 	***************************************************************************/
-	class Equalizer
+	class Equalizer : public ModifierBase
 	{
 	private:
 
@@ -46,7 +46,7 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
-		Equalizer(int band_count, Math_t lower, Math_t upper);
+		virtual ~Equalizer() = default;
 
 		// Operators            ///////////////////////
 
@@ -54,20 +54,28 @@ namespace Modifier
 
 		// Functions            ///////////////////////
 
+		virtual StereoData FilterSample(StereoData const & input);
+
+		virtual bool IsBase() { return false; };
+
 		void SetGain(int band, Math_t gain);
 
 		friend class ModifierFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
+
+		Equalizer(int band_count, Math_t lower, Math_t upper);
+
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
 
 		void Reset();
 
 	}; // class Equalizer
 	TYPEDEF_SHARED(Equalizer);
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

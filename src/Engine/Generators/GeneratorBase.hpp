@@ -29,12 +29,15 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
 	/*! ************************************************************************
 	\brief
+		General base class for all generator (sounds) to inherit from. Any
+		derived classes with extra methods that may need to be acquired can be
+		accessed through their setup of the Tools::MethodTable.
 	***************************************************************************/
 	class GeneratorBase: public Tools::MethodTable
 	{
@@ -42,14 +45,11 @@ namespace Generator
 
 		// Members              ///////////////////////
 
-		bool is_base;
-
 	public:
 
 		// Con-/De- structors   ///////////////////////
 
-		GeneratorBase(bool b = true) : MethodTable(), is_base(b) {};
-		virtual ~GeneratorBase() = default;
+		virtual ~GeneratorBase() = default; ///< Default destructor.
 
 		// Operators            ///////////////////////
 
@@ -57,21 +57,44 @@ namespace Generator
 
 		// Functions            ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Calculates the sample. For the base class this is simply 0.
+
+		\return
+			0.
+		***********************************************************************/
 		virtual StereoData SendSample(void) { return StereoData(0.f, 0.f); };
 
-		bool IsBase() { return is_base; };
+		/*! ********************************************************************
+		\brief
+			Returns boolean for if the object is a GeneratorBase or not.
+
+		\return
+			True if the object is a GeneratorBase
+		***********************************************************************/
+		virtual bool IsBase() { return true; };
 
 		friend class GeneratorFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Constructor.
+		***********************************************************************/
+		GeneratorBase() : MethodTable(CreateMethodList()) {};
+
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() { return {}; };
+
 	}; // class GeneratorBase
 
+		/// Alias for a std::shared_ptr instantiated with the GeneratorBase class
 	TYPEDEF_SHARED(GeneratorBase);
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

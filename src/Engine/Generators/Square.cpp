@@ -27,14 +27,14 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
-	Square::Square(Math_t f) : GeneratorBase(false),
+	Square::Square(Math_t f) : GeneratorBase(),
 		m_Ind(0), m_Inv(SAMPLE_RATE/(2*f))
 	{
-		m_Table["SetFrequency"] = [this](void * freq){ SetFrequency(*reinterpret_cast<Math_t*>(freq)); };
+		SetMethods(CreateMethodList());
 	}
 
 	StereoData Square::SendSample(void)
@@ -60,7 +60,19 @@ namespace Generator
 	{
 		m_Inv = SAMPLE_RATE/(2*f);
 	}
+
+	std::vector<std::tuple<std::string, Void_fn>> Square::CreateMethodList()
+	{
+		return {
+			std::make_tuple(
+				std::string("SetFrequency"),
+				Void_fn([this](void * f){
+					SetFrequency(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(f)));
+				})
+			)
+		};
+	}
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

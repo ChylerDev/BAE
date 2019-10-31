@@ -17,19 +17,19 @@
 
 // Private Objects                        //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Tools
 {
 	static std::vector<std::string> s_Options;
 } // namespace Tools
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Function Declarations          //////////////////////////////////////
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Tools
 {
@@ -46,6 +46,6 @@ namespace Tools
 		return s_Options[i];
 	}
 } // namespace Tools
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

@@ -22,7 +22,7 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Tools
 {
@@ -71,6 +71,6 @@ namespace Tools
 		return writer.RIFFData();
 	}
 } // namespace Tools
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

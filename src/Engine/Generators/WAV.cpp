@@ -32,37 +32,31 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
-	WAV::WAV() : GeneratorBase(false),
+	WAV::WAV() : GeneratorBase(),
 		m_Resampler()
 	{
-		SetupMethodTable();
+		SetMethods(CreateMethodList());
 	}
 
-	WAV::WAV(std::string const & path) : GeneratorBase(false),
+	WAV::WAV(std::string const & path) : GeneratorBase(),
 		m_Resampler()
 	{
-		SetupMethodTable();
-
 		ReadFile(path);
 	}
 
-	WAV::WAV(std::vector<char> const & data) : GeneratorBase(false),
+	WAV::WAV(std::vector<char> const & data) : GeneratorBase(),
 		m_Resampler()
 	{
-		SetupMethodTable();
-
 		ParseWAV(data.data(), int(data.size()));
 	}
 
-	WAV::WAV(int argc) : GeneratorBase(false),
+	WAV::WAV(int argc) : GeneratorBase(),
 		m_Resampler()
 	{
-		SetupMethodTable();
-
 		ReadFile(Tools::GetOption(argc));
 	}
 
@@ -107,18 +101,17 @@ namespace Generator
 		}
 		return StereoData(SampleType(0), SampleType(0));
 	}
-} // namespace Generator
-} // namespace AudioEngine
 
-// Private Functions                      //////////////////////////////////////
-
-namespace AudioEngine
-{
-namespace Generator
-{
-	void WAV::SetupMethodTable()
+	std::vector<std::tuple<std::string, Void_fn>> WAV::CreateMethodList()
 	{
-		m_Table["ReadFile"] = [this](void * path){ ReadFile(*reinterpret_cast<std::string*>(path)); };
+		return {
+			std::make_tuple(
+				std::string("ReadFile"),
+				Void_fn([this](void * p){
+					ReadFile(std::get<0>(*reinterpret_cast<std::tuple<std::string>*>(p)));
+				})
+			)
+		};
 	}
 
 	void WAV::ParseWAV(char const * array, int size)
@@ -187,4 +180,6 @@ namespace Generator
 		);
 	}
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE
+
+// Private Functions                      //////////////////////////////////////

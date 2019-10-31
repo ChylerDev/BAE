@@ -21,14 +21,14 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
-	Triangle::Triangle(Math_t freq) : GeneratorBase(false),
+	Triangle::Triangle(Math_t freq) : GeneratorBase(),
 		m_Irate(4 * double(freq) * INC_RATE), m_Inc()
 	{
-		m_Table["SetFrequency"] = [this](void * f){ SetFrequency(*reinterpret_cast<Math_t*>(f)); };
+		SetMethods(CreateMethodList());
 	}
 
 	void Triangle::SetFrequency(Math_t freq)
@@ -51,7 +51,19 @@ namespace Generator
 
 		return MONO_TO_STEREO(m_Inc);
 	}
+
+	std::vector<std::tuple<std::string, Void_fn>> Triangle::CreateMethodList()
+	{
+		return {
+			std::make_tuple(
+				std::string("SetFrequency"),
+				Void_fn([this](void * f){
+					SetFrequency(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(f)));
+				})
+			)
+		};
+	}
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

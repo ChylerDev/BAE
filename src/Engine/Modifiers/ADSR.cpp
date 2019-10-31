@@ -21,16 +21,16 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
-	ADSR::ADSR(uint64_t a, uint64_t d, Math_t s, uint64_t r) : ModifierBase(false),
-		m_Attack(1.0/Math_t(a)), m_Decay(s-1/Math_t(d)),
+	ADSR::ADSR(uint64_t a, uint64_t d, Math_t s, uint64_t r) : ModifierBase(),
+		m_Attack(1.0/Math_t(a)), m_Decay((s-1)/Math_t(d)),
 		m_Sustain(s), m_Release(-s/Math_t(r)),
 		m_State(State::attack), m_Gain(0)
 	{
-		m_Table["Release"] = [this](void *){ Release(); };
+		SetMethods(CreateMethodList());
 	}
 
 	void ADSR::Release()
@@ -78,7 +78,17 @@ namespace Modifier
 			SampleType(Math_t(Right(sample)) * m_Gain)
 		);
 	}
+
+	std::vector<std::tuple<std::string, Void_fn>> ADSR::CreateMethodList()
+	{
+		return {
+			std::make_tuple(
+				std::string("Release"),
+				Void_fn([this](void *){ Release(); })
+			)
+		};
+	}
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

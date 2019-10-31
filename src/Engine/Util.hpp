@@ -24,7 +24,7 @@
 
 // Public Functions             ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 	constexpr SampleType & Left(StereoData& s)
 	{
@@ -45,6 +45,6 @@ namespace AudioEngine
 	{
 		return std::get<1>(s);
 	}
-} // namespace AudioEngine
+} // namespace OCAE
 
 #endif // __UTIL_HPP

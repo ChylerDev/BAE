@@ -2,7 +2,7 @@
 \file             ModifierBase.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  OCAE
 
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
@@ -27,7 +27,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
@@ -40,13 +40,10 @@ namespace Modifier
 
 		// Members              ///////////////////////
 
-		bool is_base;
-
 	public:
 
 		// Con-/De- structors   ///////////////////////
 
-		ModifierBase(bool b = true) : MethodTable(), is_base(b) {};
 		virtual ~ModifierBase() = default;
 
 		// Operators            ///////////////////////
@@ -67,18 +64,22 @@ namespace Modifier
 		***********************************************************************/
 		virtual StereoData FilterSample(StereoData const & input) { return input; };
 
-		bool IsBase() { return is_base; };
+		virtual bool IsBase() { return true; };
 
 		friend class ModifierFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
+
+		ModifierBase() : MethodTable(CreateMethodList()) {};
+
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() { return {}; };
 
 	}; // class ModifierBase
 	TYPEDEF_SHARED(ModifierBase);
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

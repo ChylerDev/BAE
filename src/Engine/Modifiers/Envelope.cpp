@@ -21,13 +21,15 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
-	EnvelopeFollower::EnvelopeFollower(Math_t fd, Math_t fu) : ModifierBase(false),
+	EnvelopeFollower::EnvelopeFollower(Math_t fd, Math_t fu) : ModifierBase(),
 		m_AU(), m_BU(), m_AD(), m_BD(), m_X1(), m_Y1()
 	{
+		SetMethods(CreateMethodList());
+
 		double theta_u = std::tan(PI * fu * INC_RATE);
 		double theta_d = std::tan(PI * fd * INC_RATE);
 
@@ -68,7 +70,12 @@ namespace Modifier
 
 		return y;
 	}
+
+	std::vector<std::tuple<std::string, Void_fn>> EnvelopeFollower::CreateMethodList()
+	{
+		return {};
+	}
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

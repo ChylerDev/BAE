@@ -23,7 +23,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Tools
 {
@@ -48,7 +48,7 @@ namespace Tools
 	***************************************************************************/
 	std::string const & GetOption(int index);
 } // namespace Tools
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

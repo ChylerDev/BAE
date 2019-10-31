@@ -23,18 +23,16 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
-	BandPass::BandPass(Math_t f, Math_t Q) :
-		ModifierBase(false), m_CentralFrequency(f), m_Quality(Q),
+	BandPass::BandPass(Math_t f, Math_t Q) : ModifierBase(),
+		m_CentralFrequency(f), m_Quality(Q),
 		m_A0(), m_B1(), m_B2(),
 		m_X1(), m_X2(), m_Y1(), m_Y2()
 	{
-		m_Table["SetFrequency"] = [this](void * freq){ SetFrequency(*reinterpret_cast<Math_t*>(freq)); };
-		m_Table["SetQuality"] = [this](void * qual){ SetQuality(*reinterpret_cast<Math_t*>(qual)); };
-
+		SetMethods(CreateMethodList());
 		Reset();
 	}
 
@@ -78,15 +76,29 @@ namespace Modifier
 
 		return y;
 	}
-} // namespace Modifier
-} // namespace AudioEngine
 
-// Private Functions                      //////////////////////////////////////
+	std::vector<std::tuple<std::string, Void_fn>> BandPass::CreateMethodList()
+	{
+		return {
+			std::make_tuple(
+				std::string("SetFrequency"),
+				Void_fn(
+					[this](void * p){
+						SetFrequency(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+					}
+				)
+			),
+			std::make_tuple(
+				std::string("SetQuality"),
+				Void_fn(
+					[this](void * p){
+						SetQuality(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+					}
+				)
+			)
+		};
+	}
 
-namespace AudioEngine
-{
-namespace Modifier
-{
 	void BandPass::Reset()
 	{
 		Math_t fL, fH;
@@ -120,4 +132,6 @@ namespace Modifier
 		m_B2 = bL * bH;
 	}
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
+
+// Private Functions                      //////////////////////////////////////

@@ -26,7 +26,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
@@ -53,22 +53,26 @@ namespace Modifier
 
 		// Functions            ///////////////////////
 
-		void SetDelay(uint64_t samples);
-
 		virtual StereoData FilterSample(StereoData const & input);
+
+		virtual bool IsBase() { return false; };
+
+		void SetDelay(uint64_t samples);
 
 		friend class ModifierFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
 
 		Delay(uint64_t samples);
 
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+
 	}; // class Delay
 	TYPEDEF_SHARED(Delay);
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

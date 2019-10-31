@@ -24,7 +24,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
@@ -89,9 +89,11 @@ namespace Modifier
 		***********************************************************************/
 		virtual StereoData FilterSample(StereoData const & input);
 
+		virtual bool IsBase() { return false; };
+
 		friend class ModifierFactory;
 
-	private:
+	protected:
 
 		// Functions                  ///////////////////////
 
@@ -108,12 +110,14 @@ namespace Modifier
 		***********************************************************************/
 		LowPass(Math_t cutoff, Math_t resonance);
 
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+
 		void Reset();
 
 	}; // class LowPass
 	TYPEDEF_SHARED(LowPass);
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

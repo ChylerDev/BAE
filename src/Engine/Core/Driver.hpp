@@ -28,13 +28,13 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Core
 {
 	/*! ************************************************************************
 	\brief
-		Initiates Port Audio and handles all related calls.
+		Handles the calculation of audio samples from different Sounds.
 	***************************************************************************/
 	class Driver
 	{
@@ -49,6 +49,7 @@ namespace Core
 			/// The output gain for the output samples
 		Math_t m_Gain;
 
+			/// ID counter for generating IDs
 		static uint64_t s_IDCounter;
 
 	public:
@@ -155,7 +156,7 @@ namespace Core
 		/// Typedef for a std::shared_ptr instantiated with the Driver class
 	TYPEDEF_SHARED(Driver);
 } // namespace Core
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

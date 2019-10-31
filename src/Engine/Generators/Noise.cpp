@@ -21,13 +21,14 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
-	Noise::Noise() : GeneratorBase(false),
+	Noise::Noise() : GeneratorBase(),
 		m_Distribution(-0x8000, 0x7FFF), m_Engine(std::random_device()())
 	{
+		SetMethods(CreateMethodList());
 	}
 
 	StereoData Noise::SendSample()
@@ -38,6 +39,6 @@ namespace Generator
 		return MONO_TO_STEREO(sample);
 	}
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

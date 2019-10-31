@@ -26,7 +26,7 @@
 
 // Public Objects               ////////////////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Sound
 {
@@ -61,7 +61,7 @@ namespace Sound
 
 	}; // class SoundFactory
 } // namespace Sound
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 

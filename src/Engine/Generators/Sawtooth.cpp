@@ -21,14 +21,14 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
-	Sawtooth::Sawtooth(Math_t freq) : GeneratorBase(false),
+	Sawtooth::Sawtooth(Math_t freq) : GeneratorBase(),
 		m_Irate(2 * double(freq) * INC_RATE), m_Inc()
 	{
-		m_Table["SetFrequency"] = [this](void * f){ SetFrequency(*reinterpret_cast<Math_t*>(f)); };
+		SetMethods(CreateMethodList());
 	}
 
 	void Sawtooth::SetFrequency(Math_t freq)
@@ -47,7 +47,19 @@ namespace Generator
 
 		return MONO_TO_STEREO(m_Inc);
 	}
+
+	std::vector<std::tuple<std::string, Void_fn>> Sawtooth::CreateMethodList()
+	{
+		return {
+			std::make_tuple(
+				std::string("SetFrequency"),
+				Void_fn([this](void * f){
+					SetFrequency(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(f)));
+				})
+			)
+		};
+	}
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

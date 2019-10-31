@@ -30,7 +30,7 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
@@ -79,6 +79,6 @@ namespace Modifier
 		return ModifierBasePtr(new LowPass(cutoff, resonance));
 	}
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////
