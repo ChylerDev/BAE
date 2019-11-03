@@ -40,17 +40,18 @@ namespace Tools
 		object. To call the Sine method to set the frequency you would utilize
 		this class in the following manner:
 
-		```c++
-		GeneratorBasePtr obj = CreateSine(440);
+		```
+			GeneratorBasePtr obj = CreateSine(440);
 
-		auto new_freq = 880;
-		(*obj)("SetFrequency", &new_freq);
+			auto new_freq = 880;
+			(*obj)("SetFrequency", &new_freq);
 		```
 	***************************************************************************/
 	class MethodTable
 	{
 	public:
 
+			/// Alias for the mapping of method names to the method
 		using MethodTable_t = std::unordered_map<std::string, Void_fn>;
 
 	protected:
@@ -117,6 +118,13 @@ namespace Tools
 
 		// Functions            ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Sets methods and their names within the internal method table.
+
+		\param list
+			A list of methods and names to be added.
+		***********************************************************************/
 		void SetMethods(std::vector<std::tuple<std::string, Void_fn>> const & list);
 
 	}; // class MethodTable

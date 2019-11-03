@@ -39,24 +39,30 @@ namespace Modifier
 		return ModifierBasePtr(new ModifierBase());
 	}
 
-	ModifierBasePtr ModifierFactory::CreateADSR(uint64_t attack, uint64_t decay, Math_t sustain, uint64_t release)
+	ModifierBasePtr ModifierFactory::CreateADSR(Math_t attack, Math_t decay, Math_t sustain, Math_t release)
 	{
-		return ModifierBasePtr(new ADSR(attack, decay, sustain, release));
+		return ModifierBasePtr(new ADSR(
+			uint64_t(attack*SAMPLE_RATE),
+			uint64_t(decay*SAMPLE_RATE),
+			Math_t(DB_TO_LINEAR(sustain)),
+			uint64_t(release*SAMPLE_RATE)
+		));
 	}
 
-	ModifierBasePtr ModifierFactory::CreateBandPass(Math_t f, Math_t Q)
+	ModifierBasePtr ModifierFactory::CreateBandPass(Math_t lower, Math_t upper)
 	{
-		return ModifierBasePtr(new BandPass(f, Q));
+		Math_t const fc(std::sqrt(lower * upper));
+		return ModifierBasePtr(new BandPass(fc, fc/(upper-lower)));
 	}
 
-	ModifierBasePtr ModifierFactory::CreateDelay(uint64_t samples)
+	ModifierBasePtr ModifierFactory::CreateDelay(Math_t seconds)
 	{
-		return ModifierBasePtr(new Delay(samples));
+		return ModifierBasePtr(new Delay(seconds * SAMPLE_RATE));
 	}
 
-	ModifierBasePtr ModifierFactory::CreateEcho(uint64_t sample_delay, Math_t decay_ratio)
+	ModifierBasePtr ModifierFactory::CreateEcho(Math_t delay_seconds, Math_t decay_ratio)
 	{
-		return ModifierBasePtr(new Echo(sample_delay, decay_ratio));
+		return ModifierBasePtr(new Echo(delay_seconds * SAMPLE_RATE, decay_ratio));
 	}
 
 	ModifierBasePtr ModifierFactory::CreateEnvelopeFollower(Math_t fd, Math_t fu)

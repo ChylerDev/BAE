@@ -146,10 +146,10 @@ int main(int argc, char * argv[])
 		);
 		auto adsr = OCAE::Sound::SoundFactory::CreateBlock(
 			OCAE::Modifier::ModifierFactory::CreateADSR(
-				uint64_t(0.05*SAMPLE_RATE),
-				uint64_t(0.1*SAMPLE_RATE),
-				0.3,
-				uint64_t(0.4*SAMPLE_RATE)
+				0.05,
+				0.1,
+				LINEAR_TO_DB(0.5),
+				0.4
 			)
 		);
 
@@ -168,7 +168,7 @@ int main(int argc, char * argv[])
 			"sine.440.adsr.wav",
 			sine_adsr,
 			[&, adsr](uint64_t i){
-				if(i == 60){
+				if(i == 0.6*SAMPLE_RATE/MAX_BUFFER){
 					adsr->GetModifier()->CallMethod("Release");
 				}
 			}
@@ -184,7 +184,7 @@ int main(int argc, char * argv[])
 
 static void TestSound(std::string filename, OCAE::Sound::SoundPtr sound, std::function<void(uint64_t)> fn)
 {
-		// Initialize objects that should live for the life of the test
+		// Initialize objects that should live for the life of the testing
 	static OCAE::Core::DriverPtr driver = OCAE::Core::DriverPtr(new OCAE::Core::Driver(MAX_BUFFER));
 	static OCAE::Track_t const & driver_output = driver->GetOutputTrack();
 	static OCAE::Track_t output(SAMPLE_RATE, OCAE::StereoData());

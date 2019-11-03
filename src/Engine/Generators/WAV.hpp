@@ -147,4 +147,4 @@ namespace Generator
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __STUB_HPP
+#endif // __WAV_HPP

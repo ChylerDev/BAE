@@ -17,11 +17,18 @@
 #include "../Engine.hpp"
 
 #include "../Tools/MethodTable.hpp"
-#include "ModifierFactory.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
 // Forward References           ////////////////////////////////////////////////
+
+namespace OCAE
+{
+namespace Modifier
+{
+	class ModifierFactory;
+}
+}
 
 // Public Enums                 ////////////////////////////////////////////////
 

@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __STUB_HPP
-#define __STUB_HPP
+#ifndef __SOUND_FACTORY
+#define __SOUND_FACTORY
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -166,4 +166,4 @@ namespace Sound
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __STUB_HPP
+#endif // __SOUND_FACTORY
