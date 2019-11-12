@@ -63,7 +63,7 @@ namespace Modifier
 
 		// Functions                  ///////////////////////
 
-		EnvelopeFollower(Math_t fd, Math_t fu);
+		EnvelopeFollower(Math_t lower, Math_t upper);
 
 		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
 
