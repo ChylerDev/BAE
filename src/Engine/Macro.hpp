@@ -13,8 +13,8 @@
 // Public Macros                ////////////////////////////////////////////////
 
 #ifndef SAMPLE_RATE
-		/// The sample rate OCAE runs at
-	#define SAMPLE_RATE 48'000
+		/// The sample rate OCAE runs at (probably 48kHz)
+	#define SAMPLE_RATE 48000
 #endif // SAMPLE_RATE
 #ifndef INC_RATE
 		/// Inverse of the sample rate
