@@ -48,7 +48,9 @@ namespace Modifier
 
 	public:
 
+			/// Container used for coefficients of zeros of a filter in GenericFilter
 		using ZeroContainer = GenericFilter::ZeroContainer;
+			/// Container used for coefficients of poles of a filter in GenericFilter
 		using PoleContainer = GenericFilter::PoleContainer;
 
 		// Functions            ///////////////////////
@@ -98,13 +100,96 @@ namespace Modifier
 			The generated modifier object.
 		***********************************************************************/
 		static ModifierBasePtr CreateBandPass(Math_t lower, Math_t upper);
+
+		/*! ********************************************************************
+		\brief
+			Creates a delay filter.
+
+		\param seconds
+			The amount of time in seconds to delay for.
+
+		\return
+			The generated modifier object.
+		***********************************************************************/
 		static ModifierBasePtr CreateDelay(Math_t seconds);
+
+		/*! ********************************************************************
+		\brief
+			Creates an echo filter.
+
+		\param delay_seconds
+			The amount of time between echos in seconds.
+
+		\param decay_ratio
+			The decay factor of the echo. Value should be in range of [0,1), if
+			it's >= 1 or < 0 it will be clamped to the range.
+
+		\return
+			The generated modifier object.
+		***********************************************************************/
 		static ModifierBasePtr CreateEcho(Math_t delay_seconds, Math_t decay_ratio);
-		static ModifierBasePtr CreateEnvelopeFollower(Math_t fd, Math_t fu);
+
+		/*! ********************************************************************
+		\brief
+			Creates an envelope follower filter.
+
+		\param lower
+			The lower end of frequencies to follow. Defaults to 20Hz for normal
+			human hearing range.
+
+		\param upper
+			The upper end of frequencies to follow. Defaults to 20kHz for normal
+			human hearing range.
+
+		\return
+			The generated modifier object.
+		***********************************************************************/
+		static ModifierBasePtr CreateEnvelopeFollower(Math_t lower = Math_t(20), Math_t upper = Math_t(20000));
+
+		/*! ********************************************************************
+		\brief
+			Creates a gain filter.
+
+		\param gain
+			The gain to amplify the signal by. Value may be negative.
+
+		\return
+			The generated modifier object.
+		***********************************************************************/
 		static ModifierBasePtr CreateGain(Math_t gain = DEFAULT_GAIN);
+
+		/*! ********************************************************************
+		\brief
+			Creates a generic filter.
+
+		\param zeros
+			The list of coefficients for the zeros of the filter.
+
+		\param poles
+			The list of coefficients for the poles of the filter.
+
+		\return
+			The generated modifier object.
+		***********************************************************************/
 		static ModifierBasePtr CreateGenericFilter(ZeroContainer const & zeros,
 												   PoleContainer const & poles);
-		static ModifierBasePtr CreateLowPass(Math_t cutoff, Math_t resonance);
+
+		/*! ********************************************************************
+		\brief
+			Creates a low pass filter.
+
+		\param cutoff
+			The cutoff frequency of the filter.
+
+		\param resonance
+			The resonance of the filter at the cutoff frequency. Should be in
+			the range of [0, 1/6], if the value is outside of this, it will be
+			clamped to the range. Defaults to 0 for no resonance
+
+		\return
+			The generated modifier object.
+		***********************************************************************/
+		static ModifierBasePtr CreateLowPass(Math_t cutoff, Math_t resonance = 0);
 
 		~ModifierFactory() = delete;
 

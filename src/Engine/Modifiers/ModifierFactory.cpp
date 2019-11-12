@@ -57,12 +57,14 @@ namespace Modifier
 
 	ModifierBasePtr ModifierFactory::CreateDelay(Math_t seconds)
 	{
-		return ModifierBasePtr(new Delay(seconds * SAMPLE_RATE));
+		return ModifierBasePtr(new Delay(uint64_t(seconds * SAMPLE_RATE)));
 	}
 
 	ModifierBasePtr ModifierFactory::CreateEcho(Math_t delay_seconds, Math_t decay_ratio)
 	{
-		return ModifierBasePtr(new Echo(delay_seconds * SAMPLE_RATE, decay_ratio));
+			// Clamp value to within the accepted range
+		decay_ratio = std::clamp(decay_ratio, Math_t(0), Math_t(1));
+		return ModifierBasePtr(new Echo(uint64_t(delay_seconds * SAMPLE_RATE), decay_ratio));
 	}
 
 	ModifierBasePtr ModifierFactory::CreateEnvelopeFollower(Math_t fd, Math_t fu)
@@ -82,6 +84,8 @@ namespace Modifier
 
 	ModifierBasePtr ModifierFactory::CreateLowPass(Math_t cutoff, Math_t resonance)
 	{
+			// Clamp value to within the accepted range
+		resonance = std::clamp(resonance, Math_t(0), Math_t(1)) / Math_t(6);
 		return ModifierBasePtr(new LowPass(cutoff, resonance));
 	}
 } // namespace Modifier
