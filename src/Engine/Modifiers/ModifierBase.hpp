@@ -40,6 +40,15 @@ namespace Modifier
 {
 	/*! ************************************************************************
 	\brief
+		The base Modifier class that all modifiers should inherit from.
+
+		There are a few functions that should be overridden by derived classes,
+		but are also implemented here for default behavior:
+			* FilterSample
+			* IsBase (This function will likely be removed in the future)
+			* CreateMethodList
+
+		See their individual documentation for more info.
 	***************************************************************************/
 	class ModifierBase: public Tools::MethodTable
 	{
@@ -51,6 +60,10 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Default destructor, virtual for inheritence uses.
+		***********************************************************************/
 		virtual ~ModifierBase() = default;
 
 		// Operators            ///////////////////////
@@ -71,8 +84,17 @@ namespace Modifier
 		***********************************************************************/
 		virtual StereoData FilterSample(StereoData const & input) { return input; };
 
+		/*! ********************************************************************
+		\brief
+			Returns boolean for if the object calling this function is a
+			ModifierBase or not.
+
+		\return
+			True for this class, false for any derived class.
+		***********************************************************************/
 		virtual bool IsBase() { return true; };
 
+			/// Add the factory as a friend so it can construct ModifierBase objects
 		friend class ModifierFactory;
 
 	protected:
