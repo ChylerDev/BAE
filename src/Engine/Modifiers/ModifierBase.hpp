@@ -26,6 +26,7 @@ namespace OCAE
 {
 namespace Modifier
 {
+		/// Forward reference for friending
 	class ModifierFactory;
 }
 }
@@ -101,11 +102,27 @@ namespace Modifier
 
 		// Functions                  ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Default Constructor
+		***********************************************************************/
 		ModifierBase() : MethodTable(CreateMethodList()) {};
 
+		/*! ********************************************************************
+		\brief
+			Creates a vector containing the names of functions, and the callable
+			functions themselves.
+
+			See Tools::MethodTable documentation on more info about this system.
+
+		\return
+			The vector containing callable functions and their names as strings.
+		***********************************************************************/
 		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() { return {}; };
 
 	}; // class ModifierBase
+
+		/// Alias for a std::shared_ptr instantiated with the ModifierBase class
 	TYPEDEF_SHARED(ModifierBase);
 } // namespace Modifier
 } // namespace OCAE

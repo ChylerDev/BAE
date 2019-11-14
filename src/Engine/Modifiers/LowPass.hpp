@@ -30,6 +30,7 @@ namespace Modifier
 {
 	/*! ************************************************************************
 	\brief
+		3rd Order Butterworth Low Pass filter with resonance.
 	***************************************************************************/
 	class LowPass : public ModifierBase
 	{

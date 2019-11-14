@@ -39,6 +39,7 @@ namespace Modifier
 {
 	/*! ************************************************************************
 	\brief
+		Factory class for constructing audio filters (Modifiers).
 	***************************************************************************/
 	class ModifierFactory
 	{
@@ -191,11 +192,11 @@ namespace Modifier
 		***********************************************************************/
 		static ModifierBasePtr CreateLowPass(Math_t cutoff, Math_t resonance = 0);
 
+		/*! ********************************************************************
+		\brief
+			Destructor. Deleted to ensure that an object can never be created.
+		***********************************************************************/
 		~ModifierFactory() = delete;
-
-	private:
-
-		// Functions                  ///////////////////////
 
 	}; // class ModifierFactory
 } // namespace Modifier
