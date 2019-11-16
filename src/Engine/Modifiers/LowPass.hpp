@@ -38,9 +38,13 @@ namespace Modifier
 
 		// Members              ///////////////////////
 
+			/// Cutoff frequency
 		Math_t m_Cutoff;
+			/// Resonance
 		Math_t m_Resonance;
+			/// List of coefficients for the filter
 		Math_t m_Coefficients[4];
+			/// Previous outputs for future calculations
 		StereoData m_Outputs[3];
 
 	public:
@@ -90,8 +94,17 @@ namespace Modifier
 		***********************************************************************/
 		virtual StereoData FilterSample(StereoData const & input);
 
+		/*! ********************************************************************
+		\brief
+			Returns boolean for if the object calling this function is a
+			ModifierBase or not.
+
+		\return
+			False.
+		***********************************************************************/
 		virtual bool IsBase() { return false; };
 
+			/// Add the factory as a friend so it can construct ModifierBase objects
 		friend class ModifierFactory;
 
 	protected:
@@ -111,11 +124,27 @@ namespace Modifier
 		***********************************************************************/
 		LowPass(Math_t cutoff, Math_t resonance);
 
+		/*! ********************************************************************
+		\brief
+			Creates a vector containing the names of functions, and the callable
+			functions themselves.
+
+			See Tools::MethodTable documentation on more info about this system.
+
+		\return
+			The vector containing callable functions and their names as strings.
+		***********************************************************************/
 		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
 
+		/*! ********************************************************************
+		\brief
+			Resets the values of the object. Called during construction,
+			SetCutoff, and SetResonance.
+		***********************************************************************/
 		void Reset();
-
 	}; // class LowPass
+
+		/// Alias for a std::shared_ptr instantiated with the LowPass class
 	TYPEDEF_SHARED(LowPass);
 } // namespace Modifier
 } // namespace OCAE

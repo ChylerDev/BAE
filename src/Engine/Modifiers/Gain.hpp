@@ -30,6 +30,8 @@ namespace Modifier
 {
 	/*! ************************************************************************
 	\brief
+		Simple gain filter for amplifying the input signal. The gain value can
+		be negative allowing for inverting the input signal.
 	***************************************************************************/
 	class Gain : public ModifierBase
 	{
@@ -37,19 +39,39 @@ namespace Modifier
 
 		// Members              ///////////////////////
 
+			/// The gain
 		Math_t m_Gain;
 
 	public:
 
 		// Con-/De- structors   ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Destructor.
+		***********************************************************************/
 		virtual ~Gain() = default;
 
 		// Operators            ///////////////////////
 
 		// Accossors/Mutators   ///////////////////////
 
+		/*! ****************************************************************************
+		\brief
+			Sets the gain for the filter.
+
+		\param gain
+			The new gain. Can be negative.
+		*******************************************************************************/
 		void SetGain(Math_t gain);
+
+		/*! ********************************************************************
+		\brief
+			Returns the current gain for the filter.
+
+		\return
+			The gain of the filter.
+		***********************************************************************/
 		Math_t GetGain() const;
 
 		// Functions            ///////////////////////
@@ -66,19 +88,47 @@ namespace Modifier
 		***********************************************************************/
 		virtual StereoData FilterSample(StereoData const & input);
 
+		/*! ********************************************************************
+		\brief
+			Returns boolean for if the object calling this function is a
+			ModifierBase or not.
+
+		\return
+			False.
+		***********************************************************************/
 		virtual bool IsBase() { return false; };
 
+			/// Add the factory as a friend so it can construct ModifierBase objects
 		friend class ModifierFactory;
 
 	protected:
 
 		// Functions                  ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Constructor.
+
+		\param gain
+			The gain to apply to the input data. Can be negative allowing for
+			inverting the signal.
+		***********************************************************************/
 		Gain(Math_t gain = DEFAULT_GAIN);
 
-		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() override;
+		/*! ********************************************************************
+		\brief
+			Creates a vector containing the names of functions, and the callable
+			functions themselves.
 
+			See Tools::MethodTable documentation on more info about this system.
+
+		\return
+			The vector containing callable functions and their names as strings.
+		***********************************************************************/
+		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() override;
 	}; // class Gain
+
+		/// Alias for a std::shared_ptr instantiated with the Gain class
 	TYPEDEF_SHARED(Gain);
 } // namespace Modifier
 } // namespace OCAE
