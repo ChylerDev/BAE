@@ -46,11 +46,17 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
+		LowPass(LowPass const & other) = delete;
+		LowPass(LowPass && other) noexcept = default;
+
 		/*! ********************************************************************
 		\brief
 			Default destructor.
 		***********************************************************************/
 		virtual ~LowPass() = default;
+
+		LowPass & operator=(LowPass const & rhs) = delete;
+		LowPass & operator=(LowPass && rhs) noexcept = default;
 
 		// Operators            ///////////////////////
 

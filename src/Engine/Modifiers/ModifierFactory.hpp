@@ -56,10 +56,10 @@ namespace Modifier
 		static ModifierBasePtr CreateBandPass(Math_t f, Math_t Q = 1);
 		static ModifierBasePtr CreateDelay(uint64_t samples);
 		static ModifierBasePtr CreateEcho(uint64_t sample_delay, Math_t decay_ratio);
+		static ModifierBasePtr CreateEqualizer(uint32_t band_count = 2, Math_t lower = 20, Math_t upper = 20000);
 		static ModifierBasePtr CreateEnvelopeFollower(Math_t fd, Math_t fu);
 		static ModifierBasePtr CreateGain(Math_t gain = DEFAULT_GAIN);
-		static ModifierBasePtr CreateGenericFilter(ZeroContainer const & zeros,
-												   PoleContainer const & poles);
+		static ModifierBasePtr CreateGenericFilter(ZeroContainer const & zeros, PoleContainer const & poles);
 		static ModifierBasePtr CreateLowPass(Math_t cutoff, Math_t resonance);
 
 		~ModifierFactory() = delete;

@@ -46,9 +46,15 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
+		Echo(Echo const & other) = delete;
+		Echo(Echo && other) noexcept = default;
+
 		virtual ~Echo() = default;
 
 		// Operators            ///////////////////////
+
+		Echo & operator=(Echo const & rhs) = delete;
+		Echo & operator=(Echo && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
 

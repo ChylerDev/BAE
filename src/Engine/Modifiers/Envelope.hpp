@@ -45,9 +45,15 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
+		EnvelopeFollower(EnvelopeFollower const & other) = delete;
+		EnvelopeFollower(EnvelopeFollower && other) noexcept = default;
+
 		virtual ~EnvelopeFollower();
 
 		// Operators            ///////////////////////
+
+		EnvelopeFollower & operator=(EnvelopeFollower const & rhs) = delete;
+		EnvelopeFollower & operator=(EnvelopeFollower && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
 

@@ -15,6 +15,7 @@
 #include "BandPass.hpp"
 #include "Delay.hpp"
 #include "Echo.hpp"
+#include "Equalizer.hpp"
 #include "Envelope.hpp"
 #include "Gain.hpp"
 #include "GenericFilter.hpp"
@@ -57,6 +58,11 @@ namespace Modifier
 	ModifierBasePtr ModifierFactory::CreateEcho(uint64_t sample_delay, Math_t decay_ratio)
 	{
 		return ModifierBasePtr(new Echo(sample_delay, decay_ratio));
+	}
+
+	ModifierBasePtr ModifierFactory::CreateEqualizer(uint32_t band_count, Math_t lower, Math_t upper)
+	{
+		return ModifierBasePtr(new Equalizer(band_count, lower, upper));
 	}
 
 	ModifierBasePtr ModifierFactory::CreateEnvelopeFollower(Math_t fd, Math_t fu)

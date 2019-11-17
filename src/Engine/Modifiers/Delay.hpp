@@ -45,9 +45,15 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
+		Delay(Delay const & other) = delete;
+		Delay(Delay && other) noexcept = default;
+
 		virtual ~Delay() = default;
 
 		// Operators            ///////////////////////
+
+		Delay & operator=(Delay const & rhs) = delete;
+		Delay & operator=(Delay && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
 
