@@ -15,6 +15,7 @@
 #include "BandPass.hpp"
 #include "Delay.hpp"
 #include "Echo.hpp"
+#include "Equalizer.hpp"
 #include "Envelope.hpp"
 #include "Gain.hpp"
 #include "GenericFilter.hpp"
@@ -65,6 +66,11 @@ namespace Modifier
 			// Clamp value to within the accepted range
 		decay_ratio = std::clamp(decay_ratio, Math_t(0), Math_t(1));
 		return ModifierBasePtr(new Echo(uint64_t(delay_seconds * SAMPLE_RATE), decay_ratio));
+	}
+
+	ModifierBasePtr ModifierFactory::CreateEqualizer(uint32_t band_count, Math_t lower, Math_t upper)
+	{
+		return ModifierBasePtr(new Equalizer(band_count, lower, upper));
 	}
 
 	ModifierBasePtr ModifierFactory::CreateEnvelopeFollower(Math_t fd, Math_t fu)

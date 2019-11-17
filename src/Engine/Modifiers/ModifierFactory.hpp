@@ -130,6 +130,8 @@ namespace Modifier
 		***********************************************************************/
 		static ModifierBasePtr CreateEcho(Math_t delay_seconds, Math_t decay_ratio);
 
+		static ModifierBasePtr CreateEqualizer(uint32_t band_count = 2, Math_t lower = 20, Math_t upper = 20000);
+
 		/*! ********************************************************************
 		\brief
 			Creates an envelope follower filter.

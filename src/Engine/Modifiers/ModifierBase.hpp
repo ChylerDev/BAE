@@ -14,6 +14,8 @@
 
 #include <cstring>
 
+#include <type_traits>
+
 #include "../Engine.hpp"
 
 #include "../Tools/MethodTable.hpp"
@@ -61,6 +63,9 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
+		ModifierBase(ModifierBase const & other) = delete;
+		ModifierBase(ModifierBase && other) noexcept = default;
+
 		/*! ********************************************************************
 		\brief
 			Default destructor, virtual for inheritence uses.
@@ -68,6 +73,9 @@ namespace Modifier
 		virtual ~ModifierBase() = default;
 
 		// Operators            ///////////////////////
+
+		ModifierBase & operator=(ModifierBase const & rhs) = delete;
+		ModifierBase & operator=(ModifierBase && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
 

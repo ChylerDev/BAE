@@ -16,6 +16,7 @@
 
 #include "../Engine.hpp"
 
+#include "BandPass.hpp"
 #include "ModifierBase.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
@@ -46,11 +47,21 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
+		Equalizer(Equalizer const & other) = delete;
+		Equalizer(Equalizer && other) noexcept = default;
+
 		virtual ~Equalizer() = default;
 
 		// Operators            ///////////////////////
 
+		Equalizer & operator=(Equalizer const & rhs) = delete;
+		Equalizer & operator=(Equalizer && rhs) noexcept = default;
+
 		// Accossors/Mutators   ///////////////////////
+
+		void SetGain(uint32_t band, Math_t gain);
+
+		Math_t GetGain(uint32_t band);
 
 		// Functions            ///////////////////////
 
@@ -58,19 +69,15 @@ namespace Modifier
 
 		virtual bool IsBase() { return false; };
 
-		void SetGain(int band, Math_t gain);
-
 		friend class ModifierFactory;
 
 	protected:
 
 		// Functions                  ///////////////////////
 
-		Equalizer(int band_count, Math_t lower, Math_t upper);
+		Equalizer(uint32_t band_count, Math_t lower, Math_t upper);
 
 		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
-
-		void Reset();
 
 	}; // class Equalizer
 	TYPEDEF_SHARED(Equalizer);

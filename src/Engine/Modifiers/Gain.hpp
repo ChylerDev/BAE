@@ -46,6 +46,9 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
+		Gain(Gain const & other) = delete;
+		Gain(Gain && other) noexcept = default;
+
 		/*! ********************************************************************
 		\brief
 			Destructor.
@@ -53,6 +56,9 @@ namespace Modifier
 		virtual ~Gain() = default;
 
 		// Operators            ///////////////////////
+
+		Gain & operator=(Gain const & rhs) = delete;
+		Gain & operator=(Gain && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
 

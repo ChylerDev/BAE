@@ -66,6 +66,9 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
+		GenericFilter(GenericFilter const & other) = delete;
+		GenericFilter(GenericFilter && other) noexcept = default;
+
 		/*! ********************************************************************
 		\brief
 			Default destructor
@@ -73,6 +76,9 @@ namespace Modifier
 		virtual ~GenericFilter() = default;
 
 		// Operators            ///////////////////////
+
+		GenericFilter & operator=(GenericFilter const & rhs) = delete;
+		GenericFilter & operator=(GenericFilter && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
 

@@ -20,6 +20,15 @@
 
 // Forward References           ////////////////////////////////////////////////
 
+namespace OCAE
+{
+namespace Modifier
+{
+	class ModifierFactory;
+	class Equalizer;
+}
+}
+
 // Public Enums                 ////////////////////////////////////////////////
 
 // Public Objects               ////////////////////////////////////////////////
@@ -46,9 +55,15 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
+		BandPass(BandPass const & other) = delete;
+		BandPass(BandPass && other) noexcept = default;
+
 		virtual ~BandPass();
 
 		// Operators            ///////////////////////
+
+		BandPass & operator=(BandPass const & rhs) = delete;
+		BandPass & operator=(BandPass && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -63,6 +78,7 @@ namespace Modifier
 		virtual bool IsBase() { return false; };
 
 		friend class ModifierFactory;
+		friend class Equalizer;
 
 	protected:
 

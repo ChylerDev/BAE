@@ -59,9 +59,15 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
+		ADSR(ADSR const & other) = delete;
+		ADSR(ADSR && other) noexcept = default;
+
 		virtual ~ADSR() = default;
 
 		// Operators            ///////////////////////
+
+		ADSR & operator=(ADSR const & rhs) = delete;
+		ADSR & operator=(ADSR && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
 
