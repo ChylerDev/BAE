@@ -46,7 +46,22 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Copy constructor. Deleted.
+
+		\param other
+			The other object to be copied.
+		***********************************************************************/
 		Gain(Gain const & other) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The other object to be moved.
+		***********************************************************************/
 		Gain(Gain && other) noexcept = default;
 
 		/*! ********************************************************************
@@ -57,7 +72,28 @@ namespace Modifier
 
 		// Operators            ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Copy assignment operator. Deleted.
+
+		\param rhs
+			The object to be copied.
+
+		\return
+			*this.
+		***********************************************************************/
 		Gain & operator=(Gain const & rhs) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move assignment operator.
+
+		\param rhs
+			The object to be moved.
+
+		\return
+			*this.
+		***********************************************************************/
 		Gain & operator=(Gain && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////

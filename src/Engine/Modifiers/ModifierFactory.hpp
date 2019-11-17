@@ -130,6 +130,22 @@ namespace Modifier
 		***********************************************************************/
 		static ModifierBasePtr CreateEcho(Math_t delay_seconds, Math_t decay_ratio);
 
+		/*! ********************************************************************
+		\brief
+			Creates an equalizer filter.
+
+		\param band_count
+			The number of bands in the equalizer. Defaults to 2.
+
+		\param lower
+			The lowest frequency of the equalizer. Defaults to 20Hz.
+
+		\param upper
+			The highest frequency of the equalizer. Defaults to 20kHz.
+
+		\return
+			The generated modifier object.
+		***********************************************************************/
 		static ModifierBasePtr CreateEqualizer(uint32_t band_count = 2, Math_t lower = 20, Math_t upper = 20000);
 
 		/*! ********************************************************************

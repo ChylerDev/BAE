@@ -51,7 +51,22 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Copy constructor. Deleted.
+
+		\param other
+			The other object to be copied.
+		***********************************************************************/
+
 		LowPass(LowPass const & other) = delete;
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The other object to be moved.
+		***********************************************************************/
 		LowPass(LowPass && other) noexcept = default;
 
 		/*! ********************************************************************
@@ -60,10 +75,31 @@ namespace Modifier
 		***********************************************************************/
 		virtual ~LowPass() = default;
 
-		LowPass & operator=(LowPass const & rhs) = delete;
-		LowPass & operator=(LowPass && rhs) noexcept = default;
-
 		// Operators            ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Copy assignment operator. Deleted.
+
+		\param rhs
+			The object to be copied.
+
+		\return
+			*this.
+		***********************************************************************/
+		LowPass & operator=(LowPass const & rhs) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move assignment operator.
+
+		\param rhs
+			The object to be moved.
+
+		\return
+			*this.
+		***********************************************************************/
+		LowPass & operator=(LowPass && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
 

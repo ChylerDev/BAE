@@ -66,7 +66,22 @@ namespace Modifier
 
 		// Con-/De- structors   ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Copy constructor. Deleted.
+
+		\param other
+			The other object to be copied.
+		***********************************************************************/
 		GenericFilter(GenericFilter const & other) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The other object to be moved.
+		***********************************************************************/
 		GenericFilter(GenericFilter && other) noexcept = default;
 
 		/*! ********************************************************************
@@ -77,7 +92,28 @@ namespace Modifier
 
 		// Operators            ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Assignment operator. Deleted.
+
+		\param rhs
+			The object to copy.
+
+		\return
+			*this.
+		***********************************************************************/
 		GenericFilter & operator=(GenericFilter const & rhs) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move assignment operator.
+
+		\param rhs
+			The object to be copied.
+
+		\return
+			*this.
+		***********************************************************************/
 		GenericFilter & operator=(GenericFilter && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
