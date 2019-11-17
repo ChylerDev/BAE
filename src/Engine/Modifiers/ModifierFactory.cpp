@@ -9,6 +9,8 @@
 
 // Include Files                          //////////////////////////////////////
 
+#include <algorithm>
+
 #include "ModifierFactory.hpp"
 
 #include "ADSR.hpp"
