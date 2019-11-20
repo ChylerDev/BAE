@@ -46,9 +46,36 @@ namespace Modifier
 		return out;
 	}
 
+	void Echo::SetDecayRatio(Math_t ratio)
+	{
+		m_Ratio = ratio;
+	}
+
+	Math_t Echo::GetDecayRatio() const
+	{
+		return m_Ratio;
+	}
+
 	std::vector<std::tuple<std::string, Void_fn>> Echo::CreateMethodList()
 	{
-		return {};
+		return {
+			std::make_tuple(
+				std::string("SetDecayRatio"),
+				Void_fn(
+					[this](void * p){
+						SetDecayRatio(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+					}
+				)
+			),
+			std::make_tuple(
+				std::string("GetDecayRatio"),
+				Void_fn(
+					[this](void * p){
+						std::get<0>(*reinterpret_cast<std::tuple<Math_t &>*>(p)) = GetDecayRatio();
+					}
+				)
+			)
+		};
 	}
 } // namespace Modifier
 } // namespace OCAE

@@ -83,7 +83,7 @@ namespace Modifier
 
 		/*! ********************************************************************
 		\brief
-			Default destructor, virtual for inheritence uses.
+			Destructor, virtual for inheritence uses.
 		***********************************************************************/
 		virtual ~ModifierBase() = default;
 

@@ -86,7 +86,7 @@ namespace Modifier
 
 		/*! ********************************************************************
 		\brief
-			Default destructor
+			Destructor
 		***********************************************************************/
 		virtual ~GenericFilter() = default;
 

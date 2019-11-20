@@ -32,6 +32,8 @@ namespace Modifier
 {
 	/*! ************************************************************************
 	\brief
+		Echo IIR filter. Uses output sample for echoing instead of input,
+		creating an infinite impulse responce (IIR).
 	***************************************************************************/
 	class Echo : public ModifierBase
 	{
@@ -39,7 +41,9 @@ namespace Modifier
 
 		// Members              ///////////////////////
 
+			/// Filtered samples for continuous echo
 		std::deque<StereoData> m_Echo;
+			/// Decay ratio for the echo
 		Math_t m_Ratio;
 
 	public:
@@ -57,6 +61,9 @@ namespace Modifier
 		Echo & operator=(Echo && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
+
+		void SetDecayRatio(Math_t decay_ratio);
+		Math_t GetDecayRatio() const;
 
 		// Functions            ///////////////////////
 

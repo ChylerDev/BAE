@@ -40,11 +40,21 @@ namespace Modifier
 	{
 	}
 
+	Math_t BandPass::GetFrequency() const
+	{
+		return m_CentralFrequency;
+	}
+
 	void BandPass::SetFrequency(Math_t f)
 	{
 		m_CentralFrequency = f;
 
 		Reset();
+	}
+
+	Math_t BandPass::GetQuality() const
+	{
+		return m_Quality;
 	}
 
 	void BandPass::SetQuality(Math_t Q)
@@ -89,10 +99,26 @@ namespace Modifier
 				)
 			),
 			std::make_tuple(
+				std::string("GetFrequency"),
+				Void_fn(
+					[this](void * p){
+						std::get<0>(*reinterpret_cast<std::tuple<Math_t &>*>(p)) = GetFrequency();
+					}
+				)
+			),
+			std::make_tuple(
 				std::string("SetQuality"),
 				Void_fn(
 					[this](void * p){
 						SetQuality(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+					}
+				)
+			),
+			std::make_tuple(
+				std::string("GetQuality"),
+				Void_fn(
+					[this](void * p){
+						std::get<0>(*reinterpret_cast<std::tuple<Math_t &>*>(p)) = GetQuality();
 					}
 				)
 			)

@@ -43,8 +43,9 @@ namespace Tools
 		```
 			GeneratorBasePtr obj = CreateSine(440);
 
-			auto new_freq = 880;
+			Math_t new_freq = 880;
 			(*obj)("SetFrequency", &new_freq);
+			(*obj)("GetFrequency", std::add_lvalue_reference_t<Math_t>(new_freq));
 		```
 	***************************************************************************/
 	class MethodTable

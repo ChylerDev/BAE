@@ -67,8 +67,10 @@ namespace Modifier
 
 		// Accossors/Mutators   ///////////////////////
 
+		Math_t GetFrequency() const;
 		void SetFrequency(Math_t f);
 
+		Math_t GetQuality() const;
 		void SetQuality(Math_t Q);
 
 		// Functions            ///////////////////////
