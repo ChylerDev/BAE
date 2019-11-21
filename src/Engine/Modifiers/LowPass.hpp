@@ -146,7 +146,7 @@ namespace Modifier
 		***********************************************************************/
 		virtual bool IsBase() { return false; };
 
-			/// Add the factory as a friend so it can construct ModifierBase objects
+			/// Add the factory as a friend so it can construct LowPass objects
 		friend class ModifierFactory;
 
 	protected:

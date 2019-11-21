@@ -148,7 +148,7 @@ namespace Modifier
 
 		/*! ********************************************************************
 		\brief
-			Default Constructor
+			Default constructor.
 		***********************************************************************/
 		ModifierBase() : MethodTable(CreateMethodList()) {};
 

@@ -47,6 +47,10 @@ namespace Tools
 			(*obj)("SetFrequency", &new_freq);
 			(*obj)("GetFrequency", std::add_lvalue_reference_t<Math_t>(new_freq));
 		```
+
+		Here, the `std::add_lvalue_reference_t<Math_t>` constructor call ensures
+		that the value you pass in to be the return value is a reference,
+		guaranteeing that the return value is saved properly.
 	***************************************************************************/
 	class MethodTable
 	{
@@ -88,9 +92,13 @@ namespace Tools
 
 		/*! ********************************************************************
 		\brief
-			Calls a method. If the provided function name does not
+			Calls a method.
+
+			If the provided function name does not
 			exist within the map an exception will be thrown by
-			std::unordered_map. If the method is to return a value, the first
+			std::unordered_map.
+
+			If the method is to return a value, the first
 			parameter must be a reference to a value that will store the
 			returned value.
 
