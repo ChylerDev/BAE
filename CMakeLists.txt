@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(OCAE)
+project(AudioEngine)
 
 if(MSVC)
   set(COMPILER_FLAGS "/DWin32 /D_WINDOWS /W4 /WX /GR /EHsc" CACHE STRING "Set compiler flags here")

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.7)
 
-project(AudioEngine CXX)
+project(OCAE CXX)
 
 set(CMAKE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/)
 set(CMAKE_BINARY_DIR ${PROJECT_SOURCE_DIR}/../../bin)
