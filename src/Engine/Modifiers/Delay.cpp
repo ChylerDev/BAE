@@ -54,6 +54,11 @@ namespace Modifier
 		}
 	}
 
+	uint64_t Delay::GetDelay() const
+	{
+		return m_Delay.size();
+	}
+
 	std::vector<std::tuple<std::string, Void_fn>> Delay::CreateMethodList()
 	{
 		return {
@@ -62,6 +67,14 @@ namespace Modifier
 				Void_fn(
 					[this](void * p){
 						SetDelay(std::get<0>(*reinterpret_cast<std::tuple<uint64_t>*>(p)));
+					}
+				)
+			),
+			std::make_tuple(
+				std::string("GetDelay"),
+				Void_fn(
+					[this](void * p){
+						std::get<0>(*reinterpret_cast<std::tuple<uint64_t &>*>(p)) = GetDelay();
 					}
 				)
 			)
