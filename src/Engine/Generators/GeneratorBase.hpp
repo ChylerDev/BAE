@@ -71,7 +71,7 @@ namespace Generator
 			Returns boolean for if the object is a GeneratorBase or not.
 
 		\return
-			True if the object is a GeneratorBase
+			True for this class, false for any derived class.
 		***********************************************************************/
 		virtual bool IsBase() { return true; };
 
