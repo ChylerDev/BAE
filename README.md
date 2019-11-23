@@ -33,3 +33,6 @@ The project will build the executibles and copy the necessary shared libs to rep
 	* Pan
 	* Fade in/out
 	* Equalizer
+
+* Features:
+	* Side-chain
