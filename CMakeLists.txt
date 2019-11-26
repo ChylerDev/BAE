@@ -9,7 +9,7 @@ project(AudioEngine)
 
 # Allow adding of custom compiler flags
 if(MSVC)
-	set(COMPILER_FLAGS "/W4 /WX" CACHE STRING "Set custom MSVC flags here")
+	set(COMPILER_FLAGS "/W4 /WX /EHsc" CACHE STRING "Set custom MSVC flags here")
 else()
 	set(COMPILER_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wconversion\
 		-Winline -Wfloat-equal -Wundef -Wshadow -Wpointer-arith -Wcast-align\
