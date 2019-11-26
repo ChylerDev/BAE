@@ -27,8 +27,8 @@
 #endif // DEFAULT_GAIN
 
 #ifndef MAX_BUFFER
-		/// Macro for the maximum buffer size to allow for high performant audio, which is currently defined as 10ms
-	#define MAX_BUFFER (SAMPLE_RATE/100)
+		/// Macro for the maximum buffer size to allow for high performant audio, which is currently defined as .1ms
+	#define MAX_BUFFER (SAMPLE_RATE/1000)
 #endif // MAX_BUFFER
 
 #ifndef EPSILON
