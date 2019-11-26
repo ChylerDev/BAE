@@ -12,8 +12,6 @@ set(PROJECT_INC_DIR ${PROJECT_SOURCE_DIR}/../../inc)
 
 include_directories(
   ${PROJECT_INC_DIR}
-  ${PROJECT_SOURCE_DIR}/../Libraries/RIFF-Util/inc
-  ${PROJECT_SOURCE_DIR}/../Libraries/Logging/inc
 )
 
 if(WIN32)
@@ -40,7 +38,7 @@ add_executable(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-                        AudioEngine
+                        OCAE
 )
 
 if(WIN32)

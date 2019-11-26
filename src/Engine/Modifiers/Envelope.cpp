@@ -2,9 +2,9 @@
 \file             Envelope.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 // Include Files                          //////////////////////////////////////
@@ -21,67 +21,61 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
+	EnvelopeFollower::EnvelopeFollower(Math_t fd, Math_t fu) : ModifierBase(),
+		m_AU(), m_BU(), m_AD(), m_BD(), m_X1(), m_Y1()
+	{
+		RegisterMethods(CreateMethodList());
 
-  EnvelopeFollower::EnvelopeFollower(float fd, float fu) : Base(false)
-  {
-    // double theta_u = std::tan(PI * fu * INC_RATE);
-    // double theta_d = std::tan(PI * fd * INC_RATE);
+		double theta_u = std::tan(PI * fu * INC_RATE);
+		double theta_d = std::tan(PI * fd * INC_RATE);
 
-    // m_AU = theta_u / (1+theta_u);
-    // m_BU = (1-theta_u) / (1+theta_u);
-    // m_AD = theta_d / (1+theta_d);
-    // m_BD = (1-theta_d) / (1+theta_d);
+		m_AU = theta_u / (1+theta_u);
+		m_BU = (1-theta_u) / (1+theta_u);
+		m_AD = theta_d / (1+theta_d);
+		m_BD = (1-theta_d) / (1+theta_d);
+	}
 
-    double beta_u = SAMPLE_RATE / (SAMPLE_RATE + PI2 * fu);
-    double beta_d = SAMPLE_RATE / (SAMPLE_RATE + PI2 * fd);
+	EnvelopeFollower::~EnvelopeFollower()
+	{
+	}
 
-    m_AU = 1-beta_u;
-    m_BU = beta_u;
-    m_AD = 1-beta_d;
-    m_BD = beta_d;
-  }
+	StereoData EnvelopeFollower::FilterSample(StereoData const & x)
+	{
+		StereoData y;
 
-  EnvelopeFollower::~EnvelopeFollower()
-  {
-  }
+		if(+(Left(x)) > Left(m_Y1))
+		{
+			Left(y) = SampleType(m_AU * +Math_t(Left(x)) + m_BU*Math_t(Left(m_Y1)));
+		}
+		else
+		{
+			Left(y) = SampleType(m_AD * +Math_t(Left(x)) + m_BD*Math_t(Left(m_Y1)));
+		}
 
-  StereoData_t EnvelopeFollower::FilterSample(StereoData_t const & x)
-  {
-    StereoData_t y;
+		if(+(Right(x)) > Right(m_Y1))
+		{
+			Right(y) = SampleType(m_AU * +Math_t(Right(x)) + m_BU*Math_t(Right(m_Y1)));
+		}
+		else
+		{
+			Right(y) = SampleType(m_AD * +Math_t(Right(x)) + m_BD*Math_t(Right(m_Y1)));
+		}
 
-    if(std::abs(std::get<0>(x)) > std::get<0>(m_Y1))
-    {
-      std::get<0>(y) = float(m_AU * std::abs(std::get<0>(x)) + m_BU*std::get<0>(m_Y1));
-      // std::get<0>(y) = float(m_AU * (std::abs(std::get<0>(x))+std::abs(std::get<0>(m_X1))) + m_BU * std::get<0>(m_Y1));
-    }
-    else
-    {
-      std::get<0>(y) = float(m_AD * std::abs(std::get<0>(x)) + m_BD*std::get<0>(m_Y1));
-      // std::get<0>(y) = float(m_AD * (std::abs(std::get<0>(x))+std::abs(std::get<0>(m_X1))) + m_BD * std::get<0>(m_Y1));
-    }
+		m_Y1 = y;
+		m_X1 = x;
 
-    if(std::abs(std::get<1>(x)) > std::get<1>(m_Y1))
-    {
-      std::get<1>(y) = float(m_AU * std::abs(std::get<1>(x)) + m_BU*std::get<1>(m_Y1));
-      // std::get<1>(y) = float(m_AU * (std::abs(std::get<1>(x))+std::abs(std::get<1>(m_X1))) + m_BU * std::get<1>(m_Y1));
-    }
-    else
-    {
-      std::get<1>(y) = float(m_AD * std::abs(std::get<1>(x)) + m_BD*std::get<1>(m_Y1));
-      // std::get<1>(y) = float(m_AD * (std::abs(std::get<1>(x))+std::abs(std::get<1>(m_X1))) + m_BD * std::get<1>(m_Y1));
-    }
+		return y;
+	}
 
-    m_Y1 = y;
-    m_X1 = x;
-
-    return y;
-  }
-
+	Tools::MethodTable::MethodList_t EnvelopeFollower::CreateMethodList()
+	{
+		return {};
+	}
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

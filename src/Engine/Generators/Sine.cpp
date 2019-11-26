@@ -2,9 +2,9 @@
 \file             Sine.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 // Include Files                          //////////////////////////////////////
@@ -25,50 +25,51 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Generator
 {
+	Sine::Sine(Math_t f) : GeneratorBase(),
+		irate(INC_RATE*double(f)),
+		y1(SampleType(std::sin(double(PI2 * irate)))), y2(), beta()
+	{
+		RegisterMethods(CreateMethodList());
+		Reset();
+	}
 
-  Sine::Sine(float f) : Base(false),
-    irate(INC_RATE*double(f)),
-    y1(), y2(), beta()
-  {
-    Reset();
-  }
+	StereoData Sine::SendSample(void)
+	{
+		SampleType y = SampleType(beta * Math_t(y1) - Math_t(y2));
 
-  StereoData_t Sine::SendSample(void)
-  {
-    double y = beta * y1 - y2;
+		y2 = y1;
+		y1 = y;
 
-    y2 = y1;
-    y1 = y;
+		return MONO_TO_STEREO(y);
+	}
 
-    return MONO_TO_STEREO(y);
-  }
+	void Sine::SetFrequency(Math_t f)
+	{
+		irate = INC_RATE * double(f);
+		Reset();
+	}
 
-  void Sine::SetFrequency(float f)
-  {
-    irate = INC_RATE * double(f);
-    Reset();
-  }
+	Tools::MethodTable::MethodList_t Sine::CreateMethodList()
+	{
+		return {
+			std::make_tuple(
+				std::string("SetFrequency"),
+				Tools::MethodTable::Void_fn([this](void * f){
+					SetFrequency(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(f)));
+				})
+			)
+		};
+	}
 
+	void Sine::Reset()
+	{
+		beta = Math_t(2 * std::cos(double(2*PI * irate)));
+	}
 } // namespace Generator
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////
-
-namespace AudioEngine
-{
-namespace Generator
-{
-
-  void Sine::Reset()
-  {
-    y1 = std::sin(PI2 * irate);
-    y2 = 0;
-    beta = 2 * std::cos(2*PI * irate);
-  }
-
-} // namespace Generator
-} // namespace AudioEngine

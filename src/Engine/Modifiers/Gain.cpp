@@ -2,9 +2,9 @@
 \file             Gain.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 // Include Files                          //////////////////////////////////////
@@ -21,32 +21,53 @@
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Modifier
 {
+	Gain::Gain(Math_t gain) : ModifierBase(), m_Gain(gain)
+	{
+		RegisterMethods(CreateMethodList());
+	}
 
-  Gain::Gain(float gain) : Base(false), m_Gain(gain)
-  {
-  }
+	void Gain::SetGain(Math_t gain)
+	{
+		m_Gain = gain;
+	}
 
-  void Gain::SetGain(float gain)
-  {
-    m_Gain = gain;
-  }
+	Math_t Gain::GetGain() const
+	{
+		return m_Gain;
+	}
 
-  float Gain::GetGain() const
-  {
-    return m_Gain;
-  }
+	StereoData Gain::FilterSample(StereoData const & input)
+	{
+		return StereoData(SampleType(Math_t( Left(input)) * m_Gain),
+						  SampleType(Math_t(Right(input)) * m_Gain));
+	}
 
-  StereoData_t Gain::FilterSample(StereoData_t const & input)
-  {
-    return StereoData_t(std::get<0>(input) * m_Gain,
-                        std::get<1>(input) * m_Gain);
-  }
-
+	Tools::MethodTable::MethodList_t Gain::CreateMethodList()
+	{
+		return {
+			std::make_tuple(
+				std::string("SetGain"),
+				Tools::MethodTable::Void_fn(
+					[this](void * p){
+						SetGain(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+					}
+				)
+			),
+			std::make_tuple(
+				std::string("GetGain"),
+				Tools::MethodTable::Void_fn(
+					[this](void * p){
+						std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)) = GetGain();
+					}
+				)
+			)
+		};
+	}
 } // namespace Modifier
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////

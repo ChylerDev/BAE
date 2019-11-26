@@ -1,4 +1,8 @@
 build*/
-bin/
+bin/*/
+bin/*.zip
 
 \.vscode/
+target/
+Cargo.lock
+docs/*/

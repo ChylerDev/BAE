@@ -2,9 +2,9 @@
 \file             Input.cpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
-\par    Project:  AudioEngine
+\par    Project:  Audio Engine
 
-\copyright        Copyright © 2018 Chyler
+\copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
 // Include Files                          //////////////////////////////////////
@@ -17,37 +17,35 @@
 
 // Private Objects                        //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Tools
 {
-  static std::map<int, std::string> s_Options;
+	static std::vector<std::string> s_Options;
 } // namespace Tools
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Function Declarations          //////////////////////////////////////
 
 // Public Functions                       //////////////////////////////////////
 
-namespace AudioEngine
+namespace OCAE
 {
 namespace Tools
 {
+	void InitOptions(int argc, char * argv[])
+	{
+		for(int i = 0; i < argc; ++i)
+		{
+			s_Options.push_back(argv[i]);
+		}
+	}
 
-  void CreateOptions(int argc, char * argv[])
-  {
-    for(int i = 0; i < argc; ++i)
-    {
-      s_Options[i] = argv[i];
-    }
-  }
-
-  std::map<int, std::string> const & GetOptions()
-  {
-    return s_Options;
-  }
-
+	std::string const & GetOption(int i)
+	{
+		return s_Options[i];
+	}
 } // namespace Tools
-} // namespace AudioEngine
+} // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////
