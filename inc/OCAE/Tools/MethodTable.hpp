@@ -44,20 +44,65 @@ namespace Tools
 			GeneratorBasePtr obj = CreateSine(440);
 
 			Math_t new_freq = 880;
-			(*obj)("SetFrequency", &new_freq);
-			(*obj)("GetFrequency", std::add_lvalue_reference_t<Math_t>(new_freq));
+			obj->CallMethod("SetFrequency", &new_freq);
+			obj->CallMethod("GetFrequency", std::add_lvalue_reference_t<Math_t>(new_freq));
 		```
 
 		Here, the `std::add_lvalue_reference_t<Math_t>` constructor call ensures
 		that the value you pass in to be the return value is a reference,
 		guaranteeing that the return value is saved properly.
+
+		It is recommended to construct the method table with the default
+		constructor, and then set the methods for the class in a fashion like:
+
+		```
+		Foo:Foo() : MethodTable(), // ...
+		{
+			RegisterMethods(CreateMethodList());
+
+				// or
+
+			RegisterMethod("method1", [this](void *){ method1(); });
+			RegisterMethod("method2", [this](void *){ method2(); });
+			// ...
+		}
+
+		Tools::MethodTable::MethodList_t Foo::CreateMethodList()
+		{
+				// Returns initializer list that constructs a MethodList_t
+			return {
+				std::make_tuple(
+					std::string("method1"),
+					Tools::MethodTable::Void_fn(
+						[this](void *){ method1(); }
+					)
+				),
+				std::make_tuple(
+					std::string("method2"),
+					Tools::MethodTable::Void_fn(
+						[this](void *){ method2(); }
+					)
+				),
+				// ...
+			};
+		}
+		```
+
+		The user creating the derived classes will need to ensure that it
+		properly registers all the methods they want to be accessible through
+		this class in the constructors of the derived classes, including
+		grandchildren classes.
 	***************************************************************************/
 	class MethodTable
 	{
 	public:
 
+			/// Alias for a void-returning function that takes a void pointer
+		using Void_fn = std::function<void(void*)>;
 			/// Alias for the mapping of method names to the method
 		using MethodTable_t = std::unordered_map<std::string, Void_fn>;
+			/// Alias for the list of method names and their associated methods
+		using MethodList_t = std::vector<std::tuple<std::string, Void_fn>>;
 
 	protected:
 
@@ -72,7 +117,7 @@ namespace Tools
 
 		/*! ********************************************************************
 		\brief
-			Default constructor
+			Default constructor.
 		***********************************************************************/
 		MethodTable();
 
@@ -84,9 +129,13 @@ namespace Tools
 			List of tuples for mapping a string to a function to initialize the
 			internal method table.
 		***********************************************************************/
-		MethodTable(Tools::MethodTable::MethodList_t const & list);
+		MethodTable(MethodList_t const & list);
 
-		virtual ~MethodTable() = default; ///< Default destructor.
+		/*! ********************************************************************
+		\brief
+			Default destructor.
+		***********************************************************************/
+		virtual ~MethodTable() = default;
 
 		// Operators            ///////////////////////
 
@@ -94,19 +143,20 @@ namespace Tools
 		\brief
 			Calls a method.
 
-			If the provided function name does not
-			exist within the map an exception will be thrown by
-			std::unordered_map.
+			If the provided function name does not exist within the map an
+			exception will be thrown by std::unordered_map and the user will
+			need to handle it if desired.
 
-			If the method is to return a value, the first
-			parameter must be a reference to a value that will store the
-			returned value.
+			If the method is to return a value, the first parameter must be a
+			reference to a variable that will store the returned value.
 
 		\tparam Args
 			The arguments' types of the given method.
 
 		\param fn
-			The name of the method.
+			The name of the method. If a function matching this name is
+			registered with the table, an exception will be thrown by
+			std::unordered_map and the user will need to handle it if desired.
 
 		\param args
 			The parameters for the method.
@@ -129,13 +179,38 @@ namespace Tools
 
 		/*! ********************************************************************
 		\brief
-			Sets methods and their names within the internal method table.
+			Registers a single method and its name within the internal method
+			table.
+		
+		\param fn_name
+			The name of the function.
+
+		\param fn_obj
+			The callable function object.
+		***********************************************************************/
+		void RegisterMethod(std::string const & fn_name, Void_fn const & fn_obj);
+
+		/*! ********************************************************************
+		\brief
+			Registers a list of methods and their names within the internal
+			method table.
 
 		\param list
 			A list of methods and names to be added.
 		***********************************************************************/
-		void SetMethods(Tools::MethodTable::MethodList_t const & list);
+		void RegisterMethods(MethodList_t const & list);
 
+		/*! ********************************************************************
+		\brief
+			Creates a vector containing the names of functions, and the callable
+			functions themselves.
+
+			See Tools::MethodTable documentation on more info about this system.
+
+		\return
+			The vector containing callable functions and their names as strings.
+		***********************************************************************/
+		virtual MethodList_t CreateMethodList() = 0;
 	}; // class MethodTable
 } // namespace Tools
 } // namespace OCAE

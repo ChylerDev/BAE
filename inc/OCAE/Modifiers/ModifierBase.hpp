@@ -83,7 +83,7 @@ namespace Modifier
 
 		/*! ********************************************************************
 		\brief
-			Destructor, virtual for inheritence uses.
+			Default destructor.
 		***********************************************************************/
 		virtual ~ModifierBase() = default;
 
@@ -150,7 +150,7 @@ namespace Modifier
 		\brief
 			Default constructor.
 		***********************************************************************/
-		ModifierBase() : MethodTable(CreateMethodList()) {};
+		ModifierBase() : MethodTable() { RegisterMethods(CreateMethodList()); };
 
 		/*! ********************************************************************
 		\brief
