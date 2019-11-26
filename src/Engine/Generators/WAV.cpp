@@ -102,18 +102,6 @@ namespace Generator
 		return StereoData(SampleType(0), SampleType(0));
 	}
 
-	Tools::MethodTable::MethodList_t WAV::CreateMethodList()
-	{
-		return {
-			std::make_tuple(
-				std::string("ReadFile"),
-				Tools::MethodTable::Void_fn([this](void * p){
-					ReadFile(std::get<0>(*reinterpret_cast<std::tuple<std::string>*>(p)));
-				})
-			)
-		};
-	}
-
 	void WAV::ParseWAV(char const * array, int size)
 	{
 			// Copy RIFF data to byte vector
@@ -178,6 +166,26 @@ namespace Generator
 		m_Resampler = std::make_shared<Tools::Resampler>(
 			AudioData, header->SamplingRate, 0, AudioData.size()-1
 		);
+	}
+
+	Tools::MethodTable::MethodList_t WAV::CreateMethodList()
+	{
+		return {
+			std::make_tuple(
+				std::string("ReadFile"),
+				Tools::MethodTable::Void_fn(
+					[this](void * p){
+						ReadFile(
+							std::get<0>(
+								*reinterpret_cast<
+									std::tuple<METHOD_PARAM_T(std::string)>*
+								>(p)
+							)
+						);
+					}
+				)
+			)
+		};
 	}
 } // namespace Generator
 } // namespace OCAE

@@ -44,9 +44,51 @@ namespace Generator
 
 		// Con-/De- structors   ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Copy constructor. Deleted.
+
+		\param other
+			The other object to be copied.
+		***********************************************************************/
+		Sawtooth(Sawtooth const & other) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The other object to be moved.
+		***********************************************************************/
+		Sawtooth(Sawtooth && other) noexcept = default;
+
 		virtual ~Sawtooth() = default;
 
 		// Operators            ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Copy assignment operator. Deleted.
+
+		\param rhs
+			The object to be copied.
+
+		\return
+			*this.
+		***********************************************************************/
+		Sawtooth & operator=(Sawtooth const & rhs) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move assignment operator.
+
+		\param rhs
+			The object to be moved.
+
+		\return
+			*this.
+		***********************************************************************/
+		Sawtooth & operator=(Sawtooth && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
 

@@ -74,6 +74,29 @@
 	#define STEREO_TO_MONO(x) SampleType(Math_t(std::get<0>(x) + std::get<1>(x))/SQRT_HALF)
 #endif // STEREO_TO_MONO
 
+#include <type_traits>
+
+#ifndef METHOD_RET_T
+	#define METHOD_RET_T(t) std::add_lvalue_reference_t<std::remove_const_t<t>>
+#endif
+#ifndef METHOD_RET
+		/// Casts the passed object to be a lvalue reference
+	#define METHOD_RET(v) METHOD_RET_T(decltype(v))(v)
+#endif
+#ifndef METHOD_PARAM_T
+	#define METHOD_PARAM_T(t) std::add_lvalue_reference_t<t const>
+#endif
+#ifndef METHOD_PARAM
+		/// Casts the passed object to the plain type
+	#define METHOD_PARAM(v) METHOD_PARAM_T(decltype(v))(v)
+#endif
+
+#ifndef TYPEDEF_SHARED
+	#include <memory>
+		/// Creates an alias for std::shared_ptr instantiated with the given type
+	#define TYPEDEF_SHARED(type) using type##Ptr = std::shared_ptr<type>
+#endif // TYPEDEF_SHARED
+
 #ifndef TO_STR
 		/// Creates string from "p". E.g. TO_STR(HEAP_SIZE) creates the string "HEAP_SIZE"
 	#define TO_STR(p) #p
@@ -178,11 +201,5 @@
 		#define POP_WARNINGS()
 	#endif // _MSC_VER || __clang__ || __GNUC__
 #endif // POP_WARNINGS
-
-#ifndef TYPEDEF_SHARED
-	#include <memory>
-		/// Creates an alias for std::shared_ptr instantiated with the given type
-	#define TYPEDEF_SHARED(type) using type##Ptr = std::shared_ptr<type>
-#endif // TYPEDEF_SHARED
 
 #endif // __MACRO_HPP

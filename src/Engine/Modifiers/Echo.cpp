@@ -63,7 +63,13 @@ namespace Modifier
 				std::string("SetDecayRatio"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						SetDecayRatio(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+						SetDecayRatio(
+							std::get<0>(
+								*reinterpret_cast<
+									std::tuple<METHOD_PARAM_T(Math_t)>*
+								>(p)
+							)
+						);
 					}
 				)
 			),
@@ -71,7 +77,11 @@ namespace Modifier
 				std::string("GetDecayRatio"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						std::get<0>(*reinterpret_cast<std::tuple<Math_t &>*>(p)) = GetDecayRatio();
+						std::get<0>(
+							*reinterpret_cast<
+								std::tuple<METHOD_RET_T(Math_t)>*
+							>(p)
+						) = GetDecayRatio();
 					}
 				)
 			)

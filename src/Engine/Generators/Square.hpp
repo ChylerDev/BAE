@@ -47,11 +47,53 @@ namespace Generator
 
 		/*! ********************************************************************
 		\brief
+			Copy constructor. Deleted.
+
+		\param other
+			The other object to be copied.
+		***********************************************************************/
+		Square(Square const & other) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The other object to be moved.
+		***********************************************************************/
+		Square(Square && other) noexcept = default;
+
+		/*! ********************************************************************
+		\brief
 			Destructor.
 		***********************************************************************/
 		virtual ~Square() = default;
 
 		// Operators            ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Copy assignment operator. Deleted.
+
+		\param rhs
+			The object to be copied.
+
+		\return
+			*this.
+		***********************************************************************/
+		Square & operator=(Square const & rhs) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move assignment operator.
+
+		\param rhs
+			The object to be moved.
+
+		\return
+			*this.
+		***********************************************************************/
+		Square & operator=(Square && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
 

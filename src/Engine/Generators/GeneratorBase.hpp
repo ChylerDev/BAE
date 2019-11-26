@@ -51,11 +51,53 @@ namespace Generator
 
 		/*! ********************************************************************
 		\brief
+			Copy constructor. Deleted.
+
+		\param other
+			The other object to be copied.
+		***********************************************************************/
+		GeneratorBase(GeneratorBase const & other) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The other object to be moved.
+		***********************************************************************/
+		GeneratorBase(GeneratorBase && other) noexcept = default;
+
+		/*! ********************************************************************
+		\brief
 			Destructor, virtual for inheritence uses.
 		***********************************************************************/
 		virtual ~GeneratorBase() = default;
 
 		// Operators            ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Copy assignment operator. Deleted.
+
+		\param rhs
+			The object to be copied.
+
+		\return
+			*this.
+		***********************************************************************/
+		GeneratorBase & operator=(GeneratorBase const & rhs) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move assignment operator.
+
+		\param rhs
+			The object to be moved.
+
+		\return
+			*this.
+		***********************************************************************/
+		GeneratorBase & operator=(GeneratorBase && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
 

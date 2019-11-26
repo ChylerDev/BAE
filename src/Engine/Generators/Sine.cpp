@@ -53,14 +53,39 @@ namespace Generator
 		Reset();
 	}
 
+	Math_t Sine::GetFrequency() const
+	{
+		return Math_t(irate * SAMPLE_RATE);
+	}
+
 	Tools::MethodTable::MethodList_t Sine::CreateMethodList()
 	{
 		return {
 			std::make_tuple(
 				std::string("SetFrequency"),
-				Tools::MethodTable::Void_fn([this](void * f){
-					SetFrequency(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(f)));
-				})
+				Tools::MethodTable::Void_fn(
+					[this](void * p){
+						SetFrequency(
+							std::get<0>(
+								*reinterpret_cast<
+									std::tuple<METHOD_PARAM_T(Math_t)>*
+								>(p)
+							)
+						);
+					}
+				)
+			),
+			std::make_tuple(
+				std::string("GetFrequency"),
+				Tools::MethodTable::Void_fn(
+					[this](void * p){
+						std::get<0>(
+							*reinterpret_cast<
+								std::tuple<METHOD_RET_T(Math_t)>*
+							>(p)
+						) = GetFrequency();
+					}
+				)
 			)
 		};
 	}

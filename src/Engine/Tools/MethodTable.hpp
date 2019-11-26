@@ -16,6 +16,7 @@
 #include <tuple>
 #include <type_traits>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include "../Engine.hpp"
@@ -44,13 +45,14 @@ namespace Tools
 			GeneratorBasePtr obj = CreateSine(440);
 
 			Math_t new_freq = 880;
-			obj->CallMethod("SetFrequency", &new_freq);
-			obj->CallMethod("GetFrequency", std::add_lvalue_reference_t<Math_t>(new_freq));
+			obj->CallMethod("SetFrequency", &METHOD_PARAM(new_freq));
+			obj->CallMethod("GetFrequency", METHOD_RET(new_freq));
 		```
 
-		Here, the `std::add_lvalue_reference_t<Math_t>` constructor call ensures
-		that the value you pass in to be the return value is a reference,
-		guaranteeing that the return value is saved properly.
+		Here, the `METHOD_RET()` and `METHOD_PARAM` macros ensure that the
+		values passed to the function will have the proper types, guaranteeing
+		they are handled properly. See the macros' documentation and definition
+		in Macro.hpp for more info.
 
 		It is recommended to construct the method table with the default
 		constructor, and then set the methods for the class in a fashion like:
@@ -162,10 +164,10 @@ namespace Tools
 			The parameters for the method.
 		***********************************************************************/
 		template<typename... Args>
-		void CallMethod(std::string const & fn, Args... args)
+		void CallMethod(std::string const & fn, Args&&... args)
 		{
-			using tuple = std::tuple<typename std::remove_reference_t<Args>...>;
-			tuple params(args...);
+			using tuple = std::tuple<Args...>;
+			tuple params(std::forward<Args>(args)...);
 			m_Table.at(fn)(reinterpret_cast<void*>(&params));
 		}
 

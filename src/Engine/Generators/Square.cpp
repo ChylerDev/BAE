@@ -66,9 +66,17 @@ namespace Generator
 		return {
 			std::make_tuple(
 				std::string("SetFrequency"),
-				Tools::MethodTable::Void_fn([this](void * f){
-					SetFrequency(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(f)));
-				})
+				Tools::MethodTable::Void_fn(
+					[this](void * f){
+						SetFrequency(
+							std::get<0>(
+								*reinterpret_cast<
+									std::tuple<METHOD_PARAM_T(Math_t)>*
+								>(f)
+							)
+						);
+					}
+				)
 			)
 		};
 	}

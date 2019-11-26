@@ -48,11 +48,53 @@ namespace Generator
 
 		/*! ********************************************************************
 		\brief
+			Copy constructor. Deleted.
+
+		\param other
+			The other object to be copied.
+		***********************************************************************/
+		Sine(Sine const & other) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The other object to be moved.
+		***********************************************************************/
+		Sine(Sine && other) noexcept = default;
+
+		/*! ********************************************************************
+		\brief
 			Destructor.
 		***********************************************************************/
 		virtual ~Sine() = default;
 
 		// Operators            ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Copy assignment operator. Deleted.
+
+		\param rhs
+			The object to be copied.
+
+		\return
+			*this.
+		***********************************************************************/
+		Sine & operator=(Sine const & rhs) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move assignment operator.
+
+		\param rhs
+			The object to be moved.
+
+		\return
+			*this.
+		***********************************************************************/
+		Sine & operator=(Sine && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -77,6 +119,8 @@ namespace Generator
 			The new frequency.
 		***********************************************************************/
 		void SetFrequency(Math_t freq);
+
+		Math_t GetFrequency() const;
 
 		friend class GeneratorFactory;
 

@@ -84,7 +84,11 @@ namespace Modifier
 		return {
 			std::make_tuple(
 				std::string("Release"),
-				Tools::MethodTable::Void_fn([this](void *){ Release(); })
+				Tools::MethodTable::Void_fn(
+					[this](void *){
+						Release();
+					}
+				)
 			)
 		};
 	}

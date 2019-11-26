@@ -98,7 +98,12 @@ namespace Modifier
 				std::string("SetGain"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						auto t = *reinterpret_cast<std::tuple<uint32_t, Math_t>*>(p);
+						auto t = *reinterpret_cast<
+							std::tuple<
+								METHOD_PARAM_T(uint32_t),
+								METHOD_PARAM_T(Math_t)
+							>*
+						>(p);
 						SetGain(std::get<0>(t), std::get<1>(t));
 					}
 				)
@@ -107,7 +112,12 @@ namespace Modifier
 				std::string("GetGain"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						auto t = *reinterpret_cast<std::tuple<Math_t &, uint32_t>*>(p);
+						auto t = *reinterpret_cast<
+							std::tuple<
+								METHOD_RET_T(Math_t),
+								METHOD_PARAM_T(uint32_t)
+							>*
+						>(p);
 						std::get<0>(t) = GetGain(std::get<1>(t));
 					}
 				)
