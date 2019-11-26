@@ -38,13 +38,36 @@ namespace Generator
 
 		// Members              ///////////////////////
 
+			/// Combination of the sampling rate and desired frequency
 		Math_t irate;
-		SampleType y1, y2;
+			/// Previous sample
+		SampleType y1;
+			/// Previous sample
+		SampleType y2;
+			/// Sinusoidal recurrence relation
 		Math_t beta;
 
 	public:
 
 		// Con-/De- structors   ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Copy constructor. Deleted.
+
+		\param other
+			The other object to be copied.
+		***********************************************************************/
+		Sine(Sine const & other) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The other object to be moved.
+		***********************************************************************/
+		Sine(Sine && other) noexcept = default;
 
 		/*! ********************************************************************
 		\brief
@@ -54,7 +77,49 @@ namespace Generator
 
 		// Operators            ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Copy assignment operator. Deleted.
+
+		\param rhs
+			The object to be copied.
+
+		\return
+			*this.
+		***********************************************************************/
+		Sine & operator=(Sine const & rhs) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move assignment operator.
+
+		\param rhs
+			The object to be moved.
+
+		\return
+			*this.
+		***********************************************************************/
+		Sine & operator=(Sine && rhs) noexcept = default;
+
 		// Accossors/Mutators   ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Sets the frequency to a new value.
+
+		\param freq
+			The new frequency.
+		***********************************************************************/
+		void SetFrequency(Math_t freq);
+
+		/*! ********************************************************************
+		\brief
+			Gets the current frequency.
+
+		\return
+			The frequency of the generator.
+		***********************************************************************/
+		Math_t GetFrequency() const;
 
 		// Functions            ///////////////////////
 
@@ -67,17 +132,16 @@ namespace Generator
 		***********************************************************************/
 		virtual StereoData SendSample(void);
 
-		virtual bool IsBase() { return false; };
-
 		/*! ********************************************************************
 		\brief
-			Sets the frequency to a new value.
+			Returns boolean for if the object is a GeneratorBase or not.
 
-		\param freq
-			The new frequency.
+		\return
+			False.
 		***********************************************************************/
-		void SetFrequency(Math_t freq);
+		virtual bool IsBase() { return false; };
 
+			/// Add the factory as a friend so it can construct Sine objects
 		friend class GeneratorFactory;
 
 	protected:
@@ -94,6 +158,16 @@ namespace Generator
 
 		// Functions                  ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Creates a vector containing the names of functions, and the callable
+			functions themselves.
+
+			See Tools::MethodTable documentation on more info about this system.
+
+		\return
+			The vector containing callable functions and their names as strings.
+		***********************************************************************/
 		virtual Tools::MethodTable::MethodList_t CreateMethodList();
 
 		/*! ********************************************************************
@@ -101,8 +175,9 @@ namespace Generator
 			Sets all the coefficients for calculating samples.
 		***********************************************************************/
 		void Reset(void);
-
 	}; // class Sine
+
+		/// Alias for a std::shared_ptr instantiated with the Sine class
 	TYPEDEF_SHARED(Sine);
 } // namespace Generator
 } // namespace OCAE

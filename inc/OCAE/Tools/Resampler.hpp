@@ -31,6 +31,8 @@ namespace Tools
 {
 	/*! ************************************************************************
 	\brief
+		Class for taking audio data of one sampling rate and translating it to
+		another sampling rate.
 	***************************************************************************/
 	class Resampler
 	{

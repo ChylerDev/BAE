@@ -26,12 +26,14 @@
 
 namespace OCAE
 {
+		/// Define the type used for mathematics operations
 	using Math_t = double;
+		/// Define the type used for sample types
 	using SampleType = float;
-	TYPEDEF_SHARED(SampleType);
+		/// Define the type used for stereo audio data
 	using StereoData = std::tuple<SampleType,SampleType>;
-	TYPEDEF_SHARED(StereoData);
+		/// Define the type used for stereo audio tracks
 	using Track_t = std::vector<StereoData>;
 } // namespace OCAE
 
-#endif  // __TYPES_HPP
+#endif // __TYPES_HPP

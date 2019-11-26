@@ -33,6 +33,11 @@ namespace Modifier
 {
 	/*! ************************************************************************
 	\brief
+		Equalizer filter.
+
+		This filter splits a given signal across bands, using Modifier::BandPass
+		objects to do so, then amplifies each band by a given gain before
+		combining the bands again for the final output.
 	***************************************************************************/
 	class Equalizer : public ModifierBase
 	{
