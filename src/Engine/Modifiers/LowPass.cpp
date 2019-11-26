@@ -76,7 +76,13 @@ namespace Modifier
 				std::string("SetCutoff"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						SetCutoff(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+						SetCutoff(
+							std::get<0>(
+								*reinterpret_cast<
+									std::tuple<METHOD_PARAM_T(Math_t)>*
+								>(p)
+							)
+						);
 					}
 				)
 			),
@@ -84,7 +90,13 @@ namespace Modifier
 				std::string("SetResonance"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						SetResonance(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+						SetResonance(
+							std::get<0>(
+								*reinterpret_cast<
+									std::tuple<METHOD_PARAM_T(Math_t)>*
+								>(p)
+							)
+						);
 					}
 				)
 			)

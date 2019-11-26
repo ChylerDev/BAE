@@ -39,12 +39,18 @@ namespace Modifier
 
 		// Members              ///////////////////////
 
+			/// Tracking variable
+		Math_t m_AU;
+			/// Tracking variable
+		Math_t m_BU;
 			/// Tracking variables
-		Math_t m_AU, m_BU;
-			/// Tracking variables
-		Math_t m_AD, m_BD;
-			/// Previous samples
-		StereoData m_X1, m_Y1;
+		Math_t m_AD;
+			/// Tracking variable
+		Math_t m_BD;
+			/// Previous sample
+		StereoData m_X1;
+			/// Previous sample
+		StereoData m_Y1;
 
 	public:
 

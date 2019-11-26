@@ -29,7 +29,7 @@ namespace Tools
 		AudioFormat(af), ChannelCount(cc), SamplingRate(R),
 		BytesPerSecond((bps >> 3) * cc * R), BytesPerSample(uint16_t((bps >> 3) * cc)),
 		BitsPerSample(bps)
-	{	}
+	{ }
 } // namespace Tools
 } // namespace OCAE
 

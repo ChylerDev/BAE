@@ -66,7 +66,13 @@ namespace Modifier
 				std::string("SetDelay"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						SetDelay(std::get<0>(*reinterpret_cast<std::tuple<uint64_t>*>(p)));
+						SetDelay(
+							std::get<0>(
+								*reinterpret_cast<
+									std::tuple<METHOD_PARAM_T(uint64_t)>*
+								>(p)
+							)
+						);
 					}
 				)
 			),
@@ -74,7 +80,11 @@ namespace Modifier
 				std::string("GetDelay"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						std::get<0>(*reinterpret_cast<std::tuple<uint64_t &>*>(p)) = GetDelay();
+						std::get<0>(
+							*reinterpret_cast<
+								std::tuple<METHOD_RET_T(uint64_t)>*
+							>(p)
+						) = GetDelay();
 					}
 				)
 			)

@@ -14,6 +14,7 @@
 #include <functional>
 #include <thread>
 #include <chrono>
+#include <type_traits>
 
 #include "../Engine/Engine.hpp"
 #include "../Engine/Tools/WAVHeader.hpp"
@@ -42,6 +43,22 @@ int main(int argc, char * argv[])
 {
 	UNREFERENCED_PARAMETER(argc);
 	UNREFERENCED_PARAMETER(argv);
+
+	{
+		std::cout << "Testing MethodTable\n";
+
+		auto sine = OCAE::Generator::GeneratorFactory::CreateSine(440.0);
+
+		std::cout << "Setting frequency from 440 to 880\n";
+
+		OCAE::Math_t new_freq = 880.0;
+		sine->CallMethod("SetFrequency", METHOD_PARAM(new_freq));
+
+		OCAE::Math_t ret_freq;
+		sine->CallMethod("GetFrequency", METHOD_RET(ret_freq));
+
+		std::cout << "New frequency (should be 880): " << ret_freq << "\n\n";
+	}
 
 	{
 		std::cout << "Simple sine test - 1 second @ 440Hz\n";

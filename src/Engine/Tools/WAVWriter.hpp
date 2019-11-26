@@ -32,7 +32,7 @@ namespace Tools
 	\brief
 		To be used in tandom with the recording system built into Core::Driver.
 
-	\param
+	\param audio
 		The audio to be formatted into WAVE (RIFF) data.
 
 	\return

@@ -47,6 +47,7 @@ namespace Generator
 
 		// Members              ///////////////////////
 
+			/// Resampler used for resampling input WAV data to the OCAE's sampling rate
 		Tools::ResamplerPtr m_Resampler;
 
 	public:
