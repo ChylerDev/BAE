@@ -104,9 +104,18 @@ endif()
 
 add_definitions(-DAE_BUILD)
 
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy_directory
-	"${PROJECT_SHARED_DIR}"
-	"${CMAKE_BINARY_DIR}/$<CONFIG>"
-	COMMENT "Copying run-time dependencies"
-)
+if(WIN32)
+	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
+		"${PROJECT_SHARED_DIR}"
+		"${CMAKE_BINARY_DIR}/$<CONFIG>"
+		COMMENT "Copying run-time dependencies"
+	)
+else()
+	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
+		"${PROJECT_SHARED_DIR}"
+		"${CMAKE_BINARY_DIR}"
+		COMMENT "Copying run-time dependencies"
+	)
+endif()
