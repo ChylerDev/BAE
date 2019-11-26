@@ -1,38 +1,45 @@
 # Overly Complicated Audio Engine (OCAE)
 
-Simply, an audio engine designed tocompute sounds using basic generators (sound sources) and modifiers (filters) combined in a graph structure.
+Simply, an audio engine designed to compute sounds using basic generators (sound sources) and modifiers (filters) combined in a graph structure.
 
----
-## Building
+# Building
 
-### Windows
+Building is done through CMake, as it is the solition I am familiar with enough to set up for multi-platform C++ projects.
 
-To create a project solution, download and open CMake (version 3.8 or newer). set the root directory of this repository as the source code location, then set repository root/build as the build location for the binaries.
-Then click Configure, choose win64 for building, and when that's done, click Generate. You'll find the project solution in the build folder.
-Be sure to set the OCAE project as the startup project within Visual Studio!
+Be sure you have CMake v3.8 or newer installed.
 
-### Linux (and maybe others)
+Set the repository root as the source code location, and then set the build
+location of your choice.
 
-Coming soon
+Configure, check the options to see what (if anything) you'd like to change, then configure again.
 
----
-## Usage
+Once you're ready to generated the project files, use the Generate command.
+
+Currently the library has only been tested on Windows 10 (Visual Studio 2019) and Ubuntu (WSL2, GCC 7.4.0/LLVM clang 6.0.0)
+
+# Dependencies
+
+This project uses the [RIFF-Util library](https://gitlab.com/ChylerDev/RIFF-Util) to read and write WAVE data structures (whether loaded from disk or not).
+
+Currently there is no option to disable it if it isn't needed, but this may be an added feature in the future.
+
+# Usage
 
 It should be noted that the factories within this library use std::shared_ptr, which means that any pointer-level copying will not copy the managed objects. This means that improper care of copying could yield to, for example, a generator running twice
 per process loop which is likely not the intended use.
 
----
-## Note:
+# Notes
 
 The project will build the executibles and copy the necessary shared libs to repository root/bin for easy access of the binaries.
 
----
-## Future Expanion
+# Future Expansion
 
 * Modifiers to add:
 	* Pan
 	* Fade in/out
 	* Equalizer
 
+
 * Features:
 	* Side-chain
+	* FFT?
