@@ -48,7 +48,7 @@
 #endif // PI2
 #ifndef LOG_10
 		/// Logarithm of 10, for easy conversion of unknown bases to base 10
-	#define LOG_10 std::log(10.0f)
+	#define LOG_10 std::log(10.0)
 #endif // LOG_10
 #ifndef SQRT_HALF
 		/// sqrt(0.5) for easy use

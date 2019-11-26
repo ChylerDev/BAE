@@ -168,7 +168,7 @@ int main(int argc, char * argv[])
 			"sine.440.adsr.wav",
 			sine_adsr,
 			[&, adsr](uint64_t i){
-				if(i == 0.6*SAMPLE_RATE/MAX_BUFFER){
+				if(i == uint64_t(0.6*SAMPLE_RATE/MAX_BUFFER)){
 					adsr->GetModifier()->CallMethod("Release");
 				}
 			}

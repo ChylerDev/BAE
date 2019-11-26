@@ -42,7 +42,7 @@ namespace OCAE
 namespace Core
 {
 	Driver::Driver(uint64_t track_size, Math_t gain) :
-		m_OutputTrack(track_size, StereoData(SampleType(0),SampleType(0))),
+		m_OutputTrack(track_size, StereoData()),
 		m_Sounds(), m_Gain(gain)
 	{
 		m_OutputTrack.reserve(track_size);
@@ -79,7 +79,7 @@ namespace Core
 	void Driver::Process()
 	{
 			// Reset output track
-		std::fill(m_OutputTrack.begin(), m_OutputTrack.end(), StereoData(SampleType(0),SampleType(0)));
+		std::fill(m_OutputTrack.begin(), m_OutputTrack.end(), StereoData());
 
 		for(auto & sample: m_OutputTrack)
 		{
