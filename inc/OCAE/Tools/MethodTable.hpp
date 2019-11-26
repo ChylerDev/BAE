@@ -84,7 +84,7 @@ namespace Tools
 			List of tuples for mapping a string to a function to initialize the
 			internal method table.
 		***********************************************************************/
-		MethodTable(std::vector<std::tuple<std::string, Void_fn>> const & list);
+		MethodTable(Tools::MethodTable::MethodList_t const & list);
 
 		virtual ~MethodTable() = default; ///< Default destructor.
 
@@ -134,7 +134,7 @@ namespace Tools
 		\param list
 			A list of methods and names to be added.
 		***********************************************************************/
-		void SetMethods(std::vector<std::tuple<std::string, Void_fn>> const & list);
+		void SetMethods(Tools::MethodTable::MethodList_t const & list);
 
 	}; // class MethodTable
 } // namespace Tools

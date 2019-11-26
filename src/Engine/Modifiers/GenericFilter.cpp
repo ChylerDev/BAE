@@ -57,7 +57,7 @@ namespace Modifier
 		return output;
 	}
 
-	std::vector<std::tuple<std::string, Void_fn>> GenericFilter::CreateMethodList()
+	Tools::MethodTable::MethodList_t GenericFilter::CreateMethodList()
 	{
 		return {};
 	}

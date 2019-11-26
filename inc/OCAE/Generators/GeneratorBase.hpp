@@ -87,7 +87,7 @@ namespace Generator
 		***********************************************************************/
 		GeneratorBase() : MethodTable(CreateMethodList()) {};
 
-		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() { return {}; };
+		virtual Tools::MethodTable::MethodList_t CreateMethodList() { return {}; };
 
 	}; // class GeneratorBase
 

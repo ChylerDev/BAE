@@ -28,7 +28,7 @@ namespace Modifier
 	Equalizer::Equalizer(uint32_t band_count, Math_t lower, Math_t upper): ModifierBase(),
 		m_BandGains(band_count, Math_t(1)), m_Bands()
 	{
-		SetMethods(CreateMethodList());
+		RegisterMethods(CreateMethodList());
 
 		Math_t const delta = (std::log10(upper) - std::log10(lower))/Math_t(band_count);
 		Math_t const Q = (std::sqrt(lower * lower * std::pow(10, delta)))/(lower * std::pow(10,delta) - lower);
@@ -91,12 +91,12 @@ namespace OCAE
 {
 namespace Modifier
 {
-	std::vector<std::tuple<std::string, Void_fn>> Equalizer::CreateMethodList()
+	Tools::MethodTable::MethodList_t Equalizer::CreateMethodList()
 	{
 		return {
 			std::make_tuple(
 				std::string("SetGain"),
-				Void_fn(
+				Tools::MethodTable::Void_fn(
 					[this](void * p){
 						auto t = *reinterpret_cast<std::tuple<uint32_t, Math_t>*>(p);
 						SetGain(std::get<0>(t), std::get<1>(t));
@@ -105,7 +105,7 @@ namespace Modifier
 			),
 			std::make_tuple(
 				std::string("GetGain"),
-				Void_fn(
+				Tools::MethodTable::Void_fn(
 					[this](void * p){
 						auto t = *reinterpret_cast<std::tuple<Math_t &, uint32_t>*>(p);
 						std::get<0>(t) = GetGain(std::get<1>(t));

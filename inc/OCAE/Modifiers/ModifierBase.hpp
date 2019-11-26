@@ -162,7 +162,7 @@ namespace Modifier
 		\return
 			The vector containing callable functions and their names as strings.
 		***********************************************************************/
-		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() { return {}; };
+		virtual Tools::MethodTable::MethodList_t CreateMethodList() { return {}; };
 	}; // class ModifierBase
 
 		/// Alias for a std::shared_ptr instantiated with the ModifierBase class

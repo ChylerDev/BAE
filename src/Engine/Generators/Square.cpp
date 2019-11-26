@@ -34,7 +34,7 @@ namespace Generator
 	Square::Square(Math_t f) : GeneratorBase(),
 		m_Ind(0), m_Inv(SAMPLE_RATE/(2*f))
 	{
-		SetMethods(CreateMethodList());
+		RegisterMethods(CreateMethodList());
 	}
 
 	StereoData Square::SendSample(void)
@@ -61,12 +61,12 @@ namespace Generator
 		m_Inv = SAMPLE_RATE/(2*f);
 	}
 
-	std::vector<std::tuple<std::string, Void_fn>> Square::CreateMethodList()
+	Tools::MethodTable::MethodList_t Square::CreateMethodList()
 	{
 		return {
 			std::make_tuple(
 				std::string("SetFrequency"),
-				Void_fn([this](void * f){
+				Tools::MethodTable::Void_fn([this](void * f){
 					SetFrequency(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(f)));
 				})
 			)

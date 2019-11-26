@@ -33,7 +33,7 @@ namespace OCAE
 	TYPEDEF_SHARED(StereoData);
 	using Track_t = std::vector<StereoData>;
 
-	using Void_fn = std::function<void(void*)>;
+	using Tools::MethodTable::Void_fn = std::function<void(void*)>;
 } // namespace OCAE
 
 #endif  // __TYPES_HPP

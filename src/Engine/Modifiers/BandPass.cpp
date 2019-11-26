@@ -32,7 +32,7 @@ namespace Modifier
 		m_A0(), m_B1(), m_B2(),
 		m_X1(), m_X2(), m_Y1(), m_Y2()
 	{
-		SetMethods(CreateMethodList());
+		RegisterMethods(CreateMethodList());
 		Reset();
 	}
 
@@ -87,12 +87,12 @@ namespace Modifier
 		return y;
 	}
 
-	std::vector<std::tuple<std::string, Void_fn>> BandPass::CreateMethodList()
+	Tools::MethodTable::MethodList_t BandPass::CreateMethodList()
 	{
 		return {
 			std::make_tuple(
 				std::string("SetFrequency"),
-				Void_fn(
+				Tools::MethodTable::Void_fn(
 					[this](void * p){
 						SetFrequency(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
 					}
@@ -100,7 +100,7 @@ namespace Modifier
 			),
 			std::make_tuple(
 				std::string("GetFrequency"),
-				Void_fn(
+				Tools::MethodTable::Void_fn(
 					[this](void * p){
 						std::get<0>(*reinterpret_cast<std::tuple<Math_t &>*>(p)) = GetFrequency();
 					}
@@ -108,7 +108,7 @@ namespace Modifier
 			),
 			std::make_tuple(
 				std::string("SetQuality"),
-				Void_fn(
+				Tools::MethodTable::Void_fn(
 					[this](void * p){
 						SetQuality(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
 					}
@@ -116,7 +116,7 @@ namespace Modifier
 			),
 			std::make_tuple(
 				std::string("GetQuality"),
-				Void_fn(
+				Tools::MethodTable::Void_fn(
 					[this](void * p){
 						std::get<0>(*reinterpret_cast<std::tuple<Math_t &>*>(p)) = GetQuality();
 					}

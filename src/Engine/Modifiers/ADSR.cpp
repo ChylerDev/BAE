@@ -30,7 +30,7 @@ namespace Modifier
 		m_Sustain(s), m_Release(-s/Math_t(r)),
 		m_State(State::attack), m_Gain(0)
 	{
-		SetMethods(CreateMethodList());
+		RegisterMethods(CreateMethodList());
 	}
 
 	void ADSR::Release()
@@ -79,12 +79,12 @@ namespace Modifier
 		);
 	}
 
-	std::vector<std::tuple<std::string, Void_fn>> ADSR::CreateMethodList()
+	Tools::MethodTable::MethodList_t ADSR::CreateMethodList()
 	{
 		return {
 			std::make_tuple(
 				std::string("Release"),
-				Void_fn([this](void *){ Release(); })
+				Tools::MethodTable::Void_fn([this](void *){ Release(); })
 			)
 		};
 	}

@@ -94,7 +94,7 @@ namespace Generator
 
 		// Functions                  ///////////////////////
 
-		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+		virtual Tools::MethodTable::MethodList_t CreateMethodList();
 
 		/*! ********************************************************************
 		\brief

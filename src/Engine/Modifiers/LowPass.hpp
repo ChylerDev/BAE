@@ -176,7 +176,7 @@ namespace Modifier
 		\return
 			The vector containing callable functions and their names as strings.
 		***********************************************************************/
-		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+		virtual Tools::MethodTable::MethodList_t CreateMethodList();
 
 		/*! ********************************************************************
 		\brief

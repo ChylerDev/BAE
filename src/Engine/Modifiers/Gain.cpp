@@ -27,7 +27,7 @@ namespace Modifier
 {
 	Gain::Gain(Math_t gain) : ModifierBase(), m_Gain(gain)
 	{
-		SetMethods(CreateMethodList());
+		RegisterMethods(CreateMethodList());
 	}
 
 	void Gain::SetGain(Math_t gain)
@@ -46,12 +46,12 @@ namespace Modifier
 						  SampleType(Math_t(Right(input)) * m_Gain));
 	}
 
-	std::vector<std::tuple<std::string, Void_fn>> Gain::CreateMethodList()
+	Tools::MethodTable::MethodList_t Gain::CreateMethodList()
 	{
 		return {
 			std::make_tuple(
 				std::string("SetGain"),
-				Void_fn(
+				Tools::MethodTable::Void_fn(
 					[this](void * p){
 						SetGain(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
 					}
@@ -59,7 +59,7 @@ namespace Modifier
 			),
 			std::make_tuple(
 				std::string("GetGain"),
-				Void_fn(
+				Tools::MethodTable::Void_fn(
 					[this](void * p){
 						std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)) = GetGain();
 					}

@@ -39,7 +39,7 @@ namespace Generator
 	WAV::WAV() : GeneratorBase(),
 		m_Resampler()
 	{
-		SetMethods(CreateMethodList());
+		RegisterMethods(CreateMethodList());
 	}
 
 	WAV::WAV(std::string const & path) : GeneratorBase(),
@@ -102,12 +102,12 @@ namespace Generator
 		return StereoData(SampleType(0), SampleType(0));
 	}
 
-	std::vector<std::tuple<std::string, Void_fn>> WAV::CreateMethodList()
+	Tools::MethodTable::MethodList_t WAV::CreateMethodList()
 	{
 		return {
 			std::make_tuple(
 				std::string("ReadFile"),
-				Void_fn([this](void * p){
+				Tools::MethodTable::Void_fn([this](void * p){
 					ReadFile(std::get<0>(*reinterpret_cast<std::tuple<std::string>*>(p)));
 				})
 			)

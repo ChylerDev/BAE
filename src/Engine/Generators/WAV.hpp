@@ -47,6 +47,7 @@ namespace Generator
 
 		// Members              ///////////////////////
 
+			/// Resampler used for resampling input WAV data to the OCAE's sampling rate
 		Tools::ResamplerPtr m_Resampler;
 
 	public:
@@ -138,7 +139,7 @@ namespace Generator
 
 		void ParseWAV(char const * array, int size);
 
-		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+		virtual Tools::MethodTable::MethodList_t CreateMethodList();
 
 	}; // class WAV
 	TYPEDEF_SHARED(WAV);

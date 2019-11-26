@@ -64,7 +64,7 @@ namespace Generator
 
 		Triangle(Math_t freq);
 
-		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+		virtual Tools::MethodTable::MethodList_t CreateMethodList();
 
 	}; // class Triangle
 	TYPEDEF_SHARED(Triangle);
