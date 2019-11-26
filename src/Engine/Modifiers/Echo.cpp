@@ -28,7 +28,7 @@ namespace Modifier
 	Echo::Echo(uint64_t sample_delay, Math_t decay_ratio) : ModifierBase(),
 		m_Echo(sample_delay, StereoData()), m_Ratio(decay_ratio)
 	{
-		SetMethods(CreateMethodList());
+		RegisterMethods(CreateMethodList());
 	}
 
 	StereoData Echo::FilterSample(StereoData const & dry)
@@ -46,9 +46,36 @@ namespace Modifier
 		return out;
 	}
 
-	std::vector<std::tuple<std::string, Void_fn>> Echo::CreateMethodList()
+	void Echo::SetDecayRatio(Math_t ratio)
 	{
-		return {};
+		m_Ratio = ratio;
+	}
+
+	Math_t Echo::GetDecayRatio() const
+	{
+		return m_Ratio;
+	}
+
+	Tools::MethodTable::MethodList_t Echo::CreateMethodList()
+	{
+		return {
+			std::make_tuple(
+				std::string("SetDecayRatio"),
+				Tools::MethodTable::Void_fn(
+					[this](void * p){
+						SetDecayRatio(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+					}
+				)
+			),
+			std::make_tuple(
+				std::string("GetDecayRatio"),
+				Tools::MethodTable::Void_fn(
+					[this](void * p){
+						std::get<0>(*reinterpret_cast<std::tuple<Math_t &>*>(p)) = GetDecayRatio();
+					}
+				)
+			)
+		};
 	}
 } // namespace Modifier
 } // namespace OCAE

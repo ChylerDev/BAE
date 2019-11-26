@@ -33,7 +33,7 @@ namespace Generator
 		irate(INC_RATE*double(f)),
 		y1(SampleType(std::sin(double(PI2 * irate)))), y2(), beta()
 	{
-		SetMethods(CreateMethodList());
+		RegisterMethods(CreateMethodList());
 		Reset();
 	}
 
@@ -53,12 +53,12 @@ namespace Generator
 		Reset();
 	}
 
-	std::vector<std::tuple<std::string, Void_fn>> Sine::CreateMethodList()
+	Tools::MethodTable::MethodList_t Sine::CreateMethodList()
 	{
 		return {
 			std::make_tuple(
 				std::string("SetFrequency"),
-				Void_fn([this](void * f){
+				Tools::MethodTable::Void_fn([this](void * f){
 					SetFrequency(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(f)));
 				})
 			)

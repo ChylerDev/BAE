@@ -1,41 +1,31 @@
 cmake_minimum_required(VERSION 3.7)
 
-project(AudioEngine CXX)
+project(OCAE CXX)
 
 set(CMAKE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/)
 set(CMAKE_BINARY_DIR ${PROJECT_SOURCE_DIR}/../../bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 set(PROJECT_LIB_DIR ${PROJECT_SOURCE_DIR}/../../lib)
 set(PROJECT_INC_DIR ${PROJECT_SOURCE_DIR}/../../inc)
 
-include_directories(
-	${PROJECT_INC_DIR}
-)
+include_directories(${PROJECT_INC_DIR})
 
+link_directories(BEFORE ${PROJECT_LIB_DIR})
+set(CMAKE_PREFIX_PATH ${PROJECT_LIB_DIR} ${CMAKE_PREFIX_PATH})
+
+# Set up where shared libraries are located per platform
 if(WIN32)
-	set(PLATFORM_LIB_DIR ${PROJECT_LIB_DIR}/win)
-elseif(UNIX)
-	set(PLATFORM_LIB_DIR ${PROJECT_LIB_DIR}/linux)
+	set(PROJECT_SHARED_DIR ${PROJECT_LIB_DIR}/shared_win)
 else()
-	set(PLATFORM_LIB_DIR ${PROJECT_LIB_DIR})
-endif()
-
-link_directories(BEFORE ${PLATFORM_LIB_DIR})
-set(CMAKE_PREFIX_PATH ${PLATFORM_LIB_DIR} ${CMAKE_PREFIX_PATH})
-
-if(WIN32)
-	if(${CMAKE_CONFIGURATION_TYPES} STREQUAL "Debug")
-		find_library(RIFF RIFF_d)
-	else()
-		find_library(RIFF RIFF)
-	endif()
-else()
-	find_library(RIFF RIFF)
+	set(PROJECT_SHARED_DIR ${PROJECT_LIB_DIR}/shared_linux)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
+
+find_library(RIFF RIFF)
 
 set(core_files
 	${CMAKE_SOURCE_DIR}/Core/Driver.cpp ${CMAKE_SOURCE_DIR}/Core/Driver.hpp
@@ -110,14 +100,22 @@ target_link_libraries(${PROJECT_NAME}
 
 if(WIN32)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-	set_target_properties(${PROJECT_NAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS true)
 endif()
 
 add_definitions(-DAE_BUILD)
 
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy_directory
-	"${PLATFORM_LIB_DIR}"
-	"${CMAKE_BINARY_DIR}/$<CONFIG>"
-	COMMENT "Copying run-time dependencies"
-)
+if(WIN32)
+	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
+		"${PROJECT_SHARED_DIR}"
+		"${CMAKE_BINARY_DIR}/$<CONFIG>"
+		COMMENT "Copying run-time dependencies"
+	)
+else()
+	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy_directory
+		"${PROJECT_SHARED_DIR}"
+		"${CMAKE_BINARY_DIR}"
+		COMMENT "Copying run-time dependencies"
+	)
+endif()

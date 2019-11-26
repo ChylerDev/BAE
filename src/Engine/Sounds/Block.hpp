@@ -35,27 +35,36 @@ namespace Sound
 {
 	/*! ************************************************************************
 	\brief
+		This class defines a way of holding a Generator, Modifier and a method
+		of combining the outputs of both of them to produce a single output
+		sample.
 	***************************************************************************/
 	class Block
 	{
 	public:
 
-			// StereoData interactor(StereoData GeneratorSample, StereoData ModifierSample)
+			/// Alias for a function that returns a sample, and takes in a generator sample as the first parameter and a modifier sample as the second parameter
 		using Interaction_f = std::function<StereoData(StereoData, StereoData)>;
 
+			/// Alias for GeneratorBasePtr
 		using GenBasePtr = Generator::GeneratorBasePtr;
+			/// Alias for ModifierBasePtr
 		using ModBasePtr = Modifier::ModifierBasePtr;
 
 	private:
 
 		// Members              ///////////////////////
 
+			/// The generator managed by this Block
 		GenBasePtr m_Generator;
+			/// The modifier managed by this Block
 		ModBasePtr m_Modifier;
-
+			/// The interactor used by this Block
 		Interaction_f m_Interaction;
 
+			/// The input sample
 		StereoData m_Input;
+			/// The output sample
 		StereoData m_Output;
 
 	public:
@@ -87,16 +96,66 @@ namespace Sound
 
 		// Accossors/Mutators   ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Returns a reference to the managed generator.
+
+		\return
+			The managed generator.
+		***********************************************************************/
 		GenBasePtr & GetGenerator();
+
+		/*! ********************************************************************
+		\brief
+			Returns a reference to the managed modifier.
+
+		\return
+			The managed modifier.
+		***********************************************************************/
 		ModBasePtr & GetModifier();
+
+		/*! ********************************************************************
+		\brief
+			Returns a reference to the managed generator.
+
+		\return
+			The managed generator.
+		***********************************************************************/
 		GenBasePtr const & GetGenerator() const;
+
+		/*! ********************************************************************
+		\brief
+			Returns a reference to the managed modifier.
+
+		\return
+			The managed modifier.
+		***********************************************************************/
 		ModBasePtr const & GetModifier() const;
 
+		/*! ********************************************************************
+		\brief
+			Primes the input for the next Process loop.
+
+		\param input
+			The input.
+		***********************************************************************/
 		void PrimeInput(StereoData input);
+
+		/*! ********************************************************************
+		\brief
+			Returns the output of the last Process loop.
+
+		\return
+			The most recent output.
+		***********************************************************************/
 		StereoData LastOutput();
 
 		// Functions            ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Processes the managed objects.
+		***********************************************************************/
 		void Process();
 
 	private:
@@ -104,6 +163,8 @@ namespace Sound
 		// Functions                  ///////////////////////
 
 	}; // class Block
+
+		/// Alias for std::shared_ptr instantiated with Block.
 	TYPEDEF_SHARED(Block);
 } // namespace Sound
 } // namespace OCAE

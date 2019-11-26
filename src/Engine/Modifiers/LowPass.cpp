@@ -29,7 +29,7 @@ namespace Modifier
 		m_Cutoff(2*PI*cutoff), m_Resonance(resonance),
 		m_Coefficients(), m_Outputs()
 	{
-		SetMethods(CreateMethodList());
+		RegisterMethods(CreateMethodList());
 		Reset();
 	}
 
@@ -69,12 +69,12 @@ namespace Modifier
 		return output;
 	}
 
-	std::vector<std::tuple<std::string, Void_fn>> LowPass::CreateMethodList()
+	Tools::MethodTable::MethodList_t LowPass::CreateMethodList()
 	{
 		return {
 			std::make_tuple(
 				std::string("SetCutoff"),
-				Void_fn(
+				Tools::MethodTable::Void_fn(
 					[this](void * p){
 						SetCutoff(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
 					}
@@ -82,7 +82,7 @@ namespace Modifier
 			),
 			std::make_tuple(
 				std::string("SetResonance"),
-				Void_fn(
+				Tools::MethodTable::Void_fn(
 					[this](void * p){
 						SetResonance(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
 					}

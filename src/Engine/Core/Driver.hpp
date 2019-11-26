@@ -150,7 +150,6 @@ namespace Core
 			The generated ID value.
 		***********************************************************************/
 		static uint64_t GetID();
-
 	}; // class Driver
 
 		/// Typedef for a std::shared_ptr instantiated with the Driver class

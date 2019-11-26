@@ -30,6 +30,7 @@ namespace Modifier
 {
 	/*! ************************************************************************
 	\brief
+		3rd Order Butterworth Low Pass filter with resonance.
 	***************************************************************************/
 	class LowPass : public ModifierBase
 	{
@@ -37,28 +38,68 @@ namespace Modifier
 
 		// Members              ///////////////////////
 
+			/// Cutoff frequency
 		Math_t m_Cutoff;
+			/// Resonance
 		Math_t m_Resonance;
+			/// List of coefficients for the filter
 		Math_t m_Coefficients[4];
+			/// Previous outputs for future calculations
 		StereoData m_Outputs[3];
 
 	public:
 
 		// Con-/De- structors   ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Copy constructor. Deleted.
+
+		\param other
+			The other object to be copied.
+		***********************************************************************/
+
 		LowPass(LowPass const & other) = delete;
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The other object to be moved.
+		***********************************************************************/
 		LowPass(LowPass && other) noexcept = default;
 
 		/*! ********************************************************************
 		\brief
-			Default destructor.
+			Destructor.
 		***********************************************************************/
 		virtual ~LowPass() = default;
 
-		LowPass & operator=(LowPass const & rhs) = delete;
-		LowPass & operator=(LowPass && rhs) noexcept = default;
-
 		// Operators            ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Copy assignment operator. Deleted.
+
+		\param rhs
+			The object to be copied.
+
+		\return
+			*this.
+		***********************************************************************/
+		LowPass & operator=(LowPass const & rhs) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move assignment operator.
+
+		\param rhs
+			The object to be moved.
+
+		\return
+			*this.
+		***********************************************************************/
+		LowPass & operator=(LowPass && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -95,8 +136,17 @@ namespace Modifier
 		***********************************************************************/
 		virtual StereoData FilterSample(StereoData const & input);
 
+		/*! ********************************************************************
+		\brief
+			Returns boolean for if the object calling this function is a
+			ModifierBase or not.
+
+		\return
+			False.
+		***********************************************************************/
 		virtual bool IsBase() { return false; };
 
+			/// Add the factory as a friend so it can construct LowPass objects
 		friend class ModifierFactory;
 
 	protected:
@@ -116,11 +166,27 @@ namespace Modifier
 		***********************************************************************/
 		LowPass(Math_t cutoff, Math_t resonance);
 
-		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+		/*! ********************************************************************
+		\brief
+			Creates a vector containing the names of functions, and the callable
+			functions themselves.
 
+			See Tools::MethodTable documentation on more info about this system.
+
+		\return
+			The vector containing callable functions and their names as strings.
+		***********************************************************************/
+		virtual Tools::MethodTable::MethodList_t CreateMethodList();
+
+		/*! ********************************************************************
+		\brief
+			Resets the values of the object. Called during construction,
+			SetCutoff, and SetResonance.
+		***********************************************************************/
 		void Reset();
-
 	}; // class LowPass
+
+		/// Alias for a std::shared_ptr instantiated with the LowPass class
 	TYPEDEF_SHARED(LowPass);
 } // namespace Modifier
 } // namespace OCAE

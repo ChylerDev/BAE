@@ -36,17 +36,25 @@ namespace Tools
 	{
 	private:
 
+			/// Type used for fractional indexing
 		using Index_t = Math_t;
 
 		// Members              ///////////////////////
 
+			/// The original audio data
 		std::vector<StereoData> m_Data;
 
+			/// The index for tracking position within the audio data
 		Index_t m_Index;
+			/// The value to increment the index by
 		Math_t const m_IndexIncrement;
+			/// The playback speed, allows speeding up and slowing down the data
 		Math_t m_PlaybackSpeed;
 
-		uint64_t m_LoopStart, m_LoopEnd;
+			/// The start position of the loop in samples, if any
+		uint64_t m_LoopStart;
+			/// The end position of the loop in samples, if any
+		uint64_t m_LoopEnd;
 
 	public:
 
@@ -54,7 +62,8 @@ namespace Tools
 
 		/*! ********************************************************************
 		\brief
-			Constructor for the resampler.
+			Constructor for the resampler. If the resampler is set up to loop,
+			the range of the looping is [LoopStart, LoopEnd).
 
 		\param AudioData
 			A const reference to the audio data.
@@ -102,8 +111,9 @@ namespace Tools
 	private:
 
 		// Functions                  ///////////////////////
-
 	}; // class Resampler
+
+		/// Alias for a std::shared_ptr instantiated with the Resampler class
 	TYPEDEF_SHARED(Resampler);
 } // namespace Tools
 } // namespace OCAE

@@ -49,7 +49,11 @@ namespace Generator
 
 		// Con-/De- structors   ///////////////////////
 
-		virtual ~GeneratorBase() = default; ///< Default destructor.
+		/*! ********************************************************************
+		\brief
+			Destructor, virtual for inheritence uses.
+		***********************************************************************/
+		virtual ~GeneratorBase() = default;
 
 		// Operators            ///////////////////////
 
@@ -71,10 +75,11 @@ namespace Generator
 			Returns boolean for if the object is a GeneratorBase or not.
 
 		\return
-			True if the object is a GeneratorBase
+			True for this class, false for any derived class.
 		***********************************************************************/
 		virtual bool IsBase() { return true; };
 
+			/// Add the factory as a friend so it can construct GeneratorBase objects
 		friend class GeneratorFactory;
 
 	protected:
@@ -85,9 +90,19 @@ namespace Generator
 		\brief
 			Constructor.
 		***********************************************************************/
-		GeneratorBase() : MethodTable(CreateMethodList()) {};
+		GeneratorBase() : MethodTable() { RegisterMethods(CreateMethodList()); };
 
-		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList() { return {}; };
+		/*! ********************************************************************
+		\brief
+			Creates a vector containing the names of functions, and the callable
+			functions themselves.
+
+			See Tools::MethodTable documentation on more info about this system.
+
+		\return
+			The vector containing callable functions and their names as strings.
+		***********************************************************************/
+		virtual Tools::MethodTable::MethodList_t CreateMethodList() { return {}; };
 
 	}; // class GeneratorBase
 

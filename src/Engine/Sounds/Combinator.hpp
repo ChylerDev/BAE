@@ -28,11 +28,16 @@ namespace Sound
 {
 	/*! ************************************************************************
 	\brief
+		This class allows for a modifyable way of combining a list of samples.
 	***************************************************************************/
 	class Combinator
 	{
 	public:
 
+		/*! ********************************************************************
+		\brief
+			Enum defining the types of combinations that are possible.
+		***********************************************************************/
 		enum Combinations
 		{
 			Addition,
@@ -43,12 +48,20 @@ namespace Sound
 
 		// Members              ///////////////////////
 
+			/// The combination method used for this Combinator
 		Combinations m_Combination;
 
 	public:
 
 		// Con-/De- structors   ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Constructor.
+
+		\param c
+			The combination type for the object to use.
+		***********************************************************************/
 		Combinator(Combinations c = Addition);
 
 		// Operators            ///////////////////////
@@ -57,6 +70,23 @@ namespace Sound
 
 		// Functions            ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Processes the objects sequentially and either adds them or
+			multiplies them depending on how the object was constructed.
+
+		\tparam Iterator
+			The iterator type to process.
+
+		\param first
+			The beginning of the list.
+
+		\param last
+			The end of the list.
+
+		\return
+			The result of the Processing.
+		***********************************************************************/
 		template<typename Iterator>
 		StereoData Process(Iterator first, Iterator last)
 		{
@@ -94,6 +124,8 @@ namespace Sound
 		// Functions                  ///////////////////////
 
 	}; // class Combinator
+
+		/// Alias for std::shared_ptr instantiated with Combinator.
 	TYPEDEF_SHARED(Combinator);
 } // namespace Sound
 } // namespace OCAE

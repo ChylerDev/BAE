@@ -29,9 +29,7 @@ namespace Modifier
 		ModifierBase(),
 		m_Zeros(zeros), m_Poles(poles),
 		m_Inputs(std::get<0>(m_Zeros.back()), StereoData()),
-		m_Outputs(std::get<0>(m_Poles.back()), StereoData()),
-		m_MaxXSubscript(std::get<0>(m_Zeros.back())),
-		m_MaxYSubscript(std::get<0>(m_Poles.back()))
+		m_Outputs(std::get<0>(m_Poles.back()), StereoData())
 	{
 	}
 
@@ -59,7 +57,7 @@ namespace Modifier
 		return output;
 	}
 
-	std::vector<std::tuple<std::string, Void_fn>> GenericFilter::CreateMethodList()
+	Tools::MethodTable::MethodList_t GenericFilter::CreateMethodList()
 	{
 		return {};
 	}

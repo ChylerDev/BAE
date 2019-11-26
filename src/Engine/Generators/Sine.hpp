@@ -48,7 +48,7 @@ namespace Generator
 
 		/*! ********************************************************************
 		\brief
-			Default destructor.
+			Destructor.
 		***********************************************************************/
 		virtual ~Sine() = default;
 
@@ -94,7 +94,7 @@ namespace Generator
 
 		// Functions                  ///////////////////////
 
-		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+		virtual Tools::MethodTable::MethodList_t CreateMethodList();
 
 		/*! ********************************************************************
 		\brief

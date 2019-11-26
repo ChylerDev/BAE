@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __STUB_HPP
-#define __STUB_HPP
+#ifndef __SOUND_FACTORY
+#define __SOUND_FACTORY
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -32,6 +32,8 @@ namespace Sound
 {
 	/*! ************************************************************************
 	\brief
+		Class containing functions that will generate Sound and Block objects
+		from common inputs.
 	***************************************************************************/
 	class SoundFactory
 	{
@@ -43,16 +45,116 @@ namespace Sound
 
 		// Functions            ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Creates a Sound object with no associated generators or modifiers.
+
+		\return
+			The generated Sound object wrapped inside a std::shared_ptr.
+		***********************************************************************/
 		static SoundPtr CreateEmptySound();
-		static SoundPtr CreateBasicGenerator(Generator::GeneratorBasePtr const &);
-		static SoundPtr CreateBasicModifier(Modifier::ModifierBasePtr const &);
 
-		static BlockPtr CreateBlock(Generator::GeneratorBasePtr const &);
-		static BlockPtr CreateBlock(Modifier::ModifierBasePtr const &);
-		static BlockPtr CreateBlock(Generator::GeneratorBasePtr const &, Modifier::ModifierBasePtr const &);
-		static BlockPtr CreateBlock(Generator::GeneratorBasePtr const &, Modifier::ModifierBasePtr const &, Block::Interaction_f const & interactor);
+		/*! ********************************************************************
+		\brief
+			Creates a Sound object from a given generator.
 
-		~SoundFactory() = delete;
+		\param g
+			The generator to be processed within this Sound object.
+
+		\return
+			The generated Sound object wrapped inside a std::shared_ptr.
+		***********************************************************************/
+		static SoundPtr CreateBasicGenerator(Generator::GeneratorBasePtr const & g);
+
+		/*! ********************************************************************
+		\brief
+			Creates a Sound object from a given modifier.
+			The modifier takes input from the input the Sound object is given.
+
+		\param m
+			The modifier to be processed within this Sound object.
+
+		\return
+			The generated Sound object wrapped inside a std::shared_ptr.
+		***********************************************************************/
+		static SoundPtr CreateBasicModifier(Modifier::ModifierBasePtr const & m);
+
+		/*! ********************************************************************
+		\brief
+			Creates a Block object from a given generator.
+
+			When processed, the output of the generator is forwarded to the
+			output of the Block.
+
+		\param g
+			The generator to be held within the Block.
+
+		\return
+			The generated Block object wrapped inside a std::shared_ptr.
+		***********************************************************************/
+		static BlockPtr CreateBlock(Generator::GeneratorBasePtr const & g);
+
+		/*! ********************************************************************
+		\brief
+			Creates a Block object from a given modifier.
+
+			When processed, the output of the modifier is forwarded to the
+			output of the Block.
+
+		\param m
+			The modifier to be held within the Block.
+
+		\return
+			The generated Block object wrapped inside a std::shared_ptr.
+		***********************************************************************/
+		static BlockPtr CreateBlock(Modifier::ModifierBasePtr const & m);
+
+		/*! ********************************************************************
+		\brief
+			Creates a Block object from a given generator and modifier.
+
+			When processed, the output of the generator and modifier are
+			multiplied together and sent to the output of the Block.
+
+		\param g
+			The generator to be held within the Block.
+
+		\param m
+			The modifier to be held within the Block.
+
+		\return
+			The generated Block object wrapped inside a std::shared_ptr.
+		***********************************************************************/
+		static BlockPtr CreateBlock(Generator::GeneratorBasePtr const & g,
+		                            Modifier::ModifierBasePtr const & m);
+
+		/*! ********************************************************************
+		\brief
+			Creates a Block object from a given generator, modifier, and
+			interactor.
+
+			When processed, the output of the generator and modifier are
+			combined together using the given interactor and sent to the output
+			of the Block.
+
+		\param g
+			The generator to be held within the Block.
+
+		\param m
+			The modifier to be held within the Block.
+
+		\param interactor
+			Function that will combine outputs from the generator and modifier
+			when the Block is processed.
+
+		\return
+			The generated Block object wrapped inside a std::shared_ptr.
+		***********************************************************************/
+		static BlockPtr CreateBlock(Generator::GeneratorBasePtr const & g,
+		                            Modifier::ModifierBasePtr const & m,
+		                            Block::Interaction_f const & interactor);
+
+		~SoundFactory() = delete; ///< Deleted destructor, ensuring an instance of this class can never be created.
 
 	private:
 
@@ -64,4 +166,4 @@ namespace Sound
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __STUB_HPP
+#endif // __SOUND_FACTORY

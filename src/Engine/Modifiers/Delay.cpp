@@ -28,7 +28,7 @@ namespace Modifier
 	Delay::Delay(uint64_t samples) : ModifierBase(),
 		m_Delay(samples, StereoData())
 	{
-		SetMethods(CreateMethodList());
+		RegisterMethods(CreateMethodList());
 	}
 
 	StereoData Delay::FilterSample(StereoData const & sample)
@@ -54,14 +54,27 @@ namespace Modifier
 		}
 	}
 
-	std::vector<std::tuple<std::string, Void_fn>> Delay::CreateMethodList()
+	uint64_t Delay::GetDelay() const
+	{
+		return m_Delay.size();
+	}
+
+	Tools::MethodTable::MethodList_t Delay::CreateMethodList()
 	{
 		return {
 			std::make_tuple(
 				std::string("SetDelay"),
-				Void_fn(
+				Tools::MethodTable::Void_fn(
 					[this](void * p){
 						SetDelay(std::get<0>(*reinterpret_cast<std::tuple<uint64_t>*>(p)));
+					}
+				)
+			),
+			std::make_tuple(
+				std::string("GetDelay"),
+				Tools::MethodTable::Void_fn(
+					[this](void * p){
+						std::get<0>(*reinterpret_cast<std::tuple<uint64_t &>*>(p)) = GetDelay();
 					}
 				)
 			)

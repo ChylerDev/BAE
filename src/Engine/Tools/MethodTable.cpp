@@ -30,13 +30,18 @@ namespace Tools
 	{
 	}
 
-	MethodTable::MethodTable(std::vector<std::tuple<std::string, Void_fn>> const & list) :
+	MethodTable::MethodTable(MethodList_t const & list) :
 		m_Table()
 	{
-		SetMethods(list);
+		RegisterMethods(list);
 	}
 
-	void MethodTable::SetMethods(std::vector<std::tuple<std::string, Void_fn>> const & list)
+	void MethodTable::RegisterMethod(std::string const & name, Void_fn const & obj)
+	{
+		m_Table[name] = obj;
+	}
+
+	void MethodTable::RegisterMethods(MethodList_t const & list)
 	{
 		for(auto & m : list)
 		{

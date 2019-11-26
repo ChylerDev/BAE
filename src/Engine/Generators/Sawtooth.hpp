@@ -66,7 +66,7 @@ namespace Generator
 
 		Sawtooth(Math_t freq);
 
-		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+		virtual Tools::MethodTable::MethodList_t CreateMethodList();
 
 	}; // class Sawtooth
 	TYPEDEF_SHARED(Sawtooth);

@@ -47,7 +47,7 @@ namespace Generator
 
 		/*! ********************************************************************
 		\brief
-			Default destructor.
+			Destructor.
 		***********************************************************************/
 		virtual ~Square() = default;
 
@@ -93,7 +93,7 @@ namespace Generator
 		***********************************************************************/
 		Square(Math_t freq);
 
-		virtual std::vector<std::tuple<std::string, Void_fn>> CreateMethodList();
+		virtual Tools::MethodTable::MethodList_t CreateMethodList();
 
 	}; // class Square
 	TYPEDEF_SHARED(Square);

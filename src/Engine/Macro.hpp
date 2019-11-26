@@ -13,8 +13,8 @@
 // Public Macros                ////////////////////////////////////////////////
 
 #ifndef SAMPLE_RATE
-		/// The sample rate OCAE runs at
-	#define SAMPLE_RATE 48'000
+		/// The sample rate OCAE runs at (probably 48kHz)
+	#define SAMPLE_RATE 48000
 #endif // SAMPLE_RATE
 #ifndef INC_RATE
 		/// Inverse of the sample rate
@@ -48,7 +48,7 @@
 #endif // PI2
 #ifndef LOG_10
 		/// Logarithm of 10, for easy conversion of unknown bases to base 10
-	#define LOG_10 std::log(10.0f)
+	#define LOG_10 std::log(10.0)
 #endif // LOG_10
 #ifndef SQRT_HALF
 		/// sqrt(0.5) for easy use
