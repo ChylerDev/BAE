@@ -36,10 +36,9 @@ namespace Generator
 {
 	/*! ************************************************************************
 	\brief
-		Plays audio from a WAV file.
+		Plays audio from WAVE data.
 
-		Supported formats: 8-bit, 16-bit, and 24-bit audio. 48kHz only for now,
-		resampler will be added soon.
+		Supported formats: 8-bit, 16-bit, and 24-bit audio.
 	***************************************************************************/
 	class WAV : public GeneratorBase
 	{
@@ -213,8 +212,9 @@ namespace Generator
 			The vector containing callable functions and their names as strings.
 		***********************************************************************/
 		virtual Tools::MethodTable::MethodList_t CreateMethodList();
-
 	}; // class WAV
+
+		/// Alias for a std::shared_ptr instantiated with the WAV class
 	TYPEDEF_SHARED(WAV);
 } // namespace Generator
 } // namespace OCAE

@@ -30,6 +30,7 @@ namespace Generator
 {
 	/*! ************************************************************************
 	\brief
+		Generates a sawtooth sound.
 	***************************************************************************/
 	class Sawtooth : public GeneratorBase
 	{
@@ -37,7 +38,9 @@ namespace Generator
 
 		// Members              ///////////////////////
 
+			/// Combination of the sampling rate and desired frequency
 		Math_t m_Irate;
+			/// Sample to sample increment value
 		Math_t m_Inc;
 
 	public:
@@ -62,6 +65,10 @@ namespace Generator
 		***********************************************************************/
 		Sawtooth(Sawtooth && other) noexcept = default;
 
+		/*! ********************************************************************
+		\brief
+			Default destructor.
+		***********************************************************************/
 		virtual ~Sawtooth() = default;
 
 		// Operators            ///////////////////////
@@ -92,25 +99,65 @@ namespace Generator
 
 		// Accossors/Mutators   ///////////////////////
 
-		// Functions            ///////////////////////
+		/*! ********************************************************************
+		\brief
+			Sets a new frequency.
 
+		\param freq
+			The new frequency.
+		***********************************************************************/
 		void SetFrequency(Math_t freq);
 
+		// Functions            ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Calculates the sample. For the base class this is simply 0.
+
+		\return
+			The stereo sample data.
+		***********************************************************************/
 		virtual StereoData SendSample(void);
 
+		/*! ********************************************************************
+		\brief
+			Returns boolean for if the object is a GeneratorBase or not.
+
+		\return
+			False.
+		***********************************************************************/
 		virtual bool IsBase() { return false; };
 
+			/// Add the factory as a friend so it can construct Sawtooth objects
 		friend class GeneratorFactory;
 
 	private:
 
 		// Functions                  ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Constructor.
+
+		\param freq
+			The frequency for the generator.
+		***********************************************************************/
 		Sawtooth(Math_t freq);
 
-		virtual Tools::MethodTable::MethodList_t CreateMethodList();
+		/*! ********************************************************************
+		\brief
+			Creates a vector containing the names of functions, and the callable
+			functions themselves.
 
+			See Tools::MethodTable documentation on more info about this system.
+
+		\return
+			The vector containing callable functions and their names as strings.
+		***********************************************************************/
+		virtual Tools::MethodTable::MethodList_t CreateMethodList();
 	}; // class Sawtooth
+
+		/// Alias for a std::shared_ptr instantiated with the Sawtooth class
 	TYPEDEF_SHARED(Sawtooth);
 } // namespace Generator
 } // namespace OCAE

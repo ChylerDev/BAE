@@ -36,20 +36,23 @@ namespace Tools
 	/*! ************************************************************************
 	\brief
 		The purpose of this class is to create a simple interface for calling
-		methods from an object of an unknown type. For example, within OCAE
-		you have a Sine object currently represented by a GeneratorBasePtr
-		object. To call the Sine method to set the frequency you would utilize
-		this class in the following manner:
+		methods from an object of an unknown type.
 
-		```
+		For example, within OCAE you have a Sine object currently represented by
+		a GeneratorBasePtr object. To call the Sine method to set the frequency
+		you would utilize this class in the following manner:
+
+	\details
+
+		\code{.cpp}
 			GeneratorBasePtr obj = CreateSine(440);
 
 			Math_t new_freq = 880;
-			obj->CallMethod("SetFrequency", &METHOD_PARAM(new_freq));
+			obj->CallMethod("SetFrequency", METHOD_PARAM(new_freq));
 			obj->CallMethod("GetFrequency", METHOD_RET(new_freq));
-		```
+		\endcode
 
-		Here, the `METHOD_RET()` and `METHOD_PARAM` macros ensure that the
+		Here, the `METHOD_RET()` and `METHOD_PARAM()` macros ensure that the
 		values passed to the function will have the proper types, guaranteeing
 		they are handled properly. See the macros' documentation and definition
 		in Macro.hpp for more info.
@@ -57,38 +60,53 @@ namespace Tools
 		It is recommended to construct the method table with the default
 		constructor, and then set the methods for the class in a fashion like:
 
-		```
-		Foo:Foo() : MethodTable(), // ...
-		{
-			RegisterMethods(CreateMethodList());
+		\code{.cpp}
+			Foo:Foo() : MethodTable(), // ...
+			{
+				RegisterMethods(CreateMethodList());
 
-				// or
+					// or
 
-			RegisterMethod("method1", [this](void *){ method1(); });
-			RegisterMethod("method2", [this](void *){ method2(); });
-			// ...
-		}
-
-		Tools::MethodTable::MethodList_t Foo::CreateMethodList()
-		{
-				// Returns initializer list that constructs a MethodList_t
-			return {
-				std::make_tuple(
-					std::string("method1"),
-					Tools::MethodTable::Void_fn(
-						[this](void *){ method1(); }
-					)
-				),
-				std::make_tuple(
-					std::string("method2"),
-					Tools::MethodTable::Void_fn(
-						[this](void *){ method2(); }
-					)
-				),
+				RegisterMethod("method1", [this](void *){ method1(); });
+				RegisterMethod("method2", [this](void * p){
+					method2(
+						std::get<0>(
+							*reinterpret_cast<METHOD_PARAM_T(int)>(p)
+						)
+					);
+				});
 				// ...
-			};
-		}
-		```
+			}
+
+			Tools::MethodTable::MethodList_t Foo::CreateMethodList()
+			{
+					// Returns initializer list that constructs a MethodList_t
+				return {
+					std::make_tuple(
+						std::string("method1"),
+						Tools::MethodTable::Void_fn(
+							[this](void *){ method1(); }
+						)
+					),
+					std::make_tuple(
+						std::string("method2"),
+						Tools::MethodTable::Void_fn(
+							[this](void *){
+								method2(
+									std::get<0>(
+										*reinterpret_cast<METHOD_PARAM_T(int)>(p)
+									)
+								);
+							}
+						)
+					),
+					// ...
+				};
+			}
+		\endcode
+
+		Here, `METHOD_PARAM_T()` is a macro that helps ensure that the type
+		being casted to is in the correct format.
 
 		The user creating the derived classes will need to ensure that it
 		properly registers all the methods they want to be accessible through

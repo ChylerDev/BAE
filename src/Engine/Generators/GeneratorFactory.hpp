@@ -132,6 +132,9 @@ namespace Generator
 		\brief
 			Creates a WAV object with a file name to open for reading.
 
+		\param filepath
+
+
 		\return
 			GeneratorBasePtr containing the created object.
 		***********************************************************************/
@@ -140,6 +143,9 @@ namespace Generator
 		/*! ********************************************************************
 		\brief
 			Creates a WAV object with a vector containing the audio WAV data.
+
+		\param wav_data
+			Raw WAVE data in RIFF format
 
 		\return
 			GeneratorBasePtr containing the created object.
@@ -151,7 +157,6 @@ namespace Generator
 	private:
 
 		// Functions                  ///////////////////////
-
 	}; // class GeneratorFactory
 } // namespace Generator
 } // namespace OCAE

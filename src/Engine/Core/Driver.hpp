@@ -68,8 +68,23 @@ namespace Core
 		***********************************************************************/
 		Driver(uint64_t track_size, Math_t gain = DEFAULT_GAIN);
 
-		Driver(Driver const &) = default;       ///< Default copy constructor
-		Driver(Driver &&) noexcept = default;   ///< Default move constructor
+		/*! ********************************************************************
+		\brief
+			Default copy constructor.
+
+		\param other
+			The object to copy.
+		***********************************************************************/
+		Driver(Driver const & other) = default;
+
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The object to move.
+		***********************************************************************/
+		Driver(Driver && other) noexcept = default;
 
 		/*! ********************************************************************
 		\brief
@@ -79,8 +94,29 @@ namespace Core
 
 		// Operators            ///////////////////////
 
-		Driver & operator=(Driver const &) = default;       ///< Default copy-assignment operator
-		Driver & operator=(Driver &&) noexcept = default;   ///< Default move-assignment operator
+		/*! ********************************************************************
+		\brief
+			Default copy-assignment operator.
+
+		\param rhs
+			The object to copy.
+
+		\return
+			*this.
+		***********************************************************************/
+		Driver & operator=(Driver const & rhs) = default;
+
+		/*! ********************************************************************
+		\brief
+			Default move-assignment operator.
+
+		\param rhs
+			The object to move.
+
+		\return
+			*this.
+		***********************************************************************/
+		Driver & operator=(Driver && rhs) noexcept = default;
 
 		// Accossors/Mutators   ///////////////////////
 

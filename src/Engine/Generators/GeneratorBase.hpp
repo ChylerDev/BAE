@@ -69,7 +69,7 @@ namespace Generator
 
 		/*! ********************************************************************
 		\brief
-			Destructor, virtual for inheritence uses.
+			Default destructor.
 		***********************************************************************/
 		virtual ~GeneratorBase() = default;
 
@@ -108,7 +108,7 @@ namespace Generator
 			Calculates the sample. For the base class this is simply 0.
 
 		\return
-			0.
+			The stereo sample data.
 		***********************************************************************/
 		virtual StereoData SendSample(void) { return StereoData(0.f, 0.f); };
 

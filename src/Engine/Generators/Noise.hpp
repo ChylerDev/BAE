@@ -32,6 +32,7 @@ namespace Generator
 {
 	/*! ************************************************************************
 	\brief
+		Generates white noise.
 	***************************************************************************/
 	class Noise : public GeneratorBase
 	{
@@ -39,7 +40,9 @@ namespace Generator
 
 		// Members              ///////////////////////
 
+			/// Distribution for random value generation
 		std::uniform_int_distribution<int16_t> m_Distribution;
+			/// Random value engine
 		std::default_random_engine m_Engine;
 
 	public:
@@ -64,6 +67,10 @@ namespace Generator
 		***********************************************************************/
 		Noise(Noise && other) noexcept = default;
 
+		/*! ********************************************************************
+		\brief
+			Default destructor.
+		***********************************************************************/
 		virtual ~Noise() = default;
 
 		// Operators            ///////////////////////
@@ -96,20 +103,48 @@ namespace Generator
 
 		// Functions            ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Calculates the sample. For the base class this is simply 0.
+
+		\return
+			The stereo sample data.
+		***********************************************************************/
 		virtual StereoData SendSample(void);
 
+		/*! ********************************************************************
+		\brief
+			Returns boolean for if the object is a GeneratorBase or not.
+
+		\return
+			False.
+		***********************************************************************/
 		virtual bool IsBase() { return false; };
 
+			/// Add the factory as a friend so it can construct Noise objects
 		friend class GeneratorFactory;
 
 	protected:
 
 		// Functions                  ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Constructor.
+		***********************************************************************/
 		Noise();
 
-		virtual Tools::MethodTable::MethodList_t CreateMethodList() { return {}; };
+		/*! ********************************************************************
+		\brief
+			Creates a vector containing the names of functions, and the callable
+			functions themselves.
 
+			See Tools::MethodTable documentation on more info about this system.
+
+		\return
+			The vector containing callable functions and their names as strings.
+		***********************************************************************/
+		virtual Tools::MethodTable::MethodList_t CreateMethodList() { return {}; };
 	}; // class Noise
 
 		/// Alias for a std::shared_ptr instantiated with the Noise class
