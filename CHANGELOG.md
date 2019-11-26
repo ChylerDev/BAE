@@ -1,5 +1,9 @@
 # OCAE Changelog
 
+## Version 1.0.0
+
+* Finished documentation. More updates to the documentation will happen over time to add more detail and examples.
+
 ## Version 0.9.0
 
 Major refactoring. Removed dependency on PortAudio, freeing the pure generation of audio data from any sort of output requirements, potentially extending the use of this library beyond real-time applications.
