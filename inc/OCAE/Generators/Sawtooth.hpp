@@ -63,7 +63,7 @@ namespace Generator
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Sawtooth(Sawtooth && other) noexcept = default;
+		Sawtooth(Sawtooth && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -95,7 +95,7 @@ namespace Generator
 		\return
 			*this.
 		***********************************************************************/
-		Sawtooth & operator=(Sawtooth && rhs) noexcept = default;
+		Sawtooth & operator=(Sawtooth && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

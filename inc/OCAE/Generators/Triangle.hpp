@@ -63,7 +63,7 @@ namespace Generator
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Triangle(Triangle && other) noexcept = default;
+		Triangle(Triangle && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -95,7 +95,7 @@ namespace Generator
 		\return
 			*this.
 		***********************************************************************/
-		Triangle & operator=(Triangle && rhs) noexcept = default;
+		Triangle & operator=(Triangle && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

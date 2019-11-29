@@ -67,7 +67,7 @@ namespace Generator
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Sine(Sine && other) noexcept = default;
+		Sine(Sine && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -99,7 +99,7 @@ namespace Generator
 		\return
 			*this.
 		***********************************************************************/
-		Sine & operator=(Sine && rhs) noexcept = default;
+		Sine & operator=(Sine && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

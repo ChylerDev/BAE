@@ -72,7 +72,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		EnvelopeFollower(EnvelopeFollower && other) noexcept = default;
+		EnvelopeFollower(EnvelopeFollower && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -104,7 +104,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		EnvelopeFollower & operator=(EnvelopeFollower && rhs) noexcept = default;
+		EnvelopeFollower & operator=(EnvelopeFollower && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

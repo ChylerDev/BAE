@@ -75,7 +75,7 @@ namespace Generator
 			std::vector<char> temp;
 
 			l_file.seekg(0, std::ios::end);
-			temp.reserve(l_file.tellg());
+			temp.reserve(size_t(l_file.tellg()));
 			l_file.seekg(0, std::ios::beg);
 
 			std::cout << "Loading file...\n";

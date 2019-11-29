@@ -69,7 +69,7 @@ namespace Generator
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		WAV(WAV && other) noexcept = default;
+		WAV(WAV && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -101,7 +101,7 @@ namespace Generator
 		\return
 			*this.
 		***********************************************************************/
-		WAV & operator=(WAV && rhs) noexcept = default;
+		WAV & operator=(WAV && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

@@ -65,7 +65,7 @@ namespace Generator
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		GeneratorBase(GeneratorBase && other) noexcept = default;
+		GeneratorBase(GeneratorBase && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -97,7 +97,7 @@ namespace Generator
 		\return
 			*this.
 		***********************************************************************/
-		GeneratorBase & operator=(GeneratorBase && rhs) noexcept = default;
+		GeneratorBase & operator=(GeneratorBase && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

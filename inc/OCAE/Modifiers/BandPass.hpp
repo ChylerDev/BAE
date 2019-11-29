@@ -86,7 +86,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		BandPass(BandPass && other) noexcept = default;
+		BandPass(BandPass && other) = default;
 
 		virtual ~BandPass();	///< Default destructor.
 
@@ -114,7 +114,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		BandPass & operator=(BandPass && rhs) noexcept = default;
+		BandPass & operator=(BandPass && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

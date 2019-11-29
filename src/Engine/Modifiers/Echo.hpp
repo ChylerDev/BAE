@@ -69,7 +69,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Echo(Echo && other) noexcept = default;
+		Echo(Echo && other) = default;
 
 		virtual ~Echo() = default; ///< Default destructor.
 
@@ -97,7 +97,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		Echo & operator=(Echo && rhs) noexcept = default;
+		Echo & operator=(Echo && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

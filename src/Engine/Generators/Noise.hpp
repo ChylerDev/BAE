@@ -65,7 +65,7 @@ namespace Generator
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Noise(Noise && other) noexcept = default;
+		Noise(Noise && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -97,7 +97,7 @@ namespace Generator
 		\return
 			*this.
 		***********************************************************************/
-		Noise & operator=(Noise && rhs) noexcept = default;
+		Noise & operator=(Noise && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

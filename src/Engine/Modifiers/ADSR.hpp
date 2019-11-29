@@ -89,7 +89,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		ADSR(ADSR && other) noexcept = default;
+		ADSR(ADSR && other) = default;
 
 		virtual ~ADSR() = default;	///< Default destructor.
 
@@ -117,7 +117,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		ADSR & operator=(ADSR && rhs) noexcept = default;
+		ADSR & operator=(ADSR && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

@@ -79,7 +79,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		ModifierBase(ModifierBase && other) noexcept = default;
+		ModifierBase(ModifierBase && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -111,7 +111,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		ModifierBase & operator=(ModifierBase && rhs) noexcept = default;
+		ModifierBase & operator=(ModifierBase && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

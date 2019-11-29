@@ -63,7 +63,7 @@ namespace Generator
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Square(Square && other) noexcept = default;
+		Square(Square && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -95,7 +95,7 @@ namespace Generator
 		\return
 			*this.
 		***********************************************************************/
-		Square & operator=(Square && rhs) noexcept = default;
+		Square & operator=(Square && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

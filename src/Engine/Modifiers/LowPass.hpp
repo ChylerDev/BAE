@@ -67,7 +67,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		LowPass(LowPass && other) noexcept = default;
+		LowPass(LowPass && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -99,7 +99,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		LowPass & operator=(LowPass && rhs) noexcept = default;
+		LowPass & operator=(LowPass && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

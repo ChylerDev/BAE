@@ -65,7 +65,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Delay(Delay && other) noexcept = default;
+		Delay(Delay && other) = default;
 
 		virtual ~Delay() = default;
 
@@ -93,7 +93,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		Delay & operator=(Delay && rhs) noexcept = default;
+		Delay & operator=(Delay && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

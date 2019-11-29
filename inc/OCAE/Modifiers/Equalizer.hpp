@@ -70,7 +70,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Equalizer(Equalizer && other) noexcept = default;
+		Equalizer(Equalizer && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -102,7 +102,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		Equalizer & operator=(Equalizer && rhs) noexcept = default;
+		Equalizer & operator=(Equalizer && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

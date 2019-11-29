@@ -84,7 +84,7 @@ namespace Core
 		\param other
 			The object to move.
 		***********************************************************************/
-		Driver(Driver && other) noexcept = default;
+		Driver(Driver && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -116,7 +116,7 @@ namespace Core
 		\return
 			*this.
 		***********************************************************************/
-		Driver & operator=(Driver && rhs) noexcept = default;
+		Driver & operator=(Driver && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 

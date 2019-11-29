@@ -62,7 +62,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Gain(Gain && other) noexcept = default;
+		Gain(Gain && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -94,7 +94,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		Gain & operator=(Gain && rhs) noexcept = default;
+		Gain & operator=(Gain && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -167,7 +167,7 @@ namespace Modifier
 		\return
 			The vector containing callable functions and their names as strings.
 		***********************************************************************/
-		virtual Tools::MethodTable::MethodList_t CreateMethodList() override;
+		virtual Tools::MethodTable::MethodList_t CreateMethodList();
 	}; // class Gain
 
 		/// Alias for a std::shared_ptr instantiated with the Gain class

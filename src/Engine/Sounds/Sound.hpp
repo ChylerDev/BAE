@@ -97,11 +97,11 @@ namespace Sound
 				E_Block(BlockPtr const & b);
 
 				E_Block(E_Block const & other) = default;     ///< Default copy constructor. \param other The object being copied.
-				E_Block(E_Block && other) noexcept = default; ///< Default move constructor. \param other The object being moved.
+				E_Block(E_Block && other) = default; ///< Default move constructor. \param other The object being moved.
 				~E_Block() = default;                         ///< Default destructor.
 
 				E_Block & operator=(E_Block const & rhs) = default;     ///< Default copy assignment operator. \param rhs The object being copied. \return *this.
-				E_Block & operator=(E_Block && rhs) noexcept = default; ///< Default move assignment operator. \param rhs The object being moved. \return *this.
+				E_Block & operator=(E_Block && rhs) = default; ///< Default move assignment operator. \param rhs The object being moved. \return *this.
 			};
 				/// Alias for std::shared_ptr instantiated with E_Block.
 			TYPEDEF_SHARED(E_Block);
