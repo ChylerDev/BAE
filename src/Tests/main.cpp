@@ -20,12 +20,12 @@
 #include <chrono>
 #include <type_traits>
 
+#include <RIFF-Util/RIFF.hpp>
+
 #include "../Engine/Engine.hpp"
 
 using hrc = std::chrono::high_resolution_clock;
-
 using namespace OCAE;
-
 using VoidFn = void(*)(void);
 
 // Private Macros                         //////////////////////////////////////
@@ -150,6 +150,33 @@ static void TestResampler(void)
 	}
 }
 
+static void TestWAVWriter(void)
+{
+	Track_t track({
+		StereoData(SampleType(0), SampleType(0)),
+		StereoData(SampleType(0.5), SampleType(0.5)),
+		StereoData(SampleType(0), SampleType(0)),
+		StereoData(SampleType(-0.5), SampleType(-0.5))
+	});
+
+	auto riff = OCAE::Tools::WriteWAV(track);
+
+	RIFF::Reader reader(riff, CONSTRUCT_BYTE_STR("WAVE"));
+	auto header = reader.GetChunk(CONSTRUCT_BYTE_STR("fmt "));
+	Tools::WAVHeader * h = reinterpret_cast<Tools::WAVHeader*>(header.data());
+
+	assert(h->AudioFormat == 1);
+	assert(h->ChannelCount == 2);
+	assert(h->SamplingRate == SAMPLE_RATE);
+	assert(h->BitsPerSample == 16);
+	assert(h->BytesPerSample == h->BitsPerSample / 8 * h->ChannelCount);
+	assert(h->BytesPerSecond == SAMPLE_RATE * h->BytesPerSample);
+
+	auto wav_track = reader.GetChunk(CONSTRUCT_BYTE_STR("data"));
+
+	TODO("Check audio data for correctness");
+}
+
 static void TestCombinator(void)
 {
 	std::vector<StereoData> samples{
@@ -186,6 +213,7 @@ static void TestCombinator(void)
 
 std::vector<VoidFn> tests{
 	TestResampler,
+	TestWAVWriter,
 	TestCombinator
 };
 
