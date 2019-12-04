@@ -95,12 +95,58 @@ static void TestResampler(void)
 
 	// Test playback speed
 	{
+		Tools::Resampler resam(samples, SAMPLE_RATE);
 
+		StereoData results[8];
+
+		resam.SetPlaybackSpeed(0.5);
+
+		std::generate(
+			results, results + (sizeof(results)/sizeof(*results)),
+			[& resam]()->StereoData{
+				return resam.SendSample();
+			}
+		);
+
+		assert(Equals( Left(results[0]), SampleType(0)) &&
+			   Equals(Right(results[0]), SampleType(0)));
+		assert(Equals( Left(results[1]), SampleType(0.5)) &&
+			   Equals(Right(results[1]), SampleType(0.5)));
+		assert(Equals( Left(results[2]), SampleType(1)) &&
+			   Equals(Right(results[2]), SampleType(1)));
+		assert(Equals( Left(results[3]), SampleType(1.5)) &&
+			   Equals(Right(results[3]), SampleType(1.5)));
+		assert(Equals( Left(results[4]), SampleType(2)) &&
+			   Equals(Right(results[4]), SampleType(2)));
+		assert(Equals( Left(results[5]), SampleType(2.5)) &&
+			   Equals(Right(results[5]), SampleType(2.5)));
+		assert(Equals( Left(results[6]), SampleType(3)) &&
+			   Equals(Right(results[6]), SampleType(3)));
 	}
 
 	// Test playback speed and change of rate
 	{
+		Tools::Resampler resam(samples, SAMPLE_RATE * 2);
 
+		StereoData results[4];
+
+		resam.SetPlaybackSpeed(0.5);
+
+		std::generate(
+			results, results + (sizeof(results)/sizeof(*results)),
+			[& resam]()->StereoData{
+				return resam.SendSample();
+			}
+		);
+
+		assert(Equals( Left(results[0]), SampleType(0)) &&
+			   Equals(Right(results[0]), SampleType(0)));
+		assert(Equals( Left(results[1]), SampleType(1)) &&
+			   Equals(Right(results[1]), SampleType(1)));
+		assert(Equals( Left(results[2]), SampleType(2)) &&
+			   Equals(Right(results[2]), SampleType(2)));
+		assert(Equals( Left(results[3]), SampleType(3)) &&
+			   Equals(Right(results[3]), SampleType(3)));
 	}
 }
 
