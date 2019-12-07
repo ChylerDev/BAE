@@ -16,6 +16,7 @@
 #include <iomanip>
 #include <fstream>
 #include <functional>
+#include <limits>
 #include <thread>
 #include <chrono>
 #include <type_traits>
@@ -174,7 +175,32 @@ static void TestWAVWriter(void)
 
 	auto wav_track = reader.GetChunk(CONSTRUCT_BYTE_STR("data"));
 
-	TODO("Check audio data for correctness");
+	assert(wav_track[0] == 0 && wav_track[1] == 0 &&
+		   wav_track[2] == 0 && wav_track[3] == 0);
+
+	// std::cout << "wav_track[4] = " << int(wav_track[4]) << " \t calculated = " << (uint16_t(0x8000 * 0.5) & 0x00'FF) << '\n';
+	// std::cout << "wav_track[5] = " << int(wav_track[5]) << " \t calculated = " << ((uint16_t(0x8000 * 0.5) & 0xFF'00) >> 8) << '\n';
+	// std::cout << "wav_track[6] = " << int(wav_track[6]) << " \t calculated = " << (uint16_t(0x8000 * 0.5) & 0x00'FF) << '\n';
+	// std::cout << "wav_track[7] = " << int(wav_track[7]) << " \t calculated = " << ((uint16_t(0x8000 * 0.5) & 0xFF'00) >> 8) << '\n';
+	// std::cout.flush();
+
+	assert(wav_track[4] == RIFF::byte_t(uint16_t(0x8000 * 0.5) & 0x00'FF) &&
+		   wav_track[5] == RIFF::byte_t((uint16_t(0x8000 * 0.5) & 0xFF'00) >> 8) &&
+		   wav_track[6] == RIFF::byte_t(uint16_t(0x8000 * 0.5) & 0x00'FF) &&
+		   wav_track[7] == RIFF::byte_t((uint16_t(0x8000 * 0.5) & 0xFF'00) >> 8));
+	assert(wav_track[8] == 0 && wav_track[9] == 0 &&
+		   wav_track[10] == 0 && wav_track[11] == 0);
+
+	// std::cout << "wav_track[12] = " << int(wav_track[12]) << " \t calculated = " << (static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0x00'FF) << '\n';
+	// std::cout << "wav_track[13] = " << int(wav_track[13]) << " \t calculated = " << ((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8) << '\n';
+	// std::cout << "wav_track[14] = " << int(wav_track[14]) << " \t calculated = " << (static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0x00'FF) << '\n';
+	// std::cout << "wav_track[15] = " << int(wav_track[15]) << " \t calculated = " << ((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8) << '\n';
+	// std::cout.flush();
+
+	assert(wav_track[12] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0x00'FF)) &&
+		   wav_track[13] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8) &&
+		   wav_track[14] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0x00'FF)) &&
+		   wav_track[15] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8));
 }
 
 static void TestCombinator(void)
@@ -205,7 +231,7 @@ static void TestCombinator(void)
 		UNREFERENCED_PARAMETER(result);
 
 		assert(Equals( Left(result), SampleType(-2)));
-		assert(Equals(Right(result), SampleType(0 )));
+		assert(Equals(Right(result), SampleType( 0)));
 	}
 }
 
