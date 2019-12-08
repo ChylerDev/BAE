@@ -167,7 +167,7 @@ static void TestWAVWriter(void)
 	RIFF::Reader reader(riff, CONSTRUCT_BYTE_STR("WAVE"));
 	auto header = reader.GetChunk(CONSTRUCT_BYTE_STR("fmt "));
 	Tools::WAVHeader * h = reinterpret_cast<Tools::WAVHeader*>(header.data());
-UNREFERENCED_PARAMETER(h);
+
 	assert(h->AudioFormat == 1);
 	assert(h->ChannelCount == 2);
 	assert(h->SamplingRate == SAMPLE_RATE);
