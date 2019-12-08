@@ -35,6 +35,8 @@ using VoidFn = void(*)(void);
 
 #define Equals(a,b) bool(double(std::abs(a-b) < EPSILON_F))
 
+#define SizeOfArray(a) (sizeof(a)/sizeof(*a))
+
 // Private Functions                      //////////////////////////////////////
 
 static void TestResampler(void)
@@ -53,7 +55,7 @@ static void TestResampler(void)
 		StereoData results[7];
 
 		std::generate(
-			results, results + (sizeof(results)/sizeof(*results)),
+			results, results + SizeOfArray(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
@@ -82,7 +84,7 @@ static void TestResampler(void)
 		StereoData results[2];
 
 		std::generate(
-			results, results + (sizeof(results)/sizeof(*results)),
+			results, results + SizeOfArray(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
@@ -103,7 +105,7 @@ static void TestResampler(void)
 		resam.SetPlaybackSpeed(0.5);
 
 		std::generate(
-			results, results + (sizeof(results)/sizeof(*results)),
+			results, results + SizeOfArray(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
@@ -134,7 +136,7 @@ static void TestResampler(void)
 		resam.SetPlaybackSpeed(0.5);
 
 		std::generate(
-			results, results + (sizeof(results)/sizeof(*results)),
+			results, results + SizeOfArray(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
@@ -165,13 +167,13 @@ static void TestWAVWriter(void)
 	RIFF::Reader reader(riff, CONSTRUCT_BYTE_STR("WAVE"));
 	auto header = reader.GetChunk(CONSTRUCT_BYTE_STR("fmt "));
 	Tools::WAVHeader * h = reinterpret_cast<Tools::WAVHeader*>(header.data());
-
+UNREFERENCED_PARAMETER(h);
 	assert(h->AudioFormat == 1);
 	assert(h->ChannelCount == 2);
 	assert(h->SamplingRate == SAMPLE_RATE);
 	assert(h->BitsPerSample == 16);
 	assert(h->BytesPerSample == h->BitsPerSample / 8 * h->ChannelCount);
-	assert(h->BytesPerSecond == SAMPLE_RATE * h->BytesPerSample);
+	assert(h->BytesPerSecond == uint32_t(SAMPLE_RATE * h->BytesPerSample));
 
 	auto wav_track = reader.GetChunk(CONSTRUCT_BYTE_STR("data"));
 
@@ -201,6 +203,23 @@ static void TestWAVWriter(void)
 		   wav_track[13] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8) &&
 		   wav_track[14] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0x00'FF)) &&
 		   wav_track[15] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8));
+}
+
+static void TestGeneratorBase(void)
+{
+	auto b = Generator::GeneratorFactory::CreateBase();
+
+	assert(b->IsBase());
+
+	StereoData samples[SAMPLE_RATE/10] = {};
+
+	std::generate(samples, samples + SizeOfArray(samples),
+				  [& b]()->StereoData{return b->SendSample();});
+
+	for(auto it = samples; it != samples + SizeOfArray(samples); ++it)
+	{
+		assert(Equals(Left(*it),SampleType(0)) && Equals(Right(*it),SampleType(0)));
+	}
 }
 
 static void TestCombinator(void)
@@ -240,7 +259,8 @@ static void TestCombinator(void)
 std::vector<VoidFn> tests{
 	TestResampler,
 	TestWAVWriter,
-	TestCombinator
+	TestCombinator,
+	TestGeneratorBase
 };
 
 // Public Functions                       //////////////////////////////////////
