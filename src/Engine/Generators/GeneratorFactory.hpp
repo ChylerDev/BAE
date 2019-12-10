@@ -27,6 +27,18 @@ namespace Generator
 {
 	class GeneratorBase;
 	TYPEDEF_SHARED(GeneratorBase);
+	class Noise;
+	TYPEDEF_SHARED(Noise);
+	class Sawtoothe;
+	TYPEDEF_SHARED(Sawtoothe);
+	class Sine;
+	TYPEDEF_SHARED(Sine);
+	class Square;
+	TYPEDEF_SHARED(Square);
+	class Triangle;
+	TYPEDEF_SHARED(Triangle);
+	class WAV;
+	TYPEDEF_SHARED(WAV);
 }
 }
 
@@ -69,7 +81,7 @@ namespace Generator
 		\return
 			GeneratorBasePtr containing the created object.
 		***********************************************************************/
-		static GeneratorBasePtr CreateNoise();
+		static NoisePtr CreateNoise();
 
 		/*! ********************************************************************
 		\brief
@@ -81,7 +93,7 @@ namespace Generator
 		\return
 			GeneratorBasePtr containing the created object.
 		***********************************************************************/
-		static GeneratorBasePtr CreateSawtooth(Math_t freq);
+		static SawtoothPtr CreateSawtooth(Math_t freq);
 
 		/*! ********************************************************************
 		\brief
@@ -93,7 +105,7 @@ namespace Generator
 		\return
 			GeneratorBasePtr containing the created object.
 		***********************************************************************/
-		static GeneratorBasePtr CreateSine(Math_t freq);
+		static SinePtr CreateSine(Math_t freq);
 
 		/*! ********************************************************************
 		\brief
@@ -105,7 +117,7 @@ namespace Generator
 		\return
 			GeneratorBasePtr containing the created object.
 		***********************************************************************/
-		static GeneratorBasePtr CreateSquare(Math_t freq);
+		static SquarePtr CreateSquare(Math_t freq);
 
 		/*! ********************************************************************
 		\brief
@@ -117,7 +129,7 @@ namespace Generator
 		\return
 			GeneratorBasePtr containing the created object.
 		***********************************************************************/
-		static GeneratorBasePtr CreateTriangle(Math_t freq);
+		static TrianglePtr CreateTriangle(Math_t freq);
 
 		/*! ********************************************************************
 		\brief
@@ -126,31 +138,31 @@ namespace Generator
 		\return
 			GeneratorBasePtr containing the created object.
 		***********************************************************************/
-		static GeneratorBasePtr CreateWAV();
+		static WAVPtr CreateWAV();
 
 		/*! ********************************************************************
 		\brief
 			Creates a WAV object with a file name to open for reading.
 
 		\param filepath
-
+			The path to the file.
 
 		\return
 			GeneratorBasePtr containing the created object.
 		***********************************************************************/
-		static GeneratorBasePtr CreateWAV(std::string const & filepath);
+		static WAVPtr CreateWAV(std::string const & filepath);
 
 		/*! ********************************************************************
 		\brief
 			Creates a WAV object with a vector containing the audio WAV data.
 
 		\param wav_data
-			Raw WAVE data in RIFF format
+			Raw WAVE data in RIFF format.
 
 		\return
 			GeneratorBasePtr containing the created object.
 		***********************************************************************/
-		static GeneratorBasePtr CreateWAV(std::vector<char> const & wav_data);
+		static WAVPtr CreateWAV(std::vector<char> const & wav_data);
 
 		~GeneratorFactory() = delete; ///< Deleted destructor, ensuring an instance of this class can never be created.
 
