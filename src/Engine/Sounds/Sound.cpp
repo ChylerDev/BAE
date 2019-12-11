@@ -33,58 +33,44 @@ namespace OCAE
 {
 namespace Sound
 {
-//////////////////////////////// Sound Functions ///////////////////////////////
-
 	Sound::Sound(Math_t input_gain, Math_t output_gain) :
-		m_Graph(),
-		m_InputGain(Modifier::ModifierFactory::CreateGain(input_gain)),
-		m_OutputGain(Modifier::ModifierFactory::CreateGain(output_gain)),
-		m_Input(), m_Output(),
+		m_Graph(), m_ProcessOrder(),
+		m_InputGain(SoundFactory::CreateBlock(Modifier::ModifierFactory::CreateGain(input_gain))),
+		m_OutputGain(SoundFactory::CreateBlock(Modifier::ModifierFactory::CreateGain(output_gain))),
 		m_Driver(), m_ID(static_cast<uint64_t>(-1)), m_IsPaused(false)
 	{
-		m_Graph.push_back(
-			CreateEdge(
-				std::deque<Edge::E_BlockPtr>(1, Edge::E_BlockPtr(
-					new Edge::E_Block(SoundFactory::CreateBlock(m_InputGain))
-				)),
-				Combinator(Combinator::Addition),
-				std::deque<Edge::E_BlockPtr>()
-			)
-		);
-		m_Graph.push_back(
-			CreateEdge(
-				std::deque<Edge::E_BlockPtr>(),
-				Combinator(Combinator::Addition),
-				std::deque<Edge::E_BlockPtr>(1, Edge::E_BlockPtr(
-					new Edge::E_Block(SoundFactory::CreateBlock(m_OutputGain))
-				))
-			)
-		);
+		m_Graph[m_InputGain];
 	}
 
 	Sound::Sound(Sound const & other) :
-		m_Graph(other.m_Graph),
+		m_Graph(other.m_Graph), m_ProcessOrder(other.m_ProcessOrder),
 		m_InputGain(other.m_InputGain), m_OutputGain(other.m_OutputGain),
-		m_Input(), m_Output(),
 		m_Driver(), m_ID(static_cast<uint64_t>(-1)), m_IsPaused(other.m_IsPaused)
 	{
 		MakeUnique();
 	}
 
 	Sound::Sound(Sound && other) noexcept :
-		m_Graph(std::move(other.m_Graph)),
+		m_Graph(std::move(other.m_Graph)), m_ProcessOrder(std::move(other.m_ProcessOrder)),
 		m_InputGain(std::move(other.m_InputGain)), m_OutputGain(std::move(other.m_OutputGain)),
-		m_Input(std::move(other.m_Input)), m_Output(std::move(other.m_Output)),
 		m_Driver(), m_ID(static_cast<uint64_t>(-1)), m_IsPaused(std::move(other.m_IsPaused))
 	{
 	}
 
 	Sound & Sound::operator=(Sound const & rhs)
 	{
-		m_Graph    = rhs.m_Graph;
-		m_Input    = rhs.m_Input;
-		m_Output   = rhs.m_Output;
-		m_IsPaused = rhs.m_IsPaused;
+		m_Graph        = rhs.m_Graph;
+		m_ProcessOrder = rhs.m_ProcessOrder;
+		m_IsPaused     = rhs.m_IsPaused;
+		Math_t gain;
+		rhs.m_InputGain->GetModifier->CallMethod("GetGain", METHOD_RET(gain));
+		m_InputGain->GetModifier->CallMethod(
+			"SetGain", METHOD_PARAM(gain)
+		);
+		rhs.m_OutputGain->GetModifier->CallMethod("GetGain", METHOD_RET(gain));
+		m_OutputGain->GetModifier->CallMethod(
+			"SetGain", METHOD_PARAM(gain)
+		);
 
 		MakeUnique();
 
@@ -93,34 +79,33 @@ namespace Sound
 
 	Sound & Sound::operator=(Sound && rhs) noexcept
 	{
-		m_Graph      = std::move(rhs.m_Graph);
-		m_InputGain  = std::move(rhs.m_InputGain);
-		m_OutputGain = std::move(rhs.m_OutputGain);
-		m_Input      = std::move(rhs.m_Input);
-		m_Output     = std::move(rhs.m_Output);
-		m_IsPaused   = std::move(rhs.m_IsPaused);
+		m_Graph        = std::move(rhs.m_Graph);
+		m_ProcessOrder = std::move(rhs.m_ProcessOrder);
+		m_InputGain    = std::move(rhs.m_InputGain);
+		m_OutputGain   = std::move(rhs.m_OutputGain);
+		m_IsPaused     = std::move(rhs.m_IsPaused);
 
 		return *this;
 	}
 
-	Sound::Graph & Sound::GetGraph()
+	BlockPtr const & Sound::GetInputGain() const
 	{
-		return m_Graph;
+		return m_InputGain;
 	}
 
-	Sound::Graph const & Sound::GetGraph() const
+	BlockPtr const & Sound::GetOutputGain() const
 	{
-		return m_Graph;
+		return m_OutputGain;
 	}
 
 	void Sound::SetInputGain(Math_t gain)
 	{
-		m_InputGain->CallMethod("SetGain", gain);
+		m_InputGain->GetModifier()->CallMethod("SetGain", gain);
 	}
 
 	void Sound::SetOutputGain(Math_t gain)
 	{
-		m_OutputGain->CallMethod("SetGain", gain);
+		m_OutputGain->GetModifier()->CallMethod("SetGain", gain);
 	}
 
 	void Sound::Pause()
@@ -133,48 +118,50 @@ namespace Sound
 		m_IsPaused = false;
 	}
 
-	void Sound::PrimeInput(StereoData in)
+	void Sound::AddConnection(BlockPtr const & from, BlockPtr const & to)
 	{
-		m_Graph.front()->PrimeInput(in);
+		m_Graph[from].push_back(to);
+
+		ProcessOrder();
 	}
 
-	void Sound::Process()
+	void Sound::RemoveConnection(BlockPtr const & from, BlockPtr const & to)
+	{
+		for(auto it = m_Graph[from].begin(); it < m_Graph[from].end(); ++it)
+		{
+			if(*it == to)
+			{
+				m_Graph[from].erase(it);
+				break;
+			}
+		}
+
+		ProcessOrder();
+	}
+
+	StereoData Sound::Process(StereoData input)
 	{
 		if(m_IsPaused)
 		{
-			m_Output = StereoData();
-			return;
+			return StereoData();
 		}
 
-		for(auto & e : m_Graph)
+		m_InputGain->PrimeInput(input);
+
+		for(auto & b : m_ProcessOrder)
 		{
-			e->Process();
+			StereoData out;
+
+			b->Process();
+			out = b->LastOutput();
+
+			for(auto & t : m_Graph[b])
+			{
+				t->PrimeInput(out);
+			}
 		}
 
-		std::any_cast<BlockPtr>(m_Graph.back()->outputs.back()->block)->Process();
-		m_Output = std::any_cast<BlockPtr>(m_Graph.back()->outputs.back()->block)->LastOutput();
-	}
-
-	StereoData Sound::LastOutput()
-	{
-		return std::any_cast<BlockPtr>(m_Graph.back()->outputs.back()->block)->LastOutput();
-	}
-
-	Sound::EdgePtr Sound::CreateEdge(std::deque<Edge::E_BlockPtr> const & in,
-									 Combinator const & comb,
-									 std::deque<Edge::E_BlockPtr> const & out)
-	{
-		return std::make_shared<Sound::Edge>(in, comb, out);
-	}
-
-	Sound::Edge::E_BlockPtr Sound::CreateE_Block(SoundPtr const & s)
-	{
-		return Edge::E_BlockPtr(new Edge::E_Block(s));
-	}
-
-	Sound::Edge::E_BlockPtr Sound::CreateE_Block(BlockPtr const & b)
-	{
-		return Edge::E_BlockPtr(new Edge::E_Block(b));
+		return m_OutputGain->LastOutput();
 	}
 
 	void Sound::Register(SoundPtr const & self, Core::DriverPtr const & driver)
@@ -192,61 +179,6 @@ namespace Sound
 		self->m_Driver->RemoveSound(self->m_ID);
 		self->m_ID = static_cast<uint64_t>(-1);
 	}
-
-//////////////////////////////// Edge Functions ////////////////////////////////
-
-	Sound::Edge::Edge(std::deque<E_BlockPtr> const & in, Combinator const & comb, std::deque<E_BlockPtr> const & out):
-		inputs(in), combinator(comb), outputs(out)
-	{
-	}
-
-	void Sound::Edge::Process()
-	{
-		Track_t samples;
-
-		for(auto & in : inputs)
-		{
-			if(in->is_sound)
-			{
-				std::any_cast<SoundPtr>(in->block)->Process();
-				samples.push_back(std::any_cast<SoundPtr>(in->block)->LastOutput());
-			}
-			else
-			{
-				std::any_cast<BlockPtr>(in->block)->Process();
-				samples.push_back(std::any_cast<BlockPtr>(in->block)->LastOutput());
-			}
-		}
-
-		StereoData output = combinator.Process(samples.begin(), samples.end());
-
-		for(auto & out : outputs)
-		{
-			out->is_sound ? std::any_cast<SoundPtr>(out->block)->PrimeInput(output)
-			              : std::any_cast<BlockPtr>(out->block)->PrimeInput(output);
-		}
-	}
-
-	void Sound::Edge::PrimeInput(StereoData in)
-	{
-		for(auto & eb : inputs)
-		{
-			eb->is_sound ? std::any_cast<SoundPtr>(eb->block)->PrimeInput(in)
-			             : std::any_cast<BlockPtr>(eb->block)->PrimeInput(in);
-		}
-	}
-
-////////////////////////////// E_Block Functions ///////////////////////////////
-
-	Sound::Edge::E_Block::E_Block(SoundPtr const & s):
-		block(s), is_sound(true)
-	{
-	}
-
-	Sound::Edge::E_Block::E_Block(BlockPtr const & b):
-		block(b), is_sound(false)
-	{
-	}
 } // namespace Sound
 } // namespace OCAE
 
@@ -256,48 +188,63 @@ namespace OCAE
 {
 namespace Sound
 {
-	void Sound::MakeUnique()
+	void Sound::ProcessOrder()
 	{
-			// Make all edges in the graph unique
-		for(auto & edge : m_Graph)
-		{
-			for(auto & in : edge->inputs)
-			{
-				if(in.use_count() <= 1)
-				{
-					continue;
-				}
+		m_ProcessOrder.clear();
+		m_ProcessOrder.push_front(m_InputGain);
 
-				if(in->is_sound)
+		for(auto & l : m_Graph)
+		{
+			PrepareGraph(l.second, m_ProcessOrder);
+		}
+
+		std::deque<BlockPtr> scratch;
+		for(auto i = 0; i < m_ProcessOrder.size(); ++i)
+		{
+			bool should_remove = false;
+			for(auto & b : scratch)
+			{
+				if(m_ProcessOrder[i] == b)
 				{
-					in->block = std::make_shared<Sound>(*std::any_cast<SoundPtr>(in->block));
-				}
-				else
-				{
-					in->block = std::make_shared<Block>(*std::any_cast<BlockPtr>(in->block));
+					should_remove = true;
 				}
 			}
 
-			for(auto & out : edge->outputs)
+			if(should_remove)
 			{
-				if(out.use_count() <= 1)
-				{
-					continue;
-				}
+				m_ProcessOrder.erase(m_ProcessOrder.begin() + i);
+				--i;
+			}
+		}
+	}
 
-				if(out->is_sound)
-				{
-					out->block = std::make_shared<Sound>(*std::any_cast<SoundPtr>(out->block));
-				}
-				else
-				{
-					out->block = std::make_shared<Block>(*std::any_cast<BlockPtr>(out->block));
-				}
+	void Sound::PrepareGraph(std::deque<BlockPtr> const & list, std::deque<BlockPtr> & out)
+	{
+		for(auto & b : list)
+		{
+			out.push_back(b);
+			PrepareGraph(m_Graph[b], out);
+		}
+	}
+
+	void Sound::MakeUnique()
+	{
+		Graph unique_graph;
+
+		for(auto & a : m_Graph)
+		{
+			auto new_a = std::make_shared<Block>(*(a.first));
+
+			for(auto & b : a.second)
+			{
+				unique_graph[new_a].push_back(
+					std::make_shared<Block>(*b)
+				);
 			}
 		}
 
-		m_InputGain = std::any_cast<BlockPtr>(m_Graph.front()->inputs.front())->GetModifier();
-		m_OutputGain = std::any_cast<BlockPtr>(m_Graph.back()->outputs.back())->GetModifier();
+		m_Graph.clear();
+		m_Graph = std::move(unique_graph);
 	}
 } // namespace Sound
 } // namespace OCAE

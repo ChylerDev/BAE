@@ -62,7 +62,8 @@ namespace Sound
 
 	void Block::PrimeInput(StereoData in)
 	{
-		m_Input = in;
+		Left(m_Input) += Left(in);
+		Right(m_Input) += Right(in);
 	}
 
 	StereoData Block::LastOutput()
@@ -73,6 +74,7 @@ namespace Sound
 	void Block::Process()
 	{
 		m_Output = m_Interaction(m_Generator->SendSample(), m_Modifier->FilterSample(m_Input));
+		m_Input = StereoData();
 	}
 } // namespace Sound
 } // namespace OCAE
