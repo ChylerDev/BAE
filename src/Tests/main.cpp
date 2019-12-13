@@ -35,7 +35,6 @@ using VoidFn = void(*)(void);
 
 #define Equals(a,b) bool(double(std::abs(a-b) < EPSILON_F))
 #define WRITEWAV(file, samples) auto _r = Tools::WriteWAV(samples); std::ofstream(file, std::ios_base::binary).write(reinterpret_cast<char *>(_r.data()), std::streamsize(_r.size()))
-#define SizeOfArray(a) (sizeof(a)/sizeof(*a))
 
 // Private Functions                      //////////////////////////////////////
 
@@ -55,7 +54,7 @@ static void TestResampler(void)
 		StereoData results[7];
 
 		std::generate(
-			results, results + SizeOfArray(results),
+			results, results + SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
@@ -84,7 +83,7 @@ static void TestResampler(void)
 		StereoData results[2];
 
 		std::generate(
-			results, results + SizeOfArray(results),
+			results, results + SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
@@ -105,7 +104,7 @@ static void TestResampler(void)
 		resam.SetPlaybackSpeed(0.5);
 
 		std::generate(
-			results, results + SizeOfArray(results),
+			results, results + SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
@@ -136,7 +135,7 @@ static void TestResampler(void)
 		resam.SetPlaybackSpeed(0.5);
 
 		std::generate(
-			results, results + SizeOfArray(results),
+			results, results + SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
@@ -201,10 +200,10 @@ static void TestGeneratorBase(void)
 
 	StereoData samples[SAMPLE_RATE/10] = {};
 
-	std::generate(samples, samples + SizeOfArray(samples),
+	std::generate(samples, samples + SIZEOF_ARRAY(samples),
 				  [& b](){return b->SendSample();});
 
-	for(auto it = samples; it != samples + SizeOfArray(samples); ++it)
+	for(auto it = samples; it != samples + SIZEOF_ARRAY(samples); ++it)
 	{
 		assert(Equals(Left(*it),SampleType(0)) && Equals(Right(*it),SampleType(0)));
 	}
@@ -234,7 +233,7 @@ static void TestSine(void)
 
 	StereoData samples[4];
 
-	for(uint64_t i = 0; i < SizeOfArray(samples); ++i)
+	for(uint64_t i = 0; i < SIZEOF_ARRAY(samples); ++i)
 	{
 		samples[i] = s->SendSample();
 	}
