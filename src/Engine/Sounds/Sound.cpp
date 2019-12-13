@@ -13,6 +13,7 @@
 #include "Sound.hpp"
 
 #include "../Core/Driver.hpp"
+#include "../Modifiers/Gain.hpp"
 #include "../Modifiers/ModifierFactory.hpp"
 #include "../Tools/MethodTable.hpp"
 #include "SoundFactory.hpp"

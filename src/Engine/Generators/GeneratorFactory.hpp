@@ -29,8 +29,8 @@ namespace Generator
 	TYPEDEF_SHARED(GeneratorBase);
 	class Noise;
 	TYPEDEF_SHARED(Noise);
-	class Sawtoothe;
-	TYPEDEF_SHARED(Sawtoothe);
+	class Sawtooth;
+	TYPEDEF_SHARED(Sawtooth);
 	class Sine;
 	TYPEDEF_SHARED(Sine);
 	class Square;

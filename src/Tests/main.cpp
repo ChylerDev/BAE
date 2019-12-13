@@ -224,23 +224,25 @@ static void TestGeneratorBase(void)
 
 static void TestSine(void)
 {
-	Math_t f = 20;
-	auto s = Generator::GeneratorFactory::CreateSine(f);
+	auto s = Generator::GeneratorFactory::CreateSine(440);
 
 	assert(!s->IsBase());
 
-	Track_t samples;
+	StereoData samples[4];
 
-	while(f < 20'000)
+	for(uint64_t i = 0; i < SizeOfArray(samples); ++i)
 	{
-		s->CallMethod("SetFrequency", f);
-		samples.push_back(s->SendSample());
-		f *= 1 + (0.0009765625 / (256));
+		samples[i] = s->SendSample();
 	}
 
-	auto track = Tools::WriteWAV(samples);
-
-	std::ofstream("test_new_sine.wav", std::ios_base::binary).write(reinterpret_cast<char *>(track.data()), std::streamsize(track.size()));
+	assert(Equals(Left(samples[0]), SampleType(std::sin(440*PI2*INC_RATE*0))));
+	assert(Equals(Left(samples[0]), Right(samples[0])));
+	assert(Equals(Left(samples[1]), SampleType(std::sin(440*PI2*INC_RATE*1)*SQRT_HALF)));
+	assert(Equals(Left(samples[1]), Right(samples[1])));
+	assert(Equals(Left(samples[2]), SampleType(std::sin(440*PI2*INC_RATE*2)*SQRT_HALF)));
+	assert(Equals(Left(samples[2]), Right(samples[2])));
+	assert(Equals(Left(samples[3]), SampleType(std::sin(440*PI2*INC_RATE*3)*SQRT_HALF)));
+	assert(Equals(Left(samples[3]), Right(samples[3])));
 }
 
 static void TestCombinator(void)
