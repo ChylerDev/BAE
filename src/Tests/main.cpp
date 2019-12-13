@@ -214,12 +214,33 @@ static void TestGeneratorBase(void)
 	StereoData samples[SAMPLE_RATE/10] = {};
 
 	std::generate(samples, samples + SizeOfArray(samples),
-				  [& b]()->StereoData{return b->SendSample();});
+				  [& b](){return b->SendSample();});
 
 	for(auto it = samples; it != samples + SizeOfArray(samples); ++it)
 	{
 		assert(Equals(Left(*it),SampleType(0)) && Equals(Right(*it),SampleType(0)));
 	}
+}
+
+static void TestSine(void)
+{
+	Math_t f = 20;
+	auto s = Generator::GeneratorFactory::CreateSine(f);
+
+	assert(!s->IsBase());
+
+	Track_t samples;
+
+	while(f < 20'000)
+	{
+		s->CallMethod("SetFrequency", f);
+		samples.push_back(s->SendSample());
+		f *= 1 + (0.0009765625 / (256));
+	}
+
+	auto track = Tools::WriteWAV(samples);
+
+	std::ofstream("test_new_sine.wav", std::ios_base::binary).write(reinterpret_cast<char *>(track.data()), std::streamsize(track.size()));
 }
 
 static void TestCombinator(void)
@@ -259,8 +280,9 @@ static void TestCombinator(void)
 std::vector<VoidFn> tests{
 	TestResampler,
 	TestWAVWriter,
-	TestCombinator,
-	TestGeneratorBase
+	TestSine,
+	TestGeneratorBase,
+	TestCombinator
 };
 
 // Public Functions                       //////////////////////////////////////

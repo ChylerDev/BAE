@@ -12,6 +12,10 @@
 
 // Public Macros                ////////////////////////////////////////////////
 
+#ifndef SIZEOF_ARRAY
+	#define SIZEOF_ARRAY(a) (sizeof(a)/sizeof(*a))
+#endif // SIZEOF_ARRAY
+
 #ifndef SAMPLE_RATE
 		/// The sample rate OCAE runs at (probably 48kHz)
 	#define SAMPLE_RATE 48000

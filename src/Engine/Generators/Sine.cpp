@@ -15,11 +15,17 @@
 
 // Private Macros                         //////////////////////////////////////
 
+#define WAVTABLE_FREQ (10)
+#define WAVTABLE_SIZE ((SAMPLE_RATE) / (WAVTABLE_FREQ))
+
 // Private Enums                          //////////////////////////////////////
 
 // Private Enums                          //////////////////////////////////////
 
 // Private Objects                        //////////////////////////////////////
+
+OCAE::Math_t OCAE::Generator::Sine::s_Table[WAVTABLE_SIZE];
+int OCAE::Generator::Sine::dummy = OCAE::Generator::Sine::SetupWaveTable();
 
 // Private Function Declarations          //////////////////////////////////////
 
@@ -30,32 +36,38 @@ namespace OCAE
 namespace Generator
 {
 	Sine::Sine(Math_t f) : GeneratorBase(),
-		irate(INC_RATE*double(f)),
-		y1(SampleType(std::sin(double(PI2 * irate)))), y2(), beta()
+		m_A(f/WAVTABLE_FREQ), m_Index()
 	{
 		RegisterMethods(CreateMethodList());
-		Reset();
 	}
 
 	StereoData Sine::SendSample(void)
 	{
-		SampleType y = SampleType(beta * Math_t(y1) - Math_t(y2));
+		int64_t k = int64_t(std::floor(m_Index));
+		Math_t g = m_Index - k;
+		SampleType y = float(
+			(1-g)*s_Table[k] +
+			g*s_Table[k+1]
+		);
 
-		y2 = y1;
-		y1 = y;
+		m_Index += m_A;
+
+		if(m_Index >= WAVTABLE_SIZE - 1)
+		{
+			m_Index -= WAVTABLE_SIZE;
+		}
 
 		return MONO_TO_STEREO(y);
 	}
 
 	void Sine::SetFrequency(Math_t f)
 	{
-		irate = INC_RATE * double(f);
-		Reset();
+		m_A = f / WAVTABLE_FREQ;
 	}
 
 	Math_t Sine::GetFrequency() const
 	{
-		return Math_t(irate * SAMPLE_RATE);
+		return m_A * WAVTABLE_FREQ;
 	}
 
 	Tools::MethodTable::MethodList_t Sine::CreateMethodList()
@@ -89,12 +101,23 @@ namespace Generator
 			)
 		};
 	}
-
-	void Sine::Reset()
-	{
-		beta = Math_t(2 * std::cos(double(2*PI * irate)));
-	}
 } // namespace Generator
 } // namespace OCAE
 
 // Private Functions                      //////////////////////////////////////
+
+namespace OCAE
+{
+namespace Generator
+{
+	int Sine::SetupWaveTable()
+	{
+		for(auto i = 0; i < WAVTABLE_SIZE; ++i)
+		{
+			s_Table[i] = std::sin(2 * PI * INC_RATE * WAVTABLE_FREQ * i);
+		}
+
+		return 0;
+	}
+} // namespace Generator
+} // namespace OCAE

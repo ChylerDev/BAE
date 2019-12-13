@@ -38,14 +38,13 @@ namespace Generator
 
 		// Members              ///////////////////////
 
-			/// Combination of the sampling rate and desired frequency
-		Math_t irate;
-			/// Previous sample
-		SampleType y1;
-			/// Previous sample
-		SampleType y2;
-			/// Sinusoidal recurrence relation
-		Math_t beta;
+			/// Value storing the non-integer index increment value
+		Math_t m_A;
+			/// The current index in the wave table to access
+		Math_t m_Index;
+
+		static Math_t s_Table[SAMPLE_RATE/10];
+		static int dummy;
 
 	public:
 
@@ -170,11 +169,11 @@ namespace Generator
 		***********************************************************************/
 		virtual Tools::MethodTable::MethodList_t CreateMethodList();
 
-		/*! ********************************************************************
-		\brief
-			Sets all the coefficients for calculating samples.
-		***********************************************************************/
-		void Reset(void);
+	private:
+
+		// Functions                  ///////////////////////
+
+		static int SetupWaveTable();
 	}; // class Sine
 
 		/// Alias for a std::shared_ptr instantiated with the Sine class
