@@ -108,8 +108,18 @@ namespace Generator
 		***********************************************************************/
 		void SetFrequency(Math_t freq);
 
+		/*! ********************************************************************
+		\brief
+			Gets the current frequency.
+
+		\return
+			The current frequency.
+		***********************************************************************/
+		Math_t GetFrequency() const;
+
 		// Functions            ///////////////////////
 
+		TODO("Fix this doc")
 		/*! ********************************************************************
 		\brief
 			Calculates the sample. For the base class this is simply 0.

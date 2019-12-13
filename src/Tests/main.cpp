@@ -33,7 +33,7 @@ using VoidFn = void(*)(void);
 
 // Private Enums                          //////////////////////////////////////
 
-#define Equals(a,b) bool(double(std::abs(a-b) < EPSILON_F))
+#define Equals(a,b) bool(double(std::abs(a-b)) < double(EPSILON_F))
 #define WRITEWAV(file, samples) auto _r = Tools::WriteWAV(samples); std::ofstream(file, std::ios_base::binary).write(reinterpret_cast<char *>(_r.data()), std::streamsize(_r.size()))
 
 // Private Functions                      //////////////////////////////////////
@@ -195,11 +195,9 @@ static void TestWAVWriter(void)
 static void TestGeneratorBase(void)
 {
 	auto b = Generator::GeneratorFactory::CreateBase();
-
 	assert(b->IsBase());
 
 	StereoData samples[SAMPLE_RATE/10] = {};
-
 	std::generate(samples, samples + SIZEOF_ARRAY(samples),
 				  [& b](){return b->SendSample();});
 
@@ -212,11 +210,9 @@ static void TestGeneratorBase(void)
 static void TestNoise(void)
 {
 	auto n = Generator::GeneratorFactory::CreateNoise();
-
 	assert(!n->IsBase());
 
 	Track_t samples;
-
 	for(uint64_t i = 0; i < SAMPLE_RATE; ++i)
 	{
 		samples.push_back(n->SendSample());
@@ -225,14 +221,41 @@ static void TestNoise(void)
 	WRITEWAV("noise.1s.wav", samples);
 }
 
+static void TestSawtooth(void)
+{
+	auto s = Generator::GeneratorFactory::CreateSawtooth(440);
+	assert(!s->IsBase());
+
+	Math_t f;
+	s->CallMethod("GetFrequency", METHOD_RET(f));
+	assert(Equals(f, 440.0));
+
+	StereoData samples[4];
+	for(uint64_t i = 0; i < SIZEOF_ARRAY(samples); ++i)
+	{
+		samples[i] = s->SendSample();
+	}
+
+	assert(Equals(Left(samples[0]), SampleType(440*INC_RATE*2*0*SQRT_HALF)));
+	assert(Equals(Left(samples[0]), Right(samples[0])));
+	assert(Equals(Left(samples[1]), SampleType(440*INC_RATE*2*1*SQRT_HALF)));
+	assert(Equals(Left(samples[1]), Right(samples[1])));
+	assert(Equals(Left(samples[2]), SampleType(440*INC_RATE*2*2*SQRT_HALF)));
+	assert(Equals(Left(samples[2]), Right(samples[2])));
+	assert(Equals(Left(samples[3]), SampleType(440*INC_RATE*2*3*SQRT_HALF)));
+	assert(Equals(Left(samples[3]), Right(samples[3])));
+}
+
 static void TestSine(void)
 {
 	auto s = Generator::GeneratorFactory::CreateSine(440);
-
 	assert(!s->IsBase());
 
-	StereoData samples[4];
+	Math_t f;
+	s->CallMethod("GetFrequency", METHOD_RET(f));
+	assert(Equals(f, 440.0));
 
+	StereoData samples[4];
 	for(uint64_t i = 0; i < SIZEOF_ARRAY(samples); ++i)
 	{
 		samples[i] = s->SendSample();
@@ -286,6 +309,7 @@ std::vector<VoidFn> tests{
 	TestResampler,
 	TestWAVWriter,
 	TestNoise,
+	TestSawtooth,
 	TestSine,
 	TestGeneratorBase,
 	TestCombinator

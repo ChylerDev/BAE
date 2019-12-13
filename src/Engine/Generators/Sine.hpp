@@ -122,6 +122,7 @@ namespace Generator
 
 		// Functions            ///////////////////////
 
+		TODO("Fix this doc")
 		/*! ********************************************************************
 		\brief
 			Sends a single sample to Core::Driver for output to the OS.

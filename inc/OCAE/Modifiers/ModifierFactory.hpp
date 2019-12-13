@@ -26,6 +26,24 @@ namespace Modifier
 {
 	class ModifierBase;
 	TYPEDEF_SHARED(ModifierBase);
+	class ADSR;
+	TYPEDEF_SHARED(ADSR);
+	class BandPass;
+	TYPEDEF_SHARED(BandPass);
+	class Delay;
+	TYPEDEF_SHARED(Delay);
+	class Echo;
+	TYPEDEF_SHARED(Echo);
+	class EnvelopeFollower;
+	TYPEDEF_SHARED(EnvelopeFollower);
+	class Equalizer;
+	TYPEDEF_SHARED(Equalizer);
+	class Gain;
+	TYPEDEF_SHARED(Gain);
+	class GenericFilter;
+	TYPEDEF_SHARED(GenericFilter);
+	class LowPass;
+	TYPEDEF_SHARED(LowPass);
 }
 }
 
@@ -85,7 +103,7 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateADSR(Math_t attack, Math_t decay, Math_t sustain, Math_t release);
+		static ADSRPtr CreateADSR(Math_t attack, Math_t decay, Math_t sustain, Math_t release);
 
 		/*! ********************************************************************
 		\brief
@@ -100,7 +118,7 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateBandPass(Math_t lower, Math_t upper);
+		static BandPassPtr CreateBandPass(Math_t lower, Math_t upper);
 
 		/*! ********************************************************************
 		\brief
@@ -112,7 +130,7 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateDelay(Math_t seconds);
+		static DelayPtr CreateDelay(Math_t seconds);
 
 		/*! ********************************************************************
 		\brief
@@ -128,7 +146,7 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateEcho(Math_t delay_seconds, Math_t decay_ratio);
+		static EchoPtr CreateEcho(Math_t delay_seconds, Math_t decay_ratio);
 
 		/*! ********************************************************************
 		\brief
@@ -146,7 +164,7 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateEqualizer(uint32_t band_count = 2, Math_t lower = 20, Math_t upper = 20000);
+		static EqualizerPtr CreateEqualizer(uint32_t band_count = 2, Math_t lower = 20, Math_t upper = 20000);
 
 		/*! ********************************************************************
 		\brief
@@ -163,7 +181,7 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateEnvelopeFollower(Math_t lower = Math_t(20), Math_t upper = Math_t(20000));
+		static EnvelopeFollowerPtr CreateEnvelopeFollower(Math_t lower = Math_t(20), Math_t upper = Math_t(20000));
 
 		/*! ********************************************************************
 		\brief
@@ -175,7 +193,7 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateGain(Math_t gain = DEFAULT_GAIN);
+		static GainPtr CreateGain(Math_t gain = DEFAULT_GAIN);
 
 		/*! ********************************************************************
 		\brief
@@ -190,8 +208,8 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateGenericFilter(ZeroContainer const & zeros,
-												   PoleContainer const & poles);
+		static GenericFilterPtr CreateGenericFilter(ZeroContainer const & zeros,
+													PoleContainer const & poles);
 
 		/*! ********************************************************************
 		\brief
@@ -208,7 +226,7 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateLowPass(Math_t cutoff, Math_t resonance = 0);
+		static LowPassPtr CreateLowPass(Math_t cutoff, Math_t resonance = 0);
 
 		/*! ********************************************************************
 		\brief

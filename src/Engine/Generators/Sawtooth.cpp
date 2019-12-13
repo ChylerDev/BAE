@@ -36,8 +36,15 @@ namespace Generator
 		m_Irate = 2 * double(freq) * INC_RATE;
 	}
 
+	Math_t Sawtooth::GetFrequency() const
+	{
+		return m_Irate / (2 * INC_RATE);
+	}
+
 	StereoData Sawtooth::SendSample()
 	{
+		SampleType out = SampleType(m_Inc);
+
 		m_Inc += m_Irate;
 
 		if(m_Inc >= 1)
@@ -45,7 +52,7 @@ namespace Generator
 			m_Inc -= 2;
 		}
 
-		return MONO_TO_STEREO(m_Inc);
+		return MONO_TO_STEREO(out);
 	}
 
 	Tools::MethodTable::MethodList_t Sawtooth::CreateMethodList()
@@ -55,6 +62,12 @@ namespace Generator
 				std::string("SetFrequency"),
 				Tools::MethodTable::Void_fn([this](void * f){
 					SetFrequency(std::get<0>(*reinterpret_cast<std::tuple<METHOD_PARAM_T(Math_t)>*>(f)));
+				})
+			),
+			std::make_tuple(
+				std::string("GetFrequency"),
+				Tools::MethodTable::Void_fn([this](void * f){
+					std::get<0>(*reinterpret_cast<std::tuple<METHOD_RET_T(Math_t)>*>(f)) = GetFrequency();
 				})
 			)
 		};

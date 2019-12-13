@@ -51,7 +51,7 @@ namespace OCAE
 	\return
 		The left audio sample.
 	***************************************************************************/
-	constexpr SampleType const& Left(StereoData const& s)
+	constexpr SampleType const & Left(StereoData const & s)
 	{
 		return std::get<0>(s);
 	}
@@ -81,7 +81,7 @@ namespace OCAE
 	\return
 		The right audio sample.
 	***************************************************************************/
-	constexpr SampleType const& Right(StereoData const& s)
+	constexpr SampleType const & Right(StereoData const & s)
 	{
 		return std::get<1>(s);
 	}

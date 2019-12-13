@@ -76,7 +76,8 @@ namespace Sound
 			multiplies them depending on how the object was constructed.
 
 		\tparam Iterator
-			The iterator type to process.
+			The iterator type to process. Must iterate over a container of
+			StereoData values.
 
 		\param first
 			The beginning of the list.
@@ -90,7 +91,7 @@ namespace Sound
 		template<typename Iterator>
 		StereoData Process(Iterator first, Iterator last)
 		{
-			StereoData output;
+			StereoData output(*first++);
 
 			switch(m_Combination)
 			{
