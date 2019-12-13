@@ -34,7 +34,7 @@ using VoidFn = void(*)(void);
 // Private Enums                          //////////////////////////////////////
 
 #define Equals(a,b) bool(double(std::abs(a-b) < EPSILON_F))
-
+#define WRITEWAV(file, samples) auto _r = Tools::WriteWAV(samples); std::ofstream(file, std::ios_base::binary).write(reinterpret_cast<char *>(_r.data()), std::streamsize(_r.size()))
 #define SizeOfArray(a) (sizeof(a)/sizeof(*a))
 
 // Private Functions                      //////////////////////////////////////
@@ -180,24 +180,12 @@ static void TestWAVWriter(void)
 	assert(wav_track[0] == 0 && wav_track[1] == 0 &&
 		   wav_track[2] == 0 && wav_track[3] == 0);
 
-	// std::cout << "wav_track[4] = " << int(wav_track[4]) << " \t calculated = " << (uint16_t(0x8000 * 0.5) & 0x00'FF) << '\n';
-	// std::cout << "wav_track[5] = " << int(wav_track[5]) << " \t calculated = " << ((uint16_t(0x8000 * 0.5) & 0xFF'00) >> 8) << '\n';
-	// std::cout << "wav_track[6] = " << int(wav_track[6]) << " \t calculated = " << (uint16_t(0x8000 * 0.5) & 0x00'FF) << '\n';
-	// std::cout << "wav_track[7] = " << int(wav_track[7]) << " \t calculated = " << ((uint16_t(0x8000 * 0.5) & 0xFF'00) >> 8) << '\n';
-	// std::cout.flush();
-
 	assert(wav_track[4] == RIFF::byte_t(uint16_t(0x8000 * 0.5) & 0x00'FF) &&
 		   wav_track[5] == RIFF::byte_t((uint16_t(0x8000 * 0.5) & 0xFF'00) >> 8) &&
 		   wav_track[6] == RIFF::byte_t(uint16_t(0x8000 * 0.5) & 0x00'FF) &&
 		   wav_track[7] == RIFF::byte_t((uint16_t(0x8000 * 0.5) & 0xFF'00) >> 8));
 	assert(wav_track[8] == 0 && wav_track[9] == 0 &&
 		   wav_track[10] == 0 && wav_track[11] == 0);
-
-	// std::cout << "wav_track[12] = " << int(wav_track[12]) << " \t calculated = " << (static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0x00'FF) << '\n';
-	// std::cout << "wav_track[13] = " << int(wav_track[13]) << " \t calculated = " << ((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8) << '\n';
-	// std::cout << "wav_track[14] = " << int(wav_track[14]) << " \t calculated = " << (static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0x00'FF) << '\n';
-	// std::cout << "wav_track[15] = " << int(wav_track[15]) << " \t calculated = " << ((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8) << '\n';
-	// std::cout.flush();
 
 	assert(wav_track[12] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0x00'FF)) &&
 		   wav_track[13] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8) &&
@@ -220,6 +208,22 @@ static void TestGeneratorBase(void)
 	{
 		assert(Equals(Left(*it),SampleType(0)) && Equals(Right(*it),SampleType(0)));
 	}
+}
+
+static void TestNoise(void)
+{
+	auto n = Generator::GeneratorFactory::CreateNoise();
+
+	assert(!n->IsBase());
+
+	Track_t samples;
+
+	for(uint64_t i = 0; i < SAMPLE_RATE; ++i)
+	{
+		samples.push_back(n->SendSample());
+	}
+
+	WRITEWAV("noise.1s.wav", samples);
 }
 
 static void TestSine(void)
@@ -282,6 +286,7 @@ static void TestCombinator(void)
 std::vector<VoidFn> tests{
 	TestResampler,
 	TestWAVWriter,
+	TestNoise,
 	TestSine,
 	TestGeneratorBase,
 	TestCombinator
