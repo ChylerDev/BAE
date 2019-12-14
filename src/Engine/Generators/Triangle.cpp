@@ -38,8 +38,14 @@ namespace Generator
 		m_Irate = 4 * double(freq) * INC_RATE;
 	}
 
+	Math_t Triangle::GetFrequency() const
+	{
+		return std::abs(m_Irate/(4*INC_RATE));
+	}
+
 	StereoData Triangle::SendSample(void)
 	{
+		StereoData out = MONO_TO_STEREO(m_Inc);
 		m_Inc += m_Irate;
 
 		if(m_Inc >= 1 || m_Inc <= -1)
@@ -49,7 +55,7 @@ namespace Generator
 			m_Inc = (m_Inc >= 1) ? (2 - m_Inc) : (-2 - m_Inc);
 		}
 
-		return MONO_TO_STEREO(m_Inc);
+		return out;
 	}
 
 	Tools::MethodTable::MethodList_t Triangle::CreateMethodList()
@@ -66,6 +72,18 @@ namespace Generator
 								>(f)
 							)
 						);
+					}
+				)
+			),
+			std::make_tuple(
+				std::string("GetFrequency"),
+				Tools::MethodTable::Void_fn(
+					[this](void * f){
+						std::get<0>(
+							*reinterpret_cast<
+								std::tuple<METHOD_RET_T(Math_t)>*
+							>(f)
+						) = GetFrequency();
 					}
 				)
 			)

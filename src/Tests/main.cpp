@@ -297,6 +297,31 @@ static void TestSquare(void)
 	assert(Equals(Left(samples[3]), Right(samples[3])));
 }
 
+static void TestTriangle(void)
+{
+	auto t = Generator::GeneratorFactory::CreateTriangle(440);
+	assert(!t->IsBase());
+
+	Math_t f;
+	t->CallMethod("GetFrequency", METHOD_RET(f));
+	assert(Equals(f, 440.0));
+
+	StereoData samples[4];
+	for(uint64_t i = 0; i < SIZEOF_ARRAY(samples); ++i)
+	{
+		samples[i] = t->SendSample();
+	}
+
+	assert(Equals(Left(samples[0]), SampleType(4*440*SQRT_HALF*INC_RATE*0)));
+	assert(Equals(Left(samples[0]), Right(samples[0])));
+	assert(Equals(Left(samples[1]), SampleType(4*440*SQRT_HALF*INC_RATE*1)));
+	assert(Equals(Left(samples[1]), Right(samples[1])));
+	assert(Equals(Left(samples[2]), SampleType(4*440*SQRT_HALF*INC_RATE*2)));
+	assert(Equals(Left(samples[2]), Right(samples[2])));
+	assert(Equals(Left(samples[3]), SampleType(4*440*SQRT_HALF*INC_RATE*3)));
+	assert(Equals(Left(samples[3]), Right(samples[3])));
+}
+
 static void TestCombinator(void)
 {
 	std::vector<StereoData> samples{
@@ -339,6 +364,7 @@ std::vector<VoidFn> tests{
 	TestSawtooth,
 	TestSine,
 	TestSquare,
+	TestTriangle,
 	TestCombinator
 };
 
