@@ -23,6 +23,7 @@
 
 #include <RIFF-Util/RIFF.hpp>
 
+#include "../Engine/Macro.hpp"
 #include "../Engine/Engine.hpp"
 
 using hrc = std::chrono::high_resolution_clock;
@@ -271,6 +272,31 @@ static void TestSine(void)
 	assert(Equals(Left(samples[3]), Right(samples[3])));
 }
 
+static void TestSquare(void)
+{
+	auto s = Generator::GeneratorFactory::CreateSquare(440);
+	assert(!s->IsBase());
+
+	Math_t f;
+	s->CallMethod("GetFrequency", METHOD_RET(f));
+	assert(Equals(f, 440.0));
+
+	StereoData samples[4];
+	for(uint64_t i = 0; i < SIZEOF_ARRAY(samples); ++i)
+	{
+		samples[i] = s->SendSample();
+	}
+
+	assert(Equals(Left(samples[0]), SampleType(SQRT_HALF)));
+	assert(Equals(Left(samples[0]), Right(samples[0])));
+	assert(Equals(Left(samples[1]), SampleType(SQRT_HALF)));
+	assert(Equals(Left(samples[1]), Right(samples[1])));
+	assert(Equals(Left(samples[2]), SampleType(SQRT_HALF)));
+	assert(Equals(Left(samples[2]), Right(samples[2])));
+	assert(Equals(Left(samples[3]), SampleType(SQRT_HALF)));
+	assert(Equals(Left(samples[3]), Right(samples[3])));
+}
+
 static void TestCombinator(void)
 {
 	std::vector<StereoData> samples{
@@ -308,10 +334,11 @@ static void TestCombinator(void)
 std::vector<VoidFn> tests{
 	TestResampler,
 	TestWAVWriter,
+	TestGeneratorBase,
 	TestNoise,
 	TestSawtooth,
 	TestSine,
-	TestGeneratorBase,
+	TestSquare,
 	TestCombinator
 };
 
