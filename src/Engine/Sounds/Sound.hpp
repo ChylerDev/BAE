@@ -63,8 +63,9 @@ namespace Sound
 	class Sound
 	{
 	public:
+		using BlockList = std::deque<BlockPtr>;
 			/// Alias for the structure that represents the graph blocks that make up this Sound.
-		using Graph = std::map<BlockPtr,std::deque<BlockPtr>>;
+		using Graph = std::map<BlockPtr,BlockList>;
 
 	private:
 
@@ -105,14 +106,12 @@ namespace Sound
 
 		/*! ********************************************************************
 		\brief
-			Copy constructor.
-			NOTE: The contsructed sound will not be registered to a driver, even
-				  if the sound being copied is.
+			Deleted copy constructor.
 
 		\param other
-			The other sound being copied
+			The other sound being copied.
 		***********************************************************************/
-		Sound(Sound const & other);
+		Sound(Sound const & other) = delete;
 
 		/*! ********************************************************************
 		\brief
@@ -131,10 +130,7 @@ namespace Sound
 
 		/*! ********************************************************************
 		\brief
-			Copy assignment operator.
-			NOTE: The copied sound will not change it's registration. If it
-				  needs to be registered to a different driver, you must handle
-				  that yourself.
+			Deleted copy assignment operator.
 
 		\param rhs
 			The sound being copied.
@@ -142,7 +138,7 @@ namespace Sound
 		\return
 			*this.
 		***********************************************************************/
-		Sound & operator=(Sound const & rhs);
+		Sound & operator=(Sound const & rhs) = delete;
 
 		/*! ********************************************************************
 		\brief
@@ -161,9 +157,9 @@ namespace Sound
 
 		// Accossors/Mutators   ///////////////////////
 
-		BlockPtr const & GetInputGain() const;
+		BlockPtr const & GetInputBlock() const;
 
-		BlockPtr const & GetOutputGain() const;
+		BlockPtr const & GetOutputBlock() const;
 
 		/*! ********************************************************************
 		\brief
@@ -210,6 +206,18 @@ namespace Sound
 
 		/*! ********************************************************************
 		\brief
+			Effectively moves the other object into this one, with this sound
+			coming before the passed sound.
+		
+		\param other
+			Pointer to the other sound to concatenate with.
+			NOTE: After this function, other's object will be empty, including
+			      being unregistered. This' registration will be left unchanged.
+		***********************************************************************/
+		void Concat(SoundPtr && other);
+
+		/*! ********************************************************************
+		\brief
 			Registers the given Sound object with the given Driver. If this
 			Sound is already registered to a Driver, it will unregister itself
 			before registering to the new Driver.
@@ -236,14 +244,8 @@ namespace Sound
 		// Functions                  ///////////////////////
 
 		void ProcessOrder();
-		void PrepareGraph(std::deque<BlockPtr>const&,std::deque<BlockPtr>&);
 
-		/*! ********************************************************************
-		\brief
-			Ensures that the internal graph contains only unique objects. If an
-			object is not unique, it will create a copy of the object.
-		***********************************************************************/
-		void MakeUnique();
+		void PrepareGraph(BlockList const &, BlockList &);
 	}; // class Sound
 } // namespace Sound
 } // namespace OCAE

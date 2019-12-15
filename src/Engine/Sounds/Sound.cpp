@@ -22,6 +22,8 @@
 
 // Private Macros                         //////////////////////////////////////
 
+#define NULL_ID (static_cast<uint64_t>(-1))
+
 // Private Enums                          //////////////////////////////////////
 
 // Private Objects                        //////////////////////////////////////
@@ -38,44 +40,16 @@ namespace Sound
 		m_Graph(), m_ProcessOrder(),
 		m_InputGain(SoundFactory::CreateBlock(Modifier::ModifierFactory::CreateGain(input_gain))),
 		m_OutputGain(SoundFactory::CreateBlock(Modifier::ModifierFactory::CreateGain(output_gain))),
-		m_Driver(), m_ID(static_cast<uint64_t>(-1)), m_IsPaused(false)
+		m_Driver(), m_ID(NULL_ID), m_IsPaused(false)
 	{
 		m_Graph[m_InputGain];
-	}
-
-	Sound::Sound(Sound const & other) :
-		m_Graph(other.m_Graph), m_ProcessOrder(other.m_ProcessOrder),
-		m_InputGain(other.m_InputGain), m_OutputGain(other.m_OutputGain),
-		m_Driver(), m_ID(static_cast<uint64_t>(-1)), m_IsPaused(other.m_IsPaused)
-	{
-		MakeUnique();
 	}
 
 	Sound::Sound(Sound && other) noexcept :
 		m_Graph(std::move(other.m_Graph)), m_ProcessOrder(std::move(other.m_ProcessOrder)),
 		m_InputGain(std::move(other.m_InputGain)), m_OutputGain(std::move(other.m_OutputGain)),
-		m_Driver(), m_ID(static_cast<uint64_t>(-1)), m_IsPaused(std::move(other.m_IsPaused))
+		m_Driver(), m_ID(NULL_ID), m_IsPaused(std::move(other.m_IsPaused))
 	{
-	}
-
-	Sound & Sound::operator=(Sound const & rhs)
-	{
-		m_Graph        = rhs.m_Graph;
-		m_ProcessOrder = rhs.m_ProcessOrder;
-		m_IsPaused     = rhs.m_IsPaused;
-		Math_t gain;
-		rhs.m_InputGain->GetModifier->CallMethod("GetGain", METHOD_RET(gain));
-		m_InputGain->GetModifier->CallMethod(
-			"SetGain", METHOD_PARAM(gain)
-		);
-		rhs.m_OutputGain->GetModifier->CallMethod("GetGain", METHOD_RET(gain));
-		m_OutputGain->GetModifier->CallMethod(
-			"SetGain", METHOD_PARAM(gain)
-		);
-
-		MakeUnique();
-
-		return *this;
 	}
 
 	Sound & Sound::operator=(Sound && rhs) noexcept
@@ -89,12 +63,12 @@ namespace Sound
 		return *this;
 	}
 
-	BlockPtr const & Sound::GetInputGain() const
+	BlockPtr const & Sound::GetInputBlock() const
 	{
 		return m_InputGain;
 	}
 
-	BlockPtr const & Sound::GetOutputGain() const
+	BlockPtr const & Sound::GetOutputBlock() const
 	{
 		return m_OutputGain;
 	}
@@ -151,10 +125,8 @@ namespace Sound
 
 		for(auto & b : m_ProcessOrder)
 		{
-			StereoData out;
-
 			b->Process();
-			out = b->LastOutput();
+			StereoData out = b->LastOutput();
 
 			for(auto & t : m_Graph[b])
 			{
@@ -165,9 +137,45 @@ namespace Sound
 		return m_OutputGain->LastOutput();
 	}
 
+	void Sound::Concat(SoundPtr && other)
+	{
+			// Calculate the new gain
+		Math_t this_g, other_g;
+		m_OutputGain->GetModifier()->CallMethod("GetGain", METHOD_RET(this_g));
+		other->m_InputGain->GetModifier()->CallMethod("GetGain", METHOD_RET(other_g));
+		this_g *= other_g;
+
+			// Set the new gain
+		m_OutputGain->GetModifier()->CallMethod("SetGain", METHOD_PARAM(this_g));
+
+			// Remove the other's input gain from the process order
+		other->m_ProcessOrder.pop_front();
+
+			// Move the other's input's connections to this' current output list in the graph
+		m_Graph[m_OutputGain] = std::move(other->m_Graph[other->m_InputGain]);
+
+			// Remove the other's input from the graph
+		other->m_Graph.erase(other->m_InputGain);
+
+			// Move the edges from other's graph to this' graph
+		for(auto & p : other->m_Graph)
+		{
+			m_Graph[p.first] = std::move(p.second);
+		}
+
+			// Set the new output gain block
+		m_OutputGain = other->m_OutputGain;
+
+			// Get the new process order
+		ProcessOrder();
+
+			// Unregister other
+		Unregister(other);
+	}
+
 	void Sound::Register(SoundPtr const & self, Core::DriverPtr const & driver)
 	{
-		if(self->m_ID != static_cast<uint64_t>(-1)) Unregister(self);
+		if(self->m_ID != NULL_ID) Unregister(self);
 
 		self->m_Driver = driver;
 		self->m_ID = self->m_Driver->AddSound(self);
@@ -175,10 +183,10 @@ namespace Sound
 
 	void Sound::Unregister(SoundPtr const & self)
 	{
-		if(self->m_ID == static_cast<uint64_t>(-1)) return;
+		if(self->m_ID == NULL_ID) return;
 
 		self->m_Driver->RemoveSound(self->m_ID);
-		self->m_ID = static_cast<uint64_t>(-1);
+		self->m_ID = NULL_ID;
 	}
 } // namespace Sound
 } // namespace OCAE
@@ -191,61 +199,42 @@ namespace Sound
 {
 	void Sound::ProcessOrder()
 	{
+			// Clear any current order
 		m_ProcessOrder.clear();
+			// Push the input gain block to the front as it will always be the first block processed
 		m_ProcessOrder.push_front(m_InputGain);
 
+			// Generate the graph of the 
 		for(auto & l : m_Graph)
 		{
 			PrepareGraph(l.second, m_ProcessOrder);
 		}
 
-		std::deque<BlockPtr> scratch;
-		for(auto i = 0; i < m_ProcessOrder.size(); ++i)
-		{
-			bool should_remove = false;
-			for(auto & b : scratch)
-			{
-				if(m_ProcessOrder[i] == b)
-				{
-					should_remove = true;
-				}
-			}
-
-			if(should_remove)
-			{
-				m_ProcessOrder.erase(m_ProcessOrder.begin() + i);
-				--i;
-			}
-		}
+			// Push the output gain block to the back as it will always be the last block processed
+		m_ProcessOrder.push_back(m_OutputGain);
 	}
 
 	void Sound::PrepareGraph(std::deque<BlockPtr> const & list, std::deque<BlockPtr> & out)
 	{
 		for(auto & b : list)
 		{
+				// If the current block is the output block, don't insert it, it will be inserted after the recursive call stack is complete
+			if(b == m_OutputGain)
+			{
+				continue;
+			}
+
+				// If the item is already in the output list, do not insert it. Prevents getting stuck parsing a cycle
+			for(auto & i : out)
+			{
+				if(i == b)
+				{
+					continue;
+				}
+			}
 			out.push_back(b);
 			PrepareGraph(m_Graph[b], out);
 		}
-	}
-
-	void Sound::MakeUnique()
-	{
-		Graph unique_graph;
-
-		for(auto & a : m_Graph)
-		{
-			auto new_a = std::make_shared<Block>(*(a.first));
-
-			for(auto & b : a.second)
-			{
-				unique_graph[new_a].push_back(
-					std::make_shared<Block>(*b)
-				);
-			}
-		}
-
-		m_Graph.clear();
-		m_Graph = std::move(unique_graph);
 	}
 } // namespace Sound
 } // namespace OCAE

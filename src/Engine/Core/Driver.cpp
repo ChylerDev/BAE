@@ -85,9 +85,7 @@ namespace Core
 		{
 			for(auto & sound: m_Sounds)
 			{
-				sound.second->PrimeInput(StereoData(SampleType(0), SampleType(0)));
-				sound.second->Process();
-				StereoData out = sound.second->LastOutput();
+				StereoData out = sound.second->Process(StereoData());
 
 				 Left(sample) += Left(out);
 				Right(sample) += Right(out);
