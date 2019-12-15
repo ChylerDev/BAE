@@ -37,44 +37,44 @@ namespace Generator
 		return GeneratorBasePtr(new GeneratorBase());
 	}
 
-	GeneratorBasePtr GeneratorFactory::CreateNoise()
+	NoisePtr GeneratorFactory::CreateNoise()
 	{
-		return GeneratorBasePtr(new Noise());
+		return NoisePtr(new Noise());
 	}
 
-	GeneratorBasePtr GeneratorFactory::CreateSawtooth(Math_t freq)
+	SawtoothPtr GeneratorFactory::CreateSawtooth(Math_t freq)
 	{
-		return GeneratorBasePtr(new Sawtooth(freq));
+		return SawtoothPtr(new Sawtooth(freq));
 	}
 
-	GeneratorBasePtr GeneratorFactory::CreateSine(Math_t freq)
+	SinePtr GeneratorFactory::CreateSine(Math_t freq)
 	{
-		return GeneratorBasePtr(new Sine(freq));
+		return SinePtr(new Sine(freq));
 	}
 
-	GeneratorBasePtr GeneratorFactory::CreateSquare(Math_t freq)
+	SquarePtr GeneratorFactory::CreateSquare(Math_t freq)
 	{
-		return GeneratorBasePtr(new Square(freq));
+		return SquarePtr(new Square(freq));
 	}
 
-	GeneratorBasePtr GeneratorFactory::CreateTriangle(Math_t freq)
+	TrianglePtr GeneratorFactory::CreateTriangle(Math_t freq)
 	{
-		return GeneratorBasePtr(new Triangle(freq));
+		return TrianglePtr(new Triangle(freq));
 	}
 
-	GeneratorBasePtr GeneratorFactory::CreateWAV()
+	WAVPtr GeneratorFactory::CreateWAV()
 	{
-		return GeneratorBasePtr(new WAV());
+		return WAVPtr(new WAV());
 	}
 
-	GeneratorBasePtr GeneratorFactory::CreateWAV(std::string const & filepath)
+	WAVPtr GeneratorFactory::CreateWAV(std::string const & filepath)
 	{
-		return GeneratorBasePtr(new WAV(filepath));
+		return WAVPtr(new WAV(filepath));
 	}
 
-	GeneratorBasePtr GeneratorFactory::CreateWAV(std::vector<char> const & wav_data)
+	WAVPtr GeneratorFactory::CreateWAV(std::vector<char> const & wav_data)
 	{
-		return GeneratorBasePtr(new WAV(wav_data));
+		return WAVPtr(new WAV(wav_data));
 	}
 } // namespace Generator
 } // namespace OCAE

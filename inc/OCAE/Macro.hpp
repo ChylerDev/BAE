@@ -12,6 +12,10 @@
 
 // Public Macros                ////////////////////////////////////////////////
 
+#ifndef SIZEOF_ARRAY
+	#define SIZEOF_ARRAY(a) (sizeof(a)/sizeof(*a))
+#endif // SIZEOF_ARRAY
+
 #ifndef SAMPLE_RATE
 		/// The sample rate OCAE runs at (probably 48kHz)
 	#define SAMPLE_RATE 48000
@@ -27,8 +31,8 @@
 #endif // DEFAULT_GAIN
 
 #ifndef MAX_BUFFER
-		/// Macro for the maximum buffer size to allow for high performant audio, which is currently defined as 10ms
-	#define MAX_BUFFER (SAMPLE_RATE/100)
+		/// Macro for the maximum buffer size to allow for high performant audio, which is currently defined as 1ms
+	#define MAX_BUFFER (SAMPLE_RATE/1000)
 #endif // MAX_BUFFER
 
 #ifndef EPSILON

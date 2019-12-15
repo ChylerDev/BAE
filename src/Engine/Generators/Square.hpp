@@ -128,6 +128,15 @@ namespace Generator
 		***********************************************************************/
 		void SetFrequency(Math_t freq);
 
+		/*! ********************************************************************
+		\brief
+			Gets the frequency.
+
+		\return
+			The frequency.
+		***********************************************************************/
+		Math_t GetFrequency() const;
+
 			/// Add the factory as a friend so it can construct Square objects
 		friend class GeneratorFactory;
 

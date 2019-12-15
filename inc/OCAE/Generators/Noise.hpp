@@ -41,9 +41,9 @@ namespace Generator
 		// Members              ///////////////////////
 
 			/// Distribution for random value generation
-		std::uniform_int_distribution<int16_t> m_Distribution;
+		std::uniform_real_distribution<float> m_Distribution;
 			/// Random value engine
-		std::default_random_engine m_Engine;
+		std::mt19937 m_Engine;
 
 	public:
 

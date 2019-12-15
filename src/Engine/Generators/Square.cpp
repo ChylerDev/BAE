@@ -61,6 +61,11 @@ namespace Generator
 		m_Inv = SAMPLE_RATE/(2*f);
 	}
 
+	Math_t Square::GetFrequency() const
+	{
+		return SAMPLE_RATE/(2*m_Inv);
+	}
+
 	Tools::MethodTable::MethodList_t Square::CreateMethodList()
 	{
 		return {
@@ -75,6 +80,18 @@ namespace Generator
 								>(f)
 							)
 						);
+					}
+				)
+			),
+			std::make_tuple(
+				std::string("GetFrequency"),
+				Tools::MethodTable::Void_fn(
+					[this](void * f){
+						std::get<0>(
+							*reinterpret_cast<
+								std::tuple<METHOD_RET_T(Math_t)>*
+							>(f)
+						) = GetFrequency();
 					}
 				)
 			)

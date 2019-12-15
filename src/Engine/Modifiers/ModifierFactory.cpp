@@ -42,9 +42,9 @@ namespace Modifier
 		return ModifierBasePtr(new ModifierBase());
 	}
 
-	ModifierBasePtr ModifierFactory::CreateADSR(Math_t attack, Math_t decay, Math_t sustain, Math_t release)
+	ADSRPtr ModifierFactory::CreateADSR(Math_t attack, Math_t decay, Math_t sustain, Math_t release)
 	{
-		return ModifierBasePtr(new ADSR(
+		return ADSRPtr(new ADSR(
 			uint64_t(attack*SAMPLE_RATE),
 			uint64_t(decay*SAMPLE_RATE),
 			Math_t(DB_TO_LINEAR(sustain)),
@@ -52,49 +52,49 @@ namespace Modifier
 		));
 	}
 
-	ModifierBasePtr ModifierFactory::CreateBandPass(Math_t lower, Math_t upper)
+	BandPassPtr ModifierFactory::CreateBandPass(Math_t lower, Math_t upper)
 	{
 		Math_t const fc(std::sqrt(lower * upper));
-		return ModifierBasePtr(new BandPass(fc, fc/(upper-lower)));
+		return BandPassPtr(new BandPass(fc, fc/(upper-lower)));
 	}
 
-	ModifierBasePtr ModifierFactory::CreateDelay(Math_t seconds)
+	DelayPtr ModifierFactory::CreateDelay(Math_t seconds)
 	{
-		return ModifierBasePtr(new Delay(uint64_t(seconds * SAMPLE_RATE)));
+		return DelayPtr(new Delay(uint64_t(seconds * SAMPLE_RATE)));
 	}
 
-	ModifierBasePtr ModifierFactory::CreateEcho(Math_t delay_seconds, Math_t decay_ratio)
+	EchoPtr ModifierFactory::CreateEcho(Math_t delay_seconds, Math_t decay_ratio)
 	{
 			// Clamp value to within the accepted range
 		decay_ratio = std::clamp(decay_ratio, Math_t(0), Math_t(1));
-		return ModifierBasePtr(new Echo(uint64_t(delay_seconds * SAMPLE_RATE), decay_ratio));
+		return EchoPtr(new Echo(uint64_t(delay_seconds * SAMPLE_RATE), decay_ratio));
 	}
 
-	ModifierBasePtr ModifierFactory::CreateEqualizer(uint32_t band_count, Math_t lower, Math_t upper)
+	EqualizerPtr ModifierFactory::CreateEqualizer(uint32_t band_count, Math_t lower, Math_t upper)
 	{
-		return ModifierBasePtr(new Equalizer(band_count, lower, upper));
+		return EqualizerPtr(new Equalizer(band_count, lower, upper));
 	}
 
-	ModifierBasePtr ModifierFactory::CreateEnvelopeFollower(Math_t fd, Math_t fu)
+	EnvelopeFollowerPtr ModifierFactory::CreateEnvelopeFollower(Math_t fd, Math_t fu)
 	{
-		return ModifierBasePtr(new EnvelopeFollower(fd, fu));
+		return EnvelopeFollowerPtr(new EnvelopeFollower(fd, fu));
 	}
 
-	ModifierBasePtr ModifierFactory::CreateGain(Math_t gain)
+	GainPtr ModifierFactory::CreateGain(Math_t gain)
 	{
-		return ModifierBasePtr(new Gain(gain));
+		return GainPtr(new Gain(gain));
 	}
 
-	ModifierBasePtr ModifierFactory::CreateGenericFilter(ZeroContainer const & zeros, PoleContainer const & poles)
+	GenericFilterPtr ModifierFactory::CreateGenericFilter(ZeroContainer const & zeros, PoleContainer const & poles)
 	{
-		return ModifierBasePtr(new GenericFilter(zeros, poles));
+		return GenericFilterPtr(new GenericFilter(zeros, poles));
 	}
 
-	ModifierBasePtr ModifierFactory::CreateLowPass(Math_t cutoff, Math_t resonance)
+	LowPassPtr ModifierFactory::CreateLowPass(Math_t cutoff, Math_t resonance)
 	{
 			// Clamp value to within the accepted range
 		resonance = std::clamp(resonance, Math_t(0), Math_t(1)) / Math_t(6);
-		return ModifierBasePtr(new LowPass(cutoff, resonance));
+		return LowPassPtr(new LowPass(cutoff, resonance));
 	}
 } // namespace Modifier
 } // namespace OCAE

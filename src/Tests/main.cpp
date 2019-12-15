@@ -23,6 +23,7 @@
 
 #include <RIFF-Util/RIFF.hpp>
 
+#include "../Engine/Macro.hpp"
 #include "../Engine/Engine.hpp"
 
 using hrc = std::chrono::high_resolution_clock;
@@ -33,9 +34,8 @@ using VoidFn = void(*)(void);
 
 // Private Enums                          //////////////////////////////////////
 
-#define Equals(a,b) bool(double(std::abs(a-b) < EPSILON_F))
-
-#define SizeOfArray(a) (sizeof(a)/sizeof(*a))
+#define Equals(a,b) bool(double(std::abs(a-b)) < double(EPSILON_F))
+#define WRITEWAV(file, samples) auto _r = Tools::WriteWAV(samples); std::ofstream(file, std::ios_base::binary).write(reinterpret_cast<char *>(_r.data()), std::streamsize(_r.size()))
 
 // Private Functions                      //////////////////////////////////////
 
@@ -55,7 +55,7 @@ static void TestResampler(void)
 		StereoData results[7];
 
 		std::generate(
-			results, results + SizeOfArray(results),
+			results, results + SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
@@ -84,7 +84,7 @@ static void TestResampler(void)
 		StereoData results[2];
 
 		std::generate(
-			results, results + SizeOfArray(results),
+			results, results + SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
@@ -105,7 +105,7 @@ static void TestResampler(void)
 		resam.SetPlaybackSpeed(0.5);
 
 		std::generate(
-			results, results + SizeOfArray(results),
+			results, results + SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
@@ -136,7 +136,7 @@ static void TestResampler(void)
 		resam.SetPlaybackSpeed(0.5);
 
 		std::generate(
-			results, results + SizeOfArray(results),
+			results, results + SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
@@ -180,24 +180,12 @@ static void TestWAVWriter(void)
 	assert(wav_track[0] == 0 && wav_track[1] == 0 &&
 		   wav_track[2] == 0 && wav_track[3] == 0);
 
-	// std::cout << "wav_track[4] = " << int(wav_track[4]) << " \t calculated = " << (uint16_t(0x8000 * 0.5) & 0x00'FF) << '\n';
-	// std::cout << "wav_track[5] = " << int(wav_track[5]) << " \t calculated = " << ((uint16_t(0x8000 * 0.5) & 0xFF'00) >> 8) << '\n';
-	// std::cout << "wav_track[6] = " << int(wav_track[6]) << " \t calculated = " << (uint16_t(0x8000 * 0.5) & 0x00'FF) << '\n';
-	// std::cout << "wav_track[7] = " << int(wav_track[7]) << " \t calculated = " << ((uint16_t(0x8000 * 0.5) & 0xFF'00) >> 8) << '\n';
-	// std::cout.flush();
-
 	assert(wav_track[4] == RIFF::byte_t(uint16_t(0x8000 * 0.5) & 0x00'FF) &&
 		   wav_track[5] == RIFF::byte_t((uint16_t(0x8000 * 0.5) & 0xFF'00) >> 8) &&
 		   wav_track[6] == RIFF::byte_t(uint16_t(0x8000 * 0.5) & 0x00'FF) &&
 		   wav_track[7] == RIFF::byte_t((uint16_t(0x8000 * 0.5) & 0xFF'00) >> 8));
 	assert(wav_track[8] == 0 && wav_track[9] == 0 &&
 		   wav_track[10] == 0 && wav_track[11] == 0);
-
-	// std::cout << "wav_track[12] = " << int(wav_track[12]) << " \t calculated = " << (static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0x00'FF) << '\n';
-	// std::cout << "wav_track[13] = " << int(wav_track[13]) << " \t calculated = " << ((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8) << '\n';
-	// std::cout << "wav_track[14] = " << int(wav_track[14]) << " \t calculated = " << (static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0x00'FF) << '\n';
-	// std::cout << "wav_track[15] = " << int(wav_track[15]) << " \t calculated = " << ((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8) << '\n';
-	// std::cout.flush();
 
 	assert(wav_track[12] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0x00'FF)) &&
 		   wav_track[13] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8) &&
@@ -208,18 +196,130 @@ static void TestWAVWriter(void)
 static void TestGeneratorBase(void)
 {
 	auto b = Generator::GeneratorFactory::CreateBase();
-
 	assert(b->IsBase());
 
 	StereoData samples[SAMPLE_RATE/10] = {};
+	std::generate(samples, samples + SIZEOF_ARRAY(samples),
+				  [& b](){return b->SendSample();});
 
-	std::generate(samples, samples + SizeOfArray(samples),
-				  [& b]()->StereoData{return b->SendSample();});
-
-	for(auto it = samples; it != samples + SizeOfArray(samples); ++it)
+	for(auto it = samples; it != samples + SIZEOF_ARRAY(samples); ++it)
 	{
 		assert(Equals(Left(*it),SampleType(0)) && Equals(Right(*it),SampleType(0)));
 	}
+}
+
+static void TestNoise(void)
+{
+	auto n = Generator::GeneratorFactory::CreateNoise();
+	assert(!n->IsBase());
+
+	Track_t samples;
+	for(uint64_t i = 0; i < SAMPLE_RATE; ++i)
+	{
+		samples.push_back(n->SendSample());
+	}
+
+	WRITEWAV("noise.1s.wav", samples);
+}
+
+static void TestSawtooth(void)
+{
+	auto s = Generator::GeneratorFactory::CreateSawtooth(440);
+	assert(!s->IsBase());
+
+	Math_t f;
+	s->CallMethod("GetFrequency", METHOD_RET(f));
+	assert(Equals(f, 440.0));
+
+	StereoData samples[4];
+	for(uint64_t i = 0; i < SIZEOF_ARRAY(samples); ++i)
+	{
+		samples[i] = s->SendSample();
+	}
+
+	assert(Equals(Left(samples[0]), SampleType(440*INC_RATE*2*0*SQRT_HALF)));
+	assert(Equals(Left(samples[0]), Right(samples[0])));
+	assert(Equals(Left(samples[1]), SampleType(440*INC_RATE*2*1*SQRT_HALF)));
+	assert(Equals(Left(samples[1]), Right(samples[1])));
+	assert(Equals(Left(samples[2]), SampleType(440*INC_RATE*2*2*SQRT_HALF)));
+	assert(Equals(Left(samples[2]), Right(samples[2])));
+	assert(Equals(Left(samples[3]), SampleType(440*INC_RATE*2*3*SQRT_HALF)));
+	assert(Equals(Left(samples[3]), Right(samples[3])));
+}
+
+static void TestSine(void)
+{
+	auto s = Generator::GeneratorFactory::CreateSine(440);
+	assert(!s->IsBase());
+
+	Math_t f;
+	s->CallMethod("GetFrequency", METHOD_RET(f));
+	assert(Equals(f, 440.0));
+
+	StereoData samples[4];
+	for(uint64_t i = 0; i < SIZEOF_ARRAY(samples); ++i)
+	{
+		samples[i] = s->SendSample();
+	}
+
+	assert(Equals(Left(samples[0]), SampleType(std::sin(440*PI2*INC_RATE*0))));
+	assert(Equals(Left(samples[0]), Right(samples[0])));
+	assert(Equals(Left(samples[1]), SampleType(std::sin(440*PI2*INC_RATE*1)*SQRT_HALF)));
+	assert(Equals(Left(samples[1]), Right(samples[1])));
+	assert(Equals(Left(samples[2]), SampleType(std::sin(440*PI2*INC_RATE*2)*SQRT_HALF)));
+	assert(Equals(Left(samples[2]), Right(samples[2])));
+	assert(Equals(Left(samples[3]), SampleType(std::sin(440*PI2*INC_RATE*3)*SQRT_HALF)));
+	assert(Equals(Left(samples[3]), Right(samples[3])));
+}
+
+static void TestSquare(void)
+{
+	auto s = Generator::GeneratorFactory::CreateSquare(440);
+	assert(!s->IsBase());
+
+	Math_t f;
+	s->CallMethod("GetFrequency", METHOD_RET(f));
+	assert(Equals(f, 440.0));
+
+	StereoData samples[4];
+	for(uint64_t i = 0; i < SIZEOF_ARRAY(samples); ++i)
+	{
+		samples[i] = s->SendSample();
+	}
+
+	assert(Equals(Left(samples[0]), SampleType(SQRT_HALF)));
+	assert(Equals(Left(samples[0]), Right(samples[0])));
+	assert(Equals(Left(samples[1]), SampleType(SQRT_HALF)));
+	assert(Equals(Left(samples[1]), Right(samples[1])));
+	assert(Equals(Left(samples[2]), SampleType(SQRT_HALF)));
+	assert(Equals(Left(samples[2]), Right(samples[2])));
+	assert(Equals(Left(samples[3]), SampleType(SQRT_HALF)));
+	assert(Equals(Left(samples[3]), Right(samples[3])));
+}
+
+static void TestTriangle(void)
+{
+	auto t = Generator::GeneratorFactory::CreateTriangle(440);
+	assert(!t->IsBase());
+
+	Math_t f;
+	t->CallMethod("GetFrequency", METHOD_RET(f));
+	assert(Equals(f, 440.0));
+
+	StereoData samples[4];
+	for(uint64_t i = 0; i < SIZEOF_ARRAY(samples); ++i)
+	{
+		samples[i] = t->SendSample();
+	}
+
+	assert(Equals(Left(samples[0]), SampleType(4*440*SQRT_HALF*INC_RATE*0)));
+	assert(Equals(Left(samples[0]), Right(samples[0])));
+	assert(Equals(Left(samples[1]), SampleType(4*440*SQRT_HALF*INC_RATE*1)));
+	assert(Equals(Left(samples[1]), Right(samples[1])));
+	assert(Equals(Left(samples[2]), SampleType(4*440*SQRT_HALF*INC_RATE*2)));
+	assert(Equals(Left(samples[2]), Right(samples[2])));
+	assert(Equals(Left(samples[3]), SampleType(4*440*SQRT_HALF*INC_RATE*3)));
+	assert(Equals(Left(samples[3]), Right(samples[3])));
 }
 
 static void TestCombinator(void)
@@ -259,8 +359,13 @@ static void TestCombinator(void)
 std::vector<VoidFn> tests{
 	TestResampler,
 	TestWAVWriter,
-	TestCombinator,
-	TestGeneratorBase
+	TestGeneratorBase,
+	TestNoise,
+	TestSawtooth,
+	TestSine,
+	TestSquare,
+	TestTriangle,
+	TestCombinator
 };
 
 // Public Functions                       //////////////////////////////////////
