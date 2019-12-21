@@ -12,6 +12,11 @@
 
 // Public Macros                ////////////////////////////////////////////////
 
+#ifndef OCAE_WRITE_WAV
+	#include <fstream>
+	#define OCAE_WRITE_WAV(file, samples) auto _r = Tools::WriteWAV(samples); std::ofstream(file, std::ios_base::binary).write(reinterpret_cast<char *>(_r.data()), std::streamsize(_r.size()))
+#endif // OCAE_WRITE_WAV
+
 #ifndef OCAE_SIZEOF_ARRAY
 	#define OCAE_SIZEOF_ARRAY(a) (sizeof(a)/sizeof(*a))
 #endif // OCAE_SIZEOF_ARRAY

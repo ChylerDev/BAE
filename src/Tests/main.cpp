@@ -37,7 +37,6 @@ static hrc clk;
 // Private Enums                          //////////////////////////////////////
 
 #define EQUALS(a,b) bool(double(std::abs(a-b)) < double(OCAE_EPSILON_F))
-#define WRITEWAV(file, samples) auto _r = Tools::WriteWAV(samples); std::ofstream(file, std::ios_base::binary).write(reinterpret_cast<char *>(_r.data()), std::streamsize(_r.size()))
 
 // Private Functions                      //////////////////////////////////////
 
@@ -208,7 +207,7 @@ static void TestNoise(void)
 		samples.push_back(n->SendSample());
 	}
 
-	WRITEWAV("noise.1s.wav", samples);
+	OCAE_WRITE_WAV("noise.1s.wav", samples);
 }
 
 static void TestSawtooth(void)
@@ -329,7 +328,7 @@ static void TestSound(void)
 		t.push_back(echo->Process(OCAE_MONO_TO_STEREO(std::sin(OCAE_PI2*440*OCAE_INC_RATE*double(i)) * 0.5)));
 	}
 
-	WRITEWAV("sound.sin.440.echo.0.25s.0.5g.wav", t);
+	OCAE_WRITE_WAV("sound.sin.440.echo.0.25s.0.5g.wav", t);
 }
 
 // Private Objects                        //////////////////////////////////////
