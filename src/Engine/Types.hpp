@@ -16,7 +16,8 @@
 
 #include <functional>
 #include <memory>
-#include <tuple>
+//#include <tuple>
+#include <utility>
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -31,7 +32,7 @@ namespace OCAE
 		/// Define the type used for sample types
 	using SampleType = float;
 		/// Define the type used for stereo audio data
-	using StereoData = std::tuple<SampleType,SampleType>;
+	using StereoData = std::pair<SampleType,SampleType>;
 		/// Define the type used for stereo audio tracks
 	using Track_t = std::vector<StereoData>;
 } // namespace OCAE

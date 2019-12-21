@@ -40,13 +40,9 @@ namespace Sound
 			// Create the base sound
 		SoundPtr sound(new Sound());
 
-			// Save reference to the graph
-		auto & graph = sound->GetGraph();
+		BlockPtr block = CreateBlock(gen);
 
-			// Add the generator to the graph
-		graph.back()->inputs.push_back(
-			Sound::Edge::E_BlockPtr(new Sound::Edge::E_Block(CreateBlock(gen)))
-		);
+		sound->AddConnection(block, sound->GetOutputBlock());
 
 		return sound;
 	}
@@ -55,13 +51,10 @@ namespace Sound
 	{
 		SoundPtr sound(new Sound());
 
-			// Save reference to the graph
-		auto & graph = sound->GetGraph();
+		BlockPtr block = CreateBlock(mod);
 
-			// Add the modifier to the graph
-		graph.back()->inputs.push_back(
-			Sound::Edge::E_BlockPtr(new Sound::Edge::E_Block(CreateBlock(mod)))
-		);
+		sound->AddConnection(sound->GetInputBlock(), block);
+		sound->AddConnection(block, sound->GetOutputBlock());
 
 		return sound;
 	}

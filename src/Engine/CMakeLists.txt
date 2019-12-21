@@ -55,7 +55,6 @@ set(modifier_files
 )
 set(sound_files
 	${CMAKE_SOURCE_DIR}/Sounds/Block.cpp ${CMAKE_SOURCE_DIR}/Sounds/Block.hpp
-	${CMAKE_SOURCE_DIR}/Sounds/Combinator.cpp ${CMAKE_SOURCE_DIR}/Sounds/Combinator.hpp
 	${CMAKE_SOURCE_DIR}/Sounds/Sound.cpp ${CMAKE_SOURCE_DIR}/Sounds/Sound.hpp
 	${CMAKE_SOURCE_DIR}/Sounds/SoundFactory.cpp ${CMAKE_SOURCE_DIR}/Sounds/SoundFactory.hpp
 )

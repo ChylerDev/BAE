@@ -61,11 +61,8 @@ namespace Sound
 		ModBasePtr m_Modifier;
 			/// The interactor used by this Block
 		Interaction_f m_Interaction;
-
 			/// The input sample
 		StereoData m_Input;
-			/// The output sample
-		StereoData m_Output;
 
 	public:
 
@@ -139,16 +136,11 @@ namespace Sound
 		\param input
 			The input.
 		***********************************************************************/
-		void PrimeInput(StereoData input);
-
-		/*! ********************************************************************
-		\brief
-			Returns the output of the last Process loop.
-
-		\return
-			The most recent output.
-		***********************************************************************/
-		StereoData LastOutput();
+		inline void PrimeInput(StereoData input)
+		{
+			Left(m_Input) += Left(input);
+			Right(m_Input) += Right(input);
+		};
 
 		// Functions            ///////////////////////
 
@@ -156,7 +148,7 @@ namespace Sound
 		\brief
 			Processes the managed objects.
 		***********************************************************************/
-		void Process();
+		StereoData Process();
 
 	private:
 

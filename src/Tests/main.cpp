@@ -30,6 +30,8 @@ using hrc = std::chrono::high_resolution_clock;
 using namespace OCAE;
 using VoidFn = void(*)(void);
 
+static hrc clk;
+
 // Private Macros                         //////////////////////////////////////
 
 // Private Enums                          //////////////////////////////////////
@@ -38,6 +40,12 @@ using VoidFn = void(*)(void);
 #define WRITEWAV(file, samples) auto _r = Tools::WriteWAV(samples); std::ofstream(file, std::ios_base::binary).write(reinterpret_cast<char *>(_r.data()), std::streamsize(_r.size()))
 
 // Private Functions                      //////////////////////////////////////
+
+std::ostream & operator<<(std::ostream & o, StereoData const & s)
+{
+	o << '(' << Left(s) << ',' << Right(s) << ')';
+	return o;
+}
 
 static void TestResampler(void)
 {
@@ -191,6 +199,8 @@ static void TestWAVWriter(void)
 		   wav_track[13] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8) &&
 		   wav_track[14] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0x00'FF)) &&
 		   wav_track[15] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8));
+
+	UNREFERENCED_PARAMETER(h);
 }
 
 static void TestGeneratorBase(void)
@@ -322,36 +332,69 @@ static void TestTriangle(void)
 	assert(Equals(Left(samples[3]), Right(samples[3])));
 }
 
-static void TestCombinator(void)
+static void TestSound(void)
 {
-	std::vector<StereoData> samples{
-		StereoData(SampleType( 1), SampleType(1)),
-		StereoData(SampleType(-2), SampleType(0))
-	};
+		// Create empty sound object
+	auto s1 = Sound::SoundFactory::CreateEmptySound();
 
-	// Test addition
+		// Check empty sound, should return 0
+	for(uint64_t i = 0; i < 16; ++i)
 	{
-		Sound::Combinator comb(Sound::Combinator::Addition);
+		StereoData sam = s1->Process(StereoData());
 
-		StereoData result = comb.Process(samples.begin(), samples.end());
+		assert(Equals(Left(sam), SampleType(0)));
+		assert(Equals(Left(sam), Right(sam)));
 
-		UNREFERENCED_PARAMETER(result);
-
-		assert(Equals( Left(result), SampleType(-1)));
-		assert(Equals(Right(result), SampleType(1 )));
+		UNREFERENCED_PARAMETER(sam);
 	}
 
-	// Test multiplication
+		// Create sound containing sine generator
+	auto s2 = Sound::SoundFactory::CreateBasicGenerator(
+		Generator::GeneratorFactory::CreateSine(440)
+	);
+
+		// Calculate samples
+	StereoData samples[4];
+	for(uint64_t i = 0; i < SIZEOF_ARRAY(samples); ++i)
 	{
-		Sound::Combinator comb(Sound::Combinator::Multiplication);
-
-		StereoData result = comb.Process(samples.begin(), samples.end());
-
-		UNREFERENCED_PARAMETER(result);
-
-		assert(Equals( Left(result), SampleType(-2)));
-		assert(Equals(Right(result), SampleType( 0)));
+		samples[i] = s2->Process(StereoData());
 	}
+
+		// Check correctness
+	assert(Equals(Left(samples[0]), SampleType(std::sin(440*PI2*INC_RATE*0))));
+	assert(Equals(Left(samples[0]), Right(samples[0])));
+	assert(Equals(Left(samples[1]), SampleType(std::sin(440*PI2*INC_RATE*1)*SQRT_HALF)));
+	assert(Equals(Left(samples[1]), Right(samples[1])));
+	assert(Equals(Left(samples[2]), SampleType(std::sin(440*PI2*INC_RATE*2)*SQRT_HALF)));
+	assert(Equals(Left(samples[2]), Right(samples[2])));
+	assert(Equals(Left(samples[3]), SampleType(std::sin(440*PI2*INC_RATE*3)*SQRT_HALF)));
+	assert(Equals(Left(samples[3]), Right(samples[3])));
+
+		// Create sound
+	auto echo = Sound::SoundFactory::CreateEmptySound();
+		// Create blocks
+	auto delay = Sound::SoundFactory::CreateBlock(
+		Modifier::ModifierFactory::CreateDelay(0.25)
+	);
+	auto gain = Sound::SoundFactory::CreateBlock(
+		Modifier::ModifierFactory::CreateGain(DEFAULT_GAIN)
+	);
+		// Connect blocks
+	echo->AddConnection(echo->GetInputBlock(), echo->GetOutputBlock());
+	echo->AddConnection(echo->GetInputBlock(), delay);
+	echo->AddConnection(delay, gain);
+	echo->AddConnection(gain, delay);
+	echo->AddConnection(gain, echo->GetOutputBlock());
+
+	Track_t t;
+	for(uint64_t i = 0; i < SAMPLE_RATE*4; ++i)
+	{
+		t.push_back(echo->Process(MONO_TO_STEREO(std::sin(PI2*440*INC_RATE*double(i)) * 0.5)));
+	}
+
+	auto riff = Tools::WriteWAV(t);
+	std::ofstream("sound.sin.440.echo.0.25s.0.5g.wav", std::ios_base::binary)
+		.write(reinterpret_cast<char *>(riff.data()), std::streamsize(riff.size()));
 }
 
 // Private Objects                        //////////////////////////////////////
@@ -365,7 +408,7 @@ std::vector<VoidFn> tests{
 	TestSine,
 	TestSquare,
 	TestTriangle,
-	TestCombinator
+	TestSound,
 };
 
 // Public Functions                       //////////////////////////////////////
@@ -378,7 +421,6 @@ int main(int argc, char * argv[])
 	std::cout << "Running tests\n";
 
 		// Start tracking time
-	static hrc clk;
 	auto before = clk.now();
 
 		// Run all tests

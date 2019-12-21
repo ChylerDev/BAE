@@ -9,9 +9,9 @@ project(AudioEngine)
 
 # Allow adding of custom compiler flags
 if(MSVC)
-	set(COMPILER_FLAGS "/W4 /WX /EHsc" CACHE STRING "Set custom MSVC flags here")
+	set(COMPILER_FLAGS "/O2 /W4 /WX /EHsc" CACHE STRING "Set custom MSVC flags here")
 else()
-	set(COMPILER_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wconversion\
+	set(COMPILER_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -Wextra -Werror -Wconversion\
 		-Winline -Wfloat-equal -Wundef -Wshadow -Wpointer-arith -Wcast-align\
 		-Wwrite-strings -Wcast-qual -Wswitch-default -Wswitch-enum -Wunreachable-code\
 		-Wnull-dereference -Wold-style-cast -Wdouble-promotion -Wformat=2 -Wpedantic\

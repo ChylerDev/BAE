@@ -38,7 +38,7 @@ namespace OCAE
 	***************************************************************************/
 	constexpr SampleType & Left(StereoData& s)
 	{
-		return std::get<0>(s);
+		return s.first;//std::get<0>(s);
 	}
 
 	/*! ************************************************************************
@@ -53,7 +53,7 @@ namespace OCAE
 	***************************************************************************/
 	constexpr SampleType const & Left(StereoData const & s)
 	{
-		return std::get<0>(s);
+		return s.first;//std::get<0>(s);
 	}
 
 	/*! ************************************************************************
@@ -68,7 +68,7 @@ namespace OCAE
 	***************************************************************************/
 	constexpr SampleType & Right(StereoData& s)
 	{
-		return std::get<1>(s);
+		return s.second;//std::get<1>(s);
 	}
 
 	/*! ************************************************************************
@@ -83,7 +83,7 @@ namespace OCAE
 	***************************************************************************/
 	constexpr SampleType const & Right(StereoData const & s)
 	{
-		return std::get<1>(s);
+		return s.second;//std::get<1>(s);
 	}
 } // namespace OCAE
 
