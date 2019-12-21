@@ -17,7 +17,6 @@
 #include "../Modifiers/ModifierFactory.hpp"
 #include "../Tools/MethodTable.hpp"
 #include "SoundFactory.hpp"
-#include "Combinator.hpp"
 #include "Sound.hpp"
 
 // Private Macros                         //////////////////////////////////////
@@ -42,7 +41,6 @@ namespace Sound
 		m_OutputGain(SoundFactory::CreateBlock(Modifier::ModifierFactory::CreateGain(output_gain))),
 		m_Driver(), m_ID(NULL_ID), m_IsPaused(false)
 	{
-		m_Graph[m_InputGain];
 	}
 
 	Sound::Sound(Sound && other) noexcept :
@@ -123,10 +121,11 @@ namespace Sound
 
 		m_InputGain->PrimeInput(input);
 
+		StereoData out;
+
 		for(auto & b : m_ProcessOrder)
 		{
-			b->Process();
-			StereoData out = b->LastOutput();
+			out = b->Process();
 
 			for(auto & t : m_Graph[b])
 			{
@@ -134,43 +133,7 @@ namespace Sound
 			}
 		}
 
-		return m_OutputGain->LastOutput();
-	}
-
-	void Sound::Concat(SoundPtr && other)
-	{
-			// Calculate the new gain
-		Math_t this_g, other_g;
-		m_OutputGain->GetModifier()->CallMethod("GetGain", METHOD_RET(this_g));
-		other->m_InputGain->GetModifier()->CallMethod("GetGain", METHOD_RET(other_g));
-		this_g *= other_g;
-
-			// Set the new gain
-		m_OutputGain->GetModifier()->CallMethod("SetGain", METHOD_PARAM(this_g));
-
-			// Remove the other's input gain from the process order
-		other->m_ProcessOrder.pop_front();
-
-			// Move the other's input's connections to this' current output list in the graph
-		m_Graph[m_OutputGain] = std::move(other->m_Graph[other->m_InputGain]);
-
-			// Remove the other's input from the graph
-		other->m_Graph.erase(other->m_InputGain);
-
-			// Move the edges from other's graph to this' graph
-		for(auto & p : other->m_Graph)
-		{
-			m_Graph[p.first] = std::move(p.second);
-		}
-
-			// Set the new output gain block
-		m_OutputGain = other->m_OutputGain;
-
-			// Get the new process order
-		ProcessOrder();
-
-			// Unregister other
-		Unregister(other);
+		return out;
 	}
 
 	void Sound::Register(SoundPtr const & self, Core::DriverPtr const & driver)
@@ -204,10 +167,30 @@ namespace Sound
 			// Push the input gain block to the front as it will always be the first block processed
 		m_ProcessOrder.push_front(m_InputGain);
 
-			// Generate the graph of the 
+			// Generate the order of processing through the graph
 		for(auto & l : m_Graph)
 		{
+				// Don't worry about output gain, it'll be taken care of at the end of the function
+			if(l.first == m_OutputGain)
+			{
+				continue;
+			}
+				// This could add duplicates, so we'll need to check for that later
+			m_ProcessOrder.push_back(l.first);
 			PrepareGraph(l.second, m_ProcessOrder);
+		}
+
+			// Remove duplicates
+		for(uint64_t i = 0; i < m_ProcessOrder.size(); ++i)
+		{
+			for(uint64_t j = i+1; j < m_ProcessOrder.size(); ++j)
+			{
+				if(m_ProcessOrder[i] == m_ProcessOrder[j])
+				{
+					m_ProcessOrder.erase(m_ProcessOrder.begin()+int64_t(j));
+					--j;
+				}
+			}
 		}
 
 			// Push the output gain block to the back as it will always be the last block processed
@@ -218,10 +201,11 @@ namespace Sound
 	{
 		for(auto & b : list)
 		{
+			bool shouldProcess = true;
 				// If the current block is the output block, don't insert it, it will be inserted after the recursive call stack is complete
 			if(b == m_OutputGain)
 			{
-				continue;
+				shouldProcess = false;
 			}
 
 				// If the item is already in the output list, do not insert it. Prevents getting stuck parsing a cycle
@@ -229,11 +213,15 @@ namespace Sound
 			{
 				if(i == b)
 				{
-					continue;
+					shouldProcess = false;
 				}
 			}
-			out.push_back(b);
-			PrepareGraph(m_Graph[b], out);
+
+			if (shouldProcess)
+			{
+				out.push_back(b);
+				PrepareGraph(m_Graph[b], out);
+			}
 		}
 	}
 } // namespace Sound

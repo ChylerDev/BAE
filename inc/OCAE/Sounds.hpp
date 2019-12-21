@@ -15,7 +15,6 @@
 #include "Sounds/Sound.hpp"
 #include "Sounds/SoundFactory.hpp"
 #include "Sounds/Block.hpp"
-#include "Sounds/Combinator.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 

@@ -18,7 +18,6 @@
 
 #include "../Engine.hpp"
 
-#include "Combinator.hpp"
 #include "Block.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
@@ -102,7 +101,7 @@ namespace Sound
 		\param output_gain
 			The gain for the output samples.
 		***********************************************************************/
-		Sound(Math_t input_gain = Math_t(1.0), Math_t output_gain = DEFAULT_GAIN);
+		Sound(Math_t input_gain = Math_t(1.0), Math_t output_gain = Math_t(1.0));
 
 		/*! ********************************************************************
 		\brief
@@ -203,18 +202,6 @@ namespace Sound
 			internally.
 		***********************************************************************/
 		StereoData Process(StereoData input);
-
-		/*! ********************************************************************
-		\brief
-			Effectively moves the other object into this one, with this sound
-			coming before the passed sound.
-		
-		\param other
-			Pointer to the other sound to concatenate with.
-			NOTE: After this function, other's object will be empty, including
-			      being unregistered. This' registration will be left unchanged.
-		***********************************************************************/
-		void Concat(SoundPtr && other);
 
 		/*! ********************************************************************
 		\brief
