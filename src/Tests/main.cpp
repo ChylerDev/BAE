@@ -389,7 +389,7 @@ static void TestSound(void)
 	Track_t t;
 	for(uint64_t i = 0; i < SAMPLE_RATE*4; ++i)
 	{
-		t.push_back(echo->Process(MONO_TO_STEREO(std::sin(PI2*440*INC_RATE*i) * 0.5)));
+		t.push_back(echo->Process(MONO_TO_STEREO(std::sin(PI2*440*INC_RATE*double(i)) * 0.5)));
 	}
 
 	auto riff = Tools::WriteWAV(t);
