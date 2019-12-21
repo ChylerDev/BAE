@@ -11,15 +11,9 @@
 
 #include <cassert>
 
-#include <algorithm>
-#include <iostream>
 #include <iomanip>
-#include <fstream>
-#include <functional>
-#include <limits>
-#include <thread>
 #include <chrono>
-#include <type_traits>
+#include <iostream>
 
 #include <RIFF-Util/RIFF.hpp>
 
