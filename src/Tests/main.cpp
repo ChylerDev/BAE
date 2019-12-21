@@ -69,20 +69,11 @@ static void TestResampler(void)
 			}
 		);
 
-		assert(Equals( Left(results[0]), SampleType(0)) &&
-			   Equals(Right(results[0]), SampleType(0)));
-		assert(Equals( Left(results[1]), SampleType(0.5)) &&
-			   Equals(Right(results[1]), SampleType(0.5)));
-		assert(Equals( Left(results[2]), SampleType(1)) &&
-			   Equals(Right(results[2]), SampleType(1)));
-		assert(Equals( Left(results[3]), SampleType(1.5)) &&
-			   Equals(Right(results[3]), SampleType(1.5)));
-		assert(Equals( Left(results[4]), SampleType(2)) &&
-			   Equals(Right(results[4]), SampleType(2)));
-		assert(Equals( Left(results[5]), SampleType(2.5)) &&
-			   Equals(Right(results[5]), SampleType(2.5)));
-		assert(Equals( Left(results[6]), SampleType(3)) &&
-			   Equals(Right(results[6]), SampleType(3)));
+		for(uint64_t i = 0; i < 7; ++i)
+		{
+			assert(Equals( Left(results[i]), SampleType(Math_t(i)/2)) &&
+			       Equals(Right(results[i]), SampleType(Math_t(i)/2)));
+		}
 	}
 
 	// Test decrease of rate
@@ -119,20 +110,11 @@ static void TestResampler(void)
 			}
 		);
 
-		assert(Equals( Left(results[0]), SampleType(0)) &&
-			   Equals(Right(results[0]), SampleType(0)));
-		assert(Equals( Left(results[1]), SampleType(0.5)) &&
-			   Equals(Right(results[1]), SampleType(0.5)));
-		assert(Equals( Left(results[2]), SampleType(1)) &&
-			   Equals(Right(results[2]), SampleType(1)));
-		assert(Equals( Left(results[3]), SampleType(1.5)) &&
-			   Equals(Right(results[3]), SampleType(1.5)));
-		assert(Equals( Left(results[4]), SampleType(2)) &&
-			   Equals(Right(results[4]), SampleType(2)));
-		assert(Equals( Left(results[5]), SampleType(2.5)) &&
-			   Equals(Right(results[5]), SampleType(2.5)));
-		assert(Equals( Left(results[6]), SampleType(3)) &&
-			   Equals(Right(results[6]), SampleType(3)));
+		for(uint64_t i = 0; i < 7; ++i)
+		{
+			assert(Equals( Left(results[i]), SampleType(Math_t(i)/2)) &&
+			       Equals(Right(results[i]), SampleType(Math_t(i)/2)));
+		}
 	}
 
 	// Test playback speed and change of rate
@@ -150,14 +132,11 @@ static void TestResampler(void)
 			}
 		);
 
-		assert(Equals( Left(results[0]), SampleType(0)) &&
-			   Equals(Right(results[0]), SampleType(0)));
-		assert(Equals( Left(results[1]), SampleType(1)) &&
-			   Equals(Right(results[1]), SampleType(1)));
-		assert(Equals( Left(results[2]), SampleType(2)) &&
-			   Equals(Right(results[2]), SampleType(2)));
-		assert(Equals( Left(results[3]), SampleType(3)) &&
-			   Equals(Right(results[3]), SampleType(3)));
+		for(uint64_t i = 0; i < 4; ++i)
+		{
+			assert(Equals( Left(results[i]), SampleType(i)) &&
+			       Equals(Right(results[i]), SampleType(i)));
+		}
 	}
 }
 
@@ -241,20 +220,12 @@ static void TestSawtooth(void)
 	s->CallMethod("GetFrequency", METHOD_RET(f));
 	assert(Equals(f, 440.0));
 
-	StereoData samples[4];
-	for(uint64_t i = 0; i < SIZEOF_ARRAY(samples); ++i)
+	for(uint64_t i = 0; i < 4; ++i)
 	{
-		samples[i] = s->SendSample();
+		StereoData sam = s->SendSample();
+		assert(Equals(Left(sam), SampleType(440*INC_RATE*2*i*SQRT_HALF)));
+		assert(Equals(Left(sam), Right(sam)));
 	}
-
-	assert(Equals(Left(samples[0]), SampleType(440*INC_RATE*2*0*SQRT_HALF)));
-	assert(Equals(Left(samples[0]), Right(samples[0])));
-	assert(Equals(Left(samples[1]), SampleType(440*INC_RATE*2*1*SQRT_HALF)));
-	assert(Equals(Left(samples[1]), Right(samples[1])));
-	assert(Equals(Left(samples[2]), SampleType(440*INC_RATE*2*2*SQRT_HALF)));
-	assert(Equals(Left(samples[2]), Right(samples[2])));
-	assert(Equals(Left(samples[3]), SampleType(440*INC_RATE*2*3*SQRT_HALF)));
-	assert(Equals(Left(samples[3]), Right(samples[3])));
 }
 
 static void TestSine(void)
@@ -266,20 +237,12 @@ static void TestSine(void)
 	s->CallMethod("GetFrequency", METHOD_RET(f));
 	assert(Equals(f, 440.0));
 
-	StereoData samples[4];
-	for(uint64_t i = 0; i < SIZEOF_ARRAY(samples); ++i)
+	for(uint64_t i = 0; i < 4; ++i)
 	{
-		samples[i] = s->SendSample();
+		StereoData sam = s->SendSample();
+		assert(Equals(Left(sam), SampleType(std::sin(440*PI2*INC_RATE*i)*SQRT_HALF)));
+		assert(Equals(Left(sam), Right(sam)));
 	}
-
-	assert(Equals(Left(samples[0]), SampleType(std::sin(440*PI2*INC_RATE*0))));
-	assert(Equals(Left(samples[0]), Right(samples[0])));
-	assert(Equals(Left(samples[1]), SampleType(std::sin(440*PI2*INC_RATE*1)*SQRT_HALF)));
-	assert(Equals(Left(samples[1]), Right(samples[1])));
-	assert(Equals(Left(samples[2]), SampleType(std::sin(440*PI2*INC_RATE*2)*SQRT_HALF)));
-	assert(Equals(Left(samples[2]), Right(samples[2])));
-	assert(Equals(Left(samples[3]), SampleType(std::sin(440*PI2*INC_RATE*3)*SQRT_HALF)));
-	assert(Equals(Left(samples[3]), Right(samples[3])));
 }
 
 static void TestSquare(void)
@@ -291,20 +254,12 @@ static void TestSquare(void)
 	s->CallMethod("GetFrequency", METHOD_RET(f));
 	assert(Equals(f, 440.0));
 
-	StereoData samples[4];
-	for(uint64_t i = 0; i < SIZEOF_ARRAY(samples); ++i)
+	for(uint64_t i = 0; i < 4; ++i)
 	{
-		samples[i] = s->SendSample();
+		StereoData sam = s->SendSample();
+		assert(Equals(Left(sam), SampleType(SQRT_HALF)));
+		assert(Equals(Left(sam), Right(sam)));
 	}
-
-	assert(Equals(Left(samples[0]), SampleType(SQRT_HALF)));
-	assert(Equals(Left(samples[0]), Right(samples[0])));
-	assert(Equals(Left(samples[1]), SampleType(SQRT_HALF)));
-	assert(Equals(Left(samples[1]), Right(samples[1])));
-	assert(Equals(Left(samples[2]), SampleType(SQRT_HALF)));
-	assert(Equals(Left(samples[2]), Right(samples[2])));
-	assert(Equals(Left(samples[3]), SampleType(SQRT_HALF)));
-	assert(Equals(Left(samples[3]), Right(samples[3])));
 }
 
 static void TestTriangle(void)
@@ -316,20 +271,12 @@ static void TestTriangle(void)
 	t->CallMethod("GetFrequency", METHOD_RET(f));
 	assert(Equals(f, 440.0));
 
-	StereoData samples[4];
-	for(uint64_t i = 0; i < SIZEOF_ARRAY(samples); ++i)
+	for(uint64_t i = 0; i < 4; ++i)
 	{
-		samples[i] = t->SendSample();
+		StereoData sam = t->SendSample();
+		assert(Equals(Left(sam), SampleType(4*440*SQRT_HALF*INC_RATE*i)));
+		assert(Equals(Left(sam), Right(sam)));
 	}
-
-	assert(Equals(Left(samples[0]), SampleType(4*440*SQRT_HALF*INC_RATE*0)));
-	assert(Equals(Left(samples[0]), Right(samples[0])));
-	assert(Equals(Left(samples[1]), SampleType(4*440*SQRT_HALF*INC_RATE*1)));
-	assert(Equals(Left(samples[1]), Right(samples[1])));
-	assert(Equals(Left(samples[2]), SampleType(4*440*SQRT_HALF*INC_RATE*2)));
-	assert(Equals(Left(samples[2]), Right(samples[2])));
-	assert(Equals(Left(samples[3]), SampleType(4*440*SQRT_HALF*INC_RATE*3)));
-	assert(Equals(Left(samples[3]), Right(samples[3])));
 }
 
 static void TestSound(void)
@@ -353,22 +300,12 @@ static void TestSound(void)
 		Generator::GeneratorFactory::CreateSine(440)
 	);
 
-		// Calculate samples
-	StereoData samples[4];
-	for(uint64_t i = 0; i < SIZEOF_ARRAY(samples); ++i)
+	for(uint64_t i = 0; i < 4; ++i)
 	{
-		samples[i] = s2->Process(StereoData());
+		StereoData sam = s2->Process(StereoData());
+		assert(Equals(Left(sam), SampleType(std::sin(440*PI2*INC_RATE*i)*SQRT_HALF)));
+		assert(Equals(Left(sam), Right(sam)));
 	}
-
-		// Check correctness
-	assert(Equals(Left(samples[0]), SampleType(std::sin(440*PI2*INC_RATE*0))));
-	assert(Equals(Left(samples[0]), Right(samples[0])));
-	assert(Equals(Left(samples[1]), SampleType(std::sin(440*PI2*INC_RATE*1)*SQRT_HALF)));
-	assert(Equals(Left(samples[1]), Right(samples[1])));
-	assert(Equals(Left(samples[2]), SampleType(std::sin(440*PI2*INC_RATE*2)*SQRT_HALF)));
-	assert(Equals(Left(samples[2]), Right(samples[2])));
-	assert(Equals(Left(samples[3]), SampleType(std::sin(440*PI2*INC_RATE*3)*SQRT_HALF)));
-	assert(Equals(Left(samples[3]), Right(samples[3])));
 
 		// Create sound
 	auto echo = Sound::SoundFactory::CreateEmptySound();
