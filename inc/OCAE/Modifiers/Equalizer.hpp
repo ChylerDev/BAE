@@ -192,7 +192,7 @@ namespace Modifier
 	}; // class Equalizer
 
 		/// Alias for a std::shared_ptr instantiated with the Equalizer class
-	TYPEDEF_SHARED(Equalizer);
+	OCAE_TYPEDEF_SHARED(Equalizer);
 } // namespace Modifier
 } // namespace OCAE
 

@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __GENERATORS_HPP
-#define __GENERATORS_HPP
+#ifndef __OCAE_GENERATORS_HPP
+#define __OCAE_GENERATORS_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -33,4 +33,4 @@
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __GENERATORS_HPP
+#endif // __OCAE_GENERATORS_HPP

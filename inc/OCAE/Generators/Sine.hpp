@@ -43,7 +43,7 @@ namespace Generator
 			/// The current index in the wave table to access
 		Math_t m_Index;
 
-		static Math_t s_Table[SAMPLE_RATE/10];
+		static Math_t s_Table[OCAE_SAMPLE_RATE/10];
 		static int dummy;
 
 	public:
@@ -122,7 +122,7 @@ namespace Generator
 
 		// Functions            ///////////////////////
 
-		TODO("Fix this doc")
+		OCAE_TODO("Fix this doc")
 		/*! ********************************************************************
 		\brief
 			Sends a single sample to Core::Driver for output to the OS.
@@ -178,7 +178,7 @@ namespace Generator
 	}; // class Sine
 
 		/// Alias for a std::shared_ptr instantiated with the Sine class
-	TYPEDEF_SHARED(Sine);
+	OCAE_TYPEDEF_SHARED(Sine);
 } // namespace Generator
 } // namespace OCAE
 

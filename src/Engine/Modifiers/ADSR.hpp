@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __ADSR_HPP
-#define __ADSR_HPP
+#ifndef __OCAE_ADSR_HPP
+#define __OCAE_ADSR_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -191,10 +191,10 @@ namespace Modifier
 	}; // class ADSR
 
 		/// Alias for a std::shared_ptr instantiated with the ADSR class
-	TYPEDEF_SHARED(ADSR);
+	OCAE_TYPEDEF_SHARED(ADSR);
 } // namespace Modifier
 } // namespace OCAE
 
 // Public FunctOCAE      ////////////////////////////////////////////////
 
-#endif // __ADSR_HPP
+#endif // __OCAE_ADSR_HPP

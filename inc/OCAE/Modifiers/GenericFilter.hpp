@@ -177,7 +177,7 @@ namespace Modifier
 	}; // class GenericFilter
 
 		/// Alias for a std::shared_ptr instantiated with the GenericFilter class
-	TYPEDEF_SHARED(GenericFilter);
+	OCAE_TYPEDEF_SHARED(GenericFilter);
 } // namespace Modifier
 } // namespace OCAE
 

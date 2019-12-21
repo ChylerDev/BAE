@@ -36,7 +36,7 @@ static hrc clk;
 
 // Private Enums                          //////////////////////////////////////
 
-#define Equals(a,b) bool(double(std::abs(a-b)) < double(EPSILON_F))
+#define EQUALS(a,b) bool(double(std::abs(a-b)) < double(OCAE_EPSILON_F))
 #define WRITEWAV(file, samples) auto _r = Tools::WriteWAV(samples); std::ofstream(file, std::ios_base::binary).write(reinterpret_cast<char *>(_r.data()), std::streamsize(_r.size()))
 
 // Private Functions                      //////////////////////////////////////
@@ -58,12 +58,12 @@ static void TestResampler(void)
 
 	// Test increase of rate
 	{
-		Tools::Resampler resam(samples, SAMPLE_RATE/2);
+		Tools::Resampler resam(samples, OCAE_SAMPLE_RATE/2);
 
 		StereoData results[7];
 
 		std::generate(
-			results, results + SIZEOF_ARRAY(results),
+			results, results + OCAE_SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
@@ -71,40 +71,40 @@ static void TestResampler(void)
 
 		for(uint64_t i = 0; i < 7; ++i)
 		{
-			assert(Equals( Left(results[i]), SampleType(Math_t(i)/2)) &&
-			       Equals(Right(results[i]), SampleType(Math_t(i)/2)));
+			assert(EQUALS( Left(results[i]), SampleType(Math_t(i)/2)) &&
+			       EQUALS(Right(results[i]), SampleType(Math_t(i)/2)));
 		}
 	}
 
 	// Test decrease of rate
 	{
-		Tools::Resampler resam(samples, SAMPLE_RATE * 2);
+		Tools::Resampler resam(samples, OCAE_SAMPLE_RATE * 2);
 
 		StereoData results[2];
 
 		std::generate(
-			results, results + SIZEOF_ARRAY(results),
+			results, results + OCAE_SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
 		);
 
-		assert(Equals( Left(results[0]), SampleType(0)) &&
-			   Equals(Right(results[0]), SampleType(0)));
-		assert(Equals( Left(results[1]), SampleType(2)) &&
-			   Equals(Right(results[1]), SampleType(2)));
+		assert(EQUALS( Left(results[0]), SampleType(0)) &&
+			   EQUALS(Right(results[0]), SampleType(0)));
+		assert(EQUALS( Left(results[1]), SampleType(2)) &&
+			   EQUALS(Right(results[1]), SampleType(2)));
 	}
 
 	// Test playback speed
 	{
-		Tools::Resampler resam(samples, SAMPLE_RATE);
+		Tools::Resampler resam(samples, OCAE_SAMPLE_RATE);
 
 		StereoData results[8];
 
 		resam.SetPlaybackSpeed(0.5);
 
 		std::generate(
-			results, results + SIZEOF_ARRAY(results),
+			results, results + OCAE_SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
@@ -112,21 +112,21 @@ static void TestResampler(void)
 
 		for(uint64_t i = 0; i < 7; ++i)
 		{
-			assert(Equals( Left(results[i]), SampleType(Math_t(i)/2)) &&
-			       Equals(Right(results[i]), SampleType(Math_t(i)/2)));
+			assert(EQUALS( Left(results[i]), SampleType(Math_t(i)/2)) &&
+			       EQUALS(Right(results[i]), SampleType(Math_t(i)/2)));
 		}
 	}
 
 	// Test playback speed and change of rate
 	{
-		Tools::Resampler resam(samples, SAMPLE_RATE * 2);
+		Tools::Resampler resam(samples, OCAE_SAMPLE_RATE * 2);
 
 		StereoData results[4];
 
 		resam.SetPlaybackSpeed(0.5);
 
 		std::generate(
-			results, results + SIZEOF_ARRAY(results),
+			results, results + OCAE_SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
 				return resam.SendSample();
 			}
@@ -134,8 +134,8 @@ static void TestResampler(void)
 
 		for(uint64_t i = 0; i < 4; ++i)
 		{
-			assert(Equals( Left(results[i]), SampleType(i)) &&
-			       Equals(Right(results[i]), SampleType(i)));
+			assert(EQUALS( Left(results[i]), SampleType(i)) &&
+			       EQUALS(Right(results[i]), SampleType(i)));
 		}
 	}
 }
@@ -157,10 +157,10 @@ static void TestWAVWriter(void)
 
 	assert(h->AudioFormat == 1);
 	assert(h->ChannelCount == 2);
-	assert(h->SamplingRate == SAMPLE_RATE);
+	assert(h->SamplingRate == OCAE_SAMPLE_RATE);
 	assert(h->BitsPerSample == 16);
 	assert(h->BytesPerSample == h->BitsPerSample / 8 * h->ChannelCount);
-	assert(h->BytesPerSecond == uint32_t(SAMPLE_RATE * h->BytesPerSample));
+	assert(h->BytesPerSecond == uint32_t(OCAE_SAMPLE_RATE * h->BytesPerSample));
 
 	auto wav_track = reader.GetChunk(CONSTRUCT_BYTE_STR("data"));
 
@@ -179,7 +179,7 @@ static void TestWAVWriter(void)
 		   wav_track[14] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0x00'FF)) &&
 		   wav_track[15] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8));
 
-	UNREFERENCED_PARAMETER(h);
+	OCAE_UNREFERENCED_PARAMETER(h);
 }
 
 static void TestGeneratorBase(void)
@@ -187,13 +187,13 @@ static void TestGeneratorBase(void)
 	auto b = Generator::GeneratorFactory::CreateBase();
 	assert(b->IsBase());
 
-	StereoData samples[SAMPLE_RATE/10] = {};
-	std::generate(samples, samples + SIZEOF_ARRAY(samples),
+	StereoData samples[OCAE_SAMPLE_RATE/10] = {};
+	std::generate(samples, samples + OCAE_SIZEOF_ARRAY(samples),
 				  [& b](){return b->SendSample();});
 
-	for(auto it = samples; it != samples + SIZEOF_ARRAY(samples); ++it)
+	for(auto it = samples; it != samples + OCAE_SIZEOF_ARRAY(samples); ++it)
 	{
-		assert(Equals(Left(*it),SampleType(0)) && Equals(Right(*it),SampleType(0)));
+		assert(EQUALS(Left(*it),SampleType(0)) && EQUALS(Right(*it),SampleType(0)));
 	}
 }
 
@@ -203,7 +203,7 @@ static void TestNoise(void)
 	assert(!n->IsBase());
 
 	Track_t samples;
-	for(uint64_t i = 0; i < SAMPLE_RATE; ++i)
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
 		samples.push_back(n->SendSample());
 	}
@@ -217,14 +217,14 @@ static void TestSawtooth(void)
 	assert(!s->IsBase());
 
 	Math_t f;
-	s->CallMethod("GetFrequency", METHOD_RET(f));
-	assert(Equals(f, 440.0));
+	s->CallMethod("GetFrequency", OCAE_METHOD_RET(f));
+	assert(EQUALS(f, 440.0));
 
 	for(uint64_t i = 0; i < 4; ++i)
 	{
 		StereoData sam = s->SendSample();
-		assert(Equals(Left(sam), SampleType(440*INC_RATE*2*i*SQRT_HALF)));
-		assert(Equals(Left(sam), Right(sam)));
+		assert(EQUALS(Left(sam), SampleType(440*OCAE_INC_RATE*2*i*OCAE_SQRT_HALF)));
+		assert(EQUALS(Left(sam), Right(sam)));
 	}
 }
 
@@ -234,14 +234,14 @@ static void TestSine(void)
 	assert(!s->IsBase());
 
 	Math_t f;
-	s->CallMethod("GetFrequency", METHOD_RET(f));
-	assert(Equals(f, 440.0));
+	s->CallMethod("GetFrequency", OCAE_METHOD_RET(f));
+	assert(EQUALS(f, 440.0));
 
 	for(uint64_t i = 0; i < 4; ++i)
 	{
 		StereoData sam = s->SendSample();
-		assert(Equals(Left(sam), SampleType(std::sin(440*PI2*INC_RATE*i)*SQRT_HALF)));
-		assert(Equals(Left(sam), Right(sam)));
+		assert(EQUALS(Left(sam), SampleType(std::sin(440*OCAE_PI2*OCAE_INC_RATE*i)*OCAE_SQRT_HALF)));
+		assert(EQUALS(Left(sam), Right(sam)));
 	}
 }
 
@@ -251,14 +251,14 @@ static void TestSquare(void)
 	assert(!s->IsBase());
 
 	Math_t f;
-	s->CallMethod("GetFrequency", METHOD_RET(f));
-	assert(Equals(f, 440.0));
+	s->CallMethod("GetFrequency", OCAE_METHOD_RET(f));
+	assert(EQUALS(f, 440.0));
 
 	for(uint64_t i = 0; i < 4; ++i)
 	{
 		StereoData sam = s->SendSample();
-		assert(Equals(Left(sam), SampleType(SQRT_HALF)));
-		assert(Equals(Left(sam), Right(sam)));
+		assert(EQUALS(Left(sam), SampleType(OCAE_SQRT_HALF)));
+		assert(EQUALS(Left(sam), Right(sam)));
 	}
 }
 
@@ -268,14 +268,14 @@ static void TestTriangle(void)
 	assert(!t->IsBase());
 
 	Math_t f;
-	t->CallMethod("GetFrequency", METHOD_RET(f));
-	assert(Equals(f, 440.0));
+	t->CallMethod("GetFrequency", OCAE_METHOD_RET(f));
+	assert(EQUALS(f, 440.0));
 
 	for(uint64_t i = 0; i < 4; ++i)
 	{
 		StereoData sam = t->SendSample();
-		assert(Equals(Left(sam), SampleType(4*440*SQRT_HALF*INC_RATE*i)));
-		assert(Equals(Left(sam), Right(sam)));
+		assert(EQUALS(Left(sam), SampleType(4*440*OCAE_SQRT_HALF*OCAE_INC_RATE*i)));
+		assert(EQUALS(Left(sam), Right(sam)));
 	}
 }
 
@@ -289,10 +289,10 @@ static void TestSound(void)
 	{
 		StereoData sam = s1->Process(StereoData());
 
-		assert(Equals(Left(sam), SampleType(0)));
-		assert(Equals(Left(sam), Right(sam)));
+		assert(EQUALS(Left(sam), SampleType(0)));
+		assert(EQUALS(Left(sam), Right(sam)));
 
-		UNREFERENCED_PARAMETER(sam);
+		OCAE_UNREFERENCED_PARAMETER(sam);
 	}
 
 		// Create sound containing sine generator
@@ -303,8 +303,8 @@ static void TestSound(void)
 	for(uint64_t i = 0; i < 4; ++i)
 	{
 		StereoData sam = s2->Process(StereoData());
-		assert(Equals(Left(sam), SampleType(std::sin(440*PI2*INC_RATE*i)*SQRT_HALF)));
-		assert(Equals(Left(sam), Right(sam)));
+		assert(EQUALS(Left(sam), SampleType(std::sin(440*OCAE_PI2*OCAE_INC_RATE*i)*OCAE_SQRT_HALF)));
+		assert(EQUALS(Left(sam), Right(sam)));
 	}
 
 		// Create sound
@@ -314,7 +314,7 @@ static void TestSound(void)
 		Modifier::ModifierFactory::CreateDelay(0.25)
 	);
 	auto gain = Sound::SoundFactory::CreateBlock(
-		Modifier::ModifierFactory::CreateGain(DEFAULT_GAIN)
+		Modifier::ModifierFactory::CreateGain(OCAE_DEFAULT_GAIN)
 	);
 		// Connect blocks
 	echo->AddConnection(echo->GetInputBlock(), echo->GetOutputBlock());
@@ -324,9 +324,9 @@ static void TestSound(void)
 	echo->AddConnection(gain, echo->GetOutputBlock());
 
 	Track_t t;
-	for(uint64_t i = 0; i < SAMPLE_RATE*4; ++i)
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE*4; ++i)
 	{
-		t.push_back(echo->Process(MONO_TO_STEREO(std::sin(PI2*440*INC_RATE*double(i)) * 0.5)));
+		t.push_back(echo->Process(OCAE_MONO_TO_STEREO(std::sin(OCAE_PI2*440*OCAE_INC_RATE*double(i)) * 0.5)));
 	}
 
 	WRITEWAV("sound.sin.440.echo.0.25s.0.5g.wav", t);
@@ -350,8 +350,8 @@ std::vector<VoidFn> tests{
 
 int main(int argc, char * argv[])
 {
-	UNREFERENCED_PARAMETER(argc);
-	UNREFERENCED_PARAMETER(argv);
+	OCAE_UNREFERENCED_PARAMETER(argc);
+	OCAE_UNREFERENCED_PARAMETER(argv);
 
 	std::cout << "Running tests\n";
 

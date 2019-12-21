@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __GENERATORBASE_HPP
-#define __GENERATORBASE_HPP
+#ifndef __OCAE_GENERATORBASE_HPP
+#define __OCAE_GENERATORBASE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -149,10 +149,10 @@ namespace Generator
 	}; // class GeneratorBase
 
 		/// Alias for a std::shared_ptr instantiated with the GeneratorBase class
-	TYPEDEF_SHARED(GeneratorBase);
+	OCAE_TYPEDEF_SHARED(GeneratorBase);
 } // namespace Generator
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __GENERATORBASE_HPP
+#endif // __OCAE_GENERATORBASE_HPP

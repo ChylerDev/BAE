@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __LOW_PASS_HPP
-#define __LOW_PASS_HPP
+#ifndef __OCAE_LOW_PASS_HPP
+#define __OCAE_LOW_PASS_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -187,10 +187,10 @@ namespace Modifier
 	}; // class LowPass
 
 		/// Alias for a std::shared_ptr instantiated with the LowPass class
-	TYPEDEF_SHARED(LowPass);
+	OCAE_TYPEDEF_SHARED(LowPass);
 } // namespace Modifier
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __LOW_PASS_HPP
+#endif // __OCAE_LOW_PASS_HPP

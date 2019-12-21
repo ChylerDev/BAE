@@ -28,7 +28,7 @@ namespace Tools
 	Resampler::Resampler(std::vector<StereoData> const & AudioData,
 						 int32_t SourceSampleRate,
 						 uint64_t LoopStart, uint64_t LoopEnd) :
-		m_Data(AudioData), m_Index(0), m_IndexIncrement(SourceSampleRate*INC_RATE),
+		m_Data(AudioData), m_Index(0), m_IndexIncrement(SourceSampleRate*OCAE_INC_RATE),
 		m_PlaybackSpeed(1.0), m_LoopStart(LoopStart), m_LoopEnd(LoopEnd)
 	{
 	}

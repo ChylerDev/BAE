@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __INPUT_HPP
-#define __INPUT_HPP
+#ifndef __OCAE_INPUT_HPP
+#define __OCAE_INPUT_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -55,4 +55,4 @@ namespace Tools
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __INPUT_HPP
+#endif // __OCAE_INPUT_HPP

@@ -7,8 +7,8 @@
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
-#ifndef __MODIFIERBASE_HPP
-#define __MODIFIERBASE_HPP
+#ifndef __OCAE_MODIFIERBASE_HPP
+#define __OCAE_MODIFIERBASE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -166,10 +166,10 @@ namespace Modifier
 	}; // class ModifierBase
 
 		/// Alias for a std::shared_ptr instantiated with the ModifierBase class
-	TYPEDEF_SHARED(ModifierBase);
+	OCAE_TYPEDEF_SHARED(ModifierBase);
 } // namespace Modifier
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __MODIFIERBASE_HPP
+#endif // __OCAE_MODIFIERBASE_HPP

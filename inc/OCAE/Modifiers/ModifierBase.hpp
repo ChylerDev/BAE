@@ -166,7 +166,7 @@ namespace Modifier
 	}; // class ModifierBase
 
 		/// Alias for a std::shared_ptr instantiated with the ModifierBase class
-	TYPEDEF_SHARED(ModifierBase);
+	OCAE_TYPEDEF_SHARED(ModifierBase);
 } // namespace Modifier
 } // namespace OCAE
 

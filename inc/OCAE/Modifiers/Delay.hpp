@@ -172,7 +172,7 @@ namespace Modifier
 	}; // class Delay
 
 		/// Alias for a std::shared_ptr instantiated with the Delay class
-	TYPEDEF_SHARED(Delay);
+	OCAE_TYPEDEF_SHARED(Delay);
 } // namespace Modifier
 } // namespace OCAE
 

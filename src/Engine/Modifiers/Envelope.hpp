@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __ENVELOPE_HPP
-#define __ENVELOPE_HPP
+#ifndef __OCAE_ENVELOPE_HPP
+#define __OCAE_ENVELOPE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -166,10 +166,10 @@ namespace Modifier
 	}; // class EnvelopeFollower
 
 		/// Alias for a std::shared_ptr instantiated with the ModifierBase class
-	TYPEDEF_SHARED(EnvelopeFollower);
+	OCAE_TYPEDEF_SHARED(EnvelopeFollower);
 } // namespace Modifier
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __ENVELOPE_HPP
+#endif // __OCAE_ENVELOPE_HPP

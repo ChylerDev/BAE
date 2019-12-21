@@ -64,7 +64,7 @@ namespace Sound
 		return BlockPtr(new Block(
 			gen,
 			Modifier::ModifierFactory::CreateBase(),
-			[](StereoData g, StereoData m)->StereoData{ UNREFERENCED_PARAMETER(m); return g; }
+			[](StereoData g, StereoData m)->StereoData{ OCAE_UNREFERENCED_PARAMETER(m); return g; }
 		));
 	}
 
@@ -73,7 +73,7 @@ namespace Sound
 		return BlockPtr(new Block(
 			Generator::GeneratorFactory::CreateBase(),
 			mod,
-			[](StereoData g, StereoData m)->StereoData{UNREFERENCED_PARAMETER(g); return m;}
+			[](StereoData g, StereoData m)->StereoData{OCAE_UNREFERENCED_PARAMETER(g); return m;}
 		));
 	}
 

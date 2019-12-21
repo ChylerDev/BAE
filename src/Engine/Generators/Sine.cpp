@@ -16,7 +16,7 @@
 // Private Macros                         //////////////////////////////////////
 
 #define WAVTABLE_FREQ (10)
-#define WAVTABLE_SIZE ((SAMPLE_RATE) / (WAVTABLE_FREQ))
+#define WAVTABLE_SIZE ((OCAE_SAMPLE_RATE) / (WAVTABLE_FREQ))
 
 // Private Enums                          //////////////////////////////////////
 
@@ -57,7 +57,7 @@ namespace Generator
 			m_Index -= WAVTABLE_SIZE;
 		}
 
-		return MONO_TO_STEREO(y);
+		return OCAE_MONO_TO_STEREO(y);
 	}
 
 	void Sine::SetFrequency(Math_t f)
@@ -80,7 +80,7 @@ namespace Generator
 						SetFrequency(
 							std::get<0>(
 								*reinterpret_cast<
-									std::tuple<METHOD_PARAM_T(Math_t)>*
+									std::tuple<OCAE_METHOD_PARAM_T(Math_t)>*
 								>(p)
 							)
 						);
@@ -93,7 +93,7 @@ namespace Generator
 					[this](void * p){
 						std::get<0>(
 							*reinterpret_cast<
-								std::tuple<METHOD_RET_T(Math_t)>*
+								std::tuple<OCAE_METHOD_RET_T(Math_t)>*
 							>(p)
 						) = GetFrequency();
 					}
@@ -114,7 +114,7 @@ namespace Generator
 	{
 		for(auto i = 0; i < WAVTABLE_SIZE; ++i)
 		{
-			s_Table[i] = std::sin(2 * PI * INC_RATE * WAVTABLE_FREQ * i);
+			s_Table[i] = std::sin(2 * OCAE_PI * OCAE_INC_RATE * WAVTABLE_FREQ * i);
 		}
 
 		return 0;

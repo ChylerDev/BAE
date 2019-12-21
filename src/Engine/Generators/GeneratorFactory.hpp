@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __GENERATORBASEY_HPP
-#define __GENERATORBASEY_HPP
+#ifndef __OCAE_GENERATORBASEY_HPP
+#define __OCAE_GENERATORBASEY_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -26,19 +26,19 @@ namespace OCAE
 namespace Generator
 {
 	class GeneratorBase;
-	TYPEDEF_SHARED(GeneratorBase);
+	OCAE_TYPEDEF_SHARED(GeneratorBase);
 	class Noise;
-	TYPEDEF_SHARED(Noise);
+	OCAE_TYPEDEF_SHARED(Noise);
 	class Sawtooth;
-	TYPEDEF_SHARED(Sawtooth);
+	OCAE_TYPEDEF_SHARED(Sawtooth);
 	class Sine;
-	TYPEDEF_SHARED(Sine);
+	OCAE_TYPEDEF_SHARED(Sine);
 	class Square;
-	TYPEDEF_SHARED(Square);
+	OCAE_TYPEDEF_SHARED(Square);
 	class Triangle;
-	TYPEDEF_SHARED(Triangle);
+	OCAE_TYPEDEF_SHARED(Triangle);
 	class WAV;
-	TYPEDEF_SHARED(WAV);
+	OCAE_TYPEDEF_SHARED(WAV);
 }
 }
 
@@ -175,4 +175,4 @@ namespace Generator
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __GENERATORBASEY_HPP
+#endif // __OCAE_GENERATORBASEY_HPP

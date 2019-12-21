@@ -45,10 +45,10 @@ namespace Modifier
 	ADSRPtr ModifierFactory::CreateADSR(Math_t attack, Math_t decay, Math_t sustain, Math_t release)
 	{
 		return ADSRPtr(new ADSR(
-			uint64_t(attack*SAMPLE_RATE),
-			uint64_t(decay*SAMPLE_RATE),
-			Math_t(DB_TO_LINEAR(sustain)),
-			uint64_t(release*SAMPLE_RATE)
+			uint64_t(attack*OCAE_SAMPLE_RATE),
+			uint64_t(decay*OCAE_SAMPLE_RATE),
+			Math_t(OCAE_DB_TO_LINEAR(sustain)),
+			uint64_t(release*OCAE_SAMPLE_RATE)
 		));
 	}
 
@@ -60,14 +60,14 @@ namespace Modifier
 
 	DelayPtr ModifierFactory::CreateDelay(Math_t seconds)
 	{
-		return DelayPtr(new Delay(uint64_t(seconds * SAMPLE_RATE)));
+		return DelayPtr(new Delay(uint64_t(seconds * OCAE_SAMPLE_RATE)));
 	}
 
 	EchoPtr ModifierFactory::CreateEcho(Math_t delay_seconds, Math_t decay_ratio)
 	{
 			// Clamp value to within the accepted range
 		decay_ratio = std::clamp(decay_ratio, Math_t(0), Math_t(1));
-		return EchoPtr(new Echo(uint64_t(delay_seconds * SAMPLE_RATE), decay_ratio));
+		return EchoPtr(new Echo(uint64_t(delay_seconds * OCAE_SAMPLE_RATE), decay_ratio));
 	}
 
 	EqualizerPtr ModifierFactory::CreateEqualizer(uint32_t band_count, Math_t lower, Math_t upper)

@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __GAIN_HPP
-#define __GAIN_HPP
+#ifndef __OCAE_GAIN_HPP
+#define __OCAE_GAIN_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -155,7 +155,7 @@ namespace Modifier
 			The gain to apply to the input data. Can be negative allowing for
 			inverting the signal.
 		***********************************************************************/
-		Gain(Math_t gain = DEFAULT_GAIN);
+		Gain(Math_t gain = OCAE_DEFAULT_GAIN);
 
 		/*! ********************************************************************
 		\brief
@@ -171,10 +171,10 @@ namespace Modifier
 	}; // class Gain
 
 		/// Alias for a std::shared_ptr instantiated with the Gain class
-	TYPEDEF_SHARED(Gain);
+	OCAE_TYPEDEF_SHARED(Gain);
 } // namespace Modifier
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __GAIN_HPP
+#endif // __OCAE_GAIN_HPP

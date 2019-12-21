@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __UTIL_HPP
-#define __UTIL_HPP
+#ifndef __OCAE_UTIL_HPP
+#define __OCAE_UTIL_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -87,4 +87,4 @@ namespace OCAE
 	}
 } // namespace OCAE
 
-#endif // __UTIL_HPP
+#endif // __OCAE_UTIL_HPP

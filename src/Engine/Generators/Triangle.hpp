@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __TRIANGLE_HPP
-#define __TRIANGLE_HPP
+#ifndef __OCAE_TRIANGLE_HPP
+#define __OCAE_TRIANGLE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -165,10 +165,10 @@ namespace Generator
 	}; // class Triangle
 
 		/// Alias for a std::shared_ptr instantiated with the Triangle class
-	TYPEDEF_SHARED(Triangle);
+	OCAE_TYPEDEF_SHARED(Triangle);
 } // namespace Generator
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __TRIANGLE_HPP
+#endif // __OCAE_TRIANGLE_HPP

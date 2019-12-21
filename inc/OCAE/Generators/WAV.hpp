@@ -215,7 +215,7 @@ namespace Generator
 	}; // class WAV
 
 		/// Alias for a std::shared_ptr instantiated with the WAV class
-	TYPEDEF_SHARED(WAV);
+	OCAE_TYPEDEF_SHARED(WAV);
 } // namespace Generator
 } // namespace OCAE
 

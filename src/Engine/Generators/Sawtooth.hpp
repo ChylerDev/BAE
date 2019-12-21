@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __SAWTOOTH_HPP
-#define __SAWTOOTH_HPP
+#ifndef __OCAE_SAWTOOTH_HPP
+#define __OCAE_SAWTOOTH_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -119,7 +119,7 @@ namespace Generator
 
 		// Functions            ///////////////////////
 
-		TODO("Fix this doc")
+		OCAE_TODO("Fix this doc")
 		/*! ********************************************************************
 		\brief
 			Calculates the sample. For the base class this is simply 0.
@@ -168,10 +168,10 @@ namespace Generator
 	}; // class Sawtooth
 
 		/// Alias for a std::shared_ptr instantiated with the Sawtooth class
-	TYPEDEF_SHARED(Sawtooth);
+	OCAE_TYPEDEF_SHARED(Sawtooth);
 } // namespace Generator
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __SAWTOOTH_HPP
+#endif // __OCAE_SAWTOOTH_HPP

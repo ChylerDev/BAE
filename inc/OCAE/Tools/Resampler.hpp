@@ -116,7 +116,7 @@ namespace Tools
 	}; // class Resampler
 
 		/// Alias for a std::shared_ptr instantiated with the Resampler class
-	TYPEDEF_SHARED(Resampler);
+	OCAE_TYPEDEF_SHARED(Resampler);
 } // namespace Tools
 } // namespace OCAE
 

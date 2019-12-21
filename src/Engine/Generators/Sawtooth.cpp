@@ -26,19 +26,19 @@ namespace OCAE
 namespace Generator
 {
 	Sawtooth::Sawtooth(Math_t freq) : GeneratorBase(),
-		m_Irate(2 * double(freq) * INC_RATE), m_Inc()
+		m_Irate(2 * double(freq) * OCAE_INC_RATE), m_Inc()
 	{
 		RegisterMethods(CreateMethodList());
 	}
 
 	void Sawtooth::SetFrequency(Math_t freq)
 	{
-		m_Irate = 2 * double(freq) * INC_RATE;
+		m_Irate = 2 * double(freq) * OCAE_INC_RATE;
 	}
 
 	Math_t Sawtooth::GetFrequency() const
 	{
-		return m_Irate / (2 * INC_RATE);
+		return m_Irate / (2 * OCAE_INC_RATE);
 	}
 
 	StereoData Sawtooth::SendSample()
@@ -52,7 +52,7 @@ namespace Generator
 			m_Inc -= 2;
 		}
 
-		return MONO_TO_STEREO(out);
+		return OCAE_MONO_TO_STEREO(out);
 	}
 
 	Tools::MethodTable::MethodList_t Sawtooth::CreateMethodList()
@@ -61,13 +61,13 @@ namespace Generator
 			std::make_tuple(
 				std::string("SetFrequency"),
 				Tools::MethodTable::Void_fn([this](void * f){
-					SetFrequency(std::get<0>(*reinterpret_cast<std::tuple<METHOD_PARAM_T(Math_t)>*>(f)));
+					SetFrequency(std::get<0>(*reinterpret_cast<std::tuple<OCAE_METHOD_PARAM_T(Math_t)>*>(f)));
 				})
 			),
 			std::make_tuple(
 				std::string("GetFrequency"),
 				Tools::MethodTable::Void_fn([this](void * f){
-					std::get<0>(*reinterpret_cast<std::tuple<METHOD_RET_T(Math_t)>*>(f)) = GetFrequency();
+					std::get<0>(*reinterpret_cast<std::tuple<OCAE_METHOD_RET_T(Math_t)>*>(f)) = GetFrequency();
 				})
 			)
 		};

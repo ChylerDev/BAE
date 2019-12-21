@@ -66,7 +66,7 @@ namespace Modifier
 						SetDecayRatio(
 							std::get<0>(
 								*reinterpret_cast<
-									std::tuple<METHOD_PARAM_T(Math_t)>*
+									std::tuple<OCAE_METHOD_PARAM_T(Math_t)>*
 								>(p)
 							)
 						);
@@ -79,7 +79,7 @@ namespace Modifier
 					[this](void * p){
 						std::get<0>(
 							*reinterpret_cast<
-								std::tuple<METHOD_RET_T(Math_t)>*
+								std::tuple<OCAE_METHOD_RET_T(Math_t)>*
 							>(p)
 						) = GetDecayRatio();
 					}

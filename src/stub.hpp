@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __STUB_HPP
-#define __STUB_HPP
+#ifndef __OCAE_STUB_HPP
+#define __OCAE_STUB_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -26,7 +26,7 @@ namespace OCAE
 {
 namespace stub
 {
-	TODO("Finish this documentation");
+	OCAE_TODO("Finish this documentation");
 	/*! ************************************************************************
 	\brief
 	***************************************************************************/
@@ -56,4 +56,4 @@ namespace stub
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __STUB_HPP
+#endif // __OCAE_STUB_HPP

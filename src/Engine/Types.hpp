@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __TYPES_HPP
-#define __TYPES_HPP
+#ifndef __OCAE_TYPES_HPP
+#define __OCAE_TYPES_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -37,4 +37,4 @@ namespace OCAE
 	using Track_t = std::vector<StereoData>;
 } // namespace OCAE
 
-#endif // __TYPES_HPP
+#endif // __OCAE_TYPES_HPP

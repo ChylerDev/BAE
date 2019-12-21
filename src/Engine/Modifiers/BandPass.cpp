@@ -97,7 +97,7 @@ namespace Modifier
 						SetFrequency(
 							std::get<0>(
 								*reinterpret_cast<
-									std::tuple<METHOD_PARAM_T(Math_t)>*
+									std::tuple<OCAE_METHOD_PARAM_T(Math_t)>*
 								>(p)
 							)
 						);
@@ -110,7 +110,7 @@ namespace Modifier
 					[this](void * p){
 						std::get<0>(
 							*reinterpret_cast<
-								std::tuple<METHOD_RET_T(Math_t)>*
+								std::tuple<OCAE_METHOD_RET_T(Math_t)>*
 							>(p)
 						) = GetFrequency();
 					}
@@ -123,7 +123,7 @@ namespace Modifier
 						SetQuality(
 							std::get<0>(
 								*reinterpret_cast<
-									std::tuple<METHOD_PARAM_T(Math_t)>*
+									std::tuple<OCAE_METHOD_PARAM_T(Math_t)>*
 								>(p)
 							)
 						);
@@ -136,7 +136,7 @@ namespace Modifier
 					[this](void * p){
 						std::get<0>(
 							*reinterpret_cast<
-								std::tuple<METHOD_RET_T(Math_t)>*
+								std::tuple<OCAE_METHOD_RET_T(Math_t)>*
 							>(p)
 						) = GetQuality();
 					}
@@ -163,8 +163,8 @@ namespace Modifier
 
 		Math_t thetaL, thetaH, aL, aH, bL, bH;
 
-		thetaL = std::tan(PI*fL*INC_RATE);
-		thetaH = std::tan(PI*fH*INC_RATE);
+		thetaL = std::tan(OCAE_PI*fL*OCAE_INC_RATE);
+		thetaH = std::tan(OCAE_PI*fH*OCAE_INC_RATE);
 
 		aL = 1 / (1+thetaL);
 		aH = 1 / (1+thetaH);

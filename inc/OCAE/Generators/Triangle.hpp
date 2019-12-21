@@ -156,7 +156,7 @@ namespace Generator
 	}; // class Triangle
 
 		/// Alias for a std::shared_ptr instantiated with the Triangle class
-	TYPEDEF_SHARED(Triangle);
+	OCAE_TYPEDEF_SHARED(Triangle);
 } // namespace Generator
 } // namespace OCAE
 

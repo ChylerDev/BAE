@@ -127,7 +127,7 @@ namespace Sound
 	}; // class Combinator
 
 		/// Alias for std::shared_ptr instantiated with Combinator.
-	TYPEDEF_SHARED(Combinator);
+	OCAE_TYPEDEF_SHARED(Combinator);
 } // namespace Sound
 } // namespace OCAE
 

@@ -51,7 +51,7 @@ namespace Tools
 			The channel count. OCAE uses two-channel audio.
 
 		\param R
-			The sampling rate. OCAE uses SAMPLE_RATE (probably defined as 48kHz).
+			The sampling rate. OCAE uses OCAE_SAMPLE_RATE (probably defined as 48kHz).
 
 		\param bps
 			Bits per audio sample. We are using 16-bit audio as it is all of the
@@ -60,7 +60,7 @@ namespace Tools
 		WAVHeader(
 			uint16_t af = 1,			// Audio format
 			uint16_t cc = 2,			// Channel count
-			uint32_t R = SAMPLE_RATE,	// Sampling rate
+			uint32_t R = OCAE_SAMPLE_RATE,	// Sampling rate
 			uint16_t bps = 16			// Bits per sample
 		);
 		~WAVHeader() = default;	///< Default destructor.

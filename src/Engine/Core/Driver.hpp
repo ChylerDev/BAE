@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __DRIVER_HPP
-#define __DRIVER_HPP
+#ifndef __OCAE_DRIVER_HPP
+#define __OCAE_DRIVER_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -66,7 +66,7 @@ namespace Core
 		\param gain
 			The linear gain to be used when summing all audio values.
 		***********************************************************************/
-		Driver(uint64_t track_size, Math_t gain = DEFAULT_GAIN);
+		Driver(uint64_t track_size, Math_t gain = OCAE_DEFAULT_GAIN);
 
 		/*! ********************************************************************
 		\brief
@@ -151,7 +151,7 @@ namespace Core
 		\param gain
 			The linear gain value to be set.
 		***********************************************************************/
-		void SetGain(Math_t gain = DEFAULT_GAIN);
+		void SetGain(Math_t gain = OCAE_DEFAULT_GAIN);
 
 		/*! ********************************************************************
 		\brief
@@ -189,10 +189,10 @@ namespace Core
 	}; // class Driver
 
 		/// Typedef for a std::shared_ptr instantiated with the Driver class
-	TYPEDEF_SHARED(Driver);
+	OCAE_TYPEDEF_SHARED(Driver);
 } // namespace Core
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __DRIVER_HPP
+#endif // __OCAE_DRIVER_HPP

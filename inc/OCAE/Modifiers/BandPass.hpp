@@ -221,7 +221,7 @@ namespace Modifier
 	}; // class BandPass
 
 		/// Alias for a std::shared_ptr instantiated with the BandPass class
-	TYPEDEF_SHARED(BandPass);
+	OCAE_TYPEDEF_SHARED(BandPass);
 } // namespace Modifier
 } // namespace OCAE
 

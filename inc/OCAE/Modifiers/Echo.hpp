@@ -176,7 +176,7 @@ namespace Modifier
 	}; // class Echo
 
 		/// Alias for a std::shared_ptr instantiated with the Echo class
-	TYPEDEF_SHARED(Echo);
+	OCAE_TYPEDEF_SHARED(Echo);
 } // namespace Modifier
 } // namespace OCAE
 

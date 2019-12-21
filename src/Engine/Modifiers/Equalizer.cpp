@@ -100,8 +100,8 @@ namespace Modifier
 					[this](void * p){
 						auto t = *reinterpret_cast<
 							std::tuple<
-								METHOD_PARAM_T(uint32_t),
-								METHOD_PARAM_T(Math_t)
+								OCAE_METHOD_PARAM_T(uint32_t),
+								OCAE_METHOD_PARAM_T(Math_t)
 							>*
 						>(p);
 						SetGain(std::get<0>(t), std::get<1>(t));
@@ -114,8 +114,8 @@ namespace Modifier
 					[this](void * p){
 						auto t = *reinterpret_cast<
 							std::tuple<
-								METHOD_RET_T(Math_t),
-								METHOD_PARAM_T(uint32_t)
+								OCAE_METHOD_RET_T(Math_t),
+								OCAE_METHOD_PARAM_T(uint32_t)
 							>*
 						>(p);
 						std::get<0>(t) = GetGain(std::get<1>(t));

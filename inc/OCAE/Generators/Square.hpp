@@ -159,7 +159,7 @@ namespace Generator
 	}; // class Square
 
 		/// Alias for a std::shared_ptr instantiated with the Square class
-	TYPEDEF_SHARED(Square);
+	OCAE_TYPEDEF_SHARED(Square);
 } // namespace Generator
 } // namespace OCAE
 

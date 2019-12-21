@@ -25,25 +25,25 @@ namespace OCAE
 namespace Modifier
 {
 	class ModifierBase;
-	TYPEDEF_SHARED(ModifierBase);
+	OCAE_TYPEDEF_SHARED(ModifierBase);
 	class ADSR;
-	TYPEDEF_SHARED(ADSR);
+	OCAE_TYPEDEF_SHARED(ADSR);
 	class BandPass;
-	TYPEDEF_SHARED(BandPass);
+	OCAE_TYPEDEF_SHARED(BandPass);
 	class Delay;
-	TYPEDEF_SHARED(Delay);
+	OCAE_TYPEDEF_SHARED(Delay);
 	class Echo;
-	TYPEDEF_SHARED(Echo);
+	OCAE_TYPEDEF_SHARED(Echo);
 	class EnvelopeFollower;
-	TYPEDEF_SHARED(EnvelopeFollower);
+	OCAE_TYPEDEF_SHARED(EnvelopeFollower);
 	class Equalizer;
-	TYPEDEF_SHARED(Equalizer);
+	OCAE_TYPEDEF_SHARED(Equalizer);
 	class Gain;
-	TYPEDEF_SHARED(Gain);
+	OCAE_TYPEDEF_SHARED(Gain);
 	class GenericFilter;
-	TYPEDEF_SHARED(GenericFilter);
+	OCAE_TYPEDEF_SHARED(GenericFilter);
 	class LowPass;
-	TYPEDEF_SHARED(LowPass);
+	OCAE_TYPEDEF_SHARED(LowPass);
 }
 }
 
@@ -193,7 +193,7 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static GainPtr CreateGain(Math_t gain = DEFAULT_GAIN);
+		static GainPtr CreateGain(Math_t gain = OCAE_DEFAULT_GAIN);
 
 		/*! ********************************************************************
 		\brief

@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __SQUARE_HPP
-#define __SQUARE_HPP
+#ifndef __OCAE_SQUARE_HPP
+#define __OCAE_SQUARE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -168,10 +168,10 @@ namespace Generator
 	}; // class Square
 
 		/// Alias for a std::shared_ptr instantiated with the Square class
-	TYPEDEF_SHARED(Square);
+	OCAE_TYPEDEF_SHARED(Square);
 } // namespace Generator
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __SQUARE_HPP
+#endif // __OCAE_SQUARE_HPP

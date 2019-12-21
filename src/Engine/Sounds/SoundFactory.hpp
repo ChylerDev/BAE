@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __SOUND_FACTORY
-#define __SOUND_FACTORY
+#ifndef __OCAE_SOUND_FACTORY
+#define __OCAE_SOUND_FACTORY
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -166,4 +166,4 @@ namespace Sound
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __SOUND_FACTORY
+#endif // __OCAE_SOUND_FACTORY

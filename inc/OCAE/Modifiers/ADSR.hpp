@@ -191,7 +191,7 @@ namespace Modifier
 	}; // class ADSR
 
 		/// Alias for a std::shared_ptr instantiated with the ADSR class
-	TYPEDEF_SHARED(ADSR);
+	OCAE_TYPEDEF_SHARED(ADSR);
 } // namespace Modifier
 } // namespace OCAE
 

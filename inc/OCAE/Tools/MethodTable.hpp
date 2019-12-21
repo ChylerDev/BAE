@@ -48,11 +48,11 @@ namespace Tools
 			GeneratorBasePtr obj = CreateSine(440);
 
 			Math_t new_freq = 880;
-			obj->CallMethod("SetFrequency", METHOD_PARAM(new_freq));
-			obj->CallMethod("GetFrequency", METHOD_RET(new_freq));
+			obj->CallMethod("SetFrequency", OCAE_METHOD_PARAM(new_freq));
+			obj->CallMethod("GetFrequency", OCAE_METHOD_RET(new_freq));
 		\endcode
 
-		Here, the `METHOD_RET()` and `METHOD_PARAM()` macros ensure that the
+		Here, the `OCAE_METHOD_RET()` and `OCAE_METHOD_PARAM()` macros ensure that the
 		values passed to the function will have the proper types, guaranteeing
 		they are handled properly. See the macros' documentation and definition
 		in Macro.hpp for more info.
@@ -71,7 +71,7 @@ namespace Tools
 				RegisterMethod("method2", [this](void * p){
 					method2(
 						std::get<0>(
-							*reinterpret_cast<METHOD_PARAM_T(int)>(p)
+							*reinterpret_cast<OCAE_METHOD_PARAM_T(int)>(p)
 						)
 					);
 				});
@@ -94,7 +94,7 @@ namespace Tools
 							[this](void *){
 								method2(
 									std::get<0>(
-										*reinterpret_cast<METHOD_PARAM_T(int)>(p)
+										*reinterpret_cast<OCAE_METHOD_PARAM_T(int)>(p)
 									)
 								);
 							}
@@ -105,7 +105,7 @@ namespace Tools
 			}
 		\endcode
 
-		Here, `METHOD_PARAM_T()` is a macro that helps ensure that the type
+		Here, `OCAE_METHOD_PARAM_T()` is a macro that helps ensure that the type
 		being casted to is in the correct format.
 
 		The user creating the derived classes will need to ensure that it

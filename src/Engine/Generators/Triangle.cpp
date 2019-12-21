@@ -26,7 +26,7 @@ namespace OCAE
 namespace Generator
 {
 	Triangle::Triangle(Math_t freq) : GeneratorBase(),
-		m_Irate(4 * double(freq) * INC_RATE), m_Inc()
+		m_Irate(4 * double(freq) * OCAE_INC_RATE), m_Inc()
 	{
 		RegisterMethods(CreateMethodList());
 	}
@@ -35,17 +35,17 @@ namespace Generator
 	{
 		if(m_Irate < 0) freq *= -1;
 
-		m_Irate = 4 * double(freq) * INC_RATE;
+		m_Irate = 4 * double(freq) * OCAE_INC_RATE;
 	}
 
 	Math_t Triangle::GetFrequency() const
 	{
-		return std::abs(m_Irate/(4*INC_RATE));
+		return std::abs(m_Irate/(4*OCAE_INC_RATE));
 	}
 
 	StereoData Triangle::SendSample(void)
 	{
-		StereoData out = MONO_TO_STEREO(m_Inc);
+		StereoData out = OCAE_MONO_TO_STEREO(m_Inc);
 		m_Inc += m_Irate;
 
 		if(m_Inc >= 1 || m_Inc <= -1)
@@ -68,7 +68,7 @@ namespace Generator
 						SetFrequency(
 							std::get<0>(
 								*reinterpret_cast<
-									std::tuple<METHOD_PARAM_T(Math_t)>*
+									std::tuple<OCAE_METHOD_PARAM_T(Math_t)>*
 								>(f)
 							)
 						);
@@ -81,7 +81,7 @@ namespace Generator
 					[this](void * f){
 						std::get<0>(
 							*reinterpret_cast<
-								std::tuple<METHOD_RET_T(Math_t)>*
+								std::tuple<OCAE_METHOD_RET_T(Math_t)>*
 							>(f)
 						) = GetFrequency();
 					}

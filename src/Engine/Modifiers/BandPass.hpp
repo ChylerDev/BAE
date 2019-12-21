@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __BAND_PASS_HPP
-#define __BAND_PASS_HPP
+#ifndef __OCAE_BAND_PASS_HPP
+#define __OCAE_BAND_PASS_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -221,10 +221,10 @@ namespace Modifier
 	}; // class BandPass
 
 		/// Alias for a std::shared_ptr instantiated with the BandPass class
-	TYPEDEF_SHARED(BandPass);
+	OCAE_TYPEDEF_SHARED(BandPass);
 } // namespace Modifier
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __BAND_PASS_HPP
+#endif // __OCAE_BAND_PASS_HPP

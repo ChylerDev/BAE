@@ -166,7 +166,7 @@ namespace Modifier
 	}; // class EnvelopeFollower
 
 		/// Alias for a std::shared_ptr instantiated with the ModifierBase class
-	TYPEDEF_SHARED(EnvelopeFollower);
+	OCAE_TYPEDEF_SHARED(EnvelopeFollower);
 } // namespace Modifier
 } // namespace OCAE
 

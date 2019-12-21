@@ -155,7 +155,7 @@ namespace Modifier
 			The gain to apply to the input data. Can be negative allowing for
 			inverting the signal.
 		***********************************************************************/
-		Gain(Math_t gain = DEFAULT_GAIN);
+		Gain(Math_t gain = OCAE_DEFAULT_GAIN);
 
 		/*! ********************************************************************
 		\brief
@@ -171,7 +171,7 @@ namespace Modifier
 	}; // class Gain
 
 		/// Alias for a std::shared_ptr instantiated with the Gain class
-	TYPEDEF_SHARED(Gain);
+	OCAE_TYPEDEF_SHARED(Gain);
 } // namespace Modifier
 } // namespace OCAE
 

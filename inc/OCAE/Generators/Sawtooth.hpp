@@ -119,7 +119,7 @@ namespace Generator
 
 		// Functions            ///////////////////////
 
-		TODO("Fix this doc")
+		OCAE_TODO("Fix this doc")
 		/*! ********************************************************************
 		\brief
 			Calculates the sample. For the base class this is simply 0.
@@ -168,7 +168,7 @@ namespace Generator
 	}; // class Sawtooth
 
 		/// Alias for a std::shared_ptr instantiated with the Sawtooth class
-	TYPEDEF_SHARED(Sawtooth);
+	OCAE_TYPEDEF_SHARED(Sawtooth);
 } // namespace Generator
 } // namespace OCAE
 

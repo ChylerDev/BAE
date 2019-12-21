@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __SOUND_HPP
-#define __SOUND_HPP
+#ifndef __OCAE_SOUND_HPP
+#define __OCAE_SOUND_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -30,19 +30,19 @@ namespace Sound
 {
 	class Sound;
 		/// Forwarded alias of std::shared_ptr instantiated with Sound.
-	TYPEDEF_SHARED(Sound);
+	OCAE_TYPEDEF_SHARED(Sound);
 }
 namespace Core
 {
 	class Driver;
 		/// Forwarded alias of std::shared_ptr instantiated with Driver.
-	TYPEDEF_SHARED(Driver);
+	OCAE_TYPEDEF_SHARED(Driver);
 }
 namespace Modifier
 {
 	class Gain;
 		/// Forwarded alias of std::shared_ptr instantiated with Gain.
-	TYPEDEF_SHARED(Gain);
+	OCAE_TYPEDEF_SHARED(Gain);
 }
 }
 
@@ -239,4 +239,4 @@ namespace Sound
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __SOUND_HPP
+#endif // __OCAE_SOUND_HPP

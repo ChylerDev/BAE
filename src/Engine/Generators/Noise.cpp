@@ -36,7 +36,7 @@ namespace Generator
 		SampleType sample;
 		sample = m_Distribution(m_Engine);
 
-		return MONO_TO_STEREO(sample);
+		return OCAE_MONO_TO_STEREO(sample);
 	}
 } // namespace Generator
 } // namespace OCAE

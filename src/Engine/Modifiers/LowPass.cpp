@@ -26,7 +26,7 @@ namespace OCAE
 namespace Modifier
 {
 	LowPass::LowPass(Math_t cutoff, Math_t resonance) : ModifierBase(),
-		m_Cutoff(2*PI*cutoff), m_Resonance(resonance),
+		m_Cutoff(2*OCAE_PI*cutoff), m_Resonance(resonance),
 		m_Coefficients(), m_Outputs()
 	{
 		RegisterMethods(CreateMethodList());
@@ -35,7 +35,7 @@ namespace Modifier
 
 	void LowPass::SetCutoff(Math_t cutoff)
 	{
-		m_Cutoff = 2*PI*cutoff;
+		m_Cutoff = 2*OCAE_PI*cutoff;
 		Reset();
 	}
 
@@ -79,7 +79,7 @@ namespace Modifier
 						SetCutoff(
 							std::get<0>(
 								*reinterpret_cast<
-									std::tuple<METHOD_PARAM_T(Math_t)>*
+									std::tuple<OCAE_METHOD_PARAM_T(Math_t)>*
 								>(p)
 							)
 						);
@@ -93,7 +93,7 @@ namespace Modifier
 						SetResonance(
 							std::get<0>(
 								*reinterpret_cast<
-									std::tuple<METHOD_PARAM_T(Math_t)>*
+									std::tuple<OCAE_METHOD_PARAM_T(Math_t)>*
 								>(p)
 							)
 						);
@@ -107,9 +107,9 @@ namespace Modifier
 	{
 		static Math_t angle, K, T, x, y, z, g;
 
-		angle = (PI/6)*Math_t(4 - m_Resonance);
+		angle = (OCAE_PI/6)*Math_t(4 - m_Resonance);
 		K = 1 - 2*std::cos(angle);
-		T = Math_t(m_Cutoff) * INC_RATE;
+		T = Math_t(m_Cutoff) * OCAE_INC_RATE;
 		x = K*T;
 		y = K*T*T;
 		z = T*T*T;

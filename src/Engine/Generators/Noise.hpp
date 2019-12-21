@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __NOISE_HPP
-#define __NOISE_HPP
+#ifndef __OCAE_NOISE_HPP
+#define __OCAE_NOISE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -148,10 +148,10 @@ namespace Generator
 	}; // class Noise
 
 		/// Alias for a std::shared_ptr instantiated with the Noise class
-	TYPEDEF_SHARED(Noise);
+	OCAE_TYPEDEF_SHARED(Noise);
 } // namespace Generator
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __NOISE_HPP
+#endif // __OCAE_NOISE_HPP

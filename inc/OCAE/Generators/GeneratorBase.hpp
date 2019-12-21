@@ -149,7 +149,7 @@ namespace Generator
 	}; // class GeneratorBase
 
 		/// Alias for a std::shared_ptr instantiated with the GeneratorBase class
-	TYPEDEF_SHARED(GeneratorBase);
+	OCAE_TYPEDEF_SHARED(GeneratorBase);
 } // namespace Generator
 } // namespace OCAE
 

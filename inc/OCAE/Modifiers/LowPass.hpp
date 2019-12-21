@@ -187,7 +187,7 @@ namespace Modifier
 	}; // class LowPass
 
 		/// Alias for a std::shared_ptr instantiated with the LowPass class
-	TYPEDEF_SHARED(LowPass);
+	OCAE_TYPEDEF_SHARED(LowPass);
 } // namespace Modifier
 } // namespace OCAE
 

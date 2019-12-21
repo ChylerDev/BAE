@@ -148,7 +148,7 @@ namespace Generator
 	}; // class Noise
 
 		/// Alias for a std::shared_ptr instantiated with the Noise class
-	TYPEDEF_SHARED(Noise);
+	OCAE_TYPEDEF_SHARED(Noise);
 } // namespace Generator
 } // namespace OCAE
 

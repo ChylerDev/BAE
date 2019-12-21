@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __BLOCK_HPP
-#define __BLOCK_HPP
+#ifndef __OCAE_BLOCK_HPP
+#define __OCAE_BLOCK_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -157,10 +157,10 @@ namespace Sound
 	}; // class Block
 
 		/// Alias for std::shared_ptr instantiated with Block.
-	TYPEDEF_SHARED(Block);
+	OCAE_TYPEDEF_SHARED(Block);
 } // namespace Sound
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __BLOCK_HPP
+#endif // __OCAE_BLOCK_HPP
