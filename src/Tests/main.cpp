@@ -392,9 +392,7 @@ static void TestSound(void)
 		t.push_back(echo->Process(MONO_TO_STEREO(std::sin(PI2*440*INC_RATE*double(i)) * 0.5)));
 	}
 
-	auto riff = Tools::WriteWAV(t);
-	std::ofstream("sound.sin.440.echo.0.25s.0.5g.wav", std::ios_base::binary)
-		.write(reinterpret_cast<char *>(riff.data()), std::streamsize(riff.size()));
+	WRITEWAV("sound.sin.440.echo.0.25s.0.5g.wav", t);
 }
 
 // Private Objects                        //////////////////////////////////////
