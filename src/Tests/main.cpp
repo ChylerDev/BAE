@@ -431,6 +431,21 @@ static void TestADSR(void)
 	totalSamples += OCAE_SAMPLE_RATE;
 }
 
+static void TestBandPass(void)
+{
+	auto bp = Modifier::ModifierFactory::CreateBandPass(100,200);
+	auto n = Generator::GeneratorFactory::CreateNoise();
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		t.push_back(bp->FilterSample(n->SendSample()));
+	}
+	OCAE_WRITE_WAV("bp.100.200.noise.wav", t);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
 //////////////// Sounds ////////////////
 
 static void TestSound(void)
@@ -504,6 +519,7 @@ std::vector<VoidFn> tests{
 	TestTriangle,
 	TestWAV,
 	TestADSR,
+	TestBandPass,
 	TestSound,
 };
 
