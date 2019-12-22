@@ -301,8 +301,7 @@ static void TestNoise(void)
 		samples.push_back(n->SendSample());
 	}
 
-	OCAE_WRITE_WAV("noise.1s.wav", samples);
-
+	OCAE_WRITE_WAV("noise.wav", samples);
 
 	totalSamples += samples.size();
 }
@@ -426,7 +425,7 @@ static void TestADSR(void)
 			// adsr->Release();
 		}
 	}
-	OCAE_WRITE_WAV("adsr0.03125_0.125_0.5_0.25.sin.440.wav", t);
+	OCAE_WRITE_WAV("adsr_0.03125_0.125_0.5_0.25.sin_440.wav", t);
 
 	totalSamples += OCAE_SAMPLE_RATE;
 }
@@ -441,7 +440,7 @@ static void TestBandPass(void)
 	{
 		t.push_back(bp->FilterSample(n->SendSample()));
 	}
-	OCAE_WRITE_WAV("bandpass.100.200.noise.wav", t);
+	OCAE_WRITE_WAV("bandpass_100_200.noise.wav", t);
 
 	totalSamples += OCAE_SAMPLE_RATE;
 }
@@ -456,7 +455,7 @@ static void TestDelay(void)
 	{
 		t.push_back(d->FilterSample(s->SendSample()));
 	}
-	OCAE_WRITE_WAV("delay_0.25.sine.440.wav", t);
+	OCAE_WRITE_WAV("delay_0.25.sine_440.wav", t);
 
 	totalSamples += OCAE_SAMPLE_RATE;
 }
@@ -473,7 +472,34 @@ static void TestEcho(void)
 			t->SendSample() : StereoData()
 		));
 	}
-	OCAE_WRITE_WAV("echo_0.125_0.75.tringale.440.wav", tr);
+	OCAE_WRITE_WAV("echo_0.125_0.75.tringale_440.wav", tr);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
+static void TestEnvelope(void)
+{
+	auto e = Modifier::ModifierFactory::CreateEnvelopeFollower();
+	auto s = Generator::GeneratorFactory::CreateSquare(440);
+	auto a = Modifier::ModifierFactory::CreateADSR(0.03125, 0.03125, -3, 0.5);
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		t.push_back(
+			e->FilterSample(
+				a->FilterSample(
+					s->SendSample()
+				)
+			)
+		);
+
+		if(i == OCAE_SAMPLE_RATE/2)
+		{
+			a->Release();
+		}
+	}
+	OCAE_WRITE_WAV("envelope.adsr.square_440.wav", t);
 
 	totalSamples += OCAE_SAMPLE_RATE;
 }
@@ -530,7 +556,7 @@ static void TestSound(void)
 		t.push_back(echo->Process(OCAE_MONO_TO_STEREO(std::sin(OCAE_PI2*440*OCAE_INC_RATE*double(i)) * 0.5)));
 	}
 
-	OCAE_WRITE_WAV("sound.sin.440.echo.0.25s.0.5g.wav", t);
+	OCAE_WRITE_WAV("sound.sin_440.echo_0.25_0.5.wav", t);
 
 	totalSamples += 20 + OCAE_SAMPLE_RATE*4;
 }
@@ -554,6 +580,7 @@ std::vector<VoidFn> tests{
 	TestBandPass,
 	TestDelay,
 	TestEcho,
+	TestEnvelope,
 	TestSound,
 };
 
