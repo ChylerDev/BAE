@@ -461,6 +461,23 @@ static void TestDelay(void)
 	totalSamples += OCAE_SAMPLE_RATE;
 }
 
+static void TestEcho(void)
+{
+	auto e = Modifier::ModifierFactory::CreateEcho(0.125, 0.75);
+	auto t = Generator::GeneratorFactory::CreateTriangle(440);
+
+	Track_t tr;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		tr.push_back(e->FilterSample(i<OCAE_SAMPLE_RATE/16?
+			t->SendSample() : StereoData()
+		));
+	}
+	OCAE_WRITE_WAV("echo_0.125_0.75.tringale.440.wav", tr);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
 //////////////// Sounds ////////////////
 
 static void TestSound(void)
@@ -536,6 +553,7 @@ std::vector<VoidFn> tests{
 	TestADSR,
 	TestBandPass,
 	TestDelay,
+	TestEcho,
 	TestSound,
 };
 
