@@ -545,6 +545,55 @@ static void TestGain(void)
 	totalSamples += OCAE_SAMPLE_RATE;
 }
 
+static void TestGenericFilter(void)
+{
+	auto g = Modifier::ModifierFactory::CreateGenericFilter(
+		{
+			std::make_tuple(
+				uint32_t(0),
+				Math_t(0.69)
+			),
+			std::make_tuple(
+				uint32_t(1),
+				Math_t(0.32)
+			),
+			std::make_tuple(
+				uint32_t(2),
+				Math_t(0.13)
+			),
+			std::make_tuple(
+				uint32_t(6),
+				Math_t(0.4892)
+			)
+		},
+		{
+			std::make_tuple(
+				uint32_t(1),
+				Math_t(0.3789462467)
+			),
+			std::make_tuple(
+				uint32_t(5),
+				Math_t(0.12501285032)
+			),
+			std::make_tuple(
+				uint32_t(300),
+				Math_t(0.10453659456)
+			)
+		}
+	);
+
+	auto s = Generator::GeneratorFactory::CreateSquare(440);
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		t.push_back(g->FilterSample(s->SendSample()));
+	}
+	OCAE_WRITE_WAV("generic.sine_440.wav", t);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
 //////////////// Sounds ////////////////
 
 static void TestSound(void)
@@ -624,6 +673,7 @@ std::vector<VoidFn> tests{
 	TestEnvelope,
 	TestEqualizer,
 	TestGain,
+	TestGenericFilter,
 	TestSound,
 };
 
