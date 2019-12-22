@@ -441,7 +441,22 @@ static void TestBandPass(void)
 	{
 		t.push_back(bp->FilterSample(n->SendSample()));
 	}
-	OCAE_WRITE_WAV("bp.100.200.noise.wav", t);
+	OCAE_WRITE_WAV("bandpass.100.200.noise.wav", t);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
+static void TestDelay(void)
+{
+	auto d = Modifier::ModifierFactory::CreateDelay(0.25);
+	auto s = Generator::GeneratorFactory::CreateSine(440);
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		t.push_back(d->FilterSample(s->SendSample()));
+	}
+	OCAE_WRITE_WAV("delay_0.25.sine.440.wav", t);
 
 	totalSamples += OCAE_SAMPLE_RATE;
 }
@@ -520,6 +535,7 @@ std::vector<VoidFn> tests{
 	TestWAV,
 	TestADSR,
 	TestBandPass,
+	TestDelay,
 	TestSound,
 };
 
