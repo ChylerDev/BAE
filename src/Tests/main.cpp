@@ -34,6 +34,8 @@ static hrc clk;
 
 // Private Functions                      //////////////////////////////////////
 
+static uint64_t totalSamples = 0;
+
 std::ostream & operator<<(std::ostream & o, StereoData const & s)
 {
 	o << '(' << Left(s) << ',' << Right(s) << ')';
@@ -67,6 +69,8 @@ static void TestResampler(void)
 			assert(EQUALS( Left(results[i]), SampleType(Math_t(i)/2)) &&
 			       EQUALS(Right(results[i]), SampleType(Math_t(i)/2)));
 		}
+
+		totalSamples += OCAE_SIZEOF_ARRAY(results);
 	}
 
 	// Test decrease of rate
@@ -86,6 +90,8 @@ static void TestResampler(void)
 			   EQUALS(Right(results[0]), SampleType(0)));
 		assert(EQUALS( Left(results[1]), SampleType(2)) &&
 			   EQUALS(Right(results[1]), SampleType(2)));
+
+		totalSamples += OCAE_SIZEOF_ARRAY(results);
 	}
 
 	// Test playback speed
@@ -108,6 +114,8 @@ static void TestResampler(void)
 			assert(EQUALS( Left(results[i]), SampleType(Math_t(i)/2)) &&
 			       EQUALS(Right(results[i]), SampleType(Math_t(i)/2)));
 		}
+
+		totalSamples += OCAE_SIZEOF_ARRAY(results);
 	}
 
 	// Test playback speed and change of rate
@@ -130,6 +138,8 @@ static void TestResampler(void)
 			assert(EQUALS( Left(results[i]), SampleType(i)) &&
 			       EQUALS(Right(results[i]), SampleType(i)));
 		}
+
+		totalSamples += OCAE_SIZEOF_ARRAY(results);
 	}
 }
 
@@ -188,6 +198,8 @@ static void TestGeneratorBase(void)
 	{
 		assert(EQUALS(Left(*it),SampleType(0)) && EQUALS(Right(*it),SampleType(0)));
 	}
+
+		totalSamples += OCAE_SIZEOF_ARRAY(samples);
 }
 
 static void TestNoise(void)
@@ -202,6 +214,9 @@ static void TestNoise(void)
 	}
 
 	OCAE_WRITE_WAV("noise.1s.wav", samples);
+
+
+	totalSamples += samples.size();
 }
 
 static void TestSawtooth(void)
@@ -219,6 +234,8 @@ static void TestSawtooth(void)
 		assert(EQUALS(Left(sam), SampleType(440*OCAE_INC_RATE*2*i*OCAE_SQRT_HALF)));
 		assert(EQUALS(Left(sam), Right(sam)));
 	}
+
+	totalSamples += 4;
 }
 
 static void TestSine(void)
@@ -236,6 +253,8 @@ static void TestSine(void)
 		assert(EQUALS(Left(sam), SampleType(std::sin(440*OCAE_PI2*OCAE_INC_RATE*i)*OCAE_SQRT_HALF)));
 		assert(EQUALS(Left(sam), Right(sam)));
 	}
+
+	totalSamples += 4;
 }
 
 static void TestSquare(void)
@@ -253,6 +272,8 @@ static void TestSquare(void)
 		assert(EQUALS(Left(sam), SampleType(OCAE_SQRT_HALF)));
 		assert(EQUALS(Left(sam), Right(sam)));
 	}
+
+	totalSamples += 4;
 }
 
 static void TestTriangle(void)
@@ -270,6 +291,33 @@ static void TestTriangle(void)
 		assert(EQUALS(Left(sam), SampleType(4*440*OCAE_SQRT_HALF*OCAE_INC_RATE*i)));
 		assert(EQUALS(Left(sam), Right(sam)));
 	}
+
+	totalSamples += 4;
+}
+
+static void TestWAV(void)
+{
+	auto s = Generator::GeneratorFactory::CreateSine(440);
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		t.push_back(s->SendSample());
+	}
+	RIFF::vector_t riff = Tools::WriteWAV(t);
+
+	auto w = Generator::GeneratorFactory::CreateWAV(
+		std::vector<char>(reinterpret_cast<char *>(riff.data()),
+		reinterpret_cast<char *>(riff.data()) + riff.size())
+	);
+
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		StereoData sam = s->SendSample();
+		assert(EQUALS(Left(sam), SampleType(std::sin(440*OCAE_PI2*OCAE_INC_RATE*i)*OCAE_SQRT_HALF)));
+		assert(EQUALS(Left(sam), Right(sam)));
+	}
+
+	totalSamples += OCAE_SAMPLE_RATE;
 }
 
 static void TestSound(void)
@@ -323,6 +371,8 @@ static void TestSound(void)
 	}
 
 	OCAE_WRITE_WAV("sound.sin.440.echo.0.25s.0.5g.wav", t);
+
+	totalSamples += 20 + OCAE_SAMPLE_RATE*4;
 }
 
 // Private Objects                        //////////////////////////////////////
@@ -336,6 +386,7 @@ std::vector<VoidFn> tests{
 	TestSine,
 	TestSquare,
 	TestTriangle,
+	TestWAV,
 	TestSound,
 };
 
@@ -364,10 +415,16 @@ int main(int argc, char * argv[])
 
 	std::cout << "Tests completed\n\n";
 
+	double time = seconds.count();
+
 		// Print the time stats
 	std::cout << "Ran all tests in "
-	          << std::setprecision(10) << seconds.count()
+	          << std::setprecision(10) << time
 	          << " seconds\n";
+
+	std::cout << "Computed " << totalSamples << " samples across all tests for an average of "
+	          << totalSamples/time << " samples of audio generated per second or "
+	          << totalSamples/time*OCAE_INC_RATE << " seconds of audio generated per second.\n";
 
 	return 0;
 }
