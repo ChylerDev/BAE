@@ -15,7 +15,9 @@
 
 // Private Enums                          //////////////////////////////////////
 
-// Private Objects                        //////////////////////////////////////
+// Public Objects                         //////////////////////////////////////
+
+OCAE::Tools::MethodTable::MethodTable_t OCAE::Tools::MethodTable::s_Table;
 
 // Private Function Declarations          //////////////////////////////////////
 
@@ -25,27 +27,25 @@ namespace OCAE
 {
 namespace Tools
 {
-	MethodTable::MethodTable() :
-		m_Table()
+	MethodTable::MethodTable()
 	{
 	}
 
-	MethodTable::MethodTable(MethodList_t const & list) :
-		m_Table()
+	MethodTable::MethodTable(MethodList_t const & list)
 	{
 		RegisterMethods(list);
 	}
 
 	void MethodTable::RegisterMethod(std::string const & name, Void_fn const & obj)
 	{
-		m_Table[name] = obj;
+		s_Table[this][name] = obj;
 	}
 
 	void MethodTable::RegisterMethods(MethodList_t const & list)
 	{
 		for(auto & m : list)
 		{
-			m_Table[std::get<0>(m)] = std::get<1>(m);
+			s_Table[this][std::get<0>(m)] = std::get<1>(m);
 		}
 	}
 } // namespace Tools
