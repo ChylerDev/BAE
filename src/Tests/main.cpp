@@ -44,6 +44,90 @@ std::ostream & operator<<(std::ostream & o, StereoData const & s)
 
 //////////////// Tools ////////////////
 
+static void TestMethodTable(void)
+{
+	class MT : public Tools::MethodTable
+	{
+	public:
+		MT() { RegisterMethods(CreateMethodList()); };
+		virtual ~MT() {};
+
+		void OneParam(int i)
+		{
+			OCAE_UNREFERENCED_PARAMETER(i);
+			assert(i == 1);
+		};
+		int OneRet()
+		{
+			return 82;
+		};
+		int OneRetOneParam(int i)
+		{
+			OCAE_UNREFERENCED_PARAMETER(i);
+			assert(i == 2);
+			return 239;
+		};
+		void TwoParam(int i, double d)
+		{
+			OCAE_UNREFERENCED_PARAMETER(i);
+			assert(i == 3);
+			OCAE_UNREFERENCED_PARAMETER(d);
+			assert(EQUALS(d, 2.5));
+		};
+
+	protected:
+		MethodList_t CreateMethodList()
+		{
+			return {
+				std::make_tuple(
+					std::string("OneParam"),
+					Void_fn(
+						[this](void * p){
+							OneParam(std::get<0>(*reinterpret_cast<std::tuple<OCAE_METHOD_PARAM_T(int)>*>(p)));
+						}
+					)
+				),
+				std::make_tuple(
+					std::string("OneRet"),
+					Void_fn(
+						[this](void * p){
+							std::get<0>(*reinterpret_cast<std::tuple<OCAE_METHOD_RET_T(int)>*>(p)) = OneRet();
+						}
+					)
+				),
+				std::make_tuple(
+					std::string("OneRetOneParam"),
+					Void_fn(
+						[this](void * p){
+							auto & t = *reinterpret_cast<std::tuple<OCAE_METHOD_RET_T(int),OCAE_METHOD_PARAM_T(int)>*>(p);
+							std::get<0>(t) = OneRetOneParam(std::get<1>(t));
+						}
+					)
+				),
+				std::make_tuple(
+					std::string("TwoParam"),
+					Void_fn(
+						[this](void * p){
+							auto & t = *reinterpret_cast<std::tuple<OCAE_METHOD_PARAM_T(int),OCAE_METHOD_PARAM_T(double)>*>(p);
+							TwoParam(std::get<0>(t), std::get<1>(t));
+						}
+					)
+				)
+			};
+		}
+	};
+
+	MT m;
+
+	m.CallMethod("OneParam", OCAE_METHOD_PARAM(int(1)));
+	int r = 0;
+	m.CallMethod("OneRet", OCAE_METHOD_RET(r));
+	assert(r == 82);
+	m.CallMethod("OneRetOneParam", OCAE_METHOD_RET(r), OCAE_METHOD_PARAM(int(2)));
+	assert(r == 239);
+	m.CallMethod("TwoParam", OCAE_METHOD_PARAM(int(3)), OCAE_METHOD_PARAM(double(2.5)));
+}
+
 static void TestResampler(void)
 {
 	std::vector<StereoData> samples{
@@ -388,6 +472,7 @@ static void TestSound(void)
 // Private Objects                        //////////////////////////////////////
 
 std::vector<VoidFn> tests{
+	TestMethodTable,
 	TestResampler,
 	TestWAVWriter,
 	TestGeneratorBase,
