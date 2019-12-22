@@ -525,6 +525,26 @@ static void TestEqualizer(void)
 	totalSamples += OCAE_SAMPLE_RATE;
 }
 
+static void TestGain(void)
+{
+	auto g = Modifier::ModifierFactory::CreateGain(0);
+	auto s = Generator::GeneratorFactory::CreateSine(440);
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		t.push_back(g->FilterSample(s->SendSample()));
+
+		if(i < OCAE_SAMPLE_RATE/2)
+			g->SetGain(2*i*OCAE_INC_RATE);
+		else
+			g->SetGain(1 - 2*(i-OCAE_SAMPLE_RATE/2)*OCAE_INC_RATE);
+	}
+	OCAE_WRITE_WAV("gain.sine_440.wav", t);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
 //////////////// Sounds ////////////////
 
 static void TestSound(void)
@@ -603,6 +623,7 @@ std::vector<VoidFn> tests{
 	TestEcho,
 	TestEnvelope,
 	TestEqualizer,
+	TestGain,
 	TestSound,
 };
 
