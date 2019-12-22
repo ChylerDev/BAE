@@ -410,6 +410,27 @@ static void TestWAV(void)
 
 //////////////// Modifiers ////////////////
 
+static void TestADSR(void)
+{
+	auto adsr = Modifier::ModifierFactory::CreateADSR(0.03125, 0.03125, -3, 0.5);
+	auto s = Generator::GeneratorFactory::CreateSawtooth(440);
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		t.push_back(adsr->FilterSample(s->SendSample()));
+
+		if(i == OCAE_SAMPLE_RATE/2)
+		{
+			adsr->CallMethod("Release");
+			// adsr->Release();
+		}
+	}
+	OCAE_WRITE_WAV("adsr0.03125_0.125_0.5_0.25.sin.440.wav", t);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
 //////////////// Sounds ////////////////
 
 static void TestSound(void)
@@ -482,6 +503,7 @@ std::vector<VoidFn> tests{
 	TestSquare,
 	TestTriangle,
 	TestWAV,
+	TestADSR,
 	TestSound,
 };
 
