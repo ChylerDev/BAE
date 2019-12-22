@@ -42,6 +42,8 @@ std::ostream & operator<<(std::ostream & o, StereoData const & s)
 	return o;
 }
 
+//////////////// Tools ////////////////
+
 static void TestResampler(void)
 {
 	std::vector<StereoData> samples{
@@ -185,6 +187,8 @@ static void TestWAVWriter(void)
 	OCAE_UNREFERENCED_PARAMETER(h);
 }
 
+//////////////// Generators ////////////////
+
 static void TestGeneratorBase(void)
 {
 	auto b = Generator::GeneratorFactory::CreateBase();
@@ -320,6 +324,10 @@ static void TestWAV(void)
 	totalSamples += OCAE_SAMPLE_RATE;
 }
 
+//////////////// Modifiers ////////////////
+
+//////////////// Sounds ////////////////
+
 static void TestSound(void)
 {
 		// Create empty sound object
@@ -374,6 +382,8 @@ static void TestSound(void)
 
 	totalSamples += 20 + OCAE_SAMPLE_RATE*4;
 }
+
+//////////////// Core ////////////////
 
 // Private Objects                        //////////////////////////////////////
 
