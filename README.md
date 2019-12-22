@@ -36,7 +36,6 @@ The project will build the executibles and copy the necessary shared libs to rep
 * Modifiers to add:
 	* Pan
 	* Fade in/out
-	* Equalizer
 * Features:
 	* Side-chain
 	* FFT?
