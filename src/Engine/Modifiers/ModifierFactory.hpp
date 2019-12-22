@@ -150,6 +150,23 @@ namespace Modifier
 
 		/*! ********************************************************************
 		\brief
+			Creates an envelope follower filter.
+
+		\param lower
+			The lower end of frequencies to follow. Defaults to 20Hz for normal
+			human hearing range.
+
+		\param upper
+			The upper end of frequencies to follow. Defaults to 20kHz for normal
+			human hearing range.
+
+		\return
+			The generated modifier object.
+		***********************************************************************/
+		static EnvelopeFollowerPtr CreateEnvelopeFollower(Math_t lower = Math_t(20), Math_t upper = Math_t(20000));
+
+		/*! ********************************************************************
+		\brief
 			Creates an equalizer filter.
 
 		\param band_count
@@ -165,23 +182,6 @@ namespace Modifier
 			The generated modifier object.
 		***********************************************************************/
 		static EqualizerPtr CreateEqualizer(uint32_t band_count = 2, Math_t lower = 20, Math_t upper = 20000);
-
-		/*! ********************************************************************
-		\brief
-			Creates an envelope follower filter.
-
-		\param lower
-			The lower end of frequencies to follow. Defaults to 20Hz for normal
-			human hearing range.
-
-		\param upper
-			The upper end of frequencies to follow. Defaults to 20kHz for normal
-			human hearing range.
-
-		\return
-			The generated modifier object.
-		***********************************************************************/
-		static EnvelopeFollowerPtr CreateEnvelopeFollower(Math_t lower = Math_t(20), Math_t upper = Math_t(20000));
 
 		/*! ********************************************************************
 		\brief

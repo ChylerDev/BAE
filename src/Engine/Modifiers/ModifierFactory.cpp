@@ -70,14 +70,14 @@ namespace Modifier
 		return EchoPtr(new Echo(uint64_t(delay_seconds * OCAE_SAMPLE_RATE), decay_ratio));
 	}
 
-	EqualizerPtr ModifierFactory::CreateEqualizer(uint32_t band_count, Math_t lower, Math_t upper)
-	{
-		return EqualizerPtr(new Equalizer(band_count, lower, upper));
-	}
-
 	EnvelopeFollowerPtr ModifierFactory::CreateEnvelopeFollower(Math_t fd, Math_t fu)
 	{
 		return EnvelopeFollowerPtr(new EnvelopeFollower(fd, fu));
+	}
+
+	EqualizerPtr ModifierFactory::CreateEqualizer(uint32_t band_count, Math_t lower, Math_t upper)
+	{
+		return EqualizerPtr(new Equalizer(band_count, lower, upper));
 	}
 
 	GainPtr ModifierFactory::CreateGain(Math_t gain)
