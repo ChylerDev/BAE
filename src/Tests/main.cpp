@@ -808,6 +808,7 @@ static void TestDriver(void)
 		d->Process();
 		wav.insert(wav.end(), t.begin(), t.end());
 	}
+	totalSamples += OCAE_SAMPLE_RATE;
 
 	OCAE_WRITE_WAV("driver.wav", wav);
 }
