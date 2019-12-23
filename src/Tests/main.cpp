@@ -409,6 +409,23 @@ static void TestWAV(void)
 
 //////////////// Modifiers ////////////////
 
+static void TestModifierBase(void)
+{
+	auto m = Modifier::ModifierFactory::CreateBase();
+	auto s = Generator::GeneratorFactory::CreateSine(440);
+
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		StereoData dry = s->SendSample();
+		StereoData wet = m->FilterSample(dry);
+
+		assert(EQUALS(Left(dry), Left(wet)));
+		assert(EQUALS(Right(dry), Right(dry)));
+
+		++totalSamples;
+	}
+}
+
 static void TestADSR(void)
 {
 	auto adsr = Modifier::ModifierFactory::CreateADSR(0.03125, 0.03125, -3, 0.5);
@@ -683,6 +700,7 @@ std::vector<VoidFn> tests{
 	TestSquare,
 	TestTriangle,
 	TestWAV,
+	TestModifierBase,
 	TestADSR,
 	TestBandPass,
 	TestDelay,
