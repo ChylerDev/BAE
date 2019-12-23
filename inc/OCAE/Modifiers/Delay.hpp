@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __DELAY_HPP
-#define __DELAY_HPP
+#ifndef __OCAE_DELAY_HPP
+#define __OCAE_DELAY_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -130,7 +130,7 @@ namespace Modifier
 		\return
 			The filtered sample.
 		***********************************************************************/
-		virtual StereoData FilterSample(StereoData const & input);
+		virtual StereoData Process(StereoData const & input);
 
 		/*! ********************************************************************
 		\brief
@@ -178,4 +178,4 @@ namespace Modifier
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __DELAY_HPP
+#endif // __OCAE_DELAY_HPP

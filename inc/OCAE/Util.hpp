@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __UTIL_HPP
-#define __UTIL_HPP
+#ifndef __OCAE_UTIL_HPP
+#define __OCAE_UTIL_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -38,7 +38,7 @@ namespace OCAE
 	***************************************************************************/
 	constexpr SampleType & Left(StereoData& s)
 	{
-		return std::get<0>(s);
+		return s.first;//std::get<0>(s);
 	}
 
 	/*! ************************************************************************
@@ -53,7 +53,7 @@ namespace OCAE
 	***************************************************************************/
 	constexpr SampleType const & Left(StereoData const & s)
 	{
-		return std::get<0>(s);
+		return s.first;//std::get<0>(s);
 	}
 
 	/*! ************************************************************************
@@ -68,7 +68,7 @@ namespace OCAE
 	***************************************************************************/
 	constexpr SampleType & Right(StereoData& s)
 	{
-		return std::get<1>(s);
+		return s.second;//std::get<1>(s);
 	}
 
 	/*! ************************************************************************
@@ -83,8 +83,8 @@ namespace OCAE
 	***************************************************************************/
 	constexpr SampleType const & Right(StereoData const & s)
 	{
-		return std::get<1>(s);
+		return s.second;//std::get<1>(s);
 	}
 } // namespace OCAE
 
-#endif // __UTIL_HPP
+#endif // __OCAE_UTIL_HPP

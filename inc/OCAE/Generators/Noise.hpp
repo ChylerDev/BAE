@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __NOISE_HPP
-#define __NOISE_HPP
+#ifndef __OCAE_NOISE_HPP
+#define __OCAE_NOISE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -110,7 +110,7 @@ namespace Generator
 		\return
 			The stereo sample data.
 		***********************************************************************/
-		virtual StereoData SendSample(void);
+		virtual StereoData Process(void);
 
 		/*! ********************************************************************
 		\brief
@@ -154,4 +154,4 @@ namespace Generator
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __NOISE_HPP
+#endif // __OCAE_NOISE_HPP

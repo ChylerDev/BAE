@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __GENERIC_FILTER_HPP
-#define __GENERIC_FILTER_HPP
+#ifndef __OCAE_GENERIC_FILTER_HPP
+#define __OCAE_GENERIC_FILTER_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -130,7 +130,7 @@ namespace Modifier
 		\return
 			The filtered sample.
 		***********************************************************************/
-		virtual StereoData FilterSample(StereoData const & input);
+		virtual StereoData Process(StereoData const & input);
 
 		/*! ********************************************************************
 		\brief
@@ -183,4 +183,4 @@ namespace Modifier
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __GENERIC_FILTER_HPP
+#endif // __OCAE_GENERIC_FILTER_HPP

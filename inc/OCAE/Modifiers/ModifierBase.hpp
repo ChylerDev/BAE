@@ -7,8 +7,8 @@
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
-#ifndef __MODIFIERBASE_HPP
-#define __MODIFIERBASE_HPP
+#ifndef __OCAE_MODIFIERBASE_HPP
+#define __OCAE_MODIFIERBASE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -47,7 +47,7 @@ namespace Modifier
 
 		There are a few functions that should be overridden by derived classes,
 		but are also implemented here for default behavior:
-			* FilterSample
+			* Process
 			* IsBase (This function will likely be removed in the future)
 			* CreateMethodList
 
@@ -127,7 +127,7 @@ namespace Modifier
 		\return
 			The filtered sample.
 		***********************************************************************/
-		virtual StereoData FilterSample(StereoData const & input) { return input; };
+		virtual StereoData Process(StereoData const & input) { return input; };
 
 		/*! ********************************************************************
 		\brief
@@ -172,4 +172,4 @@ namespace Modifier
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __MODIFIERBASE_HPP
+#endif // __OCAE_MODIFIERBASE_HPP

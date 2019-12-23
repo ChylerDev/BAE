@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __WAVWRITER_HPP
-#define __WAVWRITER_HPP
+#ifndef __OCAE_WAVWRITER_HPP
+#define __OCAE_WAVWRITER_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -44,4 +44,4 @@ namespace Tools
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __WAVWRITER_HPP
+#endif // __OCAE_WAVWRITER_HPP

@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __SQUARE_HPP
-#define __SQUARE_HPP
+#ifndef __OCAE_SQUARE_HPP
+#define __OCAE_SQUARE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -108,7 +108,7 @@ namespace Generator
 		\return
 			The stereo sample data.
 		***********************************************************************/
-		virtual StereoData SendSample(void);
+		virtual StereoData Process(void);
 
 		/*! ********************************************************************
 		\brief
@@ -127,6 +127,15 @@ namespace Generator
 			The new frequency.
 		***********************************************************************/
 		void SetFrequency(Math_t freq);
+
+		/*! ********************************************************************
+		\brief
+			Gets the frequency.
+
+		\return
+			The frequency.
+		***********************************************************************/
+		Math_t GetFrequency() const;
 
 			/// Add the factory as a friend so it can construct Square objects
 		friend class GeneratorFactory;
@@ -165,4 +174,4 @@ namespace Generator
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __SQUARE_HPP
+#endif // __OCAE_SQUARE_HPP

@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __ADSR_HPP
-#define __ADSR_HPP
+#ifndef __OCAE_ADSR_HPP
+#define __OCAE_ADSR_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -140,7 +140,7 @@ namespace Modifier
 		\return
 			The filtered sample.
 		***********************************************************************/
-		virtual StereoData FilterSample(StereoData const & input);
+		virtual StereoData Process(StereoData const & input);
 
 		/*! ********************************************************************
 		\brief
@@ -197,4 +197,4 @@ namespace Modifier
 
 // Public FunctOCAE      ////////////////////////////////////////////////
 
-#endif // __ADSR_HPP
+#endif // __OCAE_ADSR_HPP

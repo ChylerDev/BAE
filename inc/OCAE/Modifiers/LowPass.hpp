@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __LOW_PASS_HPP
-#define __LOW_PASS_HPP
+#ifndef __OCAE_LOW_PASS_HPP
+#define __OCAE_LOW_PASS_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -117,7 +117,7 @@ namespace Modifier
 			Sets the resonance angle of the filter.
 
 		\param resonance
-			The resonance angle, in range [0,1/6]. No safety checks are
+			The resonance angle, in range [0,1]. No safety checks are
 			performed.
 		***********************************************************************/
 		void SetResonance(Math_t resonance);
@@ -134,7 +134,7 @@ namespace Modifier
 		\return
 			The filtered sample.
 		***********************************************************************/
-		virtual StereoData FilterSample(StereoData const & input);
+		virtual StereoData Process(StereoData const & input);
 
 		/*! ********************************************************************
 		\brief
@@ -161,7 +161,7 @@ namespace Modifier
 			The cutoff frequency in Hz.
 
 		\param resonance
-			The resonance angle of the filter, value can be in range [0,1/6]. No
+			The resonance angle of the filter, value can be in range [0,1]. No
 			safety checks are performed.
 		***********************************************************************/
 		LowPass(Math_t cutoff, Math_t resonance);
@@ -193,4 +193,4 @@ namespace Modifier
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __LOW_PASS_HPP
+#endif // __OCAE_LOW_PASS_HPP

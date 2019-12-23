@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __WAV_HPP
-#define __WAV_HPP
+#ifndef __OCAE_WAV_HPP
+#define __OCAE_WAV_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -114,7 +114,7 @@ namespace Generator
 		\return
 			The stereo sample data.
 		***********************************************************************/
-		virtual StereoData SendSample(void);
+		virtual StereoData Process(void);
 
 		/*! ********************************************************************
 		\brief
@@ -154,7 +154,7 @@ namespace Generator
 		/*! ********************************************************************
 		\brief
 			Default constructor. If no data is provided in calling
-			WAV::ReadFile, then WAV::SendSample will only output 0 data.
+			WAV::ReadFile, then WAV::Process will only output 0 data.
 		***********************************************************************/
 		WAV();
 
@@ -221,4 +221,4 @@ namespace Generator
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __WAV_HPP
+#endif // __OCAE_WAV_HPP

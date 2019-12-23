@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __RESAMPLER_HPP
-#define __RESAMPLER_HPP
+#ifndef __OCAE_RESAMPLER_HPP
+#define __OCAE_RESAMPLER_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -108,7 +108,7 @@ namespace Tools
 		\return
 			The stereo sample data.
 		***********************************************************************/
-		StereoData SendSample();
+		StereoData Process();
 
 	private:
 
@@ -122,4 +122,4 @@ namespace Tools
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __RESAMPLER_HPP
+#endif // __OCAE_RESAMPLER_HPP

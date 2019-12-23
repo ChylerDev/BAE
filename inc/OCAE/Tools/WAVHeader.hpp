@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __WAVHEADER_HPP
-#define __WAVHEADER_HPP
+#ifndef __OCAE_WAVHEADER_HPP
+#define __OCAE_WAVHEADER_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -70,4 +70,4 @@ namespace Tools
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __WAVHEADER_HPP
+#endif // __OCAE_WAVHEADER_HPP

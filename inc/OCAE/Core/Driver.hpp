@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __DRIVER_HPP
-#define __DRIVER_HPP
+#ifndef __OCAE_DRIVER_HPP
+#define __OCAE_DRIVER_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -23,6 +23,15 @@
 // Public Macros                ////////////////////////////////////////////////
 
 // Forward References           ////////////////////////////////////////////////
+
+namespace OCAE
+{
+namespace Core
+{
+	class Driver;
+	OCAE_TYPEDEF_SHARED(Driver);
+}
+}
 
 // Public Enums                 ////////////////////////////////////////////////
 
@@ -55,18 +64,6 @@ namespace Core
 	public:
 
 		// Con-/De- structors   ///////////////////////
-
-		/*! ********************************************************************
-		\brief
-			Constructs an audio driver object.
-
-		\param track_size
-			The size of the output track in samples.
-
-		\param gain
-			The linear gain to be used when summing all audio values.
-		***********************************************************************/
-		Driver(uint64_t track_size, Math_t gain = OCAE_DEFAULT_GAIN);
 
 		/*! ********************************************************************
 		\brief
@@ -168,15 +165,42 @@ namespace Core
 		/*! ********************************************************************
 		\brief
 			Processes audio and returns a track of the calculated samples.
-
-		\return
-			The calculated samples
 		***********************************************************************/
 		void Process();
+
+		/*! ********************************************************************
+		\brief
+			Constructs an audio driver object.
+
+		\param track_size
+			The size of the output track in samples.
+
+		\param gain
+			The linear gain to be used when summing all audio values.
+
+		\return
+			The shared pointer holding the Driver object.
+		***********************************************************************/
+		static DriverPtr Create(uint64_t track_size, Math_t gain = OCAE_DEFAULT_GAIN)
+		{
+			return DriverPtr(new Driver(track_size, gain));
+		};
 
 	private:
 
 		// Functions                  ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Constructs an audio driver object.
+
+		\param track_size
+			The size of the output track in samples.
+
+		\param gain
+			The linear gain to be used when summing all audio values.
+		***********************************************************************/
+		Driver(uint64_t track_size, Math_t gain = OCAE_DEFAULT_GAIN);
 
 		/*! ********************************************************************
 		\brief
@@ -195,4 +219,4 @@ namespace Core
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __DRIVER_HPP
+#endif // __OCAE_DRIVER_HPP

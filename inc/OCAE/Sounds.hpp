@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __SOUNDS_HPP
-#define __SOUNDS_HPP
+#ifndef __OCAE_SOUNDS_HPP
+#define __OCAE_SOUNDS_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -26,4 +26,4 @@
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __SOUNDS_HPP
+#endif // __OCAE_SOUNDS_HPP
