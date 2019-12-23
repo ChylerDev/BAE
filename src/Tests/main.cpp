@@ -318,7 +318,7 @@ static void TestSawtooth(void)
 
 	for(uint64_t i = 0; i < 4; ++i)
 	{
-		StereoData sam = s->Process();
+		StereoData sam = s->Process(); OCAE_UNREFERENCED_PARAMETER(sam);
 		assert(EQUALS(Left(sam), SampleType(440*OCAE_INC_RATE*2*i*OCAE_SQRT_HALF)));
 		assert(EQUALS(Left(sam), Right(sam)));
 	}
@@ -337,7 +337,7 @@ static void TestSine(void)
 
 	for(uint64_t i = 0; i < 4; ++i)
 	{
-		StereoData sam = s->Process();
+		StereoData sam = s->Process(); OCAE_UNREFERENCED_PARAMETER(sam);
 		assert(EQUALS(Left(sam), SampleType(std::sin(440*OCAE_PI2*OCAE_INC_RATE*i)*OCAE_SQRT_HALF)));
 		assert(EQUALS(Left(sam), Right(sam)));
 	}
@@ -356,7 +356,7 @@ static void TestSquare(void)
 
 	for(uint64_t i = 0; i < 4; ++i)
 	{
-		StereoData sam = s->Process();
+		StereoData sam = s->Process(); OCAE_UNREFERENCED_PARAMETER(sam);
 		assert(EQUALS(Left(sam), SampleType(OCAE_SQRT_HALF)));
 		assert(EQUALS(Left(sam), Right(sam)));
 	}
@@ -375,7 +375,7 @@ static void TestTriangle(void)
 
 	for(uint64_t i = 0; i < 4; ++i)
 	{
-		StereoData sam = t->Process();
+		StereoData sam = t->Process(); OCAE_UNREFERENCED_PARAMETER(sam);
 		assert(EQUALS(Left(sam), SampleType(4*440*OCAE_SQRT_HALF*OCAE_INC_RATE*i)));
 		assert(EQUALS(Left(sam), Right(sam)));
 	}
@@ -400,7 +400,7 @@ static void TestWAV(void)
 
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		StereoData sam = s->Process();
+		StereoData sam = s->Process(); OCAE_UNREFERENCED_PARAMETER(sam);
 		assert(EQUALS(Left(sam), SampleType(std::sin(440*OCAE_PI2*OCAE_INC_RATE*i)*OCAE_SQRT_HALF)));
 		assert(EQUALS(Left(sam), Right(sam)));
 	}
@@ -418,7 +418,7 @@ static void TestModifierBase(void)
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
 		StereoData dry = s->Process();
-		StereoData wet = m->Process(dry);
+		StereoData wet = m->Process(dry); OCAE_UNREFERENCED_PARAMETER(wet);
 
 		assert(EQUALS(Left(dry), Left(wet)));
 		assert(EQUALS(Right(dry), Right(dry)));
@@ -639,8 +639,8 @@ static void TestBlock(void)
 
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		StereoData dry = d->Process();
-		StereoData wet = b->Process();
+		StereoData dry = d->Process(); OCAE_UNREFERENCED_PARAMETER(dry);
+		StereoData wet = b->Process(); OCAE_UNREFERENCED_PARAMETER(wet);
 
 		assert(EQUALS( Left(wet),  Left(dry)));
 		assert(EQUALS(Right(wet), Right(dry)));
@@ -654,9 +654,9 @@ static void TestBlock(void)
 
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		StereoData dry = d->Process();
+		StereoData dry = d->Process(); OCAE_UNREFERENCED_PARAMETER(dry);
 		b->PrimeInput(g->Process());
-		StereoData wet = b->Process();
+		StereoData wet = b->Process(); OCAE_UNREFERENCED_PARAMETER(wet);
 
 		assert(EQUALS( Left(wet),  Left(dry)*0.5f));
 		assert(EQUALS(Right(wet), Right(dry)*0.5f));
@@ -670,9 +670,9 @@ static void TestBlock(void)
 
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		StereoData dry = d->Process();
+		StereoData dry = d->Process(); OCAE_UNREFERENCED_PARAMETER(dry);
 		b->PrimeInput(OCAE_MONO_TO_STEREO(-1));
-		StereoData wet = b->Process();
+		StereoData wet = b->Process(); OCAE_UNREFERENCED_PARAMETER(wet);
 
 		assert(EQUALS( Left(wet),  Left(dry)*-0.5f*SampleType(OCAE_SQRT_HALF)));
 		assert(EQUALS(Right(wet), Right(dry)*-0.5f*SampleType(OCAE_SQRT_HALF)));
@@ -691,9 +691,9 @@ static void TestBlock(void)
 
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		StereoData dry = d->Process();
+		StereoData dry = d->Process(); OCAE_UNREFERENCED_PARAMETER(dry);
 		b->PrimeInput(OCAE_MONO_TO_STEREO(-1));
-		StereoData wet = b->Process();
+		StereoData wet = b->Process(); OCAE_UNREFERENCED_PARAMETER(wet);
 
 		assert(EQUALS( Left(wet),  Left(dry)*-0.5f*SampleType(OCAE_SQRT_HALF)));
 		assert(EQUALS(Right(wet), Right(dry)*-0.5f*SampleType(OCAE_SQRT_HALF)));
@@ -724,7 +724,7 @@ static void TestSound(void)
 
 	for(uint64_t i = 0; i < 4; ++i)
 	{
-		StereoData sam = s2->Process(StereoData());
+		StereoData sam = s2->Process(StereoData()); OCAE_UNREFERENCED_PARAMETER(sam);
 		assert(EQUALS(Left(sam), SampleType(std::sin(440*OCAE_PI2*OCAE_INC_RATE*i)*OCAE_SQRT_HALF)));
 		assert(EQUALS(Left(sam), Right(sam)));
 	}
