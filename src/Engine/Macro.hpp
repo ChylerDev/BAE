@@ -14,10 +14,12 @@
 
 #ifndef OCAE_WRITE_WAV
 	#include <fstream>
+		/// Writes an Track_t to a file in WAVE format
 	#define OCAE_WRITE_WAV(file, samples) auto _r = Tools::WriteWAV(samples); std::ofstream(file, std::ios_base::binary).write(reinterpret_cast<char *>(_r.data()), std::streamsize(_r.size()))
 #endif // OCAE_WRITE_WAV
 
 #ifndef OCAE_SIZEOF_ARRAY
+		/// Computes the size of a raw array
 	#define OCAE_SIZEOF_ARRAY(a) (sizeof(a)/sizeof(*a))
 #endif // OCAE_SIZEOF_ARRAY
 

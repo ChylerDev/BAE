@@ -43,7 +43,9 @@ namespace Generator
 			/// The current index in the wave table to access
 		Math_t m_Index;
 
+			/// Wave table for efficiently calculating sine frequencies
 		static Math_t s_Table[OCAE_SAMPLE_RATE/10];
+			/// Dummy int used to call SetupWaveTable at the beginning of the program
 		static int dummy;
 
 	public:
@@ -122,10 +124,9 @@ namespace Generator
 
 		// Functions            ///////////////////////
 
-		OCAE_TODO("Fix this doc")
 		/*! ********************************************************************
 		\brief
-			Sends a single sample to Core::Driver for output to the OS.
+			Processes and returns the next sample.
 
 		\return
 			The stereo sample data.
@@ -174,6 +175,15 @@ namespace Generator
 
 		// Functions                  ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Sets the default values for the wave table.
+
+		\return
+			Dummy value to assign to the dummy static variable that allows this
+			function to be called at the start of the program, guaranteeing the
+			table is set up by the first time it is used.
+		***********************************************************************/
 		static int SetupWaveTable();
 	}; // class Sine
 

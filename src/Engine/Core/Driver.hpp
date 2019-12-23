@@ -177,6 +177,9 @@ namespace Core
 
 		\param gain
 			The linear gain to be used when summing all audio values.
+
+		\return
+			The shared pointer holding the Driver object.
 		***********************************************************************/
 		static DriverPtr Create(uint64_t track_size, Math_t gain = OCAE_DEFAULT_GAIN)
 		{

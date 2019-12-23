@@ -119,10 +119,9 @@ namespace Generator
 
 		// Functions            ///////////////////////
 
-		OCAE_TODO("Fix this doc")
 		/*! ********************************************************************
 		\brief
-			Calculates the sample. For the base class this is simply 0.
+			Processes and returns the next sample.
 
 		\return
 			The stereo sample data.

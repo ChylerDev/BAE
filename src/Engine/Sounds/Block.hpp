@@ -147,6 +147,9 @@ namespace Sound
 		/*! ********************************************************************
 		\brief
 			Processes the managed objects.
+
+		\return
+			The processed sample.
 		***********************************************************************/
 		StereoData Process();
 

@@ -62,6 +62,7 @@ namespace Sound
 	class Sound
 	{
 	public:
+			/// Alias for a deque of BlockPtrs
 		using BlockList = std::deque<BlockPtr>;
 			/// Alias for the structure that represents the graph blocks that make up this Sound.
 		using Graph = std::map<BlockPtr,BlockList>;
@@ -72,7 +73,8 @@ namespace Sound
 
 			/// The graph of blocks
 		Graph m_Graph;
-		std::deque<BlockPtr> m_ProcessOrder;
+			/// The order to process blocks in
+		BlockList m_ProcessOrder;
 
 			/// Input gain modifier.
 		BlockPtr m_InputGain;
@@ -156,8 +158,24 @@ namespace Sound
 
 		// Accossors/Mutators   ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Returns a reference to the input block for use of adding a
+			connection in the internal graph.
+
+		\return
+			The input block.
+		***********************************************************************/
 		BlockPtr const & GetInputBlock() const;
 
+		/*! ********************************************************************
+		\brief
+			Returns a reference to the output block for use of adding a
+			connection in the internal graph.
+
+		\return
+			The output block.
+		***********************************************************************/
 		BlockPtr const & GetOutputBlock() const;
 
 		/*! ********************************************************************
@@ -190,8 +208,30 @@ namespace Sound
 		***********************************************************************/
 		void Unpause();
 
+		/*! ********************************************************************
+		\brief
+			Adds a connection from the given blocks within the internal directed
+			graph.
+
+		\param from
+			The source of the connection.
+
+		\param to
+			The destination of the connection.
+		***********************************************************************/
 		void AddConnection(BlockPtr const & from, BlockPtr const & to);
 
+		/*! ********************************************************************
+		\brief
+			Removes a connection from the given blocks within the internal
+			directed graph.
+
+		\param from
+			The source of the connection.
+
+		\param to
+			The destination of the connection.
+		***********************************************************************/
 		void RemoveConnection(BlockPtr const & from, BlockPtr const & to);
 
 		// Functions            ///////////////////////
@@ -200,6 +240,12 @@ namespace Sound
 		\brief
 			Processes audio configured in the internal graph, storing the output
 			internally.
+
+		\param input
+			The input for the Sound.
+
+		\return
+			The output of the Sound.
 		***********************************************************************/
 		StereoData Process(StereoData input);
 
@@ -230,9 +276,24 @@ namespace Sound
 
 		// Functions                  ///////////////////////
 
+		/*! ********************************************************************
+		\brief
+			Processes the order in which the graph will be traversed.
+		***********************************************************************/
 		void ProcessOrder();
 
-		void PrepareGraph(BlockList const &, BlockList &);
+		/*! ********************************************************************
+		\brief
+			Parses the given nodes of the graph to process the order the graph
+			will be traversed.
+
+		\param list
+			The ordered list to add nodes to.
+
+		\param out
+			The current list to parse.
+		***********************************************************************/
+		void PrepareGraph(BlockList const & list, BlockList & out);
 	}; // class Sound
 } // namespace Sound
 } // namespace OCAE
