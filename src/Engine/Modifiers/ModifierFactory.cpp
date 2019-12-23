@@ -93,7 +93,7 @@ namespace Modifier
 	LowPassPtr ModifierFactory::CreateLowPass(Math_t cutoff, Math_t resonance)
 	{
 			// Clamp value to within the accepted range
-		resonance = std::clamp(resonance, Math_t(0), Math_t(1)) / Math_t(6);
+		resonance = std::clamp(resonance, Math_t(0), Math_t(1));
 		return LowPassPtr(new LowPass(cutoff, resonance));
 	}
 } // namespace Modifier

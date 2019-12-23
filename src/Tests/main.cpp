@@ -594,6 +594,23 @@ static void TestGenericFilter(void)
 	totalSamples += OCAE_SAMPLE_RATE;
 }
 
+static void TestLowPass(void)
+{
+	auto l = Modifier::ModifierFactory::CreateLowPass(440, 0);
+	auto n = Generator::GeneratorFactory::CreateNoise();
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		l->SetResonance(i*OCAE_INC_RATE);
+
+		t.push_back(l->FilterSample(n->SendSample()));
+	}
+	OCAE_WRITE_WAV("lowpass_440.noise.wav", t);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
 //////////////// Sounds ////////////////
 
 static void TestSound(void)
@@ -674,6 +691,7 @@ std::vector<VoidFn> tests{
 	TestEqualizer,
 	TestGain,
 	TestGenericFilter,
+	TestLowPass,
 	TestSound,
 };
 

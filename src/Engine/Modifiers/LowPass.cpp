@@ -26,7 +26,7 @@ namespace OCAE
 namespace Modifier
 {
 	LowPass::LowPass(Math_t cutoff, Math_t resonance) : ModifierBase(),
-		m_Cutoff(2*OCAE_PI*cutoff), m_Resonance(resonance),
+		m_Cutoff(OCAE_PI2*cutoff), m_Resonance(resonance),
 		m_Coefficients(), m_Outputs()
 	{
 		RegisterMethods(CreateMethodList());
@@ -105,20 +105,23 @@ namespace Modifier
 
 	void LowPass::Reset()
 	{
-		static Math_t angle, K, T, x, y, z, g;
+		static Math_t angle, K, T, g;
 
 		angle = (OCAE_PI/6)*Math_t(4 - m_Resonance);
 		K = 1 - 2*std::cos(angle);
-		T = Math_t(m_Cutoff) * OCAE_INC_RATE;
-		x = K*T;
-		y = K*T*T;
-		z = T*T*T;
-		g = 1 + x + y + z;
+		T = m_Cutoff * OCAE_INC_RATE;
+		g = 1.0/(T*T*T + K*T*T + K*T + 1);
+		
 
-		m_Coefficients[3] =  1/g;
-		m_Coefficients[0] =  m_Coefficients[3] * z;
-		m_Coefficients[1] =  m_Coefficients[3] * (3 + 2*x + y);
-		m_Coefficients[2] = -m_Coefficients[3] * (3 + x);
+		// m_Coefficients[3] =  1/g;
+		// m_Coefficients[0] =  m_Coefficients[3] * z;
+		// m_Coefficients[1] =  m_Coefficients[3] * (3 + 2*x + y);
+		// m_Coefficients[2] = -m_Coefficients[3] * (3 + x);
+
+		m_Coefficients[0] = T*T*T;
+		m_Coefficients[1] = (K*T*T + 2*K*T + 3) * g;
+		m_Coefficients[2] = (-K*T-3) * g;
+		m_Coefficients[3] = g;
 	}
 } // namespace Modifier
 } // namespace OCAE

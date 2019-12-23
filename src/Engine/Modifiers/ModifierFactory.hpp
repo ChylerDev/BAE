@@ -220,7 +220,7 @@ namespace Modifier
 
 		\param resonance
 			The resonance of the filter at the cutoff frequency. Should be in
-			the range of [0, 1/6], if the value is outside of this, it will be
+			the range of [0, 1], if the value is outside of this, it will be
 			clamped to the range. Defaults to 0 for no resonance
 
 		\return
