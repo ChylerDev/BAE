@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __SINE_HPP
-#define __SINE_HPP
+#ifndef __OCAE_SINE_HPP
+#define __OCAE_SINE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -38,14 +38,15 @@ namespace Generator
 
 		// Members              ///////////////////////
 
-			/// Combination of the sampling rate and desired frequency
-		Math_t irate;
-			/// Previous sample
-		SampleType y1;
-			/// Previous sample
-		SampleType y2;
-			/// Sinusoidal recurrence relation
-		Math_t beta;
+			/// Value storing the non-integer index increment value
+		Math_t m_A;
+			/// The current index in the wave table to access
+		Math_t m_Index;
+
+			/// Wave table for efficiently calculating sine frequencies
+		static Math_t s_Table[OCAE_SAMPLE_RATE/10];
+			/// Dummy int used to call SetupWaveTable at the beginning of the program
+		static int dummy;
 
 	public:
 
@@ -67,7 +68,7 @@ namespace Generator
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Sine(Sine && other) noexcept = default;
+		Sine(Sine && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -99,7 +100,7 @@ namespace Generator
 		\return
 			*this.
 		***********************************************************************/
-		Sine & operator=(Sine && rhs) noexcept = default;
+		Sine & operator=(Sine && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -125,7 +126,7 @@ namespace Generator
 
 		/*! ********************************************************************
 		\brief
-			Sends a single sample to Core::Driver for output to the OS.
+			Processes and returns the next sample.
 
 		\return
 			The stereo sample data.
@@ -170,18 +171,27 @@ namespace Generator
 		***********************************************************************/
 		virtual Tools::MethodTable::MethodList_t CreateMethodList();
 
+	private:
+
+		// Functions                  ///////////////////////
+
 		/*! ********************************************************************
 		\brief
-			Sets all the coefficients for calculating samples.
+			Sets the default values for the wave table.
+
+		\return
+			Dummy value to assign to the dummy static variable that allows this
+			function to be called at the start of the program, guaranteeing the
+			table is set up by the first time it is used.
 		***********************************************************************/
-		void Reset(void);
+		static int SetupWaveTable();
 	}; // class Sine
 
 		/// Alias for a std::shared_ptr instantiated with the Sine class
-	TYPEDEF_SHARED(Sine);
+	OCAE_TYPEDEF_SHARED(Sine);
 } // namespace Generator
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __SINE_HPP
+#endif // __OCAE_SINE_HPP

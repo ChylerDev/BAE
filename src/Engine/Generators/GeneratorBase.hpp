@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __GENERATORBASE_HPP
-#define __GENERATORBASE_HPP
+#ifndef __OCAE_GENERATORBASE_HPP
+#define __OCAE_GENERATORBASE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -65,7 +65,7 @@ namespace Generator
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		GeneratorBase(GeneratorBase && other) noexcept = default;
+		GeneratorBase(GeneratorBase && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -97,7 +97,7 @@ namespace Generator
 		\return
 			*this.
 		***********************************************************************/
-		GeneratorBase & operator=(GeneratorBase && rhs) noexcept = default;
+		GeneratorBase & operator=(GeneratorBase && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -110,7 +110,7 @@ namespace Generator
 		\return
 			The stereo sample data.
 		***********************************************************************/
-		virtual StereoData SendSample(void) { return StereoData(0.f, 0.f); };
+		virtual inline StereoData SendSample(void) { return StereoData(0.f, 0.f); };
 
 		/*! ********************************************************************
 		\brief
@@ -149,10 +149,10 @@ namespace Generator
 	}; // class GeneratorBase
 
 		/// Alias for a std::shared_ptr instantiated with the GeneratorBase class
-	TYPEDEF_SHARED(GeneratorBase);
+	OCAE_TYPEDEF_SHARED(GeneratorBase);
 } // namespace Generator
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __GENERATORBASE_HPP
+#endif // __OCAE_GENERATORBASE_HPP

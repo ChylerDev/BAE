@@ -165,7 +165,7 @@ namespace Sound
 	}; // class Block
 
 		/// Alias for std::shared_ptr instantiated with Block.
-	TYPEDEF_SHARED(Block);
+	OCAE_TYPEDEF_SHARED(Block);
 } // namespace Sound
 } // namespace OCAE
 

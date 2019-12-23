@@ -39,12 +39,18 @@ namespace Modifier
 
 		// Members              ///////////////////////
 
+			/// Tracking variable
+		Math_t m_AU;
+			/// Tracking variable
+		Math_t m_BU;
 			/// Tracking variables
-		Math_t m_AU, m_BU;
-			/// Tracking variables
-		Math_t m_AD, m_BD;
-			/// Previous samples
-		StereoData m_X1, m_Y1;
+		Math_t m_AD;
+			/// Tracking variable
+		Math_t m_BD;
+			/// Previous sample
+		StereoData m_X1;
+			/// Previous sample
+		StereoData m_Y1;
 
 	public:
 
@@ -66,7 +72,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		EnvelopeFollower(EnvelopeFollower && other) noexcept = default;
+		EnvelopeFollower(EnvelopeFollower && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -98,7 +104,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		EnvelopeFollower & operator=(EnvelopeFollower && rhs) noexcept = default;
+		EnvelopeFollower & operator=(EnvelopeFollower && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -160,7 +166,7 @@ namespace Modifier
 	}; // class EnvelopeFollower
 
 		/// Alias for a std::shared_ptr instantiated with the ModifierBase class
-	TYPEDEF_SHARED(EnvelopeFollower);
+	OCAE_TYPEDEF_SHARED(EnvelopeFollower);
 } // namespace Modifier
 } // namespace OCAE
 

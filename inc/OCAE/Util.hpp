@@ -26,22 +26,62 @@
 
 namespace OCAE
 {
+	/*! ************************************************************************
+	\brief
+		Returns the left audio sample from a stereo data pair.
+
+	\param s
+		The stereo audio sample.
+
+	\return
+		The left audio sample.
+	***************************************************************************/
 	constexpr SampleType & Left(StereoData& s)
 	{
 		return std::get<0>(s);
 	}
 
-	constexpr SampleType const& Left(StereoData const& s)
+	/*! ************************************************************************
+	\brief
+		Returns the left audio sample from a stereo data pair.
+
+	\param s
+		The stereo audio sample.
+
+	\return
+		The left audio sample.
+	***************************************************************************/
+	constexpr SampleType const & Left(StereoData const & s)
 	{
 		return std::get<0>(s);
 	}
 
+	/*! ************************************************************************
+	\brief
+		Returns the right audio sample from a stereo data pair.
+
+	\param s
+		The stereo audio sample.
+
+	\return
+		The right audio sample.
+	***************************************************************************/
 	constexpr SampleType & Right(StereoData& s)
 	{
 		return std::get<1>(s);
 	}
 
-	constexpr SampleType const& Right(StereoData const& s)
+	/*! ************************************************************************
+	\brief
+		Returns the right audio sample from a stereo data pair.
+
+	\param s
+		The stereo audio sample.
+
+	\return
+		The right audio sample.
+	***************************************************************************/
+	constexpr SampleType const & Right(StereoData const & s)
 	{
 		return std::get<1>(s);
 	}

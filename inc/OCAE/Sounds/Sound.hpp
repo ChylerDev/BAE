@@ -34,13 +34,13 @@ namespace Sound
 {
 	class Sound;
 		/// Forwarded alias of std::shared_ptr instantiated with Sound.
-	TYPEDEF_SHARED(Sound);
+	OCAE_TYPEDEF_SHARED(Sound);
 }
 namespace Core
 {
 	class Driver;
 		/// Forwarded alias of std::shared_ptr instantiated with Driver.
-	TYPEDEF_SHARED(Driver);
+	OCAE_TYPEDEF_SHARED(Driver);
 }
 }
 
@@ -97,14 +97,14 @@ namespace Sound
 				E_Block(BlockPtr const & b);
 
 				E_Block(E_Block const & other) = default;     ///< Default copy constructor. \param other The object being copied.
-				E_Block(E_Block && other) noexcept = default; ///< Default move constructor. \param other The object being moved.
+				E_Block(E_Block && other) = default; ///< Default move constructor. \param other The object being moved.
 				~E_Block() = default;                         ///< Default destructor.
 
 				E_Block & operator=(E_Block const & rhs) = default;     ///< Default copy assignment operator. \param rhs The object being copied. \return *this.
-				E_Block & operator=(E_Block && rhs) noexcept = default; ///< Default move assignment operator. \param rhs The object being moved. \return *this.
+				E_Block & operator=(E_Block && rhs) = default; ///< Default move assignment operator. \param rhs The object being moved. \return *this.
 			};
 				/// Alias for std::shared_ptr instantiated with E_Block.
-			TYPEDEF_SHARED(E_Block);
+			OCAE_TYPEDEF_SHARED(E_Block);
 
 				/// The input blocks for this edge
 			std::deque<E_BlockPtr> inputs;
@@ -148,7 +148,7 @@ namespace Sound
 			void PrimeInput(StereoData in);
 		};
 			/// Alias for std::shared_ptr instantiated with Edge.
-		TYPEDEF_SHARED(Edge);
+		OCAE_TYPEDEF_SHARED(Edge);
 
 			/// Alias for the structure that represents the graph blocks that make up this Sound.
 		using Graph = std::deque< EdgePtr >;
@@ -192,7 +192,7 @@ namespace Sound
 		\param output_gain
 			The gain for the output samples.
 		***********************************************************************/
-		Sound(Math_t input_gain = Math_t(1.0), Math_t output_gain = DEFAULT_GAIN);
+		Sound(Math_t input_gain = Math_t(1.0), Math_t output_gain = OCAE_DEFAULT_GAIN);
 
 		/*! ********************************************************************
 		\brief

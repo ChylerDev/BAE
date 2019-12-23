@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __WAV_HPP
-#define __WAV_HPP
+#ifndef __OCAE_WAV_HPP
+#define __OCAE_WAV_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -69,7 +69,7 @@ namespace Generator
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		WAV(WAV && other) noexcept = default;
+		WAV(WAV && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -101,7 +101,7 @@ namespace Generator
 		\return
 			*this.
 		***********************************************************************/
-		WAV & operator=(WAV && rhs) noexcept = default;
+		WAV & operator=(WAV && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -215,10 +215,10 @@ namespace Generator
 	}; // class WAV
 
 		/// Alias for a std::shared_ptr instantiated with the WAV class
-	TYPEDEF_SHARED(WAV);
+	OCAE_TYPEDEF_SHARED(WAV);
 } // namespace Generator
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __WAV_HPP
+#endif // __OCAE_WAV_HPP

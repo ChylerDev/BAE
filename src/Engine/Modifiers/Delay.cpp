@@ -69,7 +69,7 @@ namespace Modifier
 						SetDelay(
 							std::get<0>(
 								*reinterpret_cast<
-									std::tuple<METHOD_PARAM_T(uint64_t)>*
+									std::tuple<OCAE_METHOD_PARAM_T(uint64_t)>*
 								>(p)
 							)
 						);
@@ -82,7 +82,7 @@ namespace Modifier
 					[this](void * p){
 						std::get<0>(
 							*reinterpret_cast<
-								std::tuple<METHOD_RET_T(uint64_t)>*
+								std::tuple<OCAE_METHOD_RET_T(uint64_t)>*
 							>(p)
 						) = GetDelay();
 					}

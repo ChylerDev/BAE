@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __RESAMPLER_HPP
-#define __RESAMPLER_HPP
+#ifndef __OCAE_RESAMPLER_HPP
+#define __OCAE_RESAMPLER_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -116,10 +116,10 @@ namespace Tools
 	}; // class Resampler
 
 		/// Alias for a std::shared_ptr instantiated with the Resampler class
-	TYPEDEF_SHARED(Resampler);
+	OCAE_TYPEDEF_SHARED(Resampler);
 } // namespace Tools
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __RESAMPLER_HPP
+#endif // __OCAE_RESAMPLER_HPP

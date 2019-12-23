@@ -75,7 +75,7 @@ namespace Generator
 			std::vector<char> temp;
 
 			l_file.seekg(0, std::ios::end);
-			temp.reserve(l_file.tellg());
+			temp.reserve(size_t(l_file.tellg()));
 			l_file.seekg(0, std::ios::beg);
 
 			std::cout << "Loading file...\n";
@@ -136,7 +136,7 @@ namespace Generator
 				if(header->ChannelCount == 1)
 				{
 					Left(sample) = Right(sample) =
-						SampleType(((*data) << 8) * SQRT_HALF)/SampleType(0x8000);
+						SampleType(((*data) << 8) * OCAE_SQRT_HALF)/SampleType(0x8000);
 				}
 				else
 				{
@@ -150,7 +150,7 @@ namespace Generator
 				if(header->ChannelCount == 1)
 				{
 					Left(sample) = Right(sample) =
-						SampleType((*rdata) * SQRT_HALF)/SampleType(0x8000);
+						SampleType((*rdata) * OCAE_SQRT_HALF)/SampleType(0x8000);
 				}
 				else
 				{
@@ -178,7 +178,7 @@ namespace Generator
 						ReadFile(
 							std::get<0>(
 								*reinterpret_cast<
-									std::tuple<METHOD_PARAM_T(std::string)>*
+									std::tuple<OCAE_METHOD_PARAM_T(std::string)>*
 								>(p)
 							)
 						);

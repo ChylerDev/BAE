@@ -67,7 +67,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		LowPass(LowPass && other) noexcept = default;
+		LowPass(LowPass && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -99,7 +99,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		LowPass & operator=(LowPass && rhs) noexcept = default;
+		LowPass & operator=(LowPass && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -187,7 +187,7 @@ namespace Modifier
 	}; // class LowPass
 
 		/// Alias for a std::shared_ptr instantiated with the LowPass class
-	TYPEDEF_SHARED(LowPass);
+	OCAE_TYPEDEF_SHARED(LowPass);
 } // namespace Modifier
 } // namespace OCAE
 

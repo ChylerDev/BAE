@@ -38,13 +38,35 @@ namespace Generator
 
 		// Members              ///////////////////////
 
-		Math_t irate;
-		SampleType y1, y2;
-		Math_t beta;
+			/// Value storing the non-integer index increment value
+		Math_t m_A;
+			/// The current index in the wave table to access
+		Math_t m_Index;
+
+		static Math_t s_Table[OCAE_SAMPLE_RATE/10];
+		static int dummy;
 
 	public:
 
 		// Con-/De- structors   ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Copy constructor. Deleted.
+
+		\param other
+			The other object to be copied.
+		***********************************************************************/
+		Sine(Sine const & other) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The other object to be moved.
+		***********************************************************************/
+		Sine(Sine && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -54,20 +76,31 @@ namespace Generator
 
 		// Operators            ///////////////////////
 
-		// Accossors/Mutators   ///////////////////////
+		/*! ********************************************************************
+		\brief
+			Copy assignment operator. Deleted.
 
-		// Functions            ///////////////////////
+		\param rhs
+			The object to be copied.
+
+		\return
+			*this.
+		***********************************************************************/
+		Sine & operator=(Sine const & rhs) = delete;
 
 		/*! ********************************************************************
 		\brief
-			Sends a single sample to Core::Driver for output to the OS.
+			Default move assignment operator.
+
+		\param rhs
+			The object to be moved.
 
 		\return
-			The stereo sample data.
+			*this.
 		***********************************************************************/
-		virtual StereoData SendSample(void);
+		Sine & operator=(Sine && rhs) = default;
 
-		virtual bool IsBase() { return false; };
+		// Accossors/Mutators   ///////////////////////
 
 		/*! ********************************************************************
 		\brief
@@ -78,6 +111,37 @@ namespace Generator
 		***********************************************************************/
 		void SetFrequency(Math_t freq);
 
+		/*! ********************************************************************
+		\brief
+			Gets the current frequency.
+
+		\return
+			The frequency of the generator.
+		***********************************************************************/
+		Math_t GetFrequency() const;
+
+		// Functions            ///////////////////////
+
+		OCAE_TODO("Fix this doc")
+		/*! ********************************************************************
+		\brief
+			Sends a single sample to Core::Driver for output to the OS.
+
+		\return
+			The stereo sample data.
+		***********************************************************************/
+		virtual StereoData SendSample(void);
+
+		/*! ********************************************************************
+		\brief
+			Returns boolean for if the object is a GeneratorBase or not.
+
+		\return
+			False.
+		***********************************************************************/
+		virtual bool IsBase() { return false; };
+
+			/// Add the factory as a friend so it can construct Sine objects
 		friend class GeneratorFactory;
 
 	protected:
@@ -94,16 +158,27 @@ namespace Generator
 
 		// Functions                  ///////////////////////
 
-		virtual Tools::MethodTable::MethodList_t CreateMethodList();
-
 		/*! ********************************************************************
 		\brief
-			Sets all the coefficients for calculating samples.
-		***********************************************************************/
-		void Reset(void);
+			Creates a vector containing the names of functions, and the callable
+			functions themselves.
 
+			See Tools::MethodTable documentation on more info about this system.
+
+		\return
+			The vector containing callable functions and their names as strings.
+		***********************************************************************/
+		virtual Tools::MethodTable::MethodList_t CreateMethodList();
+
+	private:
+
+		// Functions                  ///////////////////////
+
+		static int SetupWaveTable();
 	}; // class Sine
-	TYPEDEF_SHARED(Sine);
+
+		/// Alias for a std::shared_ptr instantiated with the Sine class
+	OCAE_TYPEDEF_SHARED(Sine);
 } // namespace Generator
 } // namespace OCAE
 

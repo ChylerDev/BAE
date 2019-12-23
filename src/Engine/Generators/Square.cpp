@@ -32,7 +32,7 @@ namespace OCAE
 namespace Generator
 {
 	Square::Square(Math_t f) : GeneratorBase(),
-		m_Ind(0), m_Inv(SAMPLE_RATE/(2*f))
+		m_Ind(0), m_Inv(OCAE_SAMPLE_RATE/(2*f))
 	{
 		RegisterMethods(CreateMethodList());
 	}
@@ -53,12 +53,17 @@ namespace Generator
 
 		++m_Ind;
 
-		return MONO_TO_STEREO(y);
+		return OCAE_MONO_TO_STEREO(y);
 	}
 
 	void Square::SetFrequency(Math_t f)
 	{
-		m_Inv = SAMPLE_RATE/(2*f);
+		m_Inv = OCAE_SAMPLE_RATE/(2*f);
+	}
+
+	Math_t Square::GetFrequency() const
+	{
+		return OCAE_SAMPLE_RATE/(2*m_Inv);
 	}
 
 	Tools::MethodTable::MethodList_t Square::CreateMethodList()
@@ -71,10 +76,22 @@ namespace Generator
 						SetFrequency(
 							std::get<0>(
 								*reinterpret_cast<
-									std::tuple<METHOD_PARAM_T(Math_t)>*
+									std::tuple<OCAE_METHOD_PARAM_T(Math_t)>*
 								>(f)
 							)
 						);
+					}
+				)
+			),
+			std::make_tuple(
+				std::string("GetFrequency"),
+				Tools::MethodTable::Void_fn(
+					[this](void * f){
+						std::get<0>(
+							*reinterpret_cast<
+								std::tuple<OCAE_METHOD_RET_T(Math_t)>*
+							>(f)
+						) = GetFrequency();
 					}
 				)
 			)

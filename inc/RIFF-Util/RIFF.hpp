@@ -144,7 +144,7 @@ namespace RIFF
     Writer(Writer const & other);
 
       /// Default move
-    Writer(Writer &&) noexcept = default;
+    Writer(Writer &&) = default;
 
       /// Default destructor
     virtual ~Writer();
@@ -161,7 +161,7 @@ namespace RIFF
     Writer & operator=(Writer const &);
 
       /// Default move-assign \return *this
-    Writer & operator=(Writer &&) noexcept = default;
+    Writer & operator=(Writer &&) = default;
 
     // Accossors/Mutators   ///////////////////////
 
@@ -306,7 +306,7 @@ namespace RIFF
     Reader(Reader const & other);
 
       /// Default move
-    Reader(Reader &&) noexcept = default;
+    Reader(Reader &&) = default;
 
       /// Default destructor
     virtual ~Reader();
@@ -323,7 +323,7 @@ namespace RIFF
     Reader & operator=(Reader const &);
 
       /// Default move-assign \return *this
-    Reader & operator=(Reader &&) noexcept = default;
+    Reader & operator=(Reader &&) = default;
 
     // Accossors/Mutators   ///////////////////////
 

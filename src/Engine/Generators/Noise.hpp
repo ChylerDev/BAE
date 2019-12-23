@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __NOISE_HPP
-#define __NOISE_HPP
+#ifndef __OCAE_NOISE_HPP
+#define __OCAE_NOISE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -41,9 +41,9 @@ namespace Generator
 		// Members              ///////////////////////
 
 			/// Distribution for random value generation
-		std::uniform_int_distribution<int16_t> m_Distribution;
+		std::uniform_real_distribution<float> m_Distribution;
 			/// Random value engine
-		std::default_random_engine m_Engine;
+		std::mt19937 m_Engine;
 
 	public:
 
@@ -65,7 +65,7 @@ namespace Generator
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Noise(Noise && other) noexcept = default;
+		Noise(Noise && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -97,7 +97,7 @@ namespace Generator
 		\return
 			*this.
 		***********************************************************************/
-		Noise & operator=(Noise && rhs) noexcept = default;
+		Noise & operator=(Noise && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -148,10 +148,10 @@ namespace Generator
 	}; // class Noise
 
 		/// Alias for a std::shared_ptr instantiated with the Noise class
-	TYPEDEF_SHARED(Noise);
+	OCAE_TYPEDEF_SHARED(Noise);
 } // namespace Generator
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __NOISE_HPP
+#endif // __OCAE_NOISE_HPP

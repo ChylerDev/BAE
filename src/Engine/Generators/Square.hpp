@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __SQUARE_HPP
-#define __SQUARE_HPP
+#ifndef __OCAE_SQUARE_HPP
+#define __OCAE_SQUARE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -63,7 +63,7 @@ namespace Generator
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Square(Square && other) noexcept = default;
+		Square(Square && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -95,7 +95,7 @@ namespace Generator
 		\return
 			*this.
 		***********************************************************************/
-		Square & operator=(Square && rhs) noexcept = default;
+		Square & operator=(Square && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -128,6 +128,15 @@ namespace Generator
 		***********************************************************************/
 		void SetFrequency(Math_t freq);
 
+		/*! ********************************************************************
+		\brief
+			Gets the frequency.
+
+		\return
+			The frequency.
+		***********************************************************************/
+		Math_t GetFrequency() const;
+
 			/// Add the factory as a friend so it can construct Square objects
 		friend class GeneratorFactory;
 
@@ -159,10 +168,10 @@ namespace Generator
 	}; // class Square
 
 		/// Alias for a std::shared_ptr instantiated with the Square class
-	TYPEDEF_SHARED(Square);
+	OCAE_TYPEDEF_SHARED(Square);
 } // namespace Generator
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __SQUARE_HPP
+#endif // __OCAE_SQUARE_HPP

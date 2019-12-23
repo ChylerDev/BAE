@@ -82,7 +82,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		GenericFilter(GenericFilter && other) noexcept = default;
+		GenericFilter(GenericFilter && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -114,7 +114,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		GenericFilter & operator=(GenericFilter && rhs) noexcept = default;
+		GenericFilter & operator=(GenericFilter && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -177,7 +177,7 @@ namespace Modifier
 	}; // class GenericFilter
 
 		/// Alias for a std::shared_ptr instantiated with the GenericFilter class
-	TYPEDEF_SHARED(GenericFilter);
+	OCAE_TYPEDEF_SHARED(GenericFilter);
 } // namespace Modifier
 } // namespace OCAE
 

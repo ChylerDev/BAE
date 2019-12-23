@@ -28,7 +28,7 @@ namespace Tools
 	Resampler::Resampler(std::vector<StereoData> const & AudioData,
 						 int32_t SourceSampleRate,
 						 uint64_t LoopStart, uint64_t LoopEnd) :
-		m_Data(AudioData), m_Index(0), m_IndexIncrement(SourceSampleRate*INC_RATE),
+		m_Data(AudioData), m_Index(0), m_IndexIncrement(SourceSampleRate*OCAE_INC_RATE),
 		m_PlaybackSpeed(1.0), m_LoopStart(LoopStart), m_LoopEnd(LoopEnd)
 	{
 	}
@@ -46,12 +46,25 @@ namespace Tools
 		}
 
 		SampleType fraction(SampleType(m_Index - Math_t(uint64_t(m_Index))));
+		StereoData p1;
+		if(uint64_t(m_Index) + 1 >= m_Data.size() && m_LoopEnd != 0)
+		{
+			p1 = m_Data[uint64_t(m_Index - Math_t(m_LoopEnd - m_LoopStart))];
+		}
+		else if(uint64_t(m_Index) + 1 >= m_Data.size())
+		{
+			p1 = m_Data[uint64_t(m_Index)];
+		}
+		else
+		{
+			p1 = m_Data[uint64_t(m_Index) + 1];
+		}
 
 		SampleType l_x1(Left(m_Data[uint64_t(m_Index)]));
-		SampleType l_x2(Left(m_Data[uint64_t(m_Index)+1]));
+		SampleType l_x2(Left(p1));
 
 		SampleType r_x1(Right(m_Data[uint64_t(m_Index)]));
-		SampleType r_x2(Right(m_Data[uint64_t(m_Index)+1]));
+		SampleType r_x2(Right(p1));
 
 		SampleType l(l_x1 + fraction * (l_x2 - l_x1));
 		SampleType r(r_x1 + fraction * (r_x2 - r_x1));

@@ -43,6 +43,9 @@ namespace Tools
 	\brief
 		Returns a const reference to string at the given index.
 
+	\param index
+		The argument index to retrieve.
+
 	\return
 		The string at the given index.
 	***************************************************************************/

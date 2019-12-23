@@ -1,5 +1,5 @@
 /*! ****************************************************************************
-\file             Sine.hpp
+\file             Square.hpp
 \author           Chyler Morrison
 \par    Email:    contact\@chyler.info
 \par    Project:  Audio Engine
@@ -38,7 +38,9 @@ namespace Generator
 
 		// Members              ///////////////////////
 
+			/// Current time value
 		Math_t m_Ind;
+			/// Point of inversion
 		Math_t m_Inv;
 
 	public:
@@ -47,11 +49,53 @@ namespace Generator
 
 		/*! ********************************************************************
 		\brief
+			Copy constructor. Deleted.
+
+		\param other
+			The other object to be copied.
+		***********************************************************************/
+		Square(Square const & other) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The other object to be moved.
+		***********************************************************************/
+		Square(Square && other) = default;
+
+		/*! ********************************************************************
+		\brief
 			Destructor.
 		***********************************************************************/
 		virtual ~Square() = default;
 
 		// Operators            ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Copy assignment operator. Deleted.
+
+		\param rhs
+			The object to be copied.
+
+		\return
+			*this.
+		***********************************************************************/
+		Square & operator=(Square const & rhs) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move assignment operator.
+
+		\param rhs
+			The object to be moved.
+
+		\return
+			*this.
+		***********************************************************************/
+		Square & operator=(Square && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -66,6 +110,13 @@ namespace Generator
 		***********************************************************************/
 		virtual StereoData SendSample(void);
 
+		/*! ********************************************************************
+		\brief
+			Returns boolean for if the object is a GeneratorBase or not.
+
+		\return
+			False.
+		***********************************************************************/
 		virtual bool IsBase() { return false; };
 
 		/*! ********************************************************************
@@ -77,6 +128,7 @@ namespace Generator
 		***********************************************************************/
 		void SetFrequency(Math_t freq);
 
+			/// Add the factory as a friend so it can construct Square objects
 		friend class GeneratorFactory;
 
 	private:
@@ -93,10 +145,21 @@ namespace Generator
 		***********************************************************************/
 		Square(Math_t freq);
 
-		virtual Tools::MethodTable::MethodList_t CreateMethodList();
+		/*! ********************************************************************
+		\brief
+			Creates a vector containing the names of functions, and the callable
+			functions themselves.
 
+			See Tools::MethodTable documentation on more info about this system.
+
+		\return
+			The vector containing callable functions and their names as strings.
+		***********************************************************************/
+		virtual Tools::MethodTable::MethodList_t CreateMethodList();
 	}; // class Square
-	TYPEDEF_SHARED(Square);
+
+		/// Alias for a std::shared_ptr instantiated with the Square class
+	OCAE_TYPEDEF_SHARED(Square);
 } // namespace Generator
 } // namespace OCAE
 

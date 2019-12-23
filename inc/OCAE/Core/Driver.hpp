@@ -66,10 +66,25 @@ namespace Core
 		\param gain
 			The linear gain to be used when summing all audio values.
 		***********************************************************************/
-		Driver(uint64_t track_size, Math_t gain = DEFAULT_GAIN);
+		Driver(uint64_t track_size, Math_t gain = OCAE_DEFAULT_GAIN);
 
-		Driver(Driver const &) = default;       ///< Default copy constructor
-		Driver(Driver &&) noexcept = default;   ///< Default move constructor
+		/*! ********************************************************************
+		\brief
+			Default copy constructor.
+
+		\param other
+			The object to copy.
+		***********************************************************************/
+		Driver(Driver const & other) = default;
+
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The object to move.
+		***********************************************************************/
+		Driver(Driver && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -79,8 +94,29 @@ namespace Core
 
 		// Operators            ///////////////////////
 
-		Driver & operator=(Driver const &) = default;       ///< Default copy-assignment operator
-		Driver & operator=(Driver &&) noexcept = default;   ///< Default move-assignment operator
+		/*! ********************************************************************
+		\brief
+			Default copy-assignment operator.
+
+		\param rhs
+			The object to copy.
+
+		\return
+			*this.
+		***********************************************************************/
+		Driver & operator=(Driver const & rhs) = default;
+
+		/*! ********************************************************************
+		\brief
+			Default move-assignment operator.
+
+		\param rhs
+			The object to move.
+
+		\return
+			*this.
+		***********************************************************************/
+		Driver & operator=(Driver && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -115,7 +151,7 @@ namespace Core
 		\param gain
 			The linear gain value to be set.
 		***********************************************************************/
-		void SetGain(Math_t gain = DEFAULT_GAIN);
+		void SetGain(Math_t gain = OCAE_DEFAULT_GAIN);
 
 		/*! ********************************************************************
 		\brief
@@ -153,7 +189,7 @@ namespace Core
 	}; // class Driver
 
 		/// Typedef for a std::shared_ptr instantiated with the Driver class
-	TYPEDEF_SHARED(Driver);
+	OCAE_TYPEDEF_SHARED(Driver);
 } // namespace Core
 } // namespace OCAE
 

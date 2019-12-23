@@ -39,6 +39,7 @@ namespace Modifier
 {
 	/*! ************************************************************************
 	\brief
+		Bandpass filter.
 	***************************************************************************/
 	class BandPass : public ModifierBase
 	{
@@ -85,7 +86,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		BandPass(BandPass && other) noexcept = default;
+		BandPass(BandPass && other) = default;
 
 		virtual ~BandPass();	///< Default destructor.
 
@@ -113,7 +114,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		BandPass & operator=(BandPass && rhs) noexcept = default;
+		BandPass & operator=(BandPass && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -165,7 +166,7 @@ namespace Modifier
 		\return
 			The filtered sample.
 		***********************************************************************/
-		virtual StereoData FilterSample(StereoData const & x);
+		virtual StereoData FilterSample(StereoData const & input);
 
 		/*! ********************************************************************
 		\brief
@@ -220,7 +221,7 @@ namespace Modifier
 	}; // class BandPass
 
 		/// Alias for a std::shared_ptr instantiated with the BandPass class
-	TYPEDEF_SHARED(BandPass);
+	OCAE_TYPEDEF_SHARED(BandPass);
 } // namespace Modifier
 } // namespace OCAE
 

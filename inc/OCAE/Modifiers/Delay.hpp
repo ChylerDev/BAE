@@ -65,7 +65,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Delay(Delay && other) noexcept = default;
+		Delay(Delay && other) = default;
 
 		virtual ~Delay() = default;
 
@@ -93,7 +93,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		Delay & operator=(Delay && rhs) noexcept = default;
+		Delay & operator=(Delay && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -172,7 +172,7 @@ namespace Modifier
 	}; // class Delay
 
 		/// Alias for a std::shared_ptr instantiated with the Delay class
-	TYPEDEF_SHARED(Delay);
+	OCAE_TYPEDEF_SHARED(Delay);
 } // namespace Modifier
 } // namespace OCAE
 

@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __DELAY_HPP
-#define __DELAY_HPP
+#ifndef __OCAE_DELAY_HPP
+#define __OCAE_DELAY_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -65,7 +65,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Delay(Delay && other) noexcept = default;
+		Delay(Delay && other) = default;
 
 		virtual ~Delay() = default;
 
@@ -93,7 +93,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		Delay & operator=(Delay && rhs) noexcept = default;
+		Delay & operator=(Delay && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -172,10 +172,10 @@ namespace Modifier
 	}; // class Delay
 
 		/// Alias for a std::shared_ptr instantiated with the Delay class
-	TYPEDEF_SHARED(Delay);
+	OCAE_TYPEDEF_SHARED(Delay);
 } // namespace Modifier
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __DELAY_HPP
+#endif // __OCAE_DELAY_HPP

@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __TRIANGLE_HPP
-#define __TRIANGLE_HPP
+#ifndef __OCAE_TRIANGLE_HPP
+#define __OCAE_TRIANGLE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -63,7 +63,7 @@ namespace Generator
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Triangle(Triangle && other) noexcept = default;
+		Triangle(Triangle && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -95,7 +95,7 @@ namespace Generator
 		\return
 			*this.
 		***********************************************************************/
-		Triangle & operator=(Triangle && rhs) noexcept = default;
+		Triangle & operator=(Triangle && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -107,6 +107,15 @@ namespace Generator
 			The new frequency.
 		***********************************************************************/
 		void SetFrequency(Math_t freq);
+
+		/*! ********************************************************************
+		\brief
+			Gets a frequency.
+
+		\return
+			The frequency.
+		***********************************************************************/
+		Math_t GetFrequency() const;
 
 		// Functions            ///////////////////////
 
@@ -156,10 +165,10 @@ namespace Generator
 	}; // class Triangle
 
 		/// Alias for a std::shared_ptr instantiated with the Triangle class
-	TYPEDEF_SHARED(Triangle);
+	OCAE_TYPEDEF_SHARED(Triangle);
 } // namespace Generator
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __TRIANGLE_HPP
+#endif // __OCAE_TRIANGLE_HPP

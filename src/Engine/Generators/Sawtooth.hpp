@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __SAWTOOTH_HPP
-#define __SAWTOOTH_HPP
+#ifndef __OCAE_SAWTOOTH_HPP
+#define __OCAE_SAWTOOTH_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -63,7 +63,7 @@ namespace Generator
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Sawtooth(Sawtooth && other) noexcept = default;
+		Sawtooth(Sawtooth && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -95,7 +95,7 @@ namespace Generator
 		\return
 			*this.
 		***********************************************************************/
-		Sawtooth & operator=(Sawtooth && rhs) noexcept = default;
+		Sawtooth & operator=(Sawtooth && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -108,11 +108,20 @@ namespace Generator
 		***********************************************************************/
 		void SetFrequency(Math_t freq);
 
+		/*! ********************************************************************
+		\brief
+			Gets the current frequency.
+
+		\return
+			The current frequency.
+		***********************************************************************/
+		Math_t GetFrequency() const;
+
 		// Functions            ///////////////////////
 
 		/*! ********************************************************************
 		\brief
-			Calculates the sample. For the base class this is simply 0.
+			Processes and returns the next sample.
 
 		\return
 			The stereo sample data.
@@ -158,10 +167,10 @@ namespace Generator
 	}; // class Sawtooth
 
 		/// Alias for a std::shared_ptr instantiated with the Sawtooth class
-	TYPEDEF_SHARED(Sawtooth);
+	OCAE_TYPEDEF_SHARED(Sawtooth);
 } // namespace Generator
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __SAWTOOTH_HPP
+#endif // __OCAE_SAWTOOTH_HPP

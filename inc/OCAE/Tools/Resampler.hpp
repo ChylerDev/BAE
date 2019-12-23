@@ -31,6 +31,8 @@ namespace Tools
 {
 	/*! ************************************************************************
 	\brief
+		Class for taking audio data of one sampling rate and translating it to
+		another sampling rate.
 	***************************************************************************/
 	class Resampler
 	{
@@ -114,7 +116,7 @@ namespace Tools
 	}; // class Resampler
 
 		/// Alias for a std::shared_ptr instantiated with the Resampler class
-	TYPEDEF_SHARED(Resampler);
+	OCAE_TYPEDEF_SHARED(Resampler);
 } // namespace Tools
 } // namespace OCAE
 
