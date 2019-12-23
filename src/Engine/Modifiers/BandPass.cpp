@@ -64,7 +64,7 @@ namespace Modifier
 		Reset();
 	}
 
-	StereoData BandPass::FilterSample(StereoData const & x)
+	StereoData BandPass::Process(StereoData const & x)
 	{
 		StereoData y;
 
@@ -94,7 +94,13 @@ namespace Modifier
 				std::string("SetFrequency"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						SetFrequency(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+						SetFrequency(
+							std::get<0>(
+								*reinterpret_cast<
+									std::tuple<OCAE_METHOD_PARAM_T(Math_t)>*
+								>(p)
+							)
+						);
 					}
 				)
 			),
@@ -102,7 +108,11 @@ namespace Modifier
 				std::string("GetFrequency"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						std::get<0>(*reinterpret_cast<std::tuple<Math_t &>*>(p)) = GetFrequency();
+						std::get<0>(
+							*reinterpret_cast<
+								std::tuple<OCAE_METHOD_RET_T(Math_t)>*
+							>(p)
+						) = GetFrequency();
 					}
 				)
 			),
@@ -110,7 +120,13 @@ namespace Modifier
 				std::string("SetQuality"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						SetQuality(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+						SetQuality(
+							std::get<0>(
+								*reinterpret_cast<
+									std::tuple<OCAE_METHOD_PARAM_T(Math_t)>*
+								>(p)
+							)
+						);
 					}
 				)
 			),
@@ -118,7 +134,11 @@ namespace Modifier
 				std::string("GetQuality"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						std::get<0>(*reinterpret_cast<std::tuple<Math_t &>*>(p)) = GetQuality();
+						std::get<0>(
+							*reinterpret_cast<
+								std::tuple<OCAE_METHOD_RET_T(Math_t)>*
+							>(p)
+						) = GetQuality();
 					}
 				)
 			)
@@ -143,8 +163,8 @@ namespace Modifier
 
 		Math_t thetaL, thetaH, aL, aH, bL, bH;
 
-		thetaL = std::tan(PI*fL*INC_RATE);
-		thetaH = std::tan(PI*fH*INC_RATE);
+		thetaL = std::tan(OCAE_PI*fL*OCAE_INC_RATE);
+		thetaH = std::tan(OCAE_PI*fH*OCAE_INC_RATE);
 
 		aL = 1 / (1+thetaL);
 		aH = 1 / (1+thetaH);

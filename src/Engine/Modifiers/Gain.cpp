@@ -40,7 +40,7 @@ namespace Modifier
 		return m_Gain;
 	}
 
-	StereoData Gain::FilterSample(StereoData const & input)
+	StereoData Gain::Process(StereoData const & input)
 	{
 		return StereoData(SampleType(Math_t( Left(input)) * m_Gain),
 						  SampleType(Math_t(Right(input)) * m_Gain));
@@ -53,7 +53,13 @@ namespace Modifier
 				std::string("SetGain"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						SetGain(std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)));
+						SetGain(
+							std::get<0>(
+								*reinterpret_cast<
+									std::tuple<OCAE_METHOD_PARAM_T(Math_t)>*
+								>(p)
+							)
+						);
 					}
 				)
 			),
@@ -61,7 +67,11 @@ namespace Modifier
 				std::string("GetGain"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						std::get<0>(*reinterpret_cast<std::tuple<Math_t>*>(p)) = GetGain();
+						std::get<0>(
+							*reinterpret_cast<
+								std::tuple<OCAE_METHOD_RET_T(Math_t)>*
+							>(p)
+						) = GetGain();
 					}
 				)
 			)

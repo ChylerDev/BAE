@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __GENERIC_FILTER_HPP
-#define __GENERIC_FILTER_HPP
+#ifndef __OCAE_GENERIC_FILTER_HPP
+#define __OCAE_GENERIC_FILTER_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -82,7 +82,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		GenericFilter(GenericFilter && other) noexcept = default;
+		GenericFilter(GenericFilter && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -114,7 +114,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		GenericFilter & operator=(GenericFilter && rhs) noexcept = default;
+		GenericFilter & operator=(GenericFilter && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -130,7 +130,7 @@ namespace Modifier
 		\return
 			The filtered sample.
 		***********************************************************************/
-		virtual StereoData FilterSample(StereoData const & input);
+		virtual StereoData Process(StereoData const & input);
 
 		/*! ********************************************************************
 		\brief
@@ -177,10 +177,10 @@ namespace Modifier
 	}; // class GenericFilter
 
 		/// Alias for a std::shared_ptr instantiated with the GenericFilter class
-	TYPEDEF_SHARED(GenericFilter);
+	OCAE_TYPEDEF_SHARED(GenericFilter);
 } // namespace Modifier
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __GENERIC_FILTER_HPP
+#endif // __OCAE_GENERIC_FILTER_HPP

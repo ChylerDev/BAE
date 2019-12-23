@@ -68,13 +68,13 @@ namespace Modifier
 		return m_BandGains[band];
 	}
 
-	StereoData Equalizer::FilterSample(StereoData const & input)
+	StereoData Equalizer::Process(StereoData const & input)
 	{
 		StereoData output;
 
 		for(uint32_t i = 0; i < uint32_t(m_Bands.size()); ++i)
 		{
-			StereoData band_out = m_Bands[i]->FilterSample(input);
+			StereoData band_out = m_Bands[i]->Process(input);
 
 			Left(output) += SampleType(m_BandGains[i] * Math_t(Left(band_out)));
 			Right(output) += SampleType(m_BandGains[i] * Math_t(Right(band_out)));
@@ -98,7 +98,12 @@ namespace Modifier
 				std::string("SetGain"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						auto t = *reinterpret_cast<std::tuple<uint32_t, Math_t>*>(p);
+						auto t = *reinterpret_cast<
+							std::tuple<
+								OCAE_METHOD_PARAM_T(uint32_t),
+								OCAE_METHOD_PARAM_T(Math_t)
+							>*
+						>(p);
 						SetGain(std::get<0>(t), std::get<1>(t));
 					}
 				)
@@ -107,7 +112,12 @@ namespace Modifier
 				std::string("GetGain"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						auto t = *reinterpret_cast<std::tuple<Math_t &, uint32_t>*>(p);
+						auto t = *reinterpret_cast<
+							std::tuple<
+								OCAE_METHOD_RET_T(Math_t),
+								OCAE_METHOD_PARAM_T(uint32_t)
+							>*
+						>(p);
 						std::get<0>(t) = GetGain(std::get<1>(t));
 					}
 				)

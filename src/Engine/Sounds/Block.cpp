@@ -36,7 +36,7 @@ namespace Sound
 		m_Generator(gen),
 		m_Modifier(mod),
 		m_Interaction(interactor),
-		m_Input(), m_Output()
+		m_Input()
 	{
 	}
 
@@ -60,19 +60,12 @@ namespace Sound
 		return m_Modifier;
 	}
 
-	void Block::PrimeInput(StereoData in)
+	StereoData Block::Process()
 	{
-		m_Input = in;
-	}
+		StereoData out = m_Interaction(m_Generator->Process(), m_Modifier->Process(m_Input));
+		m_Input = StereoData();
 
-	StereoData Block::LastOutput()
-	{
-		return m_Output;
-	}
-
-	void Block::Process()
-	{
-		m_Output = m_Interaction(m_Generator->SendSample(), m_Modifier->FilterSample(m_Input));
+		return out;
 	}
 } // namespace Sound
 } // namespace OCAE

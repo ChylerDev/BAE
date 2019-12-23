@@ -30,8 +30,8 @@ namespace Modifier
 	{
 		RegisterMethods(CreateMethodList());
 
-		double theta_u = std::tan(PI * fu * INC_RATE);
-		double theta_d = std::tan(PI * fd * INC_RATE);
+		double theta_u = std::tan(OCAE_PI * fu * OCAE_INC_RATE);
+		double theta_d = std::tan(OCAE_PI * fd * OCAE_INC_RATE);
 
 		m_AU = theta_u / (1+theta_u);
 		m_BU = (1-theta_u) / (1+theta_u);
@@ -43,7 +43,7 @@ namespace Modifier
 	{
 	}
 
-	StereoData EnvelopeFollower::FilterSample(StereoData const & x)
+	StereoData EnvelopeFollower::Process(StereoData const & x)
 	{
 		StereoData y;
 

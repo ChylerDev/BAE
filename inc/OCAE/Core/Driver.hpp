@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __DRIVER_HPP
-#define __DRIVER_HPP
+#ifndef __OCAE_DRIVER_HPP
+#define __OCAE_DRIVER_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -23,6 +23,15 @@
 // Public Macros                ////////////////////////////////////////////////
 
 // Forward References           ////////////////////////////////////////////////
+
+namespace OCAE
+{
+namespace Core
+{
+	class Driver;
+	OCAE_TYPEDEF_SHARED(Driver);
+}
+}
 
 // Public Enums                 ////////////////////////////////////////////////
 
@@ -58,18 +67,21 @@ namespace Core
 
 		/*! ********************************************************************
 		\brief
-			Constructs an audio driver object.
+			Default copy constructor.
 
-		\param track_size
-			The size of the output track in samples.
-
-		\param gain
-			The linear gain to be used when summing all audio values.
+		\param other
+			The object to copy.
 		***********************************************************************/
-		Driver(uint64_t track_size, Math_t gain = DEFAULT_GAIN);
+		Driver(Driver const & other) = default;
 
-		Driver(Driver const &) = default;       ///< Default copy constructor
-		Driver(Driver &&) noexcept = default;   ///< Default move constructor
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The object to move.
+		***********************************************************************/
+		Driver(Driver && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -79,8 +91,29 @@ namespace Core
 
 		// Operators            ///////////////////////
 
-		Driver & operator=(Driver const &) = default;       ///< Default copy-assignment operator
-		Driver & operator=(Driver &&) noexcept = default;   ///< Default move-assignment operator
+		/*! ********************************************************************
+		\brief
+			Default copy-assignment operator.
+
+		\param rhs
+			The object to copy.
+
+		\return
+			*this.
+		***********************************************************************/
+		Driver & operator=(Driver const & rhs) = default;
+
+		/*! ********************************************************************
+		\brief
+			Default move-assignment operator.
+
+		\param rhs
+			The object to move.
+
+		\return
+			*this.
+		***********************************************************************/
+		Driver & operator=(Driver && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -115,7 +148,7 @@ namespace Core
 		\param gain
 			The linear gain value to be set.
 		***********************************************************************/
-		void SetGain(Math_t gain = DEFAULT_GAIN);
+		void SetGain(Math_t gain = OCAE_DEFAULT_GAIN);
 
 		/*! ********************************************************************
 		\brief
@@ -132,15 +165,42 @@ namespace Core
 		/*! ********************************************************************
 		\brief
 			Processes audio and returns a track of the calculated samples.
-
-		\return
-			The calculated samples
 		***********************************************************************/
 		void Process();
+
+		/*! ********************************************************************
+		\brief
+			Constructs an audio driver object.
+
+		\param track_size
+			The size of the output track in samples.
+
+		\param gain
+			The linear gain to be used when summing all audio values.
+
+		\return
+			The shared pointer holding the Driver object.
+		***********************************************************************/
+		static DriverPtr Create(uint64_t track_size, Math_t gain = OCAE_DEFAULT_GAIN)
+		{
+			return DriverPtr(new Driver(track_size, gain));
+		};
 
 	private:
 
 		// Functions                  ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Constructs an audio driver object.
+
+		\param track_size
+			The size of the output track in samples.
+
+		\param gain
+			The linear gain to be used when summing all audio values.
+		***********************************************************************/
+		Driver(uint64_t track_size, Math_t gain = OCAE_DEFAULT_GAIN);
 
 		/*! ********************************************************************
 		\brief
@@ -150,14 +210,13 @@ namespace Core
 			The generated ID value.
 		***********************************************************************/
 		static uint64_t GetID();
-
 	}; // class Driver
 
 		/// Typedef for a std::shared_ptr instantiated with the Driver class
-	TYPEDEF_SHARED(Driver);
+	OCAE_TYPEDEF_SHARED(Driver);
 } // namespace Core
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __DRIVER_HPP
+#endif // __OCAE_DRIVER_HPP

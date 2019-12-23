@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __ENGINE_HPP
-#define __ENGINE_HPP
+#ifndef __OCAE_ENGINE_HPP
+#define __OCAE_ENGINE_HPP
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -27,4 +27,4 @@
 	#include "Tools.hpp"
 #endif
 
-#endif // __ENGINE_HPP
+#endif // __OCAE_ENGINE_HPP

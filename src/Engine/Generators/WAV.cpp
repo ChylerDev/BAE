@@ -75,7 +75,7 @@ namespace Generator
 			std::vector<char> temp;
 
 			l_file.seekg(0, std::ios::end);
-			temp.reserve(l_file.tellg());
+			temp.reserve(size_t(l_file.tellg()));
 			l_file.seekg(0, std::ios::beg);
 
 			std::cout << "Loading file...\n";
@@ -93,25 +93,13 @@ namespace Generator
 		ParseWAV(wav_data.data(), int(wav_data.size()));
 	}
 
-	StereoData WAV::SendSample()
+	StereoData WAV::Process()
 	{
 		if(m_Resampler)
 		{
-			return m_Resampler->SendSample();
+			return m_Resampler->Process();
 		}
 		return StereoData(SampleType(0), SampleType(0));
-	}
-
-	Tools::MethodTable::MethodList_t WAV::CreateMethodList()
-	{
-		return {
-			std::make_tuple(
-				std::string("ReadFile"),
-				Tools::MethodTable::Void_fn([this](void * p){
-					ReadFile(std::get<0>(*reinterpret_cast<std::tuple<std::string>*>(p)));
-				})
-			)
-		};
 	}
 
 	void WAV::ParseWAV(char const * array, int size)
@@ -148,7 +136,7 @@ namespace Generator
 				if(header->ChannelCount == 1)
 				{
 					Left(sample) = Right(sample) =
-						SampleType(((*data) << 8) * SQRT_HALF)/SampleType(0x8000);
+						SampleType(((*data) << 8) * OCAE_SQRT_HALF)/SampleType(0x8000);
 				}
 				else
 				{
@@ -162,7 +150,7 @@ namespace Generator
 				if(header->ChannelCount == 1)
 				{
 					Left(sample) = Right(sample) =
-						SampleType((*rdata) * SQRT_HALF)/SampleType(0x8000);
+						SampleType((*rdata) * OCAE_SQRT_HALF)/SampleType(0x8000);
 				}
 				else
 				{
@@ -178,6 +166,26 @@ namespace Generator
 		m_Resampler = std::make_shared<Tools::Resampler>(
 			AudioData, header->SamplingRate, 0, AudioData.size()-1
 		);
+	}
+
+	Tools::MethodTable::MethodList_t WAV::CreateMethodList()
+	{
+		return {
+			std::make_tuple(
+				std::string("ReadFile"),
+				Tools::MethodTable::Void_fn(
+					[this](void * p){
+						ReadFile(
+							std::get<0>(
+								*reinterpret_cast<
+									std::tuple<OCAE_METHOD_PARAM_T(std::string)>*
+								>(p)
+							)
+						);
+					}
+				)
+			)
+		};
 	}
 } // namespace Generator
 } // namespace OCAE

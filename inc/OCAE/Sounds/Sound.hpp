@@ -7,21 +7,17 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __SOUND_HPP
-#define __SOUND_HPP
+#ifndef __OCAE_SOUND_HPP
+#define __OCAE_SOUND_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
-#include <any>
 #include <deque>
 #include <map>
 #include <memory>
-#include <tuple>
-#include <vector>
 
 #include "../Engine.hpp"
 
-#include "Combinator.hpp"
 #include "Block.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
@@ -34,13 +30,19 @@ namespace Sound
 {
 	class Sound;
 		/// Forwarded alias of std::shared_ptr instantiated with Sound.
-	TYPEDEF_SHARED(Sound);
+	OCAE_TYPEDEF_SHARED(Sound);
 }
 namespace Core
 {
 	class Driver;
 		/// Forwarded alias of std::shared_ptr instantiated with Driver.
-	TYPEDEF_SHARED(Driver);
+	OCAE_TYPEDEF_SHARED(Driver);
+}
+namespace Modifier
+{
+	class Gain;
+		/// Forwarded alias of std::shared_ptr instantiated with Gain.
+	OCAE_TYPEDEF_SHARED(Gain);
 }
 }
 
@@ -60,98 +62,10 @@ namespace Sound
 	class Sound
 	{
 	public:
-		/*! ********************************************************************
-		\brief
-			Structure representing the edges of the graph that defines a Sound.
-		***********************************************************************/
-		struct Edge
-		{
-			/*! ****************************************************************
-			\brief
-				Structure to abstract away the node of the Sound graph, allowing
-				for sounds and blocks to make up a sound.
-			*******************************************************************/
-			struct E_Block
-			{
-					/// Wrapper around the Block or Sound to abstract it away.
-				std::any block;
-					/// Bool that states whether the block member is a Sound or Block.
-				bool const is_sound;
-
-				/*! ************************************************************
-				\brief
-					Constructs an E_Block from a Sound object.
-
-				\param s
-					The Sound object.
-				***************************************************************/
-				E_Block(SoundPtr const & s);
-
-				/*! ************************************************************
-				\brief
-					Constructs an E_Block from a Block obect.
-
-				\param b
-					The Block object.
-				***************************************************************/
-				E_Block(BlockPtr const & b);
-
-				E_Block(E_Block const & other) = default;     ///< Default copy constructor. \param other The object being copied.
-				E_Block(E_Block && other) noexcept = default; ///< Default move constructor. \param other The object being moved.
-				~E_Block() = default;                         ///< Default destructor.
-
-				E_Block & operator=(E_Block const & rhs) = default;     ///< Default copy assignment operator. \param rhs The object being copied. \return *this.
-				E_Block & operator=(E_Block && rhs) noexcept = default; ///< Default move assignment operator. \param rhs The object being moved. \return *this.
-			};
-				/// Alias for std::shared_ptr instantiated with E_Block.
-			TYPEDEF_SHARED(E_Block);
-
-				/// The input blocks for this edge
-			std::deque<E_BlockPtr> inputs;
-				/// The method of combining
-			Combinator combinator;
-				/// The output blocks for this edge
-			std::deque<E_BlockPtr> outputs;
-
-			/*! ****************************************************************
-			\brief
-				Constructs an Edge object from the given components.
-
-			\param in
-				The list of input blocks.
-
-			\param comb
-				The Combinator defining how the outputs of the processed inputs
-				should be defined.
-
-			\param out
-				The list of output blocks, whose inputs are primed with the
-				output of the Combinator.
-			*******************************************************************/
-			Edge(std::deque<E_BlockPtr> const & in,
-			     Combinator const & comb,
-			     std::deque<E_BlockPtr> const & out);
-
-			/*! ****************************************************************
-			\brief
-				Processes the edge.
-			*******************************************************************/
-			void Process();
-
-			/*! ****************************************************************
-			\brief
-				Primes the input of this edge.
-
-			\param in
-				The input sample.
-			*******************************************************************/
-			void PrimeInput(StereoData in);
-		};
-			/// Alias for std::shared_ptr instantiated with Edge.
-		TYPEDEF_SHARED(Edge);
-
+			/// Alias for a deque of BlockPtrs
+		using BlockList = std::deque<BlockPtr>;
 			/// Alias for the structure that represents the graph blocks that make up this Sound.
-		using Graph = std::deque< EdgePtr >;
+		using Graph = std::map<BlockPtr,BlockList>;
 
 	private:
 
@@ -159,16 +73,13 @@ namespace Sound
 
 			/// The graph of blocks
 		Graph m_Graph;
+			/// The order to process blocks in
+		BlockList m_ProcessOrder;
 
 			/// Input gain modifier.
-		Modifier::ModifierBasePtr m_InputGain;
+		BlockPtr m_InputGain;
 			/// Output gain modifier.
-		Modifier::ModifierBasePtr m_OutputGain;
-
-			/// Input sample
-		StereoData m_Input;
-			/// Output sample
-		StereoData m_Output;
+		BlockPtr m_OutputGain;
 
 			/// Driver the Sound is registered with
 		Core::DriverPtr m_Driver;
@@ -192,18 +103,16 @@ namespace Sound
 		\param output_gain
 			The gain for the output samples.
 		***********************************************************************/
-		Sound(Math_t input_gain = Math_t(1.0), Math_t output_gain = DEFAULT_GAIN);
+		Sound(Math_t input_gain = Math_t(1.0), Math_t output_gain = Math_t(1.0));
 
 		/*! ********************************************************************
 		\brief
-			Copy constructor.
-			NOTE: The contsructed sound will not be registered to a driver, even
-				  if the sound being copied is.
+			Deleted copy constructor.
 
 		\param other
-			The other sound being copied
+			The other sound being copied.
 		***********************************************************************/
-		Sound(Sound const & other);
+		Sound(Sound const & other) = delete;
 
 		/*! ********************************************************************
 		\brief
@@ -222,10 +131,7 @@ namespace Sound
 
 		/*! ********************************************************************
 		\brief
-			Copy assignment operator.
-			NOTE: The copied sound will not change it's registration. If it
-				  needs to be registered to a different driver, you must handle
-				  that yourself.
+			Deleted copy assignment operator.
 
 		\param rhs
 			The sound being copied.
@@ -233,7 +139,7 @@ namespace Sound
 		\return
 			*this.
 		***********************************************************************/
-		Sound & operator=(Sound const & rhs);
+		Sound & operator=(Sound const & rhs) = delete;
 
 		/*! ********************************************************************
 		\brief
@@ -254,23 +160,23 @@ namespace Sound
 
 		/*! ********************************************************************
 		\brief
-			Returns a reference to the internal graph for direct modification of
-			the structure.
+			Returns a reference to the input block for use of adding a
+			connection in the internal graph.
 
 		\return
-			A reference to the internal graph.
+			The input block.
 		***********************************************************************/
-		Graph & GetGraph();
+		BlockPtr const & GetInputBlock() const;
 
 		/*! ********************************************************************
 		\brief
-			Returns a reference to the internal graph for direct modification of
-			the structure.
+			Returns a reference to the output block for use of adding a
+			connection in the internal graph.
 
 		\return
-			A reference to the internal graph.
+			The output block.
 		***********************************************************************/
-		Graph const & GetGraph() const;
+		BlockPtr const & GetOutputBlock() const;
 
 		/*! ********************************************************************
 		\brief
@@ -302,80 +208,46 @@ namespace Sound
 		***********************************************************************/
 		void Unpause();
 
-		// Functions            ///////////////////////
+		/*! ********************************************************************
+		\brief
+			Adds a connection from the given blocks within the internal directed
+			graph.
+
+		\param from
+			The source of the connection.
+
+		\param to
+			The destination of the connection.
+		***********************************************************************/
+		void AddConnection(BlockPtr const & from, BlockPtr const & to);
 
 		/*! ********************************************************************
 		\brief
-			Primes the input for the next processing round.
+			Removes a connection from the given blocks within the internal
+			directed graph.
 
-		\param input
-			The input to be processed.
+		\param from
+			The source of the connection.
+
+		\param to
+			The destination of the connection.
 		***********************************************************************/
-		void PrimeInput(StereoData input);
+		void RemoveConnection(BlockPtr const & from, BlockPtr const & to);
+
+		// Functions            ///////////////////////
 
 		/*! ********************************************************************
 		\brief
 			Processes audio configured in the internal graph, storing the output
 			internally.
-		***********************************************************************/
-		void Process();
 
-		/*! ********************************************************************
-		\brief
-			Returns the output from the previous round of processing.
+		\param input
+			The input for the Sound.
 
 		\return
-			The most recent output sample.
+			The output of the Sound.
 		***********************************************************************/
-		StereoData LastOutput();
-
-		/*! ********************************************************************
-		\brief
-			Generates an Edge for the graph from the given lists of input
-			blocks, output blocks, and a Combinator defining how the blocks
-			should be combined.
-
-		\param in
-			List of input blocks.
-
-		\param comb
-			Combinator. See Combinator documentation for more info.
-
-		\param out
-			List of output blocks.
-
-		\return
-			The generated Edge object wrapped in a std::shared_ptr.
-		***********************************************************************/
-		static EdgePtr CreateEdge(std::deque<Edge::E_BlockPtr> const & in,
-		                          Combinator const & comb,
-		                          std::deque<Edge::E_BlockPtr> const & out);
-
-		/*! ********************************************************************
-		\brief
-			Creates an E_Block object from the given Sound.
-
-		\param sound
-			The Sound to be wrapped in an E_Block. Cannot be the same Sound
-			object as the object the E_Block is added to or else endless
-			recursion will occur.
-
-		\return
-			The new E_Block object wrapped in a std::shared_ptr.
-		***********************************************************************/
-		static Edge::E_BlockPtr CreateE_Block(SoundPtr const & sound);
-
-		/*! ********************************************************************
-		\brief
-			Creates an E_Block object from the given Block.
-
-		\param block
-			The Block to be wrapped in the E_Block.
-
-		\return
-			The new E_Block object wrapped in a std::shared_ptr.
-		***********************************************************************/
-		static Edge::E_BlockPtr CreateE_Block(BlockPtr const & block);
+		StereoData Process(StereoData input);
 
 		/*! ********************************************************************
 		\brief
@@ -406,15 +278,26 @@ namespace Sound
 
 		/*! ********************************************************************
 		\brief
-			Ensures that the internal graph contains only unique objects. If an
-			object is not unique, it will create a copy of the object.
+			Processes the order in which the graph will be traversed.
 		***********************************************************************/
-		void MakeUnique();
+		void ProcessOrder();
 
+		/*! ********************************************************************
+		\brief
+			Parses the given nodes of the graph to process the order the graph
+			will be traversed.
+
+		\param list
+			The ordered list to add nodes to.
+
+		\param out
+			The current list to parse.
+		***********************************************************************/
+		void PrepareGraph(BlockList const & list, BlockList & out);
 	}; // class Sound
 } // namespace Sound
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __SOUND_HPP
+#endif // __OCAE_SOUND_HPP

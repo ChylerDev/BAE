@@ -1,6 +1,5 @@
 build*/
-bin/*/
-bin/*.zip
+bin/
 
 \.vscode/
 target/

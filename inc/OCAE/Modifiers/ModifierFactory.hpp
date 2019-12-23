@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __MODIFIERFACTORY_HPP
-#define __MODIFIERFACTORY_HPP
+#ifndef __OCAE_MODIFIERFACTORY_HPP
+#define __OCAE_MODIFIERFACTORY_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -25,7 +25,25 @@ namespace OCAE
 namespace Modifier
 {
 	class ModifierBase;
-	TYPEDEF_SHARED(ModifierBase);
+	OCAE_TYPEDEF_SHARED(ModifierBase);
+	class ADSR;
+	OCAE_TYPEDEF_SHARED(ADSR);
+	class BandPass;
+	OCAE_TYPEDEF_SHARED(BandPass);
+	class Delay;
+	OCAE_TYPEDEF_SHARED(Delay);
+	class Echo;
+	OCAE_TYPEDEF_SHARED(Echo);
+	class EnvelopeFollower;
+	OCAE_TYPEDEF_SHARED(EnvelopeFollower);
+	class Equalizer;
+	OCAE_TYPEDEF_SHARED(Equalizer);
+	class Gain;
+	OCAE_TYPEDEF_SHARED(Gain);
+	class GenericFilter;
+	OCAE_TYPEDEF_SHARED(GenericFilter);
+	class LowPass;
+	OCAE_TYPEDEF_SHARED(LowPass);
 }
 }
 
@@ -85,7 +103,7 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateADSR(Math_t attack, Math_t decay, Math_t sustain, Math_t release);
+		static ADSRPtr CreateADSR(Math_t attack, Math_t decay, Math_t sustain, Math_t release);
 
 		/*! ********************************************************************
 		\brief
@@ -100,7 +118,7 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateBandPass(Math_t lower, Math_t upper);
+		static BandPassPtr CreateBandPass(Math_t lower, Math_t upper);
 
 		/*! ********************************************************************
 		\brief
@@ -112,7 +130,7 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateDelay(Math_t seconds);
+		static DelayPtr CreateDelay(Math_t seconds);
 
 		/*! ********************************************************************
 		\brief
@@ -128,7 +146,24 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateEcho(Math_t delay_seconds, Math_t decay_ratio);
+		static EchoPtr CreateEcho(Math_t delay_seconds, Math_t decay_ratio);
+
+		/*! ********************************************************************
+		\brief
+			Creates an envelope follower filter.
+
+		\param lower
+			The lower end of frequencies to follow. Defaults to 20Hz for normal
+			human hearing range.
+
+		\param upper
+			The upper end of frequencies to follow. Defaults to 20kHz for normal
+			human hearing range.
+
+		\return
+			The generated modifier object.
+		***********************************************************************/
+		static EnvelopeFollowerPtr CreateEnvelopeFollower(Math_t lower = Math_t(20), Math_t upper = Math_t(20000));
 
 		/*! ********************************************************************
 		\brief
@@ -146,24 +181,7 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateEqualizer(uint32_t band_count = 2, Math_t lower = 20, Math_t upper = 20000);
-
-		/*! ********************************************************************
-		\brief
-			Creates an envelope follower filter.
-
-		\param lower
-			The lower end of frequencies to follow. Defaults to 20Hz for normal
-			human hearing range.
-
-		\param upper
-			The upper end of frequencies to follow. Defaults to 20kHz for normal
-			human hearing range.
-
-		\return
-			The generated modifier object.
-		***********************************************************************/
-		static ModifierBasePtr CreateEnvelopeFollower(Math_t lower = Math_t(20), Math_t upper = Math_t(20000));
+		static EqualizerPtr CreateEqualizer(uint32_t band_count = 2, Math_t lower = 20, Math_t upper = 20000);
 
 		/*! ********************************************************************
 		\brief
@@ -175,7 +193,7 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateGain(Math_t gain = DEFAULT_GAIN);
+		static GainPtr CreateGain(Math_t gain = OCAE_DEFAULT_GAIN);
 
 		/*! ********************************************************************
 		\brief
@@ -190,8 +208,8 @@ namespace Modifier
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateGenericFilter(ZeroContainer const & zeros,
-												   PoleContainer const & poles);
+		static GenericFilterPtr CreateGenericFilter(ZeroContainer const & zeros,
+													PoleContainer const & poles);
 
 		/*! ********************************************************************
 		\brief
@@ -202,13 +220,13 @@ namespace Modifier
 
 		\param resonance
 			The resonance of the filter at the cutoff frequency. Should be in
-			the range of [0, 1/6], if the value is outside of this, it will be
+			the range of [0, 1], if the value is outside of this, it will be
 			clamped to the range. Defaults to 0 for no resonance
 
 		\return
 			The generated modifier object.
 		***********************************************************************/
-		static ModifierBasePtr CreateLowPass(Math_t cutoff, Math_t resonance = 0);
+		static LowPassPtr CreateLowPass(Math_t cutoff, Math_t resonance = 0);
 
 		/*! ********************************************************************
 		\brief
@@ -222,4 +240,4 @@ namespace Modifier
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __MODIFIERFACTORY_HPP
+#endif // __OCAE_MODIFIERFACTORY_HPP

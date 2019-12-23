@@ -9,230 +9,903 @@
 
 // Include Files                          //////////////////////////////////////
 
-#include <iostream>
-#include <fstream>
-#include <functional>
-#include <thread>
-#include <chrono>
+#include <cassert>
 
+#include <iomanip>
+#include <chrono>
+#include <iostream>
+#include <future>
+
+#include <RIFF-Util/RIFF.hpp>
+
+#include "../Engine/Macro.hpp"
 #include "../Engine/Engine.hpp"
-#include "../Engine/Tools/WAVHeader.hpp"
 
 using hrc = std::chrono::high_resolution_clock;
+using namespace OCAE;
+using VoidFn = void(*)(void);
+
+static hrc clk;
 
 // Private Macros                         //////////////////////////////////////
 
-#define EMPTY_FN [](uint64_t){}
-
 // Private Enums                          //////////////////////////////////////
+
+#define EQUALS(a,b) bool(double(std::abs(a-b)) < double(OCAE_EPSILON_F))
+
+// Private Functions                      //////////////////////////////////////
+
+static uint64_t totalSamples = 0;
+
+std::ostream & operator<<(std::ostream & o, StereoData const & s)
+{
+	o << '(' << Left(s) << ',' << Right(s) << ')';
+	return o;
+}
+
+//////////////// Tools ////////////////
+
+static void TestMethodTable(void)
+{
+	class MT : public Tools::MethodTable
+	{
+	public:
+		MT() { RegisterMethods(CreateMethodList()); };
+		virtual ~MT() {};
+
+		void OneParam(int i)
+		{
+			OCAE_UNREFERENCED_PARAMETER(i);
+			assert(i == 1);
+		};
+		int OneRet()
+		{
+			return 82;
+		};
+		int OneRetOneParam(int i)
+		{
+			OCAE_UNREFERENCED_PARAMETER(i);
+			assert(i == 2);
+			return 239;
+		};
+		void TwoParam(int i, double d)
+		{
+			OCAE_UNREFERENCED_PARAMETER(i);
+			assert(i == 3);
+			OCAE_UNREFERENCED_PARAMETER(d);
+			assert(EQUALS(d, 2.5));
+		};
+
+	protected:
+		MethodList_t CreateMethodList()
+		{
+			return {
+				std::make_tuple(
+					std::string("OneParam"),
+					Void_fn(
+						[this](void * p){
+							OneParam(std::get<0>(*reinterpret_cast<std::tuple<OCAE_METHOD_PARAM_T(int)>*>(p)));
+						}
+					)
+				),
+				std::make_tuple(
+					std::string("OneRet"),
+					Void_fn(
+						[this](void * p){
+							std::get<0>(*reinterpret_cast<std::tuple<OCAE_METHOD_RET_T(int)>*>(p)) = OneRet();
+						}
+					)
+				),
+				std::make_tuple(
+					std::string("OneRetOneParam"),
+					Void_fn(
+						[this](void * p){
+							auto & t = *reinterpret_cast<std::tuple<OCAE_METHOD_RET_T(int),OCAE_METHOD_PARAM_T(int)>*>(p);
+							std::get<0>(t) = OneRetOneParam(std::get<1>(t));
+						}
+					)
+				),
+				std::make_tuple(
+					std::string("TwoParam"),
+					Void_fn(
+						[this](void * p){
+							auto & t = *reinterpret_cast<std::tuple<OCAE_METHOD_PARAM_T(int),OCAE_METHOD_PARAM_T(double)>*>(p);
+							TwoParam(std::get<0>(t), std::get<1>(t));
+						}
+					)
+				)
+			};
+		}
+	};
+
+	MT m;
+
+	m.CallMethod("OneParam", OCAE_METHOD_PARAM(int(1)));
+	int r = 0;
+	m.CallMethod("OneRet", OCAE_METHOD_RET(r));
+	assert(r == 82);
+	m.CallMethod("OneRetOneParam", OCAE_METHOD_RET(r), OCAE_METHOD_PARAM(int(2)));
+	assert(r == 239);
+	m.CallMethod("TwoParam", OCAE_METHOD_PARAM(int(3)), OCAE_METHOD_PARAM(double(2.5)));
+}
+
+static void TestResampler(void)
+{
+	std::vector<StereoData> samples{
+		StereoData(SampleType(0), SampleType(0)),
+		StereoData(SampleType(1), SampleType(1)),
+		StereoData(SampleType(2), SampleType(2)),
+		StereoData(SampleType(3), SampleType(3))
+	};
+
+	// Test increase of rate
+	{
+		Tools::Resampler resam(samples, OCAE_SAMPLE_RATE/2);
+
+		StereoData results[7];
+
+		std::generate(
+			results, results + OCAE_SIZEOF_ARRAY(results),
+			[& resam]()->StereoData{
+				return resam.Process();
+			}
+		);
+
+		for(uint64_t i = 0; i < OCAE_SIZEOF_ARRAY(results); ++i)
+		{
+			assert(EQUALS( Left(results[i]), SampleType(Math_t(i)/2.0)) &&
+			       EQUALS(Right(results[i]), SampleType(Math_t(i)/2.0)));
+		}
+
+		totalSamples += OCAE_SIZEOF_ARRAY(results);
+	}
+
+	// Test decrease of rate
+	{
+		Tools::Resampler resam(samples, OCAE_SAMPLE_RATE * 2);
+
+		StereoData results[2];
+
+		std::generate(
+			results, results + OCAE_SIZEOF_ARRAY(results),
+			[& resam]()->StereoData{
+				return resam.Process();
+			}
+		);
+
+		assert(EQUALS( Left(results[0]), SampleType(0)) &&
+			   EQUALS(Right(results[0]), SampleType(0)));
+		assert(EQUALS( Left(results[1]), SampleType(2)) &&
+			   EQUALS(Right(results[1]), SampleType(2)));
+
+		totalSamples += OCAE_SIZEOF_ARRAY(results);
+	}
+
+	// Test playback speed
+	{
+		Tools::Resampler resam(samples, OCAE_SAMPLE_RATE);
+
+		StereoData results[8];
+
+		resam.SetPlaybackSpeed(0.5);
+
+		std::generate(
+			results, results + OCAE_SIZEOF_ARRAY(results),
+			[& resam]()->StereoData{
+				return resam.Process();
+			}
+		);
+
+		for(uint64_t i = 0; i < 7; ++i)
+		{
+			assert(EQUALS( Left(results[i]), SampleType(Math_t(i)/2)) &&
+			       EQUALS(Right(results[i]), SampleType(Math_t(i)/2)));
+		}
+
+		totalSamples += OCAE_SIZEOF_ARRAY(results);
+	}
+
+	// Test playback speed and change of rate
+	{
+		Tools::Resampler resam(samples, OCAE_SAMPLE_RATE * 2);
+
+		StereoData results[4];
+
+		resam.SetPlaybackSpeed(0.5);
+
+		std::generate(
+			results, results + OCAE_SIZEOF_ARRAY(results),
+			[& resam]()->StereoData{
+				return resam.Process();
+			}
+		);
+
+		for(uint64_t i = 0; i < 4; ++i)
+		{
+			assert(EQUALS( Left(results[i]), SampleType(i)) &&
+			       EQUALS(Right(results[i]), SampleType(i)));
+		}
+
+		totalSamples += OCAE_SIZEOF_ARRAY(results);
+	}
+}
+
+static void TestWAVWriter(void)
+{
+	Track_t track({
+		StereoData(SampleType(0), SampleType(0)),
+		StereoData(SampleType(0.5), SampleType(0.5)),
+		StereoData(SampleType(0), SampleType(0)),
+		StereoData(SampleType(-0.5), SampleType(-0.5))
+	});
+
+	auto riff = OCAE::Tools::WriteWAV(track);
+
+	RIFF::Reader reader(riff, CONSTRUCT_BYTE_STR("WAVE"));
+	auto header = reader.GetChunk(CONSTRUCT_BYTE_STR("fmt "));
+	Tools::WAVHeader * h = reinterpret_cast<Tools::WAVHeader*>(header.data());
+
+	assert(h->AudioFormat == 1);
+	assert(h->ChannelCount == 2);
+	assert(h->SamplingRate == OCAE_SAMPLE_RATE);
+	assert(h->BitsPerSample == 16);
+	assert(h->BytesPerSample == h->BitsPerSample / 8 * h->ChannelCount);
+	assert(h->BytesPerSecond == uint32_t(OCAE_SAMPLE_RATE * h->BytesPerSample));
+
+	auto wav_track = reader.GetChunk(CONSTRUCT_BYTE_STR("data"));
+
+	assert(wav_track[0] == 0 && wav_track[1] == 0 &&
+		   wav_track[2] == 0 && wav_track[3] == 0);
+
+	assert(wav_track[4] == RIFF::byte_t(uint16_t(0x8000 * 0.5) & 0x00'FF) &&
+		   wav_track[5] == RIFF::byte_t((uint16_t(0x8000 * 0.5) & 0xFF'00) >> 8) &&
+		   wav_track[6] == RIFF::byte_t(uint16_t(0x8000 * 0.5) & 0x00'FF) &&
+		   wav_track[7] == RIFF::byte_t((uint16_t(0x8000 * 0.5) & 0xFF'00) >> 8));
+	assert(wav_track[8] == 0 && wav_track[9] == 0 &&
+		   wav_track[10] == 0 && wav_track[11] == 0);
+
+	assert(wav_track[12] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0x00'FF)) &&
+		   wav_track[13] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8) &&
+		   wav_track[14] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0x00'FF)) &&
+		   wav_track[15] == RIFF::byte_t((static_cast<uint16_t>(int16_t(0x8000 * -0.5)) & 0xFF'00) >> 8));
+
+	OCAE_UNREFERENCED_PARAMETER(h);
+}
+
+//////////////// Generators ////////////////
+
+static void TestGeneratorBase(void)
+{
+	auto b = Generator::GeneratorFactory::CreateBase();
+	assert(b->IsBase());
+
+	StereoData samples[OCAE_SAMPLE_RATE/10] = {};
+	std::generate(samples, samples + OCAE_SIZEOF_ARRAY(samples),
+				  [& b](){return b->Process();});
+
+	for(auto it = samples; it != samples + OCAE_SIZEOF_ARRAY(samples); ++it)
+	{
+		assert(EQUALS(Left(*it),SampleType(0)) && EQUALS(Right(*it),SampleType(0)));
+	}
+
+		totalSamples += OCAE_SIZEOF_ARRAY(samples);
+}
+
+static void TestNoise(void)
+{
+	auto n = Generator::GeneratorFactory::CreateNoise();
+	assert(!n->IsBase());
+
+	Track_t samples;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		samples.push_back(n->Process());
+	}
+
+	OCAE_WRITE_WAV("noise.wav", samples);
+
+	totalSamples += samples.size();
+}
+
+static void TestSawtooth(void)
+{
+	auto s = Generator::GeneratorFactory::CreateSawtooth(440);
+	assert(!s->IsBase());
+
+	Math_t f;
+	s->CallMethod("GetFrequency", OCAE_METHOD_RET(f));
+	assert(EQUALS(f, 440.0));
+
+	for(uint64_t i = 0; i < 4; ++i)
+	{
+		StereoData sam = s->Process(); OCAE_UNREFERENCED_PARAMETER(sam);
+		assert(EQUALS(Left(sam), SampleType(440*OCAE_INC_RATE*2*i*OCAE_SQRT_HALF)));
+		assert(EQUALS(Left(sam), Right(sam)));
+	}
+
+	totalSamples += 4;
+}
+
+static void TestSine(void)
+{
+	auto s = Generator::GeneratorFactory::CreateSine(440);
+	assert(!s->IsBase());
+
+	Math_t f;
+	s->CallMethod("GetFrequency", OCAE_METHOD_RET(f));
+	assert(EQUALS(f, 440.0));
+
+	for(uint64_t i = 0; i < 4; ++i)
+	{
+		StereoData sam = s->Process(); OCAE_UNREFERENCED_PARAMETER(sam);
+		assert(EQUALS(Left(sam), SampleType(std::sin(440*OCAE_PI2*OCAE_INC_RATE*i)*OCAE_SQRT_HALF)));
+		assert(EQUALS(Left(sam), Right(sam)));
+	}
+
+	totalSamples += 4;
+}
+
+static void TestSquare(void)
+{
+	auto s = Generator::GeneratorFactory::CreateSquare(440);
+	assert(!s->IsBase());
+
+	Math_t f;
+	s->CallMethod("GetFrequency", OCAE_METHOD_RET(f));
+	assert(EQUALS(f, 440.0));
+
+	for(uint64_t i = 0; i < 4; ++i)
+	{
+		StereoData sam = s->Process(); OCAE_UNREFERENCED_PARAMETER(sam);
+		assert(EQUALS(Left(sam), SampleType(OCAE_SQRT_HALF)));
+		assert(EQUALS(Left(sam), Right(sam)));
+	}
+
+	totalSamples += 4;
+}
+
+static void TestTriangle(void)
+{
+	auto t = Generator::GeneratorFactory::CreateTriangle(440);
+	assert(!t->IsBase());
+
+	Math_t f;
+	t->CallMethod("GetFrequency", OCAE_METHOD_RET(f));
+	assert(EQUALS(f, 440.0));
+
+	for(uint64_t i = 0; i < 4; ++i)
+	{
+		StereoData sam = t->Process(); OCAE_UNREFERENCED_PARAMETER(sam);
+		assert(EQUALS(Left(sam), SampleType(4*440*OCAE_SQRT_HALF*OCAE_INC_RATE*i)));
+		assert(EQUALS(Left(sam), Right(sam)));
+	}
+
+	totalSamples += 4;
+}
+
+static void TestWAV(void)
+{
+	auto s = Generator::GeneratorFactory::CreateSine(440);
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		t.push_back(s->Process());
+	}
+	RIFF::vector_t riff = Tools::WriteWAV(t);
+
+	auto w = Generator::GeneratorFactory::CreateWAV(
+		std::vector<char>(reinterpret_cast<char *>(riff.data()),
+		reinterpret_cast<char *>(riff.data()) + riff.size())
+	);
+
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		StereoData sam = s->Process(); OCAE_UNREFERENCED_PARAMETER(sam);
+		assert(EQUALS(Left(sam), SampleType(std::sin(440*OCAE_PI2*OCAE_INC_RATE*i)*OCAE_SQRT_HALF)));
+		assert(EQUALS(Left(sam), Right(sam)));
+	}
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
+//////////////// Modifiers ////////////////
+
+static void TestModifierBase(void)
+{
+	auto m = Modifier::ModifierFactory::CreateBase();
+	auto s = Generator::GeneratorFactory::CreateSine(440);
+
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		StereoData dry = s->Process();
+		StereoData wet = m->Process(dry); OCAE_UNREFERENCED_PARAMETER(wet);
+
+		assert(EQUALS(Left(dry), Left(wet)));
+		assert(EQUALS(Right(dry), Right(dry)));
+
+		++totalSamples;
+	}
+}
+
+static void TestADSR(void)
+{
+	auto adsr = Modifier::ModifierFactory::CreateADSR(0.03125, 0.03125, -3, 0.5);
+	auto s = Generator::GeneratorFactory::CreateSawtooth(440);
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		t.push_back(adsr->Process(s->Process()));
+
+		if(i == OCAE_SAMPLE_RATE/2)
+		{
+			adsr->CallMethod("Release");
+			// adsr->Release();
+		}
+	}
+	OCAE_WRITE_WAV("adsr_0.03125_0.125_0.5_0.25.sin_440.wav", t);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
+static void TestBandPass(void)
+{
+	auto bp = Modifier::ModifierFactory::CreateBandPass(100,200);
+	auto n = Generator::GeneratorFactory::CreateNoise();
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		t.push_back(bp->Process(n->Process()));
+	}
+	OCAE_WRITE_WAV("bandpass_100_200.noise.wav", t);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
+static void TestDelay(void)
+{
+	auto d = Modifier::ModifierFactory::CreateDelay(0.25);
+	auto s = Generator::GeneratorFactory::CreateSine(440);
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		t.push_back(d->Process(s->Process()));
+	}
+	OCAE_WRITE_WAV("delay_0.25.sine_440.wav", t);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
+static void TestEcho(void)
+{
+	auto e = Modifier::ModifierFactory::CreateEcho(0.125, 0.75);
+	auto t = Generator::GeneratorFactory::CreateTriangle(440);
+
+	Track_t tr;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		tr.push_back(e->Process(i<OCAE_SAMPLE_RATE/16?
+			t->Process() : StereoData()
+		));
+	}
+	OCAE_WRITE_WAV("echo_0.125_0.75.tringale_440.wav", tr);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
+static void TestEnvelope(void)
+{
+	auto e = Modifier::ModifierFactory::CreateEnvelopeFollower();
+	auto s = Generator::GeneratorFactory::CreateSquare(440);
+	auto a = Modifier::ModifierFactory::CreateADSR(0.03125, 0.03125, -3, 0.5);
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		t.push_back(
+			e->Process(
+				a->Process(
+					s->Process()
+				)
+			)
+		);
+
+		if(i == OCAE_SAMPLE_RATE/2)
+		{
+			a->Release();
+		}
+	}
+	OCAE_WRITE_WAV("envelope.adsr.square_440.wav", t);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
+static void TestEqualizer(void)
+{
+	auto e = Modifier::ModifierFactory::CreateEqualizer();
+	auto n = Generator::GeneratorFactory::CreateNoise();
+
+	e->SetGain(0, 0);
+	e->SetGain(1, 1);
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		t.push_back(e->Process(n->Process()));
+
+		e->SetGain(0, i*OCAE_INC_RATE);
+		e->SetGain(1, 1 - i*OCAE_INC_RATE);
+	}
+	OCAE_WRITE_WAV("equalizer_2_20_20k.noise.wav", t);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
+static void TestGain(void)
+{
+	auto g = Modifier::ModifierFactory::CreateGain(0);
+	auto s = Generator::GeneratorFactory::CreateSine(440);
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		t.push_back(g->Process(s->Process()));
+
+		if(i < OCAE_SAMPLE_RATE/2)
+			g->SetGain(2*i*OCAE_INC_RATE);
+		else
+			g->SetGain(1 - 2*(i-OCAE_SAMPLE_RATE/2)*OCAE_INC_RATE);
+	}
+	OCAE_WRITE_WAV("gain.sine_440.wav", t);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
+static void TestGenericFilter(void)
+{
+	auto g = Modifier::ModifierFactory::CreateGenericFilter(
+		{
+			std::make_tuple(
+				uint32_t(0),
+				Math_t(0.69)
+			),
+			std::make_tuple(
+				uint32_t(1),
+				Math_t(0.32)
+			),
+			std::make_tuple(
+				uint32_t(2),
+				Math_t(0.13)
+			),
+			std::make_tuple(
+				uint32_t(6),
+				Math_t(0.4892)
+			)
+		},
+		{
+			std::make_tuple(
+				uint32_t(1),
+				Math_t(0.3789462467)
+			),
+			std::make_tuple(
+				uint32_t(5),
+				Math_t(0.12501285032)
+			),
+			std::make_tuple(
+				uint32_t(300),
+				Math_t(0.10453659456)
+			)
+		}
+	);
+
+	auto s = Generator::GeneratorFactory::CreateSquare(440);
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		t.push_back(g->Process(s->Process()));
+	}
+	OCAE_WRITE_WAV("generic.sine_440.wav", t);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
+static void TestLowPass(void)
+{
+	auto l = Modifier::ModifierFactory::CreateLowPass(440, 0);
+	auto n = Generator::GeneratorFactory::CreateNoise();
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		l->SetResonance(i*OCAE_INC_RATE);
+
+		t.push_back(l->Process(n->Process()));
+	}
+	OCAE_WRITE_WAV("lowpass_440.noise.wav", t);
+
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
+//////////////// Sounds ////////////////
+
+static void TestBlock(void)
+{
+	auto g = Generator::GeneratorFactory::CreateSine(440);
+	auto d = Generator::GeneratorFactory::CreateSine(440);
+	auto b = Sound::SoundFactory::CreateBlock(g);
+
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		StereoData dry = d->Process(); OCAE_UNREFERENCED_PARAMETER(dry);
+		StereoData wet = b->Process(); OCAE_UNREFERENCED_PARAMETER(wet);
+
+		assert(EQUALS( Left(wet),  Left(dry)));
+		assert(EQUALS(Right(wet), Right(dry)));
+	}
+	totalSamples += OCAE_SAMPLE_RATE;
+
+	g = Generator::GeneratorFactory::CreateSine(440);
+	d = Generator::GeneratorFactory::CreateSine(440);
+	auto m = Modifier::ModifierFactory::CreateGain(0.5);
+	b = Sound::SoundFactory::CreateBlock(m);
+
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		StereoData dry = d->Process(); OCAE_UNREFERENCED_PARAMETER(dry);
+		b->PrimeInput(g->Process());
+		StereoData wet = b->Process(); OCAE_UNREFERENCED_PARAMETER(wet);
+
+		assert(EQUALS( Left(wet),  Left(dry)*0.5f));
+		assert(EQUALS(Right(wet), Right(dry)*0.5f));
+	}
+	totalSamples += OCAE_SAMPLE_RATE;
+
+	g = Generator::GeneratorFactory::CreateSine(440);
+	d = Generator::GeneratorFactory::CreateSine(440);
+	m = Modifier::ModifierFactory::CreateGain(0.5);
+	b = Sound::SoundFactory::CreateBlock(g, m);
+
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		StereoData dry = d->Process(); OCAE_UNREFERENCED_PARAMETER(dry);
+		b->PrimeInput(OCAE_MONO_TO_STEREO(-1));
+		StereoData wet = b->Process(); OCAE_UNREFERENCED_PARAMETER(wet);
+
+		assert(EQUALS( Left(wet),  Left(dry)*-0.5f*SampleType(OCAE_SQRT_HALF)));
+		assert(EQUALS(Right(wet), Right(dry)*-0.5f*SampleType(OCAE_SQRT_HALF)));
+	}
+	totalSamples += OCAE_SAMPLE_RATE;
+
+	g = Generator::GeneratorFactory::CreateSine(440);
+	d = Generator::GeneratorFactory::CreateSine(440);
+	m = Modifier::ModifierFactory::CreateGain(0.5);
+	b = Sound::SoundFactory::CreateBlock(
+		g, m,
+		[](StereoData g, StereoData m)->StereoData{
+			return StereoData(Left(g)*Left(m),Right(g)*Right(m));
+		}
+	);
+
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		StereoData dry = d->Process(); OCAE_UNREFERENCED_PARAMETER(dry);
+		b->PrimeInput(OCAE_MONO_TO_STEREO(-1));
+		StereoData wet = b->Process(); OCAE_UNREFERENCED_PARAMETER(wet);
+
+		assert(EQUALS( Left(wet),  Left(dry)*-0.5f*SampleType(OCAE_SQRT_HALF)));
+		assert(EQUALS(Right(wet), Right(dry)*-0.5f*SampleType(OCAE_SQRT_HALF)));
+	}
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
+static void TestSound(void)
+{
+		// Create empty sound object
+	auto s1 = Sound::SoundFactory::CreateEmptySound();
+
+		// Check empty sound, should return 0
+	for(uint64_t i = 0; i < 16; ++i)
+	{
+		StereoData sam = s1->Process(StereoData());
+
+		assert(EQUALS(Left(sam), SampleType(0)));
+		assert(EQUALS(Left(sam), Right(sam)));
+
+		OCAE_UNREFERENCED_PARAMETER(sam);
+	}
+
+		// Create sound containing sine generator
+	auto s2 = Sound::SoundFactory::CreateBasicGenerator(
+		Generator::GeneratorFactory::CreateSine(440)
+	);
+
+	for(uint64_t i = 0; i < 4; ++i)
+	{
+		StereoData sam = s2->Process(StereoData()); OCAE_UNREFERENCED_PARAMETER(sam);
+		assert(EQUALS(Left(sam), SampleType(std::sin(440*OCAE_PI2*OCAE_INC_RATE*i)*OCAE_SQRT_HALF)));
+		assert(EQUALS(Left(sam), Right(sam)));
+	}
+
+		// Create sound
+	auto echo = Sound::SoundFactory::CreateEmptySound();
+		// Create blocks
+	auto delay = Sound::SoundFactory::CreateBlock(
+		Modifier::ModifierFactory::CreateDelay(0.25)
+	);
+	auto gain = Sound::SoundFactory::CreateBlock(
+		Modifier::ModifierFactory::CreateGain(OCAE_DEFAULT_GAIN)
+	);
+		// Connect blocks
+	echo->AddConnection(echo->GetInputBlock(), echo->GetOutputBlock());
+	echo->AddConnection(echo->GetInputBlock(), delay);
+	echo->AddConnection(delay, gain);
+	echo->AddConnection(gain, delay);
+	echo->AddConnection(gain, echo->GetOutputBlock());
+
+	Track_t t;
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE*4; ++i)
+	{
+		t.push_back(echo->Process(OCAE_MONO_TO_STEREO(std::sin(OCAE_PI2*440*OCAE_INC_RATE*double(i)) * 0.5)));
+	}
+
+	OCAE_WRITE_WAV("sound.sin_440.echo_0.25_0.5.wav", t);
+
+	totalSamples += 20 + OCAE_SAMPLE_RATE*4;
+}
+
+//////////////// Core ////////////////
+
+static void TestDriver(void)
+{
+	class G: public Generator::Sine
+	{
+		uint64_t i = 0;
+
+	public:
+		G(Math_t f) : Sine(f) {};
+		virtual ~G() {};
+
+		virtual StereoData Process(void)
+		{
+			if(i++ < OCAE_SAMPLE_RATE/16)
+			{
+				return Sine::Process();
+			}
+			else return StereoData();
+		};
+	};
+	OCAE_TYPEDEF_SHARED(G);
+
+	auto d = Core::Driver::Create(OCAE_MAX_BUFFER, 1.0);
+
+		// Create sound
+	auto echo = Sound::SoundFactory::CreateEmptySound();
+		// Create blocks
+	auto delay = Sound::SoundFactory::CreateBlock(
+		Modifier::ModifierFactory::CreateDelay(0.125)
+	);
+	auto gain = Sound::SoundFactory::CreateBlock(
+		Modifier::ModifierFactory::CreateGain(OCAE_DEFAULT_GAIN)
+	);
+	auto g = Sound::SoundFactory::CreateBlock(GPtr(new G(440)));
+		// Connect blocks
+	echo->AddConnection(g, echo->GetOutputBlock());
+	echo->AddConnection(g, delay);
+	echo->AddConnection(delay, gain);
+	echo->AddConnection(gain, delay);
+	echo->AddConnection(gain, echo->GetOutputBlock());
+
+	Sound::Sound::Register(echo, d);
+
+	Track_t wav;
+	auto & t = d->GetOutputTrack();
+
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE/OCAE_MAX_BUFFER; ++i)
+	{
+		d->Process();
+		wav.insert(wav.end(), t.begin(), t.end());
+	}
+	totalSamples += OCAE_SAMPLE_RATE;
+
+	OCAE_WRITE_WAV("driver.wav", wav);
+}
 
 // Private Objects                        //////////////////////////////////////
 
-// Private Function Declarations          //////////////////////////////////////
-
-static void TestSound(
-	std::string filename,
-	OCAE::Sound::SoundPtr sound,
-	std::function<void(uint64_t)> fn
-);
+std::vector<VoidFn> tests{
+	TestMethodTable,
+	TestResampler,
+	TestWAVWriter,
+	TestGeneratorBase,
+	TestNoise,
+	TestSawtooth,
+	TestSine,
+	TestSquare,
+	TestTriangle,
+	TestWAV,
+	TestModifierBase,
+	TestADSR,
+	TestBandPass,
+	TestDelay,
+	TestEcho,
+	TestEnvelope,
+	TestEqualizer,
+	TestGain,
+	TestGenericFilter,
+	TestLowPass,
+	TestBlock,
+	TestSound,
+	TestDriver
+};
 
 // Public Functions                       //////////////////////////////////////
 
 int main(int argc, char * argv[])
 {
-	UNREFERENCED_PARAMETER(argc);
-	UNREFERENCED_PARAMETER(argv);
+	OCAE_UNREFERENCED_PARAMETER(argc);
+	OCAE_UNREFERENCED_PARAMETER(argv);
 
-	{
-		std::cout << "Simple sine test - 1 second @ 440Hz\n";
+	std::cout << "Running tests single-threaded\n";
+	totalSamples = 0;
 
-		auto sine = OCAE::Sound::SoundFactory::CreateBasicGenerator(
-			OCAE::Generator::GeneratorFactory::CreateSine(440)
-		);
-
-		TestSound("sine.440.1s.wav", sine, EMPTY_FN);
-
-		std::cout << "Sine test finished\n\n";
-	}
-
-	{
-		std::cout << "Simple Square wave test - 1 second @ 440Hz\n";
-
-		auto square = OCAE::Sound::SoundFactory::CreateBasicGenerator(
-			OCAE::Generator::GeneratorFactory::CreateSquare(440)
-		);
-
-		TestSound("square.440.1s.wav", square, EMPTY_FN);
-
-		std::cout << "Square test finished\n\n";
-	}
-
-	{
-		std::cout << "Square @ 440Hz fed into a Low Pass filter cutoff at 880Hz\n";
-
-		auto sound = OCAE::Sound::SoundFactory::CreateEmptySound();
-		auto & graph = sound->GetGraph();
-
-		auto square = OCAE::Sound::SoundFactory::CreateBlock(
-				OCAE::Generator::GeneratorFactory::CreateSquare(440)
-		);
-		auto lp = OCAE::Sound::SoundFactory::CreateBlock(
-				OCAE::Modifier::ModifierFactory::CreateLowPass(880, 0)
-		);
-
-		auto g = std::deque<OCAE::Sound::Sound::Edge::E_BlockPtr>(
-			1, OCAE::Sound::Sound::CreateE_Block(square)
-		);
-		auto m = std::deque<OCAE::Sound::Sound::Edge::E_BlockPtr>(
-			1, OCAE::Sound::Sound::CreateE_Block(lp)
-		);
-
-		auto edge = OCAE::Sound::Sound::CreateEdge(
-			g,
-			OCAE::Sound::Combinator(OCAE::Sound::Combinator::Addition),
-			m
-		);
-
-		graph.insert(graph.end()-1, edge);
-		graph.back()->inputs.push_back(m.front());
-
-		TestSound("square.440.lowpass.880.1s.wav", sound, EMPTY_FN);
-
-		std::cout << "Filtered square test finished\n\n";
-	}
-
-	{
-		std::cout << "Noise filtered at 400Hz test\n";
-
-		auto sound = OCAE::Sound::SoundFactory::CreateEmptySound();
-		auto & graph = sound->GetGraph();
-
-		auto noise = OCAE::Sound::SoundFactory::CreateBlock(
-				OCAE::Generator::GeneratorFactory::CreateNoise()
-		);
-		auto lp = OCAE::Sound::SoundFactory::CreateBlock(
-				OCAE::Modifier::ModifierFactory::CreateLowPass(400, 0)
-		);
-
-		auto g = std::deque<OCAE::Sound::Sound::Edge::E_BlockPtr>(
-			1, OCAE::Sound::Sound::CreateE_Block(noise)
-		);
-		auto m = std::deque<OCAE::Sound::Sound::Edge::E_BlockPtr>(
-			1, OCAE::Sound::Sound::CreateE_Block(lp)
-		);
-
-		auto edge = OCAE::Sound::Sound::CreateEdge(
-			g,
-			OCAE::Sound::Combinator(OCAE::Sound::Combinator::Addition),
-			m
-		);
-
-		graph.insert(graph.end()-1, edge);
-		graph.back()->inputs.push_back(m.front());
-
-		TestSound("noise.lowpass.400.1s.wav", sound, EMPTY_FN);
-
-		std::cout << "Filtered noise test finished\n\n";
-	}
-
-	{
-		std::cout << "Sine @ 440 Hz with ADSR test\n";
-
-		auto sine_adsr = OCAE::Sound::SoundFactory::CreateEmptySound();
-		auto & graph = sine_adsr->GetGraph();
-
-		auto sine = OCAE::Sound::SoundFactory::CreateBlock(
-			OCAE::Generator::GeneratorFactory::CreateSine(440)
-		);
-		auto adsr = OCAE::Sound::SoundFactory::CreateBlock(
-			OCAE::Modifier::ModifierFactory::CreateADSR(
-				0.05,
-				0.1,
-				LINEAR_TO_DB(0.5),
-				0.4
-			)
-		);
-
-		auto sine_block = OCAE::Sound::Sound::CreateE_Block(sine);
-		auto adsr_block = OCAE::Sound::Sound::CreateE_Block(adsr);
-		auto edge = OCAE::Sound::Sound::CreateEdge(
-			std::deque<OCAE::Sound::Sound::Edge::E_BlockPtr>(1, sine_block),
-			OCAE::Sound::Combinator(OCAE::Sound::Combinator::Addition),
-			std::deque<OCAE::Sound::Sound::Edge::E_BlockPtr>(1, adsr_block)
-		);
-
-		graph.insert(graph.end()-1, edge);
-		graph.back()->inputs.push_back(adsr_block);
-
-		TestSound(
-			"sine.440.adsr.wav",
-			sine_adsr,
-			[&, adsr](uint64_t i){
-				if(i == uint64_t(0.6*SAMPLE_RATE/MAX_BUFFER)){
-					adsr->GetModifier()->CallMethod("Release");
-				}
-			}
-		);
-
-		std::cout << "ADSR Sine test finished\n\n";
-	}
-
-	return 0;
-}
-
-// Private Functions                      //////////////////////////////////////
-
-static void TestSound(std::string filename, OCAE::Sound::SoundPtr sound, std::function<void(uint64_t)> fn)
-{
-		// Initialize objects that should live for the life of the testing
-	static OCAE::Core::DriverPtr driver = OCAE::Core::DriverPtr(new OCAE::Core::Driver(MAX_BUFFER));
-	static OCAE::Track_t const & driver_output = driver->GetOutputTrack();
-	static OCAE::Track_t output(SAMPLE_RATE, OCAE::StereoData());
-	static hrc clk;
-
-		// Ensure the output track is clear before running the test
-	output.clear();
-
-		// Register the provided sound with the driver
-	OCAE::Sound::Sound::Register(sound, driver);
-		// Unpause the sound, in case it was paused
-	sound->Unpause();
-
-		// Get the current time
+		// Start tracking time
 	auto before = clk.now();
-		// Loop for one second's worth of samples
-	for(uint64_t i = 0; i < SAMPLE_RATE/MAX_BUFFER; ++i)
-	{
-			// Process this loop's samples
-		driver->Process();
-			// Copy the generated samples into the output buffer
-		output.insert(output.end(), driver_output.begin(), driver_output.end());
 
-			// Call the given function with the current index
-		fn(i);
+		// Run all tests
+	for(auto & t : tests)
+	{
+		t();
 	}
+
 		// Get the current time
 	auto after = clk.now();
-		// Calculate the difference between the two times
-	auto difference = after - before;
+		// Calculate the difference between the two times in seconds
+	std::chrono::duration<double, std::ratio<1,1>> seconds = after - before;
+
+	std::cout << "Tests completed\n";
+
+	double time = seconds.count();
+
 		// Print the time stats
-	std::cout << "Generated 1 second of audio in "
-	          << (double(difference.count()) / 1'000'000'000.0)
+	std::cout << "Ran tests in "
+	          << std::setprecision(10) << time
 	          << " seconds\n";
 
-		// Generate wave data
-	auto WAVData = OCAE::Tools::WriteWAV(output);
+	std::cout << "Computed " << totalSamples << " samples across all tests for an average of "
+	          << totalSamples/time << " samples of audio generated per second or "
+	          << totalSamples/time*OCAE_INC_RATE << " seconds of audio generated per second.\n\n";
 
-		// Open a file with the given filename
-	std::ofstream WAVFile(filename, std::ios_base::binary);
+	std::cout << "Running tests multi-threaded\n";
+	totalSamples = 0;
 
-		// Write the contents of the wave data to the file and close
-	WAVFile.write(reinterpret_cast<char const*>(WAVData.data()), WAVData.size());
-	WAVFile.flush();
-	WAVFile.close();
+	std::vector<std::future<void>> futs;
+	before = clk.now();
+	for(auto & t : tests)
+	{
+		futs.push_back(std::async(std::launch::async, t));
+	}
+	for(auto & f : futs)
+	{
+		f.get();
+	}
+	after = clk.now();
 
-		// Pause the sound so that it isn't playing when being unregistered from the driver
-	sound->Pause();
-		// Unregister the provided sound from the driver
-	OCAE::Sound::Sound::Unregister(sound);
+	std::cout << "Tests completed\n";
+
+	seconds = after - before;
+	time = seconds.count();
+
+		// Print the time stats
+	std::cout << "Ran tests in "
+	          << std::setprecision(10) << time
+	          << " seconds\n";
+
+	std::cout << "Computed " << totalSamples << " samples across all tests for an average of "
+	          << totalSamples/time << " samples of audio generated per second or "
+	          << totalSamples/time*OCAE_INC_RATE << " seconds of audio generated per second.\n\n";
+
+	return 0;
 }

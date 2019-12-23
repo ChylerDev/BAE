@@ -31,7 +31,7 @@ namespace Modifier
 		RegisterMethods(CreateMethodList());
 	}
 
-	StereoData Delay::FilterSample(StereoData const & sample)
+	StereoData Delay::Process(StereoData const & sample)
 	{
 		m_Delay.push_back(sample);
 
@@ -66,7 +66,13 @@ namespace Modifier
 				std::string("SetDelay"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						SetDelay(std::get<0>(*reinterpret_cast<std::tuple<uint64_t>*>(p)));
+						SetDelay(
+							std::get<0>(
+								*reinterpret_cast<
+									std::tuple<OCAE_METHOD_PARAM_T(uint64_t)>*
+								>(p)
+							)
+						);
 					}
 				)
 			),
@@ -74,7 +80,11 @@ namespace Modifier
 				std::string("GetDelay"),
 				Tools::MethodTable::Void_fn(
 					[this](void * p){
-						std::get<0>(*reinterpret_cast<std::tuple<uint64_t &>*>(p)) = GetDelay();
+						std::get<0>(
+							*reinterpret_cast<
+								std::tuple<OCAE_METHOD_RET_T(uint64_t)>*
+							>(p)
+						) = GetDelay();
 					}
 				)
 			)

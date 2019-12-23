@@ -38,7 +38,7 @@ namespace Modifier
 		m_State = State::release;
 	}
 
-	StereoData ADSR::FilterSample(StereoData const & sample)
+	StereoData ADSR::Process(StereoData const & sample)
 	{
 		switch(m_State)
 		{
@@ -84,7 +84,11 @@ namespace Modifier
 		return {
 			std::make_tuple(
 				std::string("Release"),
-				Tools::MethodTable::Void_fn([this](void *){ Release(); })
+				Tools::MethodTable::Void_fn(
+					[this](void *){
+						Release();
+					}
+				)
 			)
 		};
 	}

@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __ECHO_HPP
-#define __ECHO_HPP
+#ifndef __OCAE_ECHO_HPP
+#define __OCAE_ECHO_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -69,7 +69,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Echo(Echo && other) noexcept = default;
+		Echo(Echo && other) = default;
 
 		virtual ~Echo() = default; ///< Default destructor.
 
@@ -97,7 +97,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		Echo & operator=(Echo && rhs) noexcept = default;
+		Echo & operator=(Echo && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -131,7 +131,7 @@ namespace Modifier
 		\return
 			The filtered sample.
 		***********************************************************************/
-		virtual StereoData FilterSample(StereoData const & sample);
+		virtual StereoData Process(StereoData const & input);
 
 		/*! ********************************************************************
 		\brief
@@ -176,10 +176,10 @@ namespace Modifier
 	}; // class Echo
 
 		/// Alias for a std::shared_ptr instantiated with the Echo class
-	TYPEDEF_SHARED(Echo);
+	OCAE_TYPEDEF_SHARED(Echo);
 } // namespace Modifier
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __ECHO_HPP
+#endif // __OCAE_ECHO_HPP

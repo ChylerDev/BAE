@@ -7,15 +7,14 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __SOUNDS_HPP
-#define __SOUNDS_HPP
+#ifndef __OCAE_SOUNDS_HPP
+#define __OCAE_SOUNDS_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
 #include "Sounds/Sound.hpp"
 #include "Sounds/SoundFactory.hpp"
 #include "Sounds/Block.hpp"
-#include "Sounds/Combinator.hpp"
 
 // Public Macros                ////////////////////////////////////////////////
 
@@ -27,4 +26,4 @@
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __SOUNDS_HPP
+#endif // __OCAE_SOUNDS_HPP

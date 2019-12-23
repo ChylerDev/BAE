@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __GENERATORBASE_HPP
-#define __GENERATORBASE_HPP
+#ifndef __OCAE_GENERATORBASE_HPP
+#define __OCAE_GENERATORBASE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -49,9 +49,55 @@ namespace Generator
 
 		// Con-/De- structors   ///////////////////////
 
-		virtual ~GeneratorBase() = default; ///< Default destructor.
+		/*! ********************************************************************
+		\brief
+			Copy constructor. Deleted.
+
+		\param other
+			The other object to be copied.
+		***********************************************************************/
+		GeneratorBase(GeneratorBase const & other) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The other object to be moved.
+		***********************************************************************/
+		GeneratorBase(GeneratorBase && other) = default;
+
+		/*! ********************************************************************
+		\brief
+			Default destructor.
+		***********************************************************************/
+		virtual ~GeneratorBase() = default;
 
 		// Operators            ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Copy assignment operator. Deleted.
+
+		\param rhs
+			The object to be copied.
+
+		\return
+			*this.
+		***********************************************************************/
+		GeneratorBase & operator=(GeneratorBase const & rhs) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move assignment operator.
+
+		\param rhs
+			The object to be moved.
+
+		\return
+			*this.
+		***********************************************************************/
+		GeneratorBase & operator=(GeneratorBase && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -62,19 +108,20 @@ namespace Generator
 			Calculates the sample. For the base class this is simply 0.
 
 		\return
-			0.
+			The stereo sample data.
 		***********************************************************************/
-		virtual StereoData SendSample(void) { return StereoData(0.f, 0.f); };
+		virtual inline StereoData Process(void) { return StereoData(0.f, 0.f); };
 
 		/*! ********************************************************************
 		\brief
 			Returns boolean for if the object is a GeneratorBase or not.
 
 		\return
-			True if the object is a GeneratorBase
+			True for this class, false for any derived class.
 		***********************************************************************/
 		virtual bool IsBase() { return true; };
 
+			/// Add the factory as a friend so it can construct GeneratorBase objects
 		friend class GeneratorFactory;
 
 	protected:
@@ -85,17 +132,27 @@ namespace Generator
 		\brief
 			Constructor.
 		***********************************************************************/
-		GeneratorBase() : MethodTable(CreateMethodList()) {};
+		GeneratorBase() : MethodTable() { RegisterMethods(CreateMethodList()); };
 
+		/*! ********************************************************************
+		\brief
+			Creates a vector containing the names of functions, and the callable
+			functions themselves.
+
+			See Tools::MethodTable documentation on more info about this system.
+
+		\return
+			The vector containing callable functions and their names as strings.
+		***********************************************************************/
 		virtual Tools::MethodTable::MethodList_t CreateMethodList() { return {}; };
 
 	}; // class GeneratorBase
 
 		/// Alias for a std::shared_ptr instantiated with the GeneratorBase class
-	TYPEDEF_SHARED(GeneratorBase);
+	OCAE_TYPEDEF_SHARED(GeneratorBase);
 } // namespace Generator
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __GENERATORBASE_HPP
+#endif // __OCAE_GENERATORBASE_HPP

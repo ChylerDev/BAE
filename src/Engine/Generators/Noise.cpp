@@ -26,17 +26,17 @@ namespace OCAE
 namespace Generator
 {
 	Noise::Noise() : GeneratorBase(),
-		m_Distribution(-0x8000, 0x7FFF), m_Engine(std::random_device()())
+		m_Distribution(-1.f, 1.f), m_Engine(std::random_device()())
 	{
 		RegisterMethods(CreateMethodList());
 	}
 
-	StereoData Noise::SendSample()
+	StereoData Noise::Process()
 	{
 		SampleType sample;
-		sample = m_Distribution(m_Engine)/SampleType(0x8000);
+		sample = m_Distribution(m_Engine);
 
-		return MONO_TO_STEREO(sample);
+		return OCAE_MONO_TO_STEREO(sample);
 	}
 } // namespace Generator
 } // namespace OCAE

@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __WAV_HPP
-#define __WAV_HPP
+#ifndef __OCAE_WAV_HPP
+#define __OCAE_WAV_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -36,10 +36,9 @@ namespace Generator
 {
 	/*! ************************************************************************
 	\brief
-		Plays audio from a WAV file.
+		Plays audio from WAVE data.
 
-		Supported formats: 8-bit, 16-bit, and 24-bit audio. 48kHz only for now,
-		resampler will be added soon.
+		Supported formats: 8-bit, 16-bit, and 24-bit audio.
 	***************************************************************************/
 	class WAV : public GeneratorBase
 	{
@@ -56,11 +55,53 @@ namespace Generator
 
 		/*! ********************************************************************
 		\brief
-			Destructor.
+			Copy constructor. Deleted.
+
+		\param other
+			The other object to be copied.
+		***********************************************************************/
+		WAV(WAV const & other) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move constructor.
+
+		\param other
+			The other object to be moved.
+		***********************************************************************/
+		WAV(WAV && other) = default;
+
+		/*! ********************************************************************
+		\brief
+			Default destructor.
 		***********************************************************************/
 		virtual ~WAV() = default;
 
 		// Operators            ///////////////////////
+
+		/*! ********************************************************************
+		\brief
+			Copy assignment operator. Deleted.
+
+		\param rhs
+			The object to be copied.
+
+		\return
+			*this.
+		***********************************************************************/
+		WAV & operator=(WAV const & rhs) = delete;
+
+		/*! ********************************************************************
+		\brief
+			Default move assignment operator.
+
+		\param rhs
+			The object to be moved.
+
+		\return
+			*this.
+		***********************************************************************/
+		WAV & operator=(WAV && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -73,8 +114,15 @@ namespace Generator
 		\return
 			The stereo sample data.
 		***********************************************************************/
-		virtual StereoData SendSample(void);
+		virtual StereoData Process(void);
 
+		/*! ********************************************************************
+		\brief
+			Returns boolean for if the object is a GeneratorBase or not.
+
+		\return
+			False.
+		***********************************************************************/
 		virtual bool IsBase() { return false; };
 
 		/*! ********************************************************************
@@ -96,6 +144,7 @@ namespace Generator
 		***********************************************************************/
 		void LoadWAV(std::vector<char> const & wav_data);
 
+			/// Add the factory as a friend so it can construct GeneratorBase objects
 		friend class GeneratorFactory;
 
 	protected:
@@ -105,7 +154,7 @@ namespace Generator
 		/*! ********************************************************************
 		\brief
 			Default constructor. If no data is provided in calling
-			WAV::ReadFile, then WAV::SendSample will only output 0 data.
+			WAV::ReadFile, then WAV::Process will only output 0 data.
 		***********************************************************************/
 		WAV();
 
@@ -137,15 +186,39 @@ namespace Generator
 		***********************************************************************/
 		WAV(int argc);
 
+		/*! ********************************************************************
+		\brief
+			Parses WAVE data from the given raw data.
+
+			NOTE: The data in the array should be the fully RIFF-structured
+			      data.
+
+		\param array
+			The raw WAVE data to be parsed.
+
+		\param size
+			The size of the WAVE data.
+		***********************************************************************/
 		void ParseWAV(char const * array, int size);
 
-		virtual Tools::MethodTable::MethodList_t CreateMethodList();
+		/*! ********************************************************************
+		\brief
+			Creates a vector containing the names of functions, and the callable
+			functions themselves.
 
+			See Tools::MethodTable documentation on more info about this system.
+
+		\return
+			The vector containing callable functions and their names as strings.
+		***********************************************************************/
+		virtual Tools::MethodTable::MethodList_t CreateMethodList();
 	}; // class WAV
-	TYPEDEF_SHARED(WAV);
+
+		/// Alias for a std::shared_ptr instantiated with the WAV class
+	OCAE_TYPEDEF_SHARED(WAV);
 } // namespace Generator
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __WAV_HPP
+#endif // __OCAE_WAV_HPP

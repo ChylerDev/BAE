@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __MODIFIERS_HPP
-#define __MODIFIERS_HPP
+#ifndef __OCAE_MODIFIERS_HPP
+#define __OCAE_MODIFIERS_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -34,4 +34,4 @@
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __MODIFIERS_HPP
+#endif // __OCAE_MODIFIERS_HPP

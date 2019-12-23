@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __EQUALIZER_HPP
-#define __EQUALIZER_HPP
+#ifndef __OCAE_EQUALIZER_HPP
+#define __OCAE_EQUALIZER_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -33,6 +33,11 @@ namespace Modifier
 {
 	/*! ************************************************************************
 	\brief
+		Equalizer filter.
+
+		This filter splits a given signal across bands, using Modifier::BandPass
+		objects to do so, then amplifies each band by a given gain before
+		combining the bands again for the final output.
 	***************************************************************************/
 	class Equalizer : public ModifierBase
 	{
@@ -65,7 +70,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Equalizer(Equalizer && other) noexcept = default;
+		Equalizer(Equalizer && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -97,7 +102,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		Equalizer & operator=(Equalizer && rhs) noexcept = default;
+		Equalizer & operator=(Equalizer && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -137,7 +142,7 @@ namespace Modifier
 		\return
 			The filtered sample.
 		***********************************************************************/
-		virtual StereoData FilterSample(StereoData const & input);
+		virtual StereoData Process(StereoData const & input);
 
 		/*! ********************************************************************
 		\brief
@@ -187,10 +192,10 @@ namespace Modifier
 	}; // class Equalizer
 
 		/// Alias for a std::shared_ptr instantiated with the Equalizer class
-	TYPEDEF_SHARED(Equalizer);
+	OCAE_TYPEDEF_SHARED(Equalizer);
 } // namespace Modifier
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __EQUALIZER_HPP
+#endif // __OCAE_EQUALIZER_HPP

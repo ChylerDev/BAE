@@ -43,7 +43,7 @@ namespace Tools
 
 	std::string const & GetOption(int i)
 	{
-		return s_Options[i];
+		return s_Options[size_t(i)];
 	}
 } // namespace Tools
 } // namespace OCAE

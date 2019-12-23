@@ -7,8 +7,8 @@
 \copyright        Copyright © 2018 Chyler
 *******************************************************************************/
 
-#ifndef __MODIFIERBASE_HPP
-#define __MODIFIERBASE_HPP
+#ifndef __OCAE_MODIFIERBASE_HPP
+#define __OCAE_MODIFIERBASE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -47,7 +47,7 @@ namespace Modifier
 
 		There are a few functions that should be overridden by derived classes,
 		but are also implemented here for default behavior:
-			* FilterSample
+			* Process
 			* IsBase (This function will likely be removed in the future)
 			* CreateMethodList
 
@@ -79,11 +79,11 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		ModifierBase(ModifierBase && other) noexcept = default;
+		ModifierBase(ModifierBase && other) = default;
 
 		/*! ********************************************************************
 		\brief
-			Destructor, virtual for inheritence uses.
+			Default destructor.
 		***********************************************************************/
 		virtual ~ModifierBase() = default;
 
@@ -111,7 +111,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		ModifierBase & operator=(ModifierBase && rhs) noexcept = default;
+		ModifierBase & operator=(ModifierBase && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -127,7 +127,7 @@ namespace Modifier
 		\return
 			The filtered sample.
 		***********************************************************************/
-		virtual StereoData FilterSample(StereoData const & input) { return input; };
+		virtual StereoData Process(StereoData const & input) { return input; };
 
 		/*! ********************************************************************
 		\brief
@@ -150,7 +150,7 @@ namespace Modifier
 		\brief
 			Default constructor.
 		***********************************************************************/
-		ModifierBase() : MethodTable(CreateMethodList()) {};
+		ModifierBase() : MethodTable() { RegisterMethods(CreateMethodList()); };
 
 		/*! ********************************************************************
 		\brief
@@ -166,10 +166,10 @@ namespace Modifier
 	}; // class ModifierBase
 
 		/// Alias for a std::shared_ptr instantiated with the ModifierBase class
-	TYPEDEF_SHARED(ModifierBase);
+	OCAE_TYPEDEF_SHARED(ModifierBase);
 } // namespace Modifier
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __MODIFIERBASE_HPP
+#endif // __OCAE_MODIFIERBASE_HPP

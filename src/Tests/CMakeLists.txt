@@ -44,4 +44,5 @@ target_link_libraries(${PROJECT_NAME}
 if(WIN32)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
   set_target_properties(${PROJECT_NAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS true)
+  set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 endif()

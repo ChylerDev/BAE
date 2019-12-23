@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __GAIN_HPP
-#define __GAIN_HPP
+#ifndef __OCAE_GAIN_HPP
+#define __OCAE_GAIN_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -62,7 +62,7 @@ namespace Modifier
 		\param other
 			The other object to be moved.
 		***********************************************************************/
-		Gain(Gain && other) noexcept = default;
+		Gain(Gain && other) = default;
 
 		/*! ********************************************************************
 		\brief
@@ -94,7 +94,7 @@ namespace Modifier
 		\return
 			*this.
 		***********************************************************************/
-		Gain & operator=(Gain && rhs) noexcept = default;
+		Gain & operator=(Gain && rhs) = default;
 
 		// Accossors/Mutators   ///////////////////////
 
@@ -128,7 +128,7 @@ namespace Modifier
 		\return
 			The filtered sample.
 		***********************************************************************/
-		virtual StereoData FilterSample(StereoData const & input);
+		virtual StereoData Process(StereoData const & input);
 
 		/*! ********************************************************************
 		\brief
@@ -155,7 +155,7 @@ namespace Modifier
 			The gain to apply to the input data. Can be negative allowing for
 			inverting the signal.
 		***********************************************************************/
-		Gain(Math_t gain = DEFAULT_GAIN);
+		Gain(Math_t gain = OCAE_DEFAULT_GAIN);
 
 		/*! ********************************************************************
 		\brief
@@ -167,14 +167,14 @@ namespace Modifier
 		\return
 			The vector containing callable functions and their names as strings.
 		***********************************************************************/
-		virtual Tools::MethodTable::MethodList_t CreateMethodList() override;
+		virtual Tools::MethodTable::MethodList_t CreateMethodList();
 	}; // class Gain
 
 		/// Alias for a std::shared_ptr instantiated with the Gain class
-	TYPEDEF_SHARED(Gain);
+	OCAE_TYPEDEF_SHARED(Gain);
 } // namespace Modifier
 } // namespace OCAE
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __GAIN_HPP
+#endif // __OCAE_GAIN_HPP

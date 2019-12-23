@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __WAVWRITER_HPP
-#define __WAVWRITER_HPP
+#ifndef __OCAE_WAVWRITER_HPP
+#define __OCAE_WAVWRITER_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -32,7 +32,7 @@ namespace Tools
 	\brief
 		To be used in tandom with the recording system built into Core::Driver.
 
-	\param
+	\param audio
 		The audio to be formatted into WAVE (RIFF) data.
 
 	\return
@@ -44,4 +44,4 @@ namespace Tools
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __WAVWRITER_HPP
+#endif // __OCAE_WAVWRITER_HPP
