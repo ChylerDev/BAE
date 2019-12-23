@@ -93,6 +93,12 @@ namespace Sound
 
 	void Sound::AddConnection(BlockPtr const & from, BlockPtr const & to)
 	{
+		for(auto & b : m_Graph[from])
+		{
+			if(b.get() == to.get())
+				return;
+		}
+
 		m_Graph[from].push_back(to);
 
 		ProcessOrder();
@@ -197,7 +203,7 @@ namespace Sound
 		m_ProcessOrder.push_back(m_OutputGain);
 	}
 
-	void Sound::PrepareGraph(std::deque<BlockPtr> const & list, std::deque<BlockPtr> & out)
+	void Sound::PrepareGraph(BlockList const & list, BlockList & out)
 	{
 		for(auto & b : list)
 		{
