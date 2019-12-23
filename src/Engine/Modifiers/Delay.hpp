@@ -130,7 +130,7 @@ namespace Modifier
 		\return
 			The filtered sample.
 		***********************************************************************/
-		virtual StereoData FilterSample(StereoData const & input);
+		virtual StereoData Process(StereoData const & input);
 
 		/*! ********************************************************************
 		\brief

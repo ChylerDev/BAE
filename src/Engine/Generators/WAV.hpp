@@ -114,7 +114,7 @@ namespace Generator
 		\return
 			The stereo sample data.
 		***********************************************************************/
-		virtual StereoData SendSample(void);
+		virtual StereoData Process(void);
 
 		/*! ********************************************************************
 		\brief
@@ -154,7 +154,7 @@ namespace Generator
 		/*! ********************************************************************
 		\brief
 			Default constructor. If no data is provided in calling
-			WAV::ReadFile, then WAV::SendSample will only output 0 data.
+			WAV::ReadFile, then WAV::Process will only output 0 data.
 		***********************************************************************/
 		WAV();
 

@@ -38,7 +38,7 @@ namespace Modifier
 		m_State = State::release;
 	}
 
-	StereoData ADSR::FilterSample(StereoData const & sample)
+	StereoData ADSR::Process(StereoData const & sample)
 	{
 		switch(m_State)
 		{

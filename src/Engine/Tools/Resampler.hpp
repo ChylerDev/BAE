@@ -108,7 +108,7 @@ namespace Tools
 		\return
 			The stereo sample data.
 		***********************************************************************/
-		StereoData SendSample();
+		StereoData Process();
 
 	private:
 

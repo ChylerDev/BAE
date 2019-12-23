@@ -64,7 +64,7 @@ namespace Modifier
 		Reset();
 	}
 
-	StereoData BandPass::FilterSample(StereoData const & x)
+	StereoData BandPass::Process(StereoData const & x)
 	{
 		StereoData y;
 

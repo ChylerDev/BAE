@@ -41,7 +41,7 @@ namespace Generator
 		return m_Irate / (2 * OCAE_INC_RATE);
 	}
 
-	StereoData Sawtooth::SendSample()
+	StereoData Sawtooth::Process()
 	{
 		SampleType out = SampleType(m_Inc);
 

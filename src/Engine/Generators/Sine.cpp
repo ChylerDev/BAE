@@ -41,7 +41,7 @@ namespace Generator
 		RegisterMethods(CreateMethodList());
 	}
 
-	StereoData Sine::SendSample(void)
+	StereoData Sine::Process(void)
 	{
 		int64_t k = int64_t(std::floor(m_Index));
 		Math_t g = m_Index - k;

@@ -38,7 +38,7 @@ namespace Tools
 		m_PlaybackSpeed = playback;
 	}
 
-	StereoData Resampler::SendSample()
+	StereoData Resampler::Process()
 	{
 		if(size_t(m_Index) >= m_Data.size() && m_LoopEnd == 0)
 		{

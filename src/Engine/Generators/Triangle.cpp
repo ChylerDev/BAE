@@ -43,7 +43,7 @@ namespace Generator
 		return std::abs(m_Irate/(4*OCAE_INC_RATE));
 	}
 
-	StereoData Triangle::SendSample(void)
+	StereoData Triangle::Process(void)
 	{
 		StereoData out = OCAE_MONO_TO_STEREO(m_Inc);
 		m_Inc += m_Irate;
