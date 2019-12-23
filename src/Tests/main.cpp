@@ -631,6 +631,76 @@ static void TestLowPass(void)
 
 //////////////// Sounds ////////////////
 
+static void TestBlock(void)
+{
+	auto g = Generator::GeneratorFactory::CreateSine(440);
+	auto d = Generator::GeneratorFactory::CreateSine(440);
+	auto b = Sound::SoundFactory::CreateBlock(g);
+
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		StereoData dry = d->SendSample();
+		StereoData wet = b->Process();
+
+		assert(EQUALS( Left(wet),  Left(dry)));
+		assert(EQUALS(Right(wet), Right(dry)));
+	}
+	totalSamples += OCAE_SAMPLE_RATE;
+
+	g = Generator::GeneratorFactory::CreateSine(440);
+	d = Generator::GeneratorFactory::CreateSine(440);
+	auto m = Modifier::ModifierFactory::CreateGain(0.5);
+	b = Sound::SoundFactory::CreateBlock(m);
+
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		StereoData dry = d->SendSample();
+		b->PrimeInput(g->SendSample());
+		StereoData wet = b->Process();
+
+		assert(EQUALS( Left(wet),  Left(dry)*0.5f));
+		assert(EQUALS(Right(wet), Right(dry)*0.5f));
+	}
+	totalSamples += OCAE_SAMPLE_RATE;
+
+	g = Generator::GeneratorFactory::CreateSine(440);
+	d = Generator::GeneratorFactory::CreateSine(440);
+	m = Modifier::ModifierFactory::CreateGain(0.5);
+	b = Sound::SoundFactory::CreateBlock(g, m);
+
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		StereoData dry = d->SendSample();
+		b->PrimeInput(OCAE_MONO_TO_STEREO(-1));
+		StereoData wet = b->Process();
+
+		assert(EQUALS( Left(wet),  Left(dry)*-0.5f*SampleType(OCAE_SQRT_HALF)));
+		assert(EQUALS(Right(wet), Right(dry)*-0.5f*SampleType(OCAE_SQRT_HALF)));
+	}
+	totalSamples += OCAE_SAMPLE_RATE;
+
+	g = Generator::GeneratorFactory::CreateSine(440);
+	d = Generator::GeneratorFactory::CreateSine(440);
+	m = Modifier::ModifierFactory::CreateGain(0.5);
+	b = Sound::SoundFactory::CreateBlock(
+		g, m,
+		[](StereoData g, StereoData m)->StereoData{
+			return StereoData(Left(g)*Left(m),Right(g)*Right(m));
+		}
+	);
+
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
+	{
+		StereoData dry = d->SendSample();
+		b->PrimeInput(OCAE_MONO_TO_STEREO(-1));
+		StereoData wet = b->Process();
+
+		assert(EQUALS( Left(wet),  Left(dry)*-0.5f*SampleType(OCAE_SQRT_HALF)));
+		assert(EQUALS(Right(wet), Right(dry)*-0.5f*SampleType(OCAE_SQRT_HALF)));
+	}
+	totalSamples += OCAE_SAMPLE_RATE;
+}
+
 static void TestSound(void)
 {
 		// Create empty sound object
@@ -711,6 +781,7 @@ std::vector<VoidFn> tests{
 	TestGain,
 	TestGenericFilter,
 	TestLowPass,
+	TestBlock,
 	TestSound,
 };
 
