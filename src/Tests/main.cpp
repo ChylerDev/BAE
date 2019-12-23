@@ -151,10 +151,10 @@ static void TestResampler(void)
 			}
 		);
 
-		for(uint64_t i = 0; i < 7; ++i)
+		for(uint64_t i = 0; i < OCAE_SIZEOF_ARRAY(results); ++i)
 		{
-			assert(EQUALS( Left(results[i]), SampleType(Math_t(i)/2)) &&
-			       EQUALS(Right(results[i]), SampleType(Math_t(i)/2)));
+			assert(EQUALS( Left(results[i]), SampleType(Math_t(i)/2.0)) &&
+			       EQUALS(Right(results[i]), SampleType(Math_t(i)/2.0)));
 		}
 
 		totalSamples += OCAE_SIZEOF_ARRAY(results);
