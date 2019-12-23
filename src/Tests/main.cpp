@@ -758,6 +758,60 @@ static void TestSound(void)
 
 //////////////// Core ////////////////
 
+static void TestDriver(void)
+{
+	class G: public Generator::Sine
+	{
+		uint64_t i = 0;
+
+	public:
+		G(Math_t f) : Sine(f) {};
+		virtual ~G() {};
+
+		virtual StereoData SendSample(void)
+		{
+			if(i++ < OCAE_SAMPLE_RATE/16)
+			{
+				return Sine::SendSample();
+			}
+			else return StereoData();
+		};
+	};
+	OCAE_TYPEDEF_SHARED(G);
+
+	auto d = Core::Driver::Create(OCAE_MAX_BUFFER, 1.0);
+
+		// Create sound
+	auto echo = Sound::SoundFactory::CreateEmptySound();
+		// Create blocks
+	auto delay = Sound::SoundFactory::CreateBlock(
+		Modifier::ModifierFactory::CreateDelay(0.125)
+	);
+	auto gain = Sound::SoundFactory::CreateBlock(
+		Modifier::ModifierFactory::CreateGain(OCAE_DEFAULT_GAIN)
+	);
+	auto g = Sound::SoundFactory::CreateBlock(GPtr(new G(440)));
+		// Connect blocks
+	echo->AddConnection(g, echo->GetOutputBlock());
+	echo->AddConnection(g, delay);
+	echo->AddConnection(delay, gain);
+	echo->AddConnection(gain, delay);
+	echo->AddConnection(gain, echo->GetOutputBlock());
+
+	Sound::Sound::Register(echo, d);
+
+	Track_t wav;
+	auto & t = d->GetOutputTrack();
+
+	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE/OCAE_MAX_BUFFER; ++i)
+	{
+		d->Process();
+		wav.insert(wav.end(), t.begin(), t.end());
+	}
+
+	OCAE_WRITE_WAV("driver.wav", wav);
+}
+
 // Private Objects                        //////////////////////////////////////
 
 std::vector<VoidFn> tests{
@@ -783,6 +837,7 @@ std::vector<VoidFn> tests{
 	TestLowPass,
 	TestBlock,
 	TestSound,
+	TestDriver
 };
 
 // Public Functions                       //////////////////////////////////////
