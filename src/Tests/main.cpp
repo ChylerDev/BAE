@@ -14,6 +14,7 @@
 #include <iomanip>
 #include <chrono>
 #include <iostream>
+#include <future>
 
 #include <RIFF-Util/RIFF.hpp>
 
@@ -720,7 +721,8 @@ int main(int argc, char * argv[])
 	OCAE_UNREFERENCED_PARAMETER(argc);
 	OCAE_UNREFERENCED_PARAMETER(argv);
 
-	std::cout << "Running tests\n";
+	std::cout << "Running tests single-threaded\n";
+	totalSamples = 0;
 
 		// Start tracking time
 	auto before = clk.now();
@@ -736,18 +738,47 @@ int main(int argc, char * argv[])
 		// Calculate the difference between the two times in seconds
 	std::chrono::duration<double, std::ratio<1,1>> seconds = after - before;
 
-	std::cout << "Tests completed\n\n";
+	std::cout << "Tests completed\n";
 
 	double time = seconds.count();
 
 		// Print the time stats
-	std::cout << "Ran all tests in "
+	std::cout << "Ran tests in "
 	          << std::setprecision(10) << time
 	          << " seconds\n";
 
 	std::cout << "Computed " << totalSamples << " samples across all tests for an average of "
 	          << totalSamples/time << " samples of audio generated per second or "
-	          << totalSamples/time*OCAE_INC_RATE << " seconds of audio generated per second.\n";
+	          << totalSamples/time*OCAE_INC_RATE << " seconds of audio generated per second.\n\n";
+
+	std::cout << "Running tests multi-threaded\n";
+	totalSamples = 0;
+
+	std::vector<std::future<void>> futs;
+	before = clk.now();
+	for(auto & t : tests)
+	{
+		futs.push_back(std::async(std::launch::async, t));
+	}
+	for(auto & f : futs)
+	{
+		f.get();
+	}
+	after = clk.now();
+
+	std::cout << "Tests completed\n";
+
+	seconds = after - before;
+	time = seconds.count();
+
+		// Print the time stats
+	std::cout << "Ran tests in "
+	          << std::setprecision(10) << time
+	          << " seconds\n";
+
+	std::cout << "Computed " << totalSamples << " samples across all tests for an average of "
+	          << totalSamples/time << " samples of audio generated per second or "
+	          << totalSamples/time*OCAE_INC_RATE << " seconds of audio generated per second.\n\n";
 
 	return 0;
 }

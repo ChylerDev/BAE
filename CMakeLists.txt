@@ -20,6 +20,7 @@ else()
 	)
 	# Add _DEBUG define and profiling to debug flags
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG -pg")
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread")
 endif()
 
 # Add the custom flags to the compile flags
