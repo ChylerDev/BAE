@@ -45,7 +45,7 @@ namespace Modifier
 		Reset();
 	}
 
-	StereoData LowPass::FilterSample(StereoData const & input)
+	StereoData LowPass::Process(StereoData const & input)
 	{
 		StereoData output(
 			SampleType(m_Coefficients[0] * Math_t(Left(input)) +

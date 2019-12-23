@@ -33,7 +33,7 @@ namespace Modifier
 	{
 	}
 
-	StereoData GenericFilter::FilterSample(StereoData const & input)
+	StereoData GenericFilter::Process(StereoData const & input)
 	{
 		StereoData output;
 

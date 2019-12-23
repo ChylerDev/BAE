@@ -43,7 +43,7 @@ namespace Modifier
 	{
 	}
 
-	StereoData EnvelopeFollower::FilterSample(StereoData const & x)
+	StereoData EnvelopeFollower::Process(StereoData const & x)
 	{
 		StereoData y;
 

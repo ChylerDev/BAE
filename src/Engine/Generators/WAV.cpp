@@ -93,11 +93,11 @@ namespace Generator
 		ParseWAV(wav_data.data(), int(wav_data.size()));
 	}
 
-	StereoData WAV::SendSample()
+	StereoData WAV::Process()
 	{
 		if(m_Resampler)
 		{
-			return m_Resampler->SendSample();
+			return m_Resampler->Process();
 		}
 		return StereoData(SampleType(0), SampleType(0));
 	}

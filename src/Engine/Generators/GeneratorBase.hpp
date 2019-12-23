@@ -110,7 +110,7 @@ namespace Generator
 		\return
 			The stereo sample data.
 		***********************************************************************/
-		virtual inline StereoData SendSample(void) { return StereoData(0.f, 0.f); };
+		virtual inline StereoData Process(void) { return StereoData(0.f, 0.f); };
 
 		/*! ********************************************************************
 		\brief

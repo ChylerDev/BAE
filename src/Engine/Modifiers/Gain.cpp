@@ -40,7 +40,7 @@ namespace Modifier
 		return m_Gain;
 	}
 
-	StereoData Gain::FilterSample(StereoData const & input)
+	StereoData Gain::Process(StereoData const & input)
 	{
 		return StereoData(SampleType(Math_t( Left(input)) * m_Gain),
 						  SampleType(Math_t(Right(input)) * m_Gain));

@@ -68,13 +68,13 @@ namespace Modifier
 		return m_BandGains[band];
 	}
 
-	StereoData Equalizer::FilterSample(StereoData const & input)
+	StereoData Equalizer::Process(StereoData const & input)
 	{
 		StereoData output;
 
 		for(uint32_t i = 0; i < uint32_t(m_Bands.size()); ++i)
 		{
-			StereoData band_out = m_Bands[i]->FilterSample(input);
+			StereoData band_out = m_Bands[i]->Process(input);
 
 			Left(output) += SampleType(m_BandGains[i] * Math_t(Left(band_out)));
 			Right(output) += SampleType(m_BandGains[i] * Math_t(Right(band_out)));

@@ -31,7 +31,7 @@ namespace Modifier
 		RegisterMethods(CreateMethodList());
 	}
 
-	StereoData Echo::FilterSample(StereoData const & dry)
+	StereoData Echo::Process(StereoData const & dry)
 	{
 		StereoData wet = m_Echo.front();
 		m_Echo.pop_front();

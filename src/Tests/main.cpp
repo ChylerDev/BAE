@@ -147,7 +147,7 @@ static void TestResampler(void)
 		std::generate(
 			results, results + OCAE_SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
-				return resam.SendSample();
+				return resam.Process();
 			}
 		);
 
@@ -169,7 +169,7 @@ static void TestResampler(void)
 		std::generate(
 			results, results + OCAE_SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
-				return resam.SendSample();
+				return resam.Process();
 			}
 		);
 
@@ -192,7 +192,7 @@ static void TestResampler(void)
 		std::generate(
 			results, results + OCAE_SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
-				return resam.SendSample();
+				return resam.Process();
 			}
 		);
 
@@ -216,7 +216,7 @@ static void TestResampler(void)
 		std::generate(
 			results, results + OCAE_SIZEOF_ARRAY(results),
 			[& resam]()->StereoData{
-				return resam.SendSample();
+				return resam.Process();
 			}
 		);
 
@@ -281,7 +281,7 @@ static void TestGeneratorBase(void)
 
 	StereoData samples[OCAE_SAMPLE_RATE/10] = {};
 	std::generate(samples, samples + OCAE_SIZEOF_ARRAY(samples),
-				  [& b](){return b->SendSample();});
+				  [& b](){return b->Process();});
 
 	for(auto it = samples; it != samples + OCAE_SIZEOF_ARRAY(samples); ++it)
 	{
@@ -299,7 +299,7 @@ static void TestNoise(void)
 	Track_t samples;
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		samples.push_back(n->SendSample());
+		samples.push_back(n->Process());
 	}
 
 	OCAE_WRITE_WAV("noise.wav", samples);
@@ -318,7 +318,7 @@ static void TestSawtooth(void)
 
 	for(uint64_t i = 0; i < 4; ++i)
 	{
-		StereoData sam = s->SendSample();
+		StereoData sam = s->Process();
 		assert(EQUALS(Left(sam), SampleType(440*OCAE_INC_RATE*2*i*OCAE_SQRT_HALF)));
 		assert(EQUALS(Left(sam), Right(sam)));
 	}
@@ -337,7 +337,7 @@ static void TestSine(void)
 
 	for(uint64_t i = 0; i < 4; ++i)
 	{
-		StereoData sam = s->SendSample();
+		StereoData sam = s->Process();
 		assert(EQUALS(Left(sam), SampleType(std::sin(440*OCAE_PI2*OCAE_INC_RATE*i)*OCAE_SQRT_HALF)));
 		assert(EQUALS(Left(sam), Right(sam)));
 	}
@@ -356,7 +356,7 @@ static void TestSquare(void)
 
 	for(uint64_t i = 0; i < 4; ++i)
 	{
-		StereoData sam = s->SendSample();
+		StereoData sam = s->Process();
 		assert(EQUALS(Left(sam), SampleType(OCAE_SQRT_HALF)));
 		assert(EQUALS(Left(sam), Right(sam)));
 	}
@@ -375,7 +375,7 @@ static void TestTriangle(void)
 
 	for(uint64_t i = 0; i < 4; ++i)
 	{
-		StereoData sam = t->SendSample();
+		StereoData sam = t->Process();
 		assert(EQUALS(Left(sam), SampleType(4*440*OCAE_SQRT_HALF*OCAE_INC_RATE*i)));
 		assert(EQUALS(Left(sam), Right(sam)));
 	}
@@ -389,7 +389,7 @@ static void TestWAV(void)
 	Track_t t;
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		t.push_back(s->SendSample());
+		t.push_back(s->Process());
 	}
 	RIFF::vector_t riff = Tools::WriteWAV(t);
 
@@ -400,7 +400,7 @@ static void TestWAV(void)
 
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		StereoData sam = s->SendSample();
+		StereoData sam = s->Process();
 		assert(EQUALS(Left(sam), SampleType(std::sin(440*OCAE_PI2*OCAE_INC_RATE*i)*OCAE_SQRT_HALF)));
 		assert(EQUALS(Left(sam), Right(sam)));
 	}
@@ -417,8 +417,8 @@ static void TestModifierBase(void)
 
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		StereoData dry = s->SendSample();
-		StereoData wet = m->FilterSample(dry);
+		StereoData dry = s->Process();
+		StereoData wet = m->Process(dry);
 
 		assert(EQUALS(Left(dry), Left(wet)));
 		assert(EQUALS(Right(dry), Right(dry)));
@@ -435,7 +435,7 @@ static void TestADSR(void)
 	Track_t t;
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		t.push_back(adsr->FilterSample(s->SendSample()));
+		t.push_back(adsr->Process(s->Process()));
 
 		if(i == OCAE_SAMPLE_RATE/2)
 		{
@@ -456,7 +456,7 @@ static void TestBandPass(void)
 	Track_t t;
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		t.push_back(bp->FilterSample(n->SendSample()));
+		t.push_back(bp->Process(n->Process()));
 	}
 	OCAE_WRITE_WAV("bandpass_100_200.noise.wav", t);
 
@@ -471,7 +471,7 @@ static void TestDelay(void)
 	Track_t t;
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		t.push_back(d->FilterSample(s->SendSample()));
+		t.push_back(d->Process(s->Process()));
 	}
 	OCAE_WRITE_WAV("delay_0.25.sine_440.wav", t);
 
@@ -486,8 +486,8 @@ static void TestEcho(void)
 	Track_t tr;
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		tr.push_back(e->FilterSample(i<OCAE_SAMPLE_RATE/16?
-			t->SendSample() : StereoData()
+		tr.push_back(e->Process(i<OCAE_SAMPLE_RATE/16?
+			t->Process() : StereoData()
 		));
 	}
 	OCAE_WRITE_WAV("echo_0.125_0.75.tringale_440.wav", tr);
@@ -505,9 +505,9 @@ static void TestEnvelope(void)
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
 		t.push_back(
-			e->FilterSample(
-				a->FilterSample(
-					s->SendSample()
+			e->Process(
+				a->Process(
+					s->Process()
 				)
 			)
 		);
@@ -533,7 +533,7 @@ static void TestEqualizer(void)
 	Track_t t;
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		t.push_back(e->FilterSample(n->SendSample()));
+		t.push_back(e->Process(n->Process()));
 
 		e->SetGain(0, i*OCAE_INC_RATE);
 		e->SetGain(1, 1 - i*OCAE_INC_RATE);
@@ -551,7 +551,7 @@ static void TestGain(void)
 	Track_t t;
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		t.push_back(g->FilterSample(s->SendSample()));
+		t.push_back(g->Process(s->Process()));
 
 		if(i < OCAE_SAMPLE_RATE/2)
 			g->SetGain(2*i*OCAE_INC_RATE);
@@ -605,7 +605,7 @@ static void TestGenericFilter(void)
 	Track_t t;
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		t.push_back(g->FilterSample(s->SendSample()));
+		t.push_back(g->Process(s->Process()));
 	}
 	OCAE_WRITE_WAV("generic.sine_440.wav", t);
 
@@ -622,7 +622,7 @@ static void TestLowPass(void)
 	{
 		l->SetResonance(i*OCAE_INC_RATE);
 
-		t.push_back(l->FilterSample(n->SendSample()));
+		t.push_back(l->Process(n->Process()));
 	}
 	OCAE_WRITE_WAV("lowpass_440.noise.wav", t);
 
@@ -639,7 +639,7 @@ static void TestBlock(void)
 
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		StereoData dry = d->SendSample();
+		StereoData dry = d->Process();
 		StereoData wet = b->Process();
 
 		assert(EQUALS( Left(wet),  Left(dry)));
@@ -654,8 +654,8 @@ static void TestBlock(void)
 
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		StereoData dry = d->SendSample();
-		b->PrimeInput(g->SendSample());
+		StereoData dry = d->Process();
+		b->PrimeInput(g->Process());
 		StereoData wet = b->Process();
 
 		assert(EQUALS( Left(wet),  Left(dry)*0.5f));
@@ -670,7 +670,7 @@ static void TestBlock(void)
 
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		StereoData dry = d->SendSample();
+		StereoData dry = d->Process();
 		b->PrimeInput(OCAE_MONO_TO_STEREO(-1));
 		StereoData wet = b->Process();
 
@@ -691,7 +691,7 @@ static void TestBlock(void)
 
 	for(uint64_t i = 0; i < OCAE_SAMPLE_RATE; ++i)
 	{
-		StereoData dry = d->SendSample();
+		StereoData dry = d->Process();
 		b->PrimeInput(OCAE_MONO_TO_STEREO(-1));
 		StereoData wet = b->Process();
 
@@ -768,11 +768,11 @@ static void TestDriver(void)
 		G(Math_t f) : Sine(f) {};
 		virtual ~G() {};
 
-		virtual StereoData SendSample(void)
+		virtual StereoData Process(void)
 		{
 			if(i++ < OCAE_SAMPLE_RATE/16)
 			{
-				return Sine::SendSample();
+				return Sine::Process();
 			}
 			else return StereoData();
 		};

@@ -31,7 +31,7 @@ namespace Generator
 		RegisterMethods(CreateMethodList());
 	}
 
-	StereoData Noise::SendSample()
+	StereoData Noise::Process()
 	{
 		SampleType sample;
 		sample = m_Distribution(m_Engine);

@@ -37,7 +37,7 @@ namespace Generator
 		RegisterMethods(CreateMethodList());
 	}
 
-	StereoData Square::SendSample(void)
+	StereoData Square::Process(void)
 	{
 		double y = 1;
 

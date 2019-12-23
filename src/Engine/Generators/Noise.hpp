@@ -110,7 +110,7 @@ namespace Generator
 		\return
 			The stereo sample data.
 		***********************************************************************/
-		virtual StereoData SendSample(void);
+		virtual StereoData Process(void);
 
 		/*! ********************************************************************
 		\brief

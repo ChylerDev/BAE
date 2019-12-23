@@ -62,7 +62,7 @@ namespace Sound
 
 	StereoData Block::Process()
 	{
-		StereoData out = m_Interaction(m_Generator->SendSample(), m_Modifier->FilterSample(m_Input));
+		StereoData out = m_Interaction(m_Generator->Process(), m_Modifier->Process(m_Input));
 		m_Input = StereoData();
 
 		return out;

@@ -31,7 +31,7 @@ namespace Modifier
 		RegisterMethods(CreateMethodList());
 	}
 
-	StereoData Delay::FilterSample(StereoData const & sample)
+	StereoData Delay::Process(StereoData const & sample)
 	{
 		m_Delay.push_back(sample);
 
