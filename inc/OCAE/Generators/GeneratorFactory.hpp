@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __GENERATORBASEY_HPP
-#define __GENERATORBASEY_HPP
+#ifndef __OCAE_GENERATORBASEY_HPP
+#define __OCAE_GENERATORBASEY_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -175,4 +175,4 @@ namespace Generator
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __GENERATORBASEY_HPP
+#endif // __OCAE_GENERATORBASEY_HPP

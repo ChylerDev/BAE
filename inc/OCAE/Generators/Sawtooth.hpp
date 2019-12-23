@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __SAWTOOTH_HPP
-#define __SAWTOOTH_HPP
+#ifndef __OCAE_SAWTOOTH_HPP
+#define __OCAE_SAWTOOTH_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -119,15 +119,14 @@ namespace Generator
 
 		// Functions            ///////////////////////
 
-		OCAE_TODO("Fix this doc")
 		/*! ********************************************************************
 		\brief
-			Calculates the sample. For the base class this is simply 0.
+			Processes and returns the next sample.
 
 		\return
 			The stereo sample data.
 		***********************************************************************/
-		virtual StereoData SendSample(void);
+		virtual StereoData Process(void);
 
 		/*! ********************************************************************
 		\brief
@@ -174,4 +173,4 @@ namespace Generator
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __SAWTOOTH_HPP
+#endif // __OCAE_SAWTOOTH_HPP

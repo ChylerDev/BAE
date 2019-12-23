@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __METHODTABLE_HPP
-#define __METHODTABLE_HPP
+#ifndef __OCAE_METHODTABLE_HPP
+#define __OCAE_METHODTABLE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -120,7 +120,7 @@ namespace Tools
 			/// Alias for a void-returning function that takes a void pointer
 		using Void_fn = std::function<void(void*)>;
 			/// Alias for the mapping of method names to the method
-		using MethodTable_t = std::unordered_map<std::string, Void_fn>;
+		using MethodTable_t = std::unordered_map<MethodTable *, std::unordered_map<std::string, Void_fn>>;
 			/// Alias for the list of method names and their associated methods
 		using MethodList_t = std::vector<std::tuple<std::string, Void_fn>>;
 
@@ -129,7 +129,7 @@ namespace Tools
 		// Members              ///////////////////////
 
 			/// Object mapping a string to a function
-		MethodTable_t m_Table;
+		static MethodTable_t s_Table;
 
 	public:
 
@@ -186,7 +186,7 @@ namespace Tools
 		{
 			using tuple = std::tuple<Args...>;
 			tuple params(std::forward<Args>(args)...);
-			m_Table.at(fn)(reinterpret_cast<void*>(&params));
+			s_Table.at(this).at(fn)(reinterpret_cast<void*>(&params));
 		}
 
 		// Accossors/Mutators   ///////////////////////
@@ -237,4 +237,4 @@ namespace Tools
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __METHODTABLE_HPP
+#endif // __OCAE_METHODTABLE_HPP

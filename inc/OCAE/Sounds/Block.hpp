@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __BLOCK_HPP
-#define __BLOCK_HPP
+#ifndef __OCAE_BLOCK_HPP
+#define __OCAE_BLOCK_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -61,11 +61,8 @@ namespace Sound
 		ModBasePtr m_Modifier;
 			/// The interactor used by this Block
 		Interaction_f m_Interaction;
-
 			/// The input sample
 		StereoData m_Input;
-			/// The output sample
-		StereoData m_Output;
 
 	public:
 
@@ -139,24 +136,22 @@ namespace Sound
 		\param input
 			The input.
 		***********************************************************************/
-		void PrimeInput(StereoData input);
-
-		/*! ********************************************************************
-		\brief
-			Returns the output of the last Process loop.
-
-		\return
-			The most recent output.
-		***********************************************************************/
-		StereoData LastOutput();
+		inline void PrimeInput(StereoData input)
+		{
+			Left(m_Input) += Left(input);
+			Right(m_Input) += Right(input);
+		};
 
 		// Functions            ///////////////////////
 
 		/*! ********************************************************************
 		\brief
 			Processes the managed objects.
+
+		\return
+			The processed sample.
 		***********************************************************************/
-		void Process();
+		StereoData Process();
 
 	private:
 
@@ -171,4 +166,4 @@ namespace Sound
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __BLOCK_HPP
+#endif // __OCAE_BLOCK_HPP

@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __EQUALIZER_HPP
-#define __EQUALIZER_HPP
+#ifndef __OCAE_EQUALIZER_HPP
+#define __OCAE_EQUALIZER_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -142,7 +142,7 @@ namespace Modifier
 		\return
 			The filtered sample.
 		***********************************************************************/
-		virtual StereoData FilterSample(StereoData const & input);
+		virtual StereoData Process(StereoData const & input);
 
 		/*! ********************************************************************
 		\brief
@@ -198,4 +198,4 @@ namespace Modifier
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __EQUALIZER_HPP
+#endif // __OCAE_EQUALIZER_HPP

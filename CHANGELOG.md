@@ -3,6 +3,9 @@
 ## Version 1.0.0
 
 * Finished documentation. More updates to the documentation will happen over time to add more detail and examples.
+* Finished writing all tests.
+* Rewrote the Sound system to a simpler, faster interface.
+* Changed MethodTable behavior to be faster.
 
 ## Version 0.9.0
 

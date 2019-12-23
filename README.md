@@ -25,11 +25,11 @@ Currently there is no option to disable it if it isn't needed, but this may be a
 
 # Usage
 
-It should be noted that the factories within this library use std::shared_ptr, which means that any pointer-level copying will not copy the managed objects. This means that improper care of copying could yield to, for example, a generator running twice per process loop which is likely not the intended use. This could be fairly easily mitigated however by modifying the define in Macro.hpp and rebuilding the project.
+It should be noted that the factories within this library use std::shared_ptr, which means that any pointer-level copying will not copy the managed objects. This means that improper care of copying could yield to, for example, a generator running twice per process loop which is likely not the intended use. This could be fairly easily mitigated however by modifying the define in Macro.hpp or adding your own define before it and rebuilding the project.
 
 # Notes
 
-The project will build the executibles and copy the necessary shared libs to repository root/bin for easy access of the binaries.
+The project will build the executibles and copy the necessary shared libs (if any) to repo/bin for easy access of the binaries.
 
 # Future Expansion
 

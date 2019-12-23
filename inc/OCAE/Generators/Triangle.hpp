@@ -7,8 +7,8 @@
 \copyright        Copyright © 2019 Chyler Morrison
 *******************************************************************************/
 
-#ifndef __TRIANGLE_HPP
-#define __TRIANGLE_HPP
+#ifndef __OCAE_TRIANGLE_HPP
+#define __OCAE_TRIANGLE_HPP
 
 // Include Files                ////////////////////////////////////////////////
 
@@ -108,6 +108,15 @@ namespace Generator
 		***********************************************************************/
 		void SetFrequency(Math_t freq);
 
+		/*! ********************************************************************
+		\brief
+			Gets a frequency.
+
+		\return
+			The frequency.
+		***********************************************************************/
+		Math_t GetFrequency() const;
+
 		// Functions            ///////////////////////
 
 		/*! ********************************************************************
@@ -117,7 +126,7 @@ namespace Generator
 		\return
 			The stereo sample data.1
 		***********************************************************************/
-		virtual StereoData SendSample(void);
+		virtual StereoData Process(void);
 
 		/*! ********************************************************************
 		\brief
@@ -162,4 +171,4 @@ namespace Generator
 
 // Public Functions             ////////////////////////////////////////////////
 
-#endif // __TRIANGLE_HPP
+#endif // __OCAE_TRIANGLE_HPP
