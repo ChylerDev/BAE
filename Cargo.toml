@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 riff = "0.1"
 rand = "0.7"
+arr_macro = "0.1"

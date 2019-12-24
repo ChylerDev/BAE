@@ -1,3 +1,5 @@
+pub mod generator;
+
 pub type MathT = f64;
 pub type SampleT = f32;
 
