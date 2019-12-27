@@ -12,7 +12,7 @@ impl Noise {
 }
 
 impl Generator for Noise {
-    pub fn Process(&self) -> StereoData {
+    pub fn process(&self) -> StereoData {
         StereoData::from_mono(
             self.engine.gen()*2.0-1.0
         )

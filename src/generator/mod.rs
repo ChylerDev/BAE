@@ -1,8 +1,8 @@
-pub mod sine;
+use super::*;
 
 pub trait Generator {
     /// Generates a rendered audio sample
-    pub fn Process(&self) -> StereoData {
-        StereoData::default()
-    }
+    fn process(&mut self) -> StereoData;
 }
+
+pub mod sine;

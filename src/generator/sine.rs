@@ -1,52 +1,55 @@
-use arr_macro::arr;
+use lazy_static::lazy_static;
+use super::*;
 
-struct Sine {
+const WAVETABLE_FREQ:u64 = 10;
+const WAVETABLE_SIZE:u64 = SAMPLE_RATE/WAVETABLE_FREQ;
+
+lazy_static! {
+    static ref WAVETABLE: [MathT; WAVETABLE_SIZE as usize] = {
+        let mut wt = [0.0 ; WAVETABLE_SIZE as usize];
+        for i in 0..WAVETABLE_SIZE {
+            wt[i as usize] = MathT::sin(2.0*std::f64::consts::PI*INV_SAMPLE_RATE*(WAVETABLE_FREQ as MathT)*(i as MathT));
+        }
+        wt
+    };
+}
+
+pub struct Sine {
     ind:MathT,
     inc:MathT,
 }
 
-const WAVETABLE_FREQ:u64 = 10;
-const WAVETABLE_SIZE:u64 = SAMPLE_RATE/WAVETABLE_FREQ;
-static wavetable: [SampleT; WAVETABLE_SIZE] = arr![GenWavetable(); WAVETABLE_SIZE];
-
 impl Sine {
-    pub fn new(MathT f) -> Self {
+    pub fn new(f: MathT) -> Self {
         Sine{
             ind: 0.0,
-            inc: f/WAVETABLE_FREQ,
+            inc: f/(WAVETABLE_FREQ as MathT),
         }
     }
 
-    pub fn SetFrequency(&mut self, f: MathT) {
-        self.inc = f / WAVETABLE_FREQ;
+    pub fn set_frequency(&mut self, f: MathT) {
+        self.inc = f / (WAVETABLE_FREQ as MathT);
     }
 
-    pub fn GetFrequency(&self) -> MathT {
-        self.inc * WAVETABLE_FREQ
+    pub fn get_frequency(&self) -> MathT {
+        self.inc * (WAVETABLE_FREQ as MathT)
     }
 }
 
 impl Generator for Sine {
-    pub fn Process(&self) -> StereoData {
+    fn process(&mut self) -> StereoData {
         let k = MathT::floor(self.ind);
         let g:MathT = self.ind - k;
+        let k = k as usize;
 
-        let y = ((1.0-g)*wavetable[k] + g*wavetable[k+1]) as SampleT;
+        let y = ((1.0-g)*WAVETABLE[k] + g*WAVETABLE[k+1]) as SampleT;
 
         self.ind += self.inc;
 
-        if self.ind >= WAVETABLE_SIZE-1 {
-            self.ind -= WAVETABLE_SIZE;
+        if self.ind >= (WAVETABLE_SIZE as MathT)-1.0 {
+            self.ind -= WAVETABLE_SIZE as MathT;
         }
 
-        y
+        StereoData::from_mono(y)
     }
-}
-
-static mut i:u64 = 0;
-fn GenWavetable() -> SampleT{
-    let s = SampleT::sin(2*SampleT::consts::PI*INV_SAMPLE_RATE*WAVETABLE_FREQ*unsafe{i});
-    unsafe{i += 1};
-
-    s
 }
