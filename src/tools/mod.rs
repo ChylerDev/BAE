@@ -114,3 +114,5 @@ pub fn write_wav(track:TrackT, filename:String) {
 
     riff::write_chunk(&mut f, &r).unwrap();
 }
+
+pub mod resampler;
