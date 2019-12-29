@@ -27,21 +27,14 @@ pub struct Sine {
     inc:MathT,
 }
 
-impl Sine {
-    /// Creates a new sine object for the given frequency.
-    /// 
-    /// # Parameters
-    /// 
-    /// * `f` - The frequency for the new object.
-    pub fn new(f: MathT) -> Self {
+impl FreqMod for Sine {
+    fn new(f: MathT) -> Self {
         Sine{
             ind: 0.0,
             inc: f/(WAVETABLE_FREQ as MathT),
         }
     }
-}
 
-impl FreqMod for Sine {
     fn set_frequency(&mut self, f: MathT) {
         self.inc = f / (WAVETABLE_FREQ as MathT);
     }

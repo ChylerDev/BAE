@@ -12,21 +12,14 @@ pub struct Sawtooth {
     inc: SampleT,
 }
 
-impl Sawtooth {
-    /// Creates a new sawtooth object for the given frequency.
-    /// 
-    /// # Parameters
-    /// 
-    /// * `f` - The frequency for the new object
-    pub fn new(f: MathT) -> Sawtooth {
+impl FreqMod for Sawtooth {
+    fn new(f: MathT) -> Self {
         Sawtooth {
             irate: 2.0*f*INV_SAMPLE_RATE,
             inc: 0.0,
         }
     }
-}
 
-impl FreqMod for Sawtooth {
     fn set_frequency(&mut self, f: MathT) {
         self.irate = 2.0*f*INV_SAMPLE_RATE;
     }

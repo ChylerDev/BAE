@@ -6,6 +6,13 @@
 use super::*;
 
 pub trait FreqMod {
+    /// Creates a new object for the given frequency.
+    /// 
+    /// # Parameters
+    /// 
+    /// * `f` - The frequency for the new object
+    fn new(f: MathT) -> Self;
+
     /// Sets the frequency of the given object.
     /// 
     /// # Parameters
@@ -22,6 +29,8 @@ pub trait Generator {
     fn process(&mut self) -> StereoData;
 }
 
-pub mod sine;
 pub mod noise;
 pub mod sawtooth;
+pub mod sine;
+pub mod square;
+pub mod triangle;
