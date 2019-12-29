@@ -23,7 +23,7 @@ mod tests {
         use ocae::generators::Generator;
         use ocae::generators::sawtooth::*;
 
-        let mut s = Sine::new(440.0);
+        let mut s = Sawtooth::new(440.0);
 
         let mut t = ocae::TrackT::new();
 

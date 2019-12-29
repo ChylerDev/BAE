@@ -1,6 +1,6 @@
-/// # Sawtooth
-/// 
-/// A sawtooth sample generator.
+//! # Sawtooth
+//! 
+//! A sawtooth sample generator.
 
 use super::*;
 use super::FreqMod;
@@ -18,9 +18,9 @@ impl Sawtooth {
     /// # Parameters
     /// 
     /// * `f` - The frequency for the new object
-    fn new(f: MathT) -> Sawtooth {
+    pub fn new(f: MathT) -> Sawtooth {
         Sawtooth {
-            irate: 2*f*INV_SAMPLE_RATE,
+            irate: 2.0*f*INV_SAMPLE_RATE,
             inc: 0.0,
         }
     }
@@ -43,7 +43,7 @@ impl Generator for Sawtooth {
         self.inc += self.irate as SampleT;
 
         if self.inc >= 1.0 {
-            self.inc -= 2;
+            self.inc -= 2.0;
         }
 
         StereoData::from_mono(y)

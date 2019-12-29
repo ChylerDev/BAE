@@ -1,7 +1,7 @@
-/// # Generators
-/// 
-/// Module including many of the common types of basic sound types, including
-/// sine, sawtooth, square, white noise, and more.
+//! # Generators
+//! 
+//! Module including many of the common types of basic sound types, including
+//! sine, sawtooth, square, white noise, and more.
 
 use super::*;
 

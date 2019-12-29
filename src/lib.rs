@@ -1,7 +1,7 @@
-/// # OCAE
-/// 
-/// The Overly Complicated Audio Engine.
-/// A crate for processing audio samples for various uses.
+//! # OCAE
+//! 
+//! The Overly Complicated Audio Engine.
+//! A crate for processing audio samples for various uses.
 
 use std::vec::Vec;
 

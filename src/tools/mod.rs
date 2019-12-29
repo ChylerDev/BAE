@@ -1,6 +1,6 @@
-/// # Tools
-/// 
-/// Module for audio related functions that make life easier.
+//! # Tools
+//! 
+//! Module for audio related functions that make life easier.
 
 use super::*;
 use std::vec::Vec;
@@ -29,7 +29,7 @@ impl WAVHeader {
     /// # Example
     /// 
     /// ```
-    /// let h = WAVHeader::new(1, 2, ocae::SAMPLE_RATE as u32, 16);
+    /// let h = ocae::tools::WAVHeader::new(1, 2, ocae::SAMPLE_RATE as u32, 16);
     /// ```
     pub fn new(af:u16, cc:u16, r:u32, bps:u16) -> WAVHeader {
         WAVHeader {
@@ -49,7 +49,7 @@ impl Into<Vec<u8>> for WAVHeader {
     /// # Example
     /// 
     /// ```
-    /// let h_vec:Vec<u8> = WAVHeader::new(1, 2, ocae::SAMPLE_RATE as u32, 16).into();
+    /// let h_vec:Vec<u8> = ocae::tools::WAVHeader::new(1, 2, ocae::SAMPLE_RATE as u32, 16).into();
     /// ```
     fn into(self) -> Vec<u8> {
         let mut v = Vec::new();
@@ -76,17 +76,17 @@ impl Into<Vec<u8>> for WAVHeader {
 /// # Example
 /// 
 /// ```
-/// let mut n = Noise::new();
+/// use ocae::generators::Generator;
+/// let mut n = ocae::generators::noise::Noise::new();
 /// let mut t = ocae::TrackT::new();
 ///
 /// for _ in 0..ocae::SAMPLE_RATE {
 ///     t.push(n.process());
 /// }
 ///
-/// ocae::tools::write_wav(t, String::from("some/path/noise.wav"));
+/// ocae::tools::write_wav(t, String::from(".junk/some/path/noise.wav"));
 /// ```
 pub fn write_wav(track:TrackT, filename:String) {
-    use riff;
     use std::fs::File;
 
     let w_id = riff::ChunkId::new("WAVE").unwrap();

@@ -1,6 +1,6 @@
-/// # Sine
-/// 
-/// A sinusoidal sample generator.
+//! # Sine
+//! 
+//! A sinusoidal sample generator.
 
 use lazy_static::lazy_static;
 use super::*;

@@ -1,6 +1,6 @@
-/// # Noise
-/// 
-/// A white noise generator.
+//! # Noise
+//! 
+//! A white noise generator.
 
 use super::*;
 use rand;
