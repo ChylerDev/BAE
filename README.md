@@ -2,7 +2,13 @@
 
 An audio engine designed to produce audio samples using basic generators (sound sources) and modifiers (filters).
 
-# Building
+# Rust and C++
+
+This library is programmed and maintained in parallel in both Rust and C++, and can each be found in their respective branches.
+
+# C++
+
+## Building
 
 Building is done through CMake, as it is the solition I am familiar with enough to set up for multi-platform C++ projects.
 
@@ -17,17 +23,17 @@ Once you're ready to generated the project files, use the Generate command.
 
 Currently the library has only been tested on Windows 10 (Visual Studio 2019) and Ubuntu (WSL2, GCC 7.4.0/LLVM clang 6.0.0)
 
-# Dependencies
+## Dependencies
 
 This project uses the [RIFF-Util library](https://gitlab.com/ChylerDev/RIFF-Util) to read and write WAVE data structures (whether loaded from disk or not).
 
 Currently there is no option to disable it if it isn't needed, but this may be an added feature in the future.
 
-# Usage
+## Usage
 
 It should be noted that the factories within this library use std::shared_ptr, which means that any pointer-level copying will not copy the managed objects. This means that improper care of copying could yield to, for example, a generator running twice per process loop which is likely not the intended use. This could be fairly easily mitigated however by modifying the define in Macro.hpp or adding your own define before it and rebuilding the project.
 
-# Notes
+## Notes
 
 The project will build the executibles and copy the necessary shared libs (if any) to repo/bin for easy access of the binaries.
 

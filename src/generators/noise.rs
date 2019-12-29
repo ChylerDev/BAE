@@ -1,12 +1,18 @@
+/// # Noise
+/// 
+/// A white noise generator.
+
 use super::*;
 use rand;
 
-#[derive(Default)]
+#[derive(Default,Clone)]
+/// Struct for generating white noise audio samples.
 pub struct Noise {
     engine: rand::rngs::ThreadRng,
 }
 
 impl Noise {
+    /// Creates a new white noise generator.
     pub fn new() -> Self {
         Noise{
             engine: rand::thread_rng()

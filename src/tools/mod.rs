@@ -1,6 +1,12 @@
+/// # Tools
+/// 
+/// Module for audio related functions that make life easier.
+
 use super::*;
 use std::vec::Vec;
 
+/// Structure for the "fmt " chunk of wave files, specifying key information
+/// about the enclosed data.
 pub struct WAVHeader {
     audio_format:u16,
     channel_count:u16,
@@ -11,6 +17,20 @@ pub struct WAVHeader {
 }
 
 impl WAVHeader {
+    /// Creates a new WAVHeader object.
+    /// 
+    /// # Parameters
+    /// 
+    /// * `af` - Audio format. Generally 1.
+    /// * `cc` - Channel count, the number of channels each sample has. Generally 2.
+    /// * `r` - Sampling rate.
+    /// * `bps` - Number of bits in each (sub-channel) sample. Generally 8, 16, or 32.
+    /// 
+    /// # Example
+    /// 
+    /// ```
+    /// let h = WAVHeader::new(1, 2, ocae::SAMPLE_RATE as u32, 16);
+    /// ```
     pub fn new(af:u16, cc:u16, r:u32, bps:u16) -> WAVHeader {
         WAVHeader {
             audio_format: af,
@@ -24,6 +44,13 @@ impl WAVHeader {
 }
 
 impl Into<Vec<u8>> for WAVHeader {
+    /// Converts the WAVHeader object into a vector of its bytes
+    /// 
+    /// # Example
+    /// 
+    /// ```
+    /// let h_vec:Vec<u8> = WAVHeader::new(1, 2, ocae::SAMPLE_RATE as u32, 16).into();
+    /// ```
     fn into(self) -> Vec<u8> {
         let mut v = Vec::new();
 
@@ -38,10 +65,30 @@ impl Into<Vec<u8>> for WAVHeader {
     }
 }
 
-use riff;
-use std::fs::File;
-
+/// Takes the given track and filename and writes the track data to the wavefile
+/// at the given location.
+/// 
+/// # Parameters
+/// 
+/// * `track` - The track to write.
+/// * `filename` - The path to the file to write to.
+/// 
+/// # Example
+/// 
+/// ```
+/// let mut n = Noise::new();
+/// let mut t = ocae::TrackT::new();
+///
+/// for _ in 0..ocae::SAMPLE_RATE {
+///     t.push(n.process());
+/// }
+///
+/// ocae::tools::write_wav(t, String::from("some/path/noise.wav"));
+/// ```
 pub fn write_wav(track:TrackT, filename:String) {
+    use riff;
+    use std::fs::File;
+
     let w_id = riff::ChunkId::new("WAVE").unwrap();
 
     let h_id = riff::ChunkId::new("fmt ").unwrap();
@@ -58,7 +105,11 @@ pub fn write_wav(track:TrackT, filename:String) {
 
     let r = riff::Chunk::new_riff(w_id, vec![h_dat, d_dat]);
 
-    std::fs::create_dir_all(String::from(filename.split_at(filename.rfind('/').unwrap()).0)).unwrap();
+    match filename.rfind('/') {
+        Some(i) => std::fs::create_dir_all(String::from(filename.split_at(i).0)).unwrap(),
+        None => ()
+    };
+
     let mut f = File::create(filename).unwrap();
 
     riff::write_chunk(&mut f, &r).unwrap();

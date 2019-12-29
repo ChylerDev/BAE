@@ -1,10 +1,17 @@
+/// # Sine
+/// 
+/// A sinusoidal sample generator.
+
 use lazy_static::lazy_static;
 use super::*;
 
+/// The frequency used by the wavetable.
 const WAVETABLE_FREQ:u64 = 10;
+/// The number of elements in the wavetable.
 const WAVETABLE_SIZE:u64 = SAMPLE_RATE/WAVETABLE_FREQ;
 
 lazy_static! {
+    /// Lazy static initialization of the static WAVETABLE object.
     static ref WAVETABLE: [MathT; WAVETABLE_SIZE as usize] = {
         let mut wt = [0.0 ; WAVETABLE_SIZE as usize];
         for i in 0..WAVETABLE_SIZE {
@@ -14,24 +21,32 @@ lazy_static! {
     };
 }
 
+/// Struct for generating sinusoidal samples.
 pub struct Sine {
     ind:MathT,
     inc:MathT,
 }
 
 impl Sine {
+    /// Creates a new sine object for the given frequency.
+    /// 
+    /// # Parameters
+    /// 
+    /// * `f` - The frequency for the new object.
     pub fn new(f: MathT) -> Self {
         Sine{
             ind: 0.0,
             inc: f/(WAVETABLE_FREQ as MathT),
         }
     }
+}
 
-    pub fn set_frequency(&mut self, f: MathT) {
+impl FreqMod for Sine {
+    fn set_frequency(&mut self, f: MathT) {
         self.inc = f / (WAVETABLE_FREQ as MathT);
     }
 
-    pub fn get_frequency(&self) -> MathT {
+    fn get_frequency(&self) -> MathT {
         self.inc * (WAVETABLE_FREQ as MathT)
     }
 }
