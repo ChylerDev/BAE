@@ -6,3 +6,4 @@ pub trait Generator {
 }
 
 pub mod sine;
+pub mod noise;

@@ -1,6 +1,9 @@
+use super::*;
+use rand;
+
 #[derive(Default)]
-struct Noise {
-    engine: rand::ThreadRng
+pub struct Noise {
+    engine: rand::rngs::ThreadRng,
 }
 
 impl Noise {
@@ -12,9 +15,11 @@ impl Noise {
 }
 
 impl Generator for Noise {
-    pub fn process(&self) -> StereoData {
+    fn process(&mut self) -> StereoData {
+        use rand::Rng;
+
         StereoData::from_mono(
-            self.engine.gen()*2.0-1.0
+            self.engine.gen::<SampleT>()*2.0-1.0
         )
     }
 }

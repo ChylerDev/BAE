@@ -1,6 +1,6 @@
 use std::vec::Vec;
 
-pub mod generator;
+pub mod generators;
 pub mod tools;
 
 pub type MathT = f64;

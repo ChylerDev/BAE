@@ -58,6 +58,7 @@ pub fn write_wav(track:TrackT, filename:String) {
 
     let r = riff::Chunk::new_riff(w_id, vec![h_dat, d_dat]);
 
+    std::fs::create_dir_all(String::from(filename.split_at(filename.rfind('/').unwrap()).0)).unwrap();
     let mut f = File::create(filename).unwrap();
 
     riff::write_chunk(&mut f, &r).unwrap();
