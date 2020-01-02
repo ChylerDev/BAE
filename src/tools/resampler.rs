@@ -2,7 +2,7 @@ use super::*;
 
 type IndexT = SampleT;
 
-struct Resampler {
+pub struct Resampler {
     data: TrackT,
     ind: IndexT,
     inc: SampleT,

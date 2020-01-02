@@ -59,6 +59,14 @@ impl StereoData {
     pub fn as_mono(&self) -> SampleT {
         (self.left + self.right)/SampleT::sqrt(0.5)
     }
+
+    pub fn left(&self) -> SampleT {
+        self.left
+    }
+
+    pub fn right(&self) -> SampleT {
+        self.right
+    }
 }
 
 impl Into<Vec<u8>> for StereoData {

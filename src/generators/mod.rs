@@ -34,3 +34,4 @@ pub mod sawtooth;
 pub mod sine;
 pub mod square;
 pub mod triangle;
+pub mod wav;
