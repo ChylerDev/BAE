@@ -71,6 +71,26 @@ impl StereoData {
 	}
 }
 
+impl std::ops::Mul<SampleT> for StereoData {
+	type Output = StereoData;
+	fn mul(self, rhs: SampleT) -> Self::Output {
+		StereoData {
+			left: self.left * rhs,
+			right: self.right * rhs,
+		}
+	}
+}
+
+impl std::ops::Mul<MathT> for StereoData {
+	type Output = StereoData;
+	fn mul(self, rhs: MathT) -> Self::Output {
+		StereoData {
+			left:(self.left as MathT * rhs) as SampleT,
+			right:(self.right as MathT * rhs) as SampleT,
+		}
+	}
+}
+
 impl Into<Vec<u8>> for StereoData {
 	/// Converts the StereoData into a vector of bytes.
 	fn into(self) -> Vec<u8> {
@@ -163,6 +183,18 @@ pub fn sample_from_i16(v:[u8;2]) -> SampleT {
 /// * `v` - The raw bytes to convert from.
 pub fn sample_from_i24(v:[u8;3]) -> SampleT {
 	(i32::from_le_bytes([v[0],v[1],v[2],0]) as SampleT) / (0x800000 as SampleT)
+}
+
+/// Converts a decibel value to a linear gain value.
+/// This assumes that 0dB is unity gain, and ~-6bB is 0.5 gain
+pub fn db_linear(db:MathT) -> MathT {
+	10.0_f64.powf(db/20.0)
+}
+
+/// Converts a linear gain value to a decibel value.
+/// This assumes that 0dB is unity gain, and ~-6bB is 0.5 gain
+pub fn linear_db(g:MathT) -> MathT {
+	20.0 * g.log10()
 }
 
 pub mod generators;
