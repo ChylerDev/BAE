@@ -29,6 +29,7 @@ pub trait Generator {
 	fn process(&mut self) -> StereoData;
 }
 
+pub mod empty;
 pub mod noise;
 pub mod sawtooth;
 pub mod sine;

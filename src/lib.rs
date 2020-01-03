@@ -32,7 +32,7 @@ impl StereoData {
 	/// 
 	/// * `l` - the left audio sample.
 	/// * `r` - the right audio sapmle.
-	pub fn from(l:SampleT, r:SampleT) -> StereoData {
+	pub fn from_stereo(l:SampleT, r:SampleT) -> StereoData {
 		StereoData{
 			left:l,
 			right:r
@@ -60,10 +60,12 @@ impl StereoData {
 		(self.left + self.right)/SampleT::sqrt(0.5)
 	}
 
+	/// Returns the left audio sample.
 	pub fn left(&self) -> SampleT {
 		self.left
 	}
 
+	/// Returns the right audio sample.
 	pub fn right(&self) -> SampleT {
 		self.right
 	}
@@ -86,6 +88,81 @@ impl Into<Vec<u8>> for StereoData {
 
 		v
 	}
+}
+
+impl From<[u8;2]> for StereoData {
+	/// Converts the array of 2 bytes into a StereoData object.
+	/// It is assumed that the bytes are 8-bit unsigned audio samples.
+	/// 
+	/// # Parameters
+	/// 
+	/// * `v` - The raw bytes to convert from.
+	fn from(v:[u8;2]) -> Self {
+		StereoData {
+			left: sample_from_u8([v[0]]),
+			right: sample_from_u8([v[1]])
+		}
+	}
+}
+
+impl From<[u8;4]> for StereoData {
+	/// Converts the array of 4 bytes into a StereoData object.
+	/// It is assumed that the bytes are 16-bit signed audio samples.
+	/// 
+	/// # Parameters
+	/// 
+	/// * `v` - The raw bytes to convert from.
+	fn from(v:[u8;4]) -> Self {
+		StereoData {
+			left: sample_from_i16([v[0],v[1]]),
+			right: sample_from_i16([v[2],v[3]])
+		}
+	}
+}
+
+impl From<[u8;6]> for StereoData {
+	/// Converts the array of 6 bytes into a StereoData object.
+	/// It is assumed that the bytes are 24-bit signed audio samples.
+	/// 
+	/// # Parameters
+	/// 
+	/// * `v` - The raw bytes to convert from.
+	fn from(v:[u8;6]) -> Self {
+		StereoData {
+			left:  sample_from_i24([v[0],v[1],v[2]]),
+			right: sample_from_i24([v[3],v[4],v[5]])
+		}
+	}
+}
+
+/// Converts a raw bytes to a Sample
+/// It is assumed the bytes are 8-bit unsigned audio samples.
+/// 
+/// # Parameters
+/// 
+/// * `v` - The raw bytes to convert from.
+pub fn sample_from_u8(v:[u8;1]) -> SampleT {
+	(v[0] as SampleT - 128.0) / 128.0
+}
+
+/// Converts raw bytes to a Sample
+/// It is assumed that the bytes are 16-bit signed audio samples.
+/// 
+/// # Parameters
+/// 
+/// * `v` - The raw bytes to convert from.
+pub fn sample_from_i16(v:[u8;2]) -> SampleT {
+	(i16::from_le_bytes(v) as SampleT) / (0x8000 as SampleT)
+}
+
+/// Converts raw bytes to a Sample
+/// It is assumed that the bytes are 24-bit signed audio samples.
+/// 
+/// # Parameters
+/// 
+/// * `v` - The raw bytes to convert from.
+pub fn sample_from_i24(v:[u8;3]) -> SampleT {
+	(i32::from_le_bytes([v[0],v[1],v[2],0]) as SampleT) / (0x800000 as SampleT)
 }
 
 pub mod generators;

@@ -20,7 +20,7 @@ mod tests {
 		use ocae::StereoData;
 		use ocae::tools::resampler::*;
 
-		let sam = vec![StereoData::from(0.0, 0.0), StereoData::from(1.0,1.0), StereoData::from(2.0, 2.0), StereoData::from(3.0, 3.0)];
+		let sam = vec![StereoData::from_stereo(0.0, 0.0), StereoData::from_stereo(1.0,1.0), StereoData::from_stereo(2.0, 2.0), StereoData::from_stereo(3.0, 3.0)];
 
 		let mut r = Resampler::new(sam.clone(), ocae::SAMPLE_RATE/2, 0,0);
 		for i in 0..7 {

@@ -3,6 +3,13 @@ extern crate ocae;
 #[cfg(test)]
 mod tests {
 	#[test]
+	fn test_empty() {
+		use ocae::generators::empty::*;
+
+		run_generator(&mut Empty::new(), &String::from("empty.wav"));
+	}
+
+	#[test]
 	fn test_noise() {
 		use ocae::generators::noise::*;
 

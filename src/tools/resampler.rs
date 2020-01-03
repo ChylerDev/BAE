@@ -1,7 +1,15 @@
+//! # Resampler
+//! 
+//! Trans codes the given audio signal from it's source sampling rate to the
+//! sampling rate OCAE runs at.
+
 use super::*;
 
+/// Type used for fractional indexing.
 type IndexT = SampleT;
 
+/// Struct tracking all of the data required for resampling, with some extra
+/// features like playback speed and looping.
 pub struct Resampler {
 	data: TrackT,
 	ind: IndexT,
@@ -12,7 +20,23 @@ pub struct Resampler {
 }
 
 impl Resampler {
-	pub fn new(data:TrackT, source_sample_rate: u64, loop_start: u64, loop_end: u64) -> Self {
+	/// Creates a new Resampler object.
+	/// 
+	/// # Parameters
+	/// 
+	/// * `data` - The track containing the original audio data to resample.
+	/// * `source_sample_rate` - The sample rate the original data was recorded at.
+	/// * `loop_start` - The start point of looping.
+	/// * `loop_end` - The end point of looping. If this value is 0, no looping is assumed.
+	/// 
+	/// If `loop_end` is less than `loop_start`, they are swapped.
+	pub fn new(data:TrackT, source_sample_rate: u64, mut loop_start: u64, mut loop_end: u64) -> Self {
+		if loop_end < loop_start {
+			let tmp = loop_start;
+			loop_start = loop_end;
+			loop_end = tmp;
+		}
+
 		Resampler {
 			data,
 			ind: 0.0,
@@ -23,14 +47,17 @@ impl Resampler {
 		}
 	}
 
+	/// Sets the playback speed.
 	pub fn set_playback_speed(&mut self, speed: MathT) {
 		self.speed = speed;
 	}
 
+	/// Returns the playback speed.
 	pub fn get_playback_speed(&self) -> MathT {
 		self.speed
 	}
 
+	/// Calculates and returns the next sample.
 	pub fn process(&mut self) -> StereoData {
 		if self.ind as usize >= self.data.len() && self.loop_end == 0 {
 			return StereoData::default();
@@ -54,7 +81,7 @@ impl Resampler {
 		let l:SampleT = l_x1 + frac as SampleT * (l_x2 - l_x1);
 		let r:SampleT = r_x1 + frac as SampleT * (r_x2 - r_x1);
 
-		let y = StereoData::from(l, r);
+		let y = StereoData::from_stereo(l, r);
 
 		self.ind += self.inc * self.speed as SampleT;
 
