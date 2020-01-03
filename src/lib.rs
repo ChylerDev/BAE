@@ -198,4 +198,5 @@ pub fn linear_db(g:MathT) -> MathT {
 }
 
 pub mod generators;
+pub mod modifiers;
 pub mod tools;
