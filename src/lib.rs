@@ -72,7 +72,10 @@ impl StereoData {
 }
 
 impl std::ops::Mul<SampleT> for StereoData {
+	/// Output type of the multiplication
 	type Output = StereoData;
+
+	/// Multiplies a sample by a value. E.g. scaling the sample by a gain amount.
 	fn mul(self, rhs: SampleT) -> Self::Output {
 		StereoData {
 			left: self.left * rhs,
@@ -82,7 +85,10 @@ impl std::ops::Mul<SampleT> for StereoData {
 }
 
 impl std::ops::Mul<MathT> for StereoData {
+	/// Output type of the multiplication
 	type Output = StereoData;
+
+	/// Multiplies a sample by a value. E.g. scaling the sample by a gain amount.
 	fn mul(self, rhs: MathT) -> Self::Output {
 		StereoData {
 			left:(self.left as MathT * rhs) as SampleT,
