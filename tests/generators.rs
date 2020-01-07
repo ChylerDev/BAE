@@ -48,8 +48,7 @@ mod tests {
 		run_generator(&mut Triangle::new(440.0), &String::from("triangle.wav"));
 	}
 
-	fn run_generator(g: &mut impl ocae::generators::Generator, file:&String)
-	{
+	fn run_generator(g: &mut impl ocae::generators::Generator, file:&String) {
 		let mut t = ocae::TrackT::new();
 	
 		for _ in 0..ocae::SAMPLE_RATE {

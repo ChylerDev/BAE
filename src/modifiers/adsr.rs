@@ -39,6 +39,7 @@ impl ADSR {
 		}
 	}
 
+	/// Changes adsr state to release
 	pub fn release(&mut self) {
 		self.state = ADSRState::Release;
 	}
