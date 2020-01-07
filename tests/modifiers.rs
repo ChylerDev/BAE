@@ -31,10 +31,26 @@ mod tests {
 		ocae::tools::write_wav(t, f).unwrap();
 	}
 
-	fn run_modifier(m: &mut impl ocae::modifiers::Modifier, file:String) {
-		use ocae::generators::{Generator, FreqMod, sine::*};
+	#[test]
+	fn test_bandpass() {
+		use ocae::modifiers::bandpass::*;
 
-		let mut g = Sine::new(440.0);
+		let mut bp1 = BandPass::from_corners((100.0,200.0));
+		let f1 = String::from("bandpass_100_200.wav");
+		let mut bp2 = BandPass::from_corners((200.0,225.0));
+		let f2 = String::from("bandpass_200_225.wav");
+		let mut bp3 = BandPass::from_corners((20.0,20000.0));
+		let f3 = String::from("bandpass_20_20k.wav");
+
+		run_modifier(&mut bp1, f1);
+		run_modifier(&mut bp2, f2);
+		run_modifier(&mut bp3, f3);
+	}
+
+	fn run_modifier(m: &mut impl ocae::modifiers::Modifier, file:String) {
+		use ocae::generators::{Generator, noise::*};
+
+		let mut g = Noise::new();
 		let mut t = ocae::TrackT::new();
 
 		for _ in 0..ocae::SAMPLE_RATE {
