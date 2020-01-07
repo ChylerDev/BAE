@@ -58,6 +58,6 @@ mod tests {
 		let mut f = String::from(".junk/generators/");
 		f.push_str(file.as_str());
 
-		ocae::tools::write_wav(t, f).unwrap();
+		ocae::tools::write_wav(t, f.as_str()).unwrap();
 	}
 }

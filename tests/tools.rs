@@ -12,7 +12,7 @@ mod tests {
 			t.push(ocae::StereoData::from_mono((2.0 * std::f32::consts::PI * 440.0 * i as f32 * ocae::INV_SAMPLE_RATE as f32).sin()));
 		}
 
-		write_wav(t, String::from(".junk/tools/wavwrite.wav")).unwrap();
+		write_wav(t, ".junk/tools/wavwrite.wav").unwrap();
 	}
 
 	#[test]

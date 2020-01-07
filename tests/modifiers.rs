@@ -27,7 +27,7 @@ mod tests {
 			t.push(a.process(g.process()));
 		}
 
-		let f = String::from(".junk/modifiers/adsr.wav");
+		let f = ".junk/modifiers/adsr.wav";
 		ocae::tools::write_wav(t, f).unwrap();
 	}
 
@@ -36,18 +36,27 @@ mod tests {
 		use ocae::modifiers::bandpass::*;
 
 		let mut bp1 = BandPass::from_corners((100.0,200.0));
-		let f1 = String::from("bandpass_100_200.wav");
+		let f1 = "bandpass_100_200.wav";
 		let mut bp2 = BandPass::from_corners((200.0,225.0));
-		let f2 = String::from("bandpass_200_225.wav");
+		let f2 = "bandpass_200_225.wav";
 		let mut bp3 = BandPass::from_corners((20.0,20000.0));
-		let f3 = String::from("bandpass_20_20k.wav");
+		let f3 = "bandpass_20_20k.wav";
 
 		run_modifier(&mut bp1, f1);
 		run_modifier(&mut bp2, f2);
 		run_modifier(&mut bp3, f3);
 	}
 
-	fn run_modifier(m: &mut impl ocae::modifiers::Modifier, file:String) {
+	#[test]
+	fn test_delay() {
+		use ocae::modifiers::delay::*;
+
+		let mut d = Delay::new(std::time::Duration::from_secs_f64(0.5));
+
+		run_modifier(&mut d, "delay.wav");
+	}
+
+	fn run_modifier(m: &mut impl ocae::modifiers::Modifier, file:&str) {
 		use ocae::generators::{Generator, noise::*};
 
 		let mut g = Noise::new();
@@ -58,8 +67,8 @@ mod tests {
 		}
 
 		let mut f = String::from(".junk/modifiers/");
-		f.push_str(file.as_str());
+		f.push_str(file);
 
-		ocae::tools::write_wav(t, f).unwrap();
+		ocae::tools::write_wav(t, f.as_str()).unwrap();
 	}
 }

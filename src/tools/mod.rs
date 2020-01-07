@@ -153,9 +153,9 @@ impl From<&[u8]> for WAVHeader {
 /// 	t.push(n.process());
 /// }
 ///
-/// ocae::tools::write_wav(t, String::from(".junk/some/path/noise.wav"));
+/// ocae::tools::write_wav(t, ".junk/some/path/noise.wav");
 /// ```
-pub fn write_wav(track:TrackT, path:String) -> std::io::Result<()> {
+pub fn write_wav(track:TrackT, path: &str) -> std::io::Result<()> {
 	use std::fs::File;
 
 	match path.rfind('/') {
