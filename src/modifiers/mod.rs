@@ -15,3 +15,4 @@ pub trait Modifier {
 }
 
 pub mod adsr;
+pub mod bandpass;
