@@ -4,7 +4,7 @@ extern crate ocae;
 mod tests {
 	#[test]
 	fn test_adsr() {
-		use ocae::modifiers::{*, adsr::*};
+		use ocae::modifiers::*;
 		use std::time::Duration;
 
 		let mut a = ADSR::new(
@@ -33,7 +33,7 @@ mod tests {
 
 	#[test]
 	fn test_bandpass() {
-		use ocae::modifiers::bandpass::*;
+		use ocae::modifiers::*;
 
 		let mut bp1 = BandPass::from_corners((100.0,200.0));
 		let f1 = "bandpass_100_200.wav";
@@ -49,7 +49,7 @@ mod tests {
 
 	#[test]
 	fn test_delay() {
-		use ocae::modifiers::delay::*;
+		use ocae::modifiers::*;
 
 		let mut d = Delay::new(std::time::Duration::from_secs_f64(0.5));
 
@@ -58,8 +58,8 @@ mod tests {
 
 	#[test]
 	fn test_echo() {
-		use ocae::modifiers::{*, echo::*};
-		use ocae::generators::{*, sine::*};
+		use ocae::modifiers::*;
+		use ocae::generators::*;
 
 		let mut e = Echo::new(std::time::Duration::from_secs_f64(0.25), 0.5);
 
@@ -76,7 +76,7 @@ mod tests {
 
 	#[test]
 	fn test_highpass() {
-		use ocae::modifiers::highpass::*;
+		use ocae::modifiers::*;
 
 		let mut hp = HighPass::new(440.0, 1.0);
 
@@ -84,7 +84,7 @@ mod tests {
 	}
 
 	fn run_modifier(m: &mut impl ocae::modifiers::Modifier, file:&str) {
-		use ocae::generators::{Generator, noise::*};
+		use ocae::generators::*;
 
 		let mut g = Noise::new();
 		let mut t = ocae::TrackT::new();

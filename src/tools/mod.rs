@@ -187,3 +187,5 @@ pub fn write_wav(track:TrackT, path: &str) -> std::io::Result<()> {
 }
 
 pub mod resampler;
+
+pub use resampler::*;

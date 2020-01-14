@@ -4,46 +4,42 @@ extern crate ocae;
 mod tests {
 	#[test]
 	fn test_empty() {
-		use ocae::generators::empty::*;
+		use ocae::generators::*;
 
 		run_generator(&mut Empty::new(), &String::from("empty.wav"));
 	}
 
 	#[test]
 	fn test_noise() {
-		use ocae::generators::noise::*;
+		use ocae::generators::*;
 
 		run_generator(&mut Noise::new(), &String::from("noise.wav"));
 	}
 
 	#[test]
 	fn test_sawtooth() {
-		use ocae::generators::FreqMod;
-		use ocae::generators::sawtooth::*;
+		use ocae::generators::*;
 
 		run_generator(&mut Sawtooth::new(440.0), &String::from("sawtooth.wav"));
 	}
 
 	#[test]
 	fn test_sine() {
-		use ocae::generators::FreqMod;
-		use ocae::generators::sine::*;
+		use ocae::generators::*;
 
 		run_generator(&mut Sine::new(440.0), &String::from("sine.wav"));
 	}
 
 	#[test]
 	fn test_square() {
-		use ocae::generators::FreqMod;
-		use ocae::generators::square::*;
+		use ocae::generators::*;
 
 		run_generator(&mut Square::new(440.0), &String::from("square.wav"));
 	}
 
 	#[test]
 	fn test_triangle() {
-		use ocae::generators::FreqMod;
-		use ocae::generators::triangle::*;
+		use ocae::generators::*;
 
 		run_generator(&mut Triangle::new(440.0), &String::from("triangle.wav"));
 	}

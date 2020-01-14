@@ -4,7 +4,7 @@ extern crate ocae;
 mod tests {
 	#[test]
 	fn test_write_wav() {
-		use ocae::tools::write_wav;
+		use ocae::tools::*;
 
 		let mut t = ocae::TrackT::new();
 
@@ -18,7 +18,7 @@ mod tests {
 	#[test]
 	fn test_resampler() {
 		use ocae::StereoData;
-		use ocae::tools::resampler::*;
+		use ocae::tools::*;
 
 		let sam = vec![StereoData::from_stereo(0.0, 0.0), StereoData::from_stereo(1.0,1.0), StereoData::from_stereo(2.0, 2.0), StereoData::from_stereo(3.0, 3.0)];
 

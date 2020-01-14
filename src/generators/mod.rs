@@ -36,3 +36,11 @@ pub mod sine;
 pub mod square;
 pub mod triangle;
 pub mod wav;
+
+pub use empty::*;
+pub use noise::*;
+pub use sawtooth::*;
+pub use sine::*;
+pub use square::*;
+pub use triangle::*;
+pub use wav::*;
