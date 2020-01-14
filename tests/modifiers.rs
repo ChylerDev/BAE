@@ -56,15 +56,30 @@ mod tests {
 		run_modifier(&mut d, "delay.wav");
 	}
 
+	#[test]
+	fn test_highpass() {
+		use ocae::modifiers::highpass::*;
+
+		let mut hp = HighPass::new(440.0, 1.0);
+
+		run_modifier(&mut hp, "highpass.wav");
+	}
+
 	fn run_modifier(m: &mut impl ocae::modifiers::Modifier, file:&str) {
 		use ocae::generators::{Generator, noise::*};
 
 		let mut g = Noise::new();
 		let mut t = ocae::TrackT::new();
 
+		let before = std::time::Instant::now();
+
 		for _ in 0..ocae::SAMPLE_RATE {
 			t.push(m.process(g.process()));
 		}
+
+		let after = std::time::Instant::now();
+		let duration = after - before;
+		println!("Test generated 1s of audio in {} seconds", duration.as_secs_f32());
 
 		let mut f = String::from(".junk/modifiers/");
 		f.push_str(file);

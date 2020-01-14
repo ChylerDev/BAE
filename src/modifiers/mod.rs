@@ -18,3 +18,4 @@ pub mod adsr;
 pub mod bandpass;
 pub mod delay;
 pub mod echo;
+pub mod highpass;
