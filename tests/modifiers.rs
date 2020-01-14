@@ -57,6 +57,24 @@ mod tests {
 	}
 
 	#[test]
+	fn test_echo() {
+		use ocae::modifiers::{*, echo::*};
+		use ocae::generators::{*, sine::*};
+
+		let mut e = Echo::new(std::time::Duration::from_secs_f64(0.25), 0.5);
+
+		let mut g = Sine::new(440.0);
+		let mut t = ocae::TrackT::new();
+
+		for _ in 0..ocae::SAMPLE_RATE {
+			t.push(e.process(g.process()*0.5));
+		}
+
+		let f = ".junk/modifiers/echo.wav";
+		ocae::tools::write_wav(t, f).unwrap();
+	}
+
+	#[test]
 	fn test_highpass() {
 		use ocae::modifiers::highpass::*;
 
