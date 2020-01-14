@@ -13,7 +13,7 @@ pub type SampleT = f32;
 pub type TrackT = std::vec::Vec<StereoData>;
 
 /// The sampling rate the engine is set to run at.
-pub const SAMPLE_RATE:u64 = 48000;
+pub const SAMPLE_RATE:u64 = 48_000;
 /// The inverse of the sampling rate for easy referencing.
 pub const INV_SAMPLE_RATE:MathT = 1.0/(SAMPLE_RATE as MathT);
 
@@ -71,6 +71,42 @@ impl StereoData {
 	}
 }
 
+impl std::ops::Add<StereoData> for StereoData {
+	type Output = Self;
+
+	fn add(self, rhs: StereoData) -> Self {
+		StereoData {
+			left: self.left + rhs.left,
+			right: self.right + rhs.right,
+		}
+	}
+}
+
+impl std::ops::AddAssign<StereoData> for StereoData {
+	fn add_assign(&mut self, rhs: StereoData) {
+		self.left += rhs.left;
+		self.right += rhs.right;
+	}
+}
+
+impl std::ops::Sub<StereoData> for StereoData {
+	type Output = Self;
+
+	fn sub(self, rhs: StereoData) -> Self {
+		StereoData {
+			left: self.left - rhs.left,
+			right: self.right - rhs.right,
+		}
+	}
+}
+
+impl std::ops::SubAssign<StereoData> for StereoData {
+	fn sub_assign(&mut self, rhs: StereoData) {
+		self.left -= rhs.left();
+		self.right -= rhs.right();
+	}
+}
+
 impl std::ops::Mul<SampleT> for StereoData {
 	/// Output type of the multiplication
 	type Output = StereoData;
@@ -81,6 +117,13 @@ impl std::ops::Mul<SampleT> for StereoData {
 			left: self.left * rhs,
 			right: self.right * rhs,
 		}
+	}
+}
+
+impl std::ops::MulAssign<SampleT> for StereoData {
+	fn mul_assign(&mut self, rhs: SampleT) {
+		self.left *= rhs;
+		self.right *= rhs;
 	}
 }
 
@@ -97,18 +140,25 @@ impl std::ops::Mul<MathT> for StereoData {
 	}
 }
 
+impl std::ops::MulAssign<MathT> for StereoData {
+	fn mul_assign(&mut self, rhs: MathT) {
+		self.left *= rhs as SampleT;
+		self.right *= rhs as SampleT;
+	}
+}
+
 impl Into<Vec<u8>> for StereoData {
 	/// Converts the StereoData into a vector of bytes.
 	fn into(self) -> Vec<u8> {
 		let mut v = Vec::new();
 
 			// Converts the left sample from SampleT (f32) to i16, then to bytes
-		let n = ((self.left * 0x8000 as SampleT) as i16).to_le_bytes();
+		let n = ((self.left * 0x80_00 as SampleT) as i16).to_le_bytes();
 		v.push(n[0]);
 		v.push(n[1]);
 
 			// Converts the right sample from SampleT (f32) to i16, then to bytes
-		let n = ((self.right * 0x8000 as SampleT) as i16).to_le_bytes();
+		let n = ((self.right * 0x80_00 as SampleT) as i16).to_le_bytes();
 		v.push(n[0]);
 		v.push(n[1]);
 
@@ -178,7 +228,7 @@ pub fn sample_from_u8(v:[u8;1]) -> SampleT {
 /// 
 /// * `v` - The raw bytes to convert from.
 pub fn sample_from_i16(v:[u8;2]) -> SampleT {
-	(i16::from_le_bytes(v) as SampleT) / (0x8000 as SampleT)
+	(i16::from_le_bytes(v) as SampleT) / (0x80_00 as SampleT)
 }
 
 /// Converts raw bytes to a Sample
@@ -188,7 +238,7 @@ pub fn sample_from_i16(v:[u8;2]) -> SampleT {
 /// 
 /// * `v` - The raw bytes to convert from.
 pub fn sample_from_i24(v:[u8;3]) -> SampleT {
-	(i32::from_le_bytes([v[0],v[1],v[2],0]) as SampleT) / (0x800000 as SampleT)
+	(i32::from_le_bytes([v[0],v[1],v[2],0]) as SampleT) / (0x80_00_00 as SampleT)
 }
 
 /// Converts a decibel value to a linear gain value.

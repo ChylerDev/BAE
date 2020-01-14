@@ -17,3 +17,4 @@ pub trait Modifier {
 pub mod adsr;
 pub mod bandpass;
 pub mod delay;
+pub mod echo;
