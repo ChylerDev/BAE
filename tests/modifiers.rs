@@ -103,6 +103,15 @@ mod tests {
 	}
 
 	#[test]
+	fn test_gain() {
+		use ocae::modifiers::*;
+
+		let mut g = Gain::new(0.125);
+
+		run_modifier(&mut g, "gain.wav");
+	}
+
+	#[test]
 	fn test_highpass() {
 		use ocae::modifiers::*;
 
