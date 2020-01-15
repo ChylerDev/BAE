@@ -18,10 +18,12 @@ pub mod adsr;
 pub mod bandpass;
 pub mod delay;
 pub mod echo;
+pub mod envelope;
 pub mod highpass;
 
 pub use adsr::*;
 pub use bandpass::*;
 pub use delay::*;
 pub use echo::*;
+pub use envelope::*;
 pub use highpass::*;

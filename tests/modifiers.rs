@@ -5,6 +5,7 @@ mod tests {
 	#[test]
 	fn test_adsr() {
 		use ocae::modifiers::*;
+		use ocae::generators::*;
 		use std::time::Duration;
 
 		let mut a = ADSR::new(
@@ -13,8 +14,6 @@ mod tests {
 			ocae::linear_db(0.5),
 			Duration::from_secs_f64(0.5)
 		);
-
-		use ocae::generators::{Generator, FreqMod, sine::*};
 
 		let mut g = Sine::new(440.0);
 		let mut t = ocae::TrackT::new();
@@ -71,6 +70,35 @@ mod tests {
 		}
 
 		let f = ".junk/modifiers/echo.wav";
+		ocae::tools::write_wav(t, f).unwrap();
+	}
+
+	#[test]
+	fn test_envelope() {
+		use ocae::modifiers::*;
+		use ocae::generators::*;
+		use std::time::Duration;
+
+		let mut e = Envelope::new(20.0, 20_000.0);
+
+		let mut a = ADSR::new(
+			Duration::from_secs_f64(0.03125),
+			Duration::from_secs_f64(0.125),
+			ocae::linear_db(0.5),
+			Duration::from_secs_f64(0.5)
+		);
+		let mut g = Sine::new(440.0);
+		let mut t = ocae::TrackT::new();
+
+		for i in 0..ocae::SAMPLE_RATE {
+			if i == ocae::SAMPLE_RATE/2 {
+				a.release();
+			}
+
+			t.push(e.process(a.process(g.process())));
+		}
+
+		let f = ".junk/modifiers/envelope.wav";
 		ocae::tools::write_wav(t, f).unwrap();
 	}
 
