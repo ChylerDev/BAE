@@ -22,6 +22,7 @@ pub struct HighPass {
 
 impl HighPass {
 	pub fn new(fc: MathT, r: MathT) -> HighPass {
+		let fc = fc.min(SAMPLE_RATE as MathT / 2.0);
 		let r = r.min(1.0).max(0.0);
 		let mut hp = HighPass {
 			a0: SampleT::default(),
