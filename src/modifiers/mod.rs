@@ -20,6 +20,7 @@ pub mod delay;
 pub mod echo;
 pub mod envelope;
 pub mod gain;
+pub mod generic;
 pub mod highpass;
 
 pub use adsr::*;
@@ -28,4 +29,5 @@ pub use delay::*;
 pub use echo::*;
 pub use envelope::*;
 pub use gain::*;
+pub use generic::*;
 pub use highpass::*;

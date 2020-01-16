@@ -112,6 +112,44 @@ mod tests {
 	}
 
 	#[test]
+	fn test_generic() {
+		use ocae::modifiers::*;
+
+		let mut g = Generic::new(
+			{
+				let mut v = Zeros::new();
+
+				v.push_back((0, 0.69));
+				v.push_back((1, 0.32));
+				v.push_back((2, 0.13));
+				v.push_back((6, 0.4892));
+
+				v
+			},
+			{
+				let mut v = Poles::new();
+
+				v.push_back((1, 0.3789462467));
+				v.push_back((5, 0.12501285032));
+				v.push_back((300, 0.10453659456));
+
+				v
+			},
+		);
+
+		use ocae::generators::*;
+		let mut s = Sine::new(440.0);
+		let mut t = ocae::TrackT::new();
+
+		for _ in 0..ocae::SAMPLE_RATE {
+			t.push(g.process(s.process() * 0.25));
+		}
+
+		let f = ".junk/modifiers/generic.wav";
+		ocae::tools::write_wav(t, f).unwrap();
+	}
+
+	#[test]
 	fn test_highpass() {
 		use ocae::modifiers::*;
 
