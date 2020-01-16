@@ -22,6 +22,7 @@ pub mod envelope;
 pub mod gain;
 pub mod generic;
 pub mod highpass;
+pub mod lowpass;
 
 pub use adsr::*;
 pub use bandpass::*;
@@ -31,3 +32,4 @@ pub use envelope::*;
 pub use gain::*;
 pub use generic::*;
 pub use highpass::*;
+pub use lowpass::*;

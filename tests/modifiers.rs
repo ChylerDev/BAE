@@ -158,6 +158,24 @@ mod tests {
 		run_modifier(&mut hp, "highpass.wav");
 	}
 
+	#[test]
+	fn test_lowpass() {
+		use ocae::{generators::*, modifiers::*};
+
+		let mut lp = LowPass::new(440.0, 0.0);
+		let mut n = Noise::new();
+		let mut t = ocae::TrackT::new();
+
+		for i in 0..8*ocae::SAMPLE_RATE {
+			lp.set_res(i as ocae::MathT / (8*ocae::SAMPLE_RATE) as ocae::MathT);
+
+			t.push(lp.process(n.process()));
+		}
+
+		let f = ".junk/modifiers/lowpass.wav";
+		ocae::tools::write_wav(t, f).unwrap();
+	}
+
 	fn run_modifier(m: &mut impl ocae::modifiers::Modifier, file:&str) {
 		use ocae::generators::*;
 
