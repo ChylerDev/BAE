@@ -71,10 +71,21 @@ impl StereoData {
 	}
 }
 
+impl std::ops::Neg for StereoData {
+	type Output = Self;
+
+	fn neg(self) -> Self::Output {
+		StereoData {
+			left: -self.left,
+			right: -self.right,
+		}
+	}
+}
+
 impl std::ops::Add<StereoData> for StereoData {
 	type Output = Self;
 
-	fn add(self, rhs: StereoData) -> Self {
+	fn add(self, rhs: StereoData) -> Self::Output {
 		StereoData {
 			left: self.left + rhs.left,
 			right: self.right + rhs.right,
@@ -119,6 +130,16 @@ impl std::ops::Mul<SampleT> for StereoData {
 		}
 	}
 }
+impl std::ops::Mul<StereoData> for SampleT {
+	type Output = StereoData;
+
+	fn mul(self, rhs: StereoData) -> Self::Output {
+		StereoData {
+			left: self * rhs.left,
+			right: self * rhs.right,
+		}
+	}
+}
 
 impl std::ops::MulAssign<SampleT> for StereoData {
 	fn mul_assign(&mut self, rhs: SampleT) {
@@ -136,6 +157,16 @@ impl std::ops::Mul<MathT> for StereoData {
 		StereoData {
 			left:(self.left as MathT * rhs) as SampleT,
 			right:(self.right as MathT * rhs) as SampleT,
+		}
+	}
+}
+impl std::ops::Mul<StereoData> for MathT {
+	type Output = StereoData;
+
+	fn mul(self, rhs: StereoData) -> Self::Output {
+		StereoData {
+			left: self as SampleT * rhs.left,
+			right: self as SampleT * rhs.right
 		}
 	}
 }
