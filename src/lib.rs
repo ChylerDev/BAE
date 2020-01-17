@@ -118,6 +118,24 @@ impl std::ops::SubAssign<StereoData> for StereoData {
 	}
 }
 
+impl std::ops::Mul<StereoData> for StereoData {
+	type Output = StereoData;
+
+	fn mul(self, rhs: StereoData) -> Self::Output {
+		StereoData {
+			left: self.left * rhs.left,
+			right: self.right * rhs.right
+		}
+	}
+}
+
+impl std::ops::MulAssign<StereoData> for StereoData {
+	fn mul_assign(&mut self, rhs: StereoData) {
+		self.left *= rhs.left;
+		self.right *= rhs.right;
+	}
+}
+
 impl std::ops::Mul<SampleT> for StereoData {
 	/// Output type of the multiplication
 	type Output = StereoData;
@@ -286,4 +304,5 @@ pub fn linear_db(g:MathT) -> MathT {
 
 pub mod generators;
 pub mod modifiers;
+pub mod sounds;
 pub mod tools;
