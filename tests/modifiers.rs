@@ -126,12 +126,13 @@ mod tests {
 
 				v
 			},
+			#[allow(clippy::inconsistent_digit_grouping)]
 			{
 				let mut v = Poles::new();
 
-				v.push_back((1, 0.3789462467));
-				v.push_back((5, 0.12501285032));
-				v.push_back((300, 0.10453659456));
+				v.push_back((1, 0.37_894_624_67));
+				v.push_back((5, 0.12_501_285_032));
+				v.push_back((300, 0.10_453_659_456));
 
 				v
 			},
