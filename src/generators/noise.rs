@@ -29,3 +29,10 @@ impl Generator for Noise {
 		)
 	}
 }
+
+
+impl Name for Noise {
+	fn get_name(&self) -> &str {
+		"Generator.Noise"
+	}
+}

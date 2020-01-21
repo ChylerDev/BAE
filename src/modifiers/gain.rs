@@ -17,3 +17,10 @@ impl Modifier for Gain {
 		x * self.a
 	}
 }
+
+
+impl Name for Gain {
+	fn get_name(&self) -> &str {
+		"Modifiers.Gain"
+	}
+}

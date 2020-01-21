@@ -19,3 +19,10 @@ impl Generator for Empty {
 		StereoData::default()
 	}
 }
+
+
+impl Name for Empty {
+	fn get_name(&self) -> &str {
+		"Generator.Empty"
+	}
+}

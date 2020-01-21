@@ -122,3 +122,10 @@ impl Generator for Wav {
 		self.resam.process()
 	}
 }
+
+
+impl Name for Wav {
+	fn get_name(&self) -> &str {
+		"Generator.Wav"
+	}
+}

@@ -30,7 +30,8 @@ impl WAVHeader {
 	/// # Example
 	/// 
 	/// ```
-	/// let h = ocae::tools::WAVHeader::new(1, 2, ocae::SAMPLE_RATE as u32, 16);
+	/// use ocae::{*, tools::*};
+	/// let h = tools::WAVHeader::new(1, 2, SAMPLE_RATE as u32, 16);
 	/// ```
 	pub fn new(af:u16, cc:u16, r:u32, bps:u16) -> WAVHeader {
 		WAVHeader {
@@ -50,7 +51,7 @@ impl Into<[u8;16]> for WAVHeader {
 	/// # Example
 	/// 
 	/// ```
-	/// use ocae::{SAMPLE_RATE,tools::WAVHeader};
+	/// use ocae::{*,tools::WAVHeader};
 	/// let h:[u8;16] = WAVHeader::new(1, 2, SAMPLE_RATE as u32, 16).into();
 	/// ```
 	fn into(self) -> [u8;16] {
@@ -145,15 +146,15 @@ impl From<&[u8]> for WAVHeader {
 /// # Example
 /// 
 /// ```
-/// use ocae::{TrackT,generators::{Generator,noise::Noise}};
+/// use ocae::{*,generators::*};
 /// let mut n = Noise::new();
 /// let mut t = TrackT::new();
 ///
-/// for _ in 0..ocae::SAMPLE_RATE {
+/// for _ in 0..SAMPLE_RATE {
 /// 	t.push(n.process());
 /// }
 ///
-/// ocae::tools::write_wav(t, ".junk/some/path/noise.wav");
+/// tools::write_wav(t, ".junk/some/path/noise.wav");
 /// ```
 pub fn write_wav(track:TrackT, path: &str) -> std::io::Result<()> {
 	use std::fs::File;
@@ -184,6 +185,38 @@ pub fn write_wav(track:TrackT, path: &str) -> std::io::Result<()> {
 	riff::write_chunk(&mut f, &r)?;
 
 	Ok(())
+}
+
+pub fn filter_gain<T, U>(m: T, steps: u32)
+	where T: Fn()->U,
+	      U: modifiers::Modifier + Name
+{
+	let mut gain = TrackT::new();
+
+	for i in 1..steps {
+		use generators::*;
+		let mut sine = Sine::new((i as u64 * SAMPLE_RATE) as MathT / (2*steps) as MathT);
+		let mut filter = m();
+		let mut t = TrackT::new();
+
+		for _ in 0..SAMPLE_RATE {
+			t.push(filter.process(sine.process()));
+		}
+
+		let mut largest = 0.0;
+		for i in (5*SAMPLE_RATE/10)..SAMPLE_RATE {
+			if t[i as usize].as_mono().abs() > largest {
+				largest = t[i as usize].as_mono().abs();
+			}
+		}
+
+		gain.push(StereoData::from_stereo(largest - 1.0, largest - 1.0));
+	}
+
+	let mut f = String::from(".junk/FilterGains/");
+	f.push_str(m().get_name());
+	f.push_str(".wav");
+	tools::write_wav(gain, f.as_str()).unwrap();
 }
 
 pub mod resampler;

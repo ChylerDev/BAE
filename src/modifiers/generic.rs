@@ -65,3 +65,10 @@ impl Modifier for Generic {
 		y
 	}
 }
+
+
+impl Name for Generic {
+	fn get_name(&self) -> &str {
+		"Modifiers.Generic"
+	}
+}

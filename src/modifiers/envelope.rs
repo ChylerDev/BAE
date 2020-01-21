@@ -48,3 +48,10 @@ impl Modifier for Envelope {
 		y
 	}
 }
+
+
+impl Name for Envelope {
+	fn get_name(&self) -> &str {
+		"Modifiers.Envelope"
+	}
+}

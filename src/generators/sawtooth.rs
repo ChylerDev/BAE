@@ -42,3 +42,10 @@ impl Generator for Sawtooth {
 		StereoData::from_mono(y)
 	}
 }
+
+
+impl Name for Sawtooth {
+	fn get_name(&self) -> &str {
+		"Generator.Sawtooth"
+	}
+}

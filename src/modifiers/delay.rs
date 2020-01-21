@@ -31,3 +31,10 @@ impl Modifier for Delay {
 		self.delay.pop_front().unwrap()
 	}
 }
+
+
+impl Name for Delay {
+	fn get_name(&self) -> &str {
+		"Modifiers.Delay"
+	}
+}

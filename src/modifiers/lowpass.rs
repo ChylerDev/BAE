@@ -1,3 +1,8 @@
+//! # HighPass
+//! 
+//! 18dB/octave
+//! Derived from 3rd Order Butterworth Low Pass Filter.
+
 use super::*;
 
 pub struct LowPass {
@@ -70,5 +75,12 @@ impl Modifier for LowPass {
 		self.outs[0] = y;
 
 		y
+	}
+}
+
+
+impl Name for LowPass {
+	fn get_name(&self) -> &str {
+		"Modifiers.LowPass"
 	}
 }

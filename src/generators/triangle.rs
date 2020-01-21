@@ -46,3 +46,10 @@ impl Generator for Triangle {
 		y
 	}
 }
+
+
+impl Name for Triangle {
+	fn get_name(&self) -> &str {
+		"Generator.Triangle"
+	}
+}

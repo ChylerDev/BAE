@@ -29,3 +29,10 @@ impl Modifier for Echo {
 		wet
 	}
 }
+
+
+impl Name for Echo {
+	fn get_name(&self) -> &str {
+		"Modifiers.Echo"
+	}
+}

@@ -302,6 +302,10 @@ pub fn linear_db(g:MathT) -> MathT {
 	20.0 * g.log10()
 }
 
+pub trait Name {
+	fn get_name(&self) -> &str;
+}
+
 pub mod generators;
 pub mod modifiers;
 pub mod sounds;

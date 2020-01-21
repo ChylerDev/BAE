@@ -45,3 +45,10 @@ impl Generator for Square {
 		StereoData::from_mono(y)
 	}
 }
+
+
+impl Name for Square {
+	fn get_name(&self) -> &str {
+		"Generator.Square"
+	}
+}

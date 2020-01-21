@@ -28,22 +28,34 @@ mod tests {
 
 		let f = ".junk/modifiers/adsr.wav";
 		ocae::tools::write_wav(t, f).unwrap();
+
+		ocae::tools::filter_gain(
+			|| ADSR::new(
+				Duration::from_secs_f64(0.03125),
+				Duration::from_secs_f64(0.125),
+				ocae::linear_db(0.5),
+				Duration::from_secs_f64(0.5)
+			),
+			512
+		);
 	}
 
 	#[test]
 	fn test_bandpass() {
 		use ocae::modifiers::*;
 
-		let mut bp1 = BandPass::from_corners((100.0,200.0));
+		let mut bp1 = BandPass::from_corners((100.0,200.0), 0.0);
 		let f1 = "bandpass_100_200.wav";
-		let mut bp2 = BandPass::from_corners((200.0,225.0));
+		let mut bp2 = BandPass::from_corners((200.0,225.0), 0.0);
 		let f2 = "bandpass_200_225.wav";
-		let mut bp3 = BandPass::from_corners((20.0,20000.0));
+		let mut bp3 = BandPass::from_corners((20.0,20000.0), 0.0);
 		let f3 = "bandpass_20_20k.wav";
 
 		run_modifier(&mut bp1, f1);
 		run_modifier(&mut bp2, f2);
 		run_modifier(&mut bp3, f3);
+
+		ocae::tools::filter_gain(|| BandPass::from_corners((100.0,200.0), 0.0), 512);
 	}
 
 	#[test]
@@ -157,6 +169,8 @@ mod tests {
 		let mut hp = HighPass::new(440.0, 1.0);
 
 		run_modifier(&mut hp, "highpass.wav");
+
+		ocae::tools::filter_gain(|| HighPass::new(440.0, 1.0), 512);
 	}
 
 	#[test]

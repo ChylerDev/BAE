@@ -48,9 +48,14 @@ impl Generator for Sine {
 	fn process(&mut self) -> StereoData {
 		let k = MathT::floor(self.ind);
 		let g:MathT = self.ind - k;
+		let k1 = if k+1.0 >= WAVETABLE_SIZE as MathT {
+			0.0
+		} else {
+			k+1.0
+		} as usize;
 		let k = k as usize;
 
-		let y = ((1.0-g)*WAVETABLE[k] + g*WAVETABLE[k+1]) as SampleT;
+		let y = ((1.0-g)*WAVETABLE[k] + g*WAVETABLE[k1]) as SampleT;
 
 		self.ind += self.inc;
 
@@ -59,5 +64,12 @@ impl Generator for Sine {
 		}
 
 		StereoData::from_mono(y)
+	}
+}
+
+
+impl Name for Sine {
+	fn get_name(&self) -> &str {
+		"Generator.Sine"
 	}
 }

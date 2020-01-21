@@ -77,3 +77,9 @@ impl Modifier for ADSR {
 		x * self.g
 	}
 }
+
+impl Name for ADSR {
+	fn get_name(&self) -> &str {
+		"Modifiers.ADSR"
+	}
+}
