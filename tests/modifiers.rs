@@ -44,18 +44,18 @@ mod tests {
 	fn test_bandpass() {
 		use ocae::modifiers::*;
 
-		let mut bp1 = BandPass::from_corners((100.0,200.0), 0.0);
+		let mut bp1 = BandPass::from_corners((100.0,200.0));
 		let f1 = "bandpass_100_200.wav";
-		let mut bp2 = BandPass::from_corners((200.0,225.0), 0.0);
+		let mut bp2 = BandPass::from_corners((200.0,225.0));
 		let f2 = "bandpass_200_225.wav";
-		let mut bp3 = BandPass::from_corners((20.0,20000.0), 0.0);
+		let mut bp3 = BandPass::from_corners((20.0,20000.0));
 		let f3 = "bandpass_20_20k.wav";
 
 		run_modifier(&mut bp1, f1);
 		run_modifier(&mut bp2, f2);
 		run_modifier(&mut bp3, f3);
 
-		ocae::tools::filter_gain(|| BandPass::from_corners((100.0,200.0), 0.0), 512);
+		ocae::tools::filter_gain(|| BandPass::from_corners((200.0,4000.0)), 512);
 	}
 
 	#[test]
@@ -170,7 +170,7 @@ mod tests {
 
 		run_modifier(&mut hp, "highpass.wav");
 
-		ocae::tools::filter_gain(|| HighPass::new(440.0, 1.0), 512);
+		ocae::tools::filter_gain(|| HighPass::new(4400.0, 1.0), 512);
 	}
 
 	#[test]
@@ -182,7 +182,7 @@ mod tests {
 		let mut t = ocae::TrackT::new();
 
 		for i in 0..8*ocae::SAMPLE_RATE {
-			lp.set_res(i as ocae::MathT / (8*ocae::SAMPLE_RATE) as ocae::MathT);
+			lp.set_resonance(i as ocae::MathT / (8*ocae::SAMPLE_RATE) as ocae::MathT);
 
 			t.push(lp.process(n.process()));
 		}

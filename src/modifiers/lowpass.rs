@@ -29,20 +29,20 @@ impl LowPass {
 		lp
 	}
 
-	pub fn get_fc(&self) -> MathT {
+	pub fn get_central_frequency(&self) -> MathT {
 		self.fc
 	}
-	pub fn set_fc(&mut self, fc: MathT) {
+	pub fn set_central_frequency(&mut self, fc: MathT) {
 		let fc = fc.min(SAMPLE_RATE as MathT / 2.0);
 
 		self.fc = fc;
 		self.reset();
 	}
 
-	pub fn get_res(&self) -> MathT {
+	pub fn get_resonance(&self) -> MathT {
 		self.r
 	}
-	pub fn set_res(&mut self, r: MathT) {
+	pub fn set_resonance(&mut self, r: MathT) {
 		let r = r.min(1.0).max(0.0);
 
 		self.r = r;

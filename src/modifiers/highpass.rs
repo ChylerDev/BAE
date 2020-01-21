@@ -52,6 +52,26 @@ impl HighPass {
 		hp
 	}
 
+	pub fn get_central_frequency(&self) -> MathT {
+		self.fc
+	}
+	pub fn set_central_frequency(&mut self, fc: MathT) {
+		let fc = fc.min(SAMPLE_RATE as MathT / 2.0);
+
+		self.fc = fc;
+		self.reset();
+	}
+
+	pub fn get_resonance(&self) -> MathT {
+		self.r
+	}
+	pub fn set_resonance(&mut self, r: MathT) {
+		let r = r.min(1.0).max(0.0);
+
+		self.r = r;
+		self.reset();
+	}
+
 	fn reset(&mut self) {
 		let theta = std::f64::consts::PI * (4.0 - self.r) / 6.0;
 		let k = 1.0 - 2.0 * theta.cos();

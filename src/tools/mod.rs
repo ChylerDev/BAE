@@ -200,17 +200,18 @@ pub fn filter_gain<T, U>(m: T, steps: u32)
 		let mut t = TrackT::new();
 
 		for _ in 0..SAMPLE_RATE {
-			t.push(filter.process(sine.process()));
+			let s = sine.process().as_mono();
+			t.push(filter.process(StereoData::from_stereo(s,s)));
 		}
 
 		let mut largest = 0.0;
 		for i in (5*SAMPLE_RATE/10)..SAMPLE_RATE {
-			if t[i as usize].as_mono().abs() > largest {
-				largest = t[i as usize].as_mono().abs();
+			if t[i as usize].left().abs() > largest {
+				largest = t[i as usize].left().abs();
 			}
 		}
 
-		gain.push(StereoData::from_stereo(largest - 1.0, largest - 1.0));
+		gain.push(StereoData::from_stereo((largest) - 1.0, (largest) - 1.0));
 	}
 
 	let mut f = String::from(".junk/FilterGains/");
