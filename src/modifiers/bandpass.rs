@@ -72,11 +72,9 @@ impl BandPass {
 	}
 
 	pub fn get_corner_frequencies(&self) -> (MathT,MathT) {
-		let a = 1.0;
 		let b = -self.central_f/self.quality;
-		let c = -self.central_f*self.central_f;
 
-		let (p,n) = quadratic(a,b,c);
+		let (p,n) = quadratic(1.0, b, -self.central_f*self.central_f);
 		let fl = if p > 0.0 {
 			p
 		} else {
@@ -84,7 +82,11 @@ impl BandPass {
 		};
 		let fh = fl + b;
 
-		(fh,fl)
+		if fl < fh {
+			(fl, fh)
+		} else {
+			(fh, fl)
+		}
 	}
 
 	pub fn set_corner_frequencies(&mut self, f: (MathT,MathT)) {
@@ -95,17 +97,7 @@ impl BandPass {
 	}
 
 	fn reset(&mut self) {
-		let a = 1.0;
-		let b = -self.central_f/self.quality;
-		let c = -self.central_f*self.central_f;
-
-		let (p,n) = quadratic(a,b,c);
-		let fl = if p > 0.0 {
-			p
-		} else {
-			n
-		};
-		let fh = fl + b;
+		let (fh, fl) = self.get_corner_frequencies();
 
 		let theta_l = (std::f64::consts::PI * fl * INV_SAMPLE_RATE).tan();
 		let theta_h = (std::f64::consts::PI * fh * INV_SAMPLE_RATE).tan();
