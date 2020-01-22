@@ -32,9 +32,7 @@ impl Resampler {
 	/// If `loop_end` is less than `loop_start`, they are swapped.
 	pub fn new(data:TrackT, source_sample_rate: u64, mut loop_start: u64, mut loop_end: u64) -> Self {
 		if loop_end < loop_start {
-			let tmp = loop_start;
-			loop_start = loop_end;
-			loop_end = tmp;
+			std::mem::swap(&mut loop_start, &mut loop_end);
 		}
 
 		Resampler {

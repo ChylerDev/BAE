@@ -159,10 +159,9 @@ impl From<&[u8]> for WAVHeader {
 pub fn write_wav(track:TrackT, path: &str) -> std::io::Result<()> {
 	use std::fs::File;
 
-	match path.rfind('/') {
-		Some(i) => std::fs::create_dir_all(String::from(path.split_at(i).0))?,
-		None => ()
-	};
+	if let Some(i) = path.rfind('/') {
+		std::fs::create_dir_all(String::from(path.split_at(i).0))?;
+	}
 
 	let w_id = riff::ChunkId::new("WAVE").unwrap();
 
