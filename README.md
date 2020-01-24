@@ -1,3 +1,5 @@
+This project is currently being reimplemented in [rust](https://rust-lang.org), view the progress in its branch [here](https://gitlab.com/ChylerDev/ocae/tree/8-move-to-rust)
+
 # Overly Complicated Audio Engine (OCAE)
 
 An audio engine designed to produce audio samples using basic generators (sound sources) and modifiers (filters).
