@@ -19,7 +19,7 @@ location of your choice.
 
 Configure, check the options to see what (if anything) you'd like to change, then configure again.
 
-Once you're ready to generated the project files, use the Generate command.
+Once you're ready to generate the project files, use the Generate command.
 
 Currently the library has only been tested on Windows 10 (Visual Studio 2019) and Ubuntu (WSL2, GCC 7.4.0/LLVM clang 6.0.0)
 
