@@ -205,8 +205,8 @@ pub fn filter_gain<T, U>(m: T, steps: u32)
 
 		let mut largest = 0.0;
 		for i in (5*SAMPLE_RATE/10)..SAMPLE_RATE {
-			if t[i as usize].left().abs() > largest {
-				largest = t[i as usize].left().abs();
+			if t[i as usize].left.abs() > largest {
+				largest = t[i as usize].left.abs();
 			}
 		}
 

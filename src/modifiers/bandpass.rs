@@ -117,12 +117,12 @@ impl BandPass {
 impl Modifier for BandPass {
 	fn process(&mut self, x: StereoData) -> StereoData {
 		let y = StereoData::from_stereo(
-			(self.a0 * (x.left() - self.x2.left()) as MathT +
-			self.b1 * self.y1.left() as MathT - 
-			self.b2 * self.y2.left() as MathT) as SampleT,
-			(self.a0 * (x.right() - self.x2.right()) as MathT +
-			self.b1 * self.y1.right() as MathT - 
-			self.b2 * self.y2.right() as MathT) as SampleT
+			(self.a0 * (x.left - self.x2.left) as MathT +
+			self.b1 * self.y1.left as MathT - 
+			self.b2 * self.y2.left as MathT) as SampleT,
+			(self.a0 * (x.right - self.x2.right) as MathT +
+			self.b1 * self.y1.right as MathT - 
+			self.b2 * self.y2.right as MathT) as SampleT
 		);
 
 		self.y2 = self.y1;
