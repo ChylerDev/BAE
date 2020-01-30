@@ -37,7 +37,7 @@ pub fn sample_from_u8(v:[u8;1]) -> SampleT {
 /// 
 /// * `v` - The raw bytes to convert from.
 pub fn sample_from_i16(v:[u8;2]) -> SampleT {
-	(i16::from_le_bytes(v) as SampleT) / (0x80_00 as SampleT)
+	(i16::from_le_bytes(v) as SampleT) / (32768_f32)
 }
 
 /// Converts raw bytes to a Sample
@@ -47,7 +47,7 @@ pub fn sample_from_i16(v:[u8;2]) -> SampleT {
 /// 
 /// * `v` - The raw bytes to convert from.
 pub fn sample_from_i24(v:[u8;3]) -> SampleT {
-	(i32::from_le_bytes([v[0],v[1],v[2],0]) as SampleT) / (0x80_00_00 as SampleT)
+	(i32::from_le_bytes([v[0],v[1],v[2],0]) as SampleT) / (32768_f32)
 }
 
 /// Converts a decibel value to a linear gain value.

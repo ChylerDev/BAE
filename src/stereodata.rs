@@ -43,7 +43,7 @@ impl StereoData {
 	/// Converts the given stereophonic sample to a monophonic sample by summing
 	/// the left and right samples and dividing by half power to get the full
 	/// power monophonic sample.
-	pub fn as_mono(&self) -> SampleT {
+	pub fn as_mono(self) -> SampleT {
 		(self.left + self.right)/SampleT::sqrt(0.5)
 	}
 }
@@ -179,12 +179,12 @@ impl Into<Vec<u8>> for StereoData {
 		let mut v = Vec::new();
 
 			// Converts the left sample from SampleT (f32) to i16, then to bytes
-		let n = ((self.left * 0x80_00 as SampleT) as i16).to_le_bytes();
+		let n = ((self.left * 32768_f32) as i16).to_le_bytes();
 		v.push(n[0]);
 		v.push(n[1]);
 
 			// Converts the right sample from SampleT (f32) to i16, then to bytes
-		let n = ((self.right * 0x80_00 as SampleT) as i16).to_le_bytes();
+		let n = ((self.right * 32768_f32) as i16).to_le_bytes();
 		v.push(n[0]);
 		v.push(n[1]);
 
