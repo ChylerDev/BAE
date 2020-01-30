@@ -94,9 +94,10 @@ impl Resampler {
 impl Clone for Resampler {
 	fn clone(&self) -> Self {
 		Resampler {
-			data: self.data,
+			data: self.data.clone(),
 			ind: 0.0,
 			inc: self.inc,
+			speed: self.speed,
 			loop_start: self.loop_start,
 			loop_end: self.loop_end,
 		}
