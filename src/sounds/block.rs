@@ -19,20 +19,20 @@ impl Block {
 		      U: 'static + modifiers::Modifier + Clone
 	{
 		Block {
-			g: Rc::new(g.clone()),
-			m: Rc::new(m.clone()),
+			g: Rc::new(g),
+			m: Rc::new(m),
 			i,
 			input: StereoData::default(),
 		}
 	}
 
-	pub fn default_interactor<T, U>(g: &mut T, m: &mut U) -> Block
+	pub fn default_interactor<T, U>(g: T, m: U) -> Block
 		where T: 'static + generators::Generator + Clone,
 		      U: 'static + modifiers::Modifier + Clone
 	{
 		Block {
-			g: Rc::new(g.clone()),
-			m: Rc::new(m.clone()),
+			g: Rc::new(g),
+			m: Rc::new(m),
 			i: Box::from(|ge, mo| ge * mo),
 			input: StereoData::default(),
 		}
