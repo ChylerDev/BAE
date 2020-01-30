@@ -47,6 +47,14 @@ impl Generator for Triangle {
 	}
 }
 
+impl Clone for Triangle {
+	fn clone(&self) -> Self {
+		Triangle {
+			irate: self.irate,
+			inc: 0.0
+		}
+	}
+}
 
 impl Name for Triangle {
 	fn get_name(&self) -> &str {

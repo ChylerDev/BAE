@@ -46,6 +46,14 @@ impl Generator for Square {
 	}
 }
 
+impl Clone for Square {
+	fn clone(&self) -> Self {
+		Square {
+			ind: 0.0,
+			inv: self.inv
+		}
+	}
+}
 
 impl Name for Square {
 	fn get_name(&self) -> &str {

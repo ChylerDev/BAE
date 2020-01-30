@@ -67,6 +67,14 @@ impl Generator for Sine {
 	}
 }
 
+impl Clone for Sine {
+	fn clone(&self) -> Self {
+		Sine {
+			ind: 0.0,
+			inc: self.inc
+		}
+	}
+}
 
 impl Name for Sine {
 	fn get_name(&self) -> &str {

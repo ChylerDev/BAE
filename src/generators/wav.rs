@@ -8,6 +8,7 @@ use crate::tools::resampler::*;
 use crate::tools::WAVHeader;
 
 /// Struct for playing wave files.
+#[derive(Clone)]
 pub struct Wav {
 	resam: Resampler,
 }
@@ -47,11 +48,8 @@ impl Wav {
 
 			// Read all chunks from the file
 		let mut chunks = Vec::new();
-		loop {
-			match riff::read_chunk(&mut f) {
-				Result::Ok(c) => chunks.push(c.0),
-				Result::Err(_) => break,
-			};
+		while let Result::Ok(c) = riff::read_chunk(&mut f) {
+			chunks.push(c.0);
 		}
 
 			// Parse all the chunks, saving the format and data chunk data
@@ -60,53 +58,51 @@ impl Wav {
 			let mut id = Vec::new();
 			id.extend_from_slice(&c.id.value);
 
-			if String::from_utf8(id.clone()).unwrap() == String::from("fmt ") {
-				match c.content {
-					riff::ChunkContent::Subchunk(sc) => h=WAVHeader::from(&sc[0..16]),
-					_ => ()
-				};
-			} else if String::from_utf8(id.clone()).unwrap() == String::from("data") {
-				match c.content {
-					riff::ChunkContent::Subchunk(sc) => sam=sc,
-					_ => ()
-				};
+			if String::from_utf8(id.clone()).unwrap() == "fmt " {
+				if let riff::ChunkContent::Subchunk(sc) = c.content {
+					h=WAVHeader::from(&sc[0..16]);
+				}
+			} else if String::from_utf8(id.clone()).unwrap() == "data" {
+				if let riff::ChunkContent::Subchunk(sc) = c.content {
+					sam = sc;
+				}
 			}
 		}
 
 			// Convert bytes to StereoData. If channel count is anything but 1
 			// or 2, it is assumed the first two indices are the left and right
-			// channel, respectively
-		let mut i = 0;
-		while i < sam.len() {
+			// channels, respectively
+		let mut ind = 0;
+		while ind < sam.len() {
 			match h.bits_per_sample {
 				8 => match h.channel_count {
 					1 => {
-						v.push(StereoData::from_mono(sample_from_u8([sam[i]])));
-						i += 1;
+						v.push(StereoData::from_mono(sample_from_u8([sam[ind]])));
+						ind += 1;
 					},
-					c => {
-						v.push(StereoData::from([sam[i],sam[i+1]]));
-						i += c as usize;
+					cc => {
+						v.push(StereoData::from([sam[ind],sam[ind+1]]));
+						ind += cc as usize;
 					},
 				},
 				16 => match h.channel_count {
 					1 => {
-						v.push(StereoData::from_mono(sample_from_i16([sam[i],sam[i+1]])));
-						i += 2;
+						v.push(StereoData::from_mono(sample_from_i16([sam[ind],sam[ind+1]])));
+						ind += 2;
 					},
-					c => {
-						v.push(StereoData::from([sam[i],sam[i+1],sam[i+2],sam[i+3]]));
-						i += (c as usize)*2;
+					cc => {
+						v.push(StereoData::from([sam[ind],sam[ind+1],sam[ind+2],sam[ind+3]]));
+						ind += (cc as usize)*2;
 					},
 				},
 				24 => match h.channel_count {
 					1 => {
-						v.push(StereoData::from_mono(sample_from_i24([sam[i],sam[i+1],sam[i+2]])));
-						i += 3;
+						v.push(StereoData::from_mono(sample_from_i24([sam[ind],sam[ind+1],sam[ind+2]])));
+						ind += 3;
 					},
-					c => {
-						v.push(StereoData::from([sam[i],sam[i+1],sam[i+2],sam[i+3],sam[i+4],sam[i+5]]));
-						i += (c as usize)*3;
+					cc => {
+						v.push(StereoData::from([sam[ind],sam[ind+1],sam[ind+2],sam[ind+3],sam[ind+4],sam[ind+5]]));
+						ind += (cc as usize)*3;
 					},
 				},
 				_ => ()
@@ -122,7 +118,6 @@ impl Generator for Wav {
 		self.resam.process()
 	}
 }
-
 
 impl Name for Wav {
 	fn get_name(&self) -> &str {

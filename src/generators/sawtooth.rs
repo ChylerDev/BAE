@@ -43,6 +43,14 @@ impl Generator for Sawtooth {
 	}
 }
 
+impl Clone for Sawtooth {
+	fn clone(&self) -> Self {
+		Sawtooth {
+			irate: self.irate,
+			inc: 0.0
+		}
+	}
+}
 
 impl Name for Sawtooth {
 	fn get_name(&self) -> &str {

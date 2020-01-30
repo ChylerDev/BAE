@@ -90,3 +90,15 @@ impl Resampler {
 		y
 	}
 }
+
+impl Clone for Resampler {
+	fn clone(&self) -> Self {
+		Resampler {
+			data: self.data,
+			ind: 0.0,
+			inc: self.inc,
+			loop_start: self.loop_start,
+			loop_end: self.loop_end,
+		}
+	}
+}
