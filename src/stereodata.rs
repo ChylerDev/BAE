@@ -26,6 +26,15 @@ impl StereoData {
 		}
 	}
 
+	/// Returns a new StereoData object where both left and right channels are
+	/// set from the passed sample value.
+	pub fn single_stereo(x:SampleT) -> StereoData {
+		StereoData{
+			left:x,
+			right:x
+		}
+	}
+
 	/// Creates a new StereoData object from a single monophonic sample. This
 	/// function reduces the power of the given sample by half to reflect human
 	/// hearing.
@@ -235,4 +244,46 @@ impl From<[u8;6]> for StereoData {
 			right: sample_from_i24([v[3],v[4],v[5]])
 		}
 	}
+}
+
+/// Converts a raw bytes to a Sample
+/// It is assumed the bytes are 8-bit unsigned audio samples.
+/// 
+/// # Parameters
+/// 
+/// * `v` - The raw bytes to convert from.
+pub fn sample_from_u8(v:[u8;1]) -> SampleT {
+	(v[0] as SampleT - 128.0) / 128.0
+}
+
+/// Converts raw bytes to a Sample
+/// It is assumed that the bytes are 16-bit signed audio samples.
+/// 
+/// # Parameters
+/// 
+/// * `v` - The raw bytes to convert from.
+pub fn sample_from_i16(v:[u8;2]) -> SampleT {
+	(i16::from_le_bytes(v) as SampleT) / (32768_f32)
+}
+
+/// Converts raw bytes to a Sample
+/// It is assumed that the bytes are 24-bit signed audio samples.
+/// 
+/// # Parameters
+/// 
+/// * `v` - The raw bytes to convert from.
+pub fn sample_from_i24(v:[u8;3]) -> SampleT {
+	(i32::from_le_bytes([v[0],v[1],v[2],0]) as SampleT) / (32768_f32)
+}
+
+/// Converts a decibel value to a linear gain value.
+/// This assumes that 0dB is unity gain, and ~-6bB is 0.5 gain
+pub fn db_linear(db:MathT) -> MathT {
+	10.0_f64.powf(db/20.0)
+}
+
+/// Converts a linear gain value to a decibel value.
+/// This assumes that 0dB is unity gain, and ~-6bB is 0.5 gain
+pub fn linear_db(g:MathT) -> MathT {
+	20.0 * g.log10()
 }
