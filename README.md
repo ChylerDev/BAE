@@ -2,13 +2,13 @@
 
 An audio engine designed to produce audio samples using basic generators (sound sources) and modifiers (filters).
 
-* [1. Rust and C++](#1--rust-and-c++)
-* [2. C++](#2--c++)
-	* [2.1 Building](#2-1-building)
-	* [2.2 Dependencies](#2-2-dependencies)
-	* [2.3 Usage](#2-3-usage)
-	* [2.4 Notes](#2-4-notes)
-* [3. Future Expansion](#3--future-expansion)
+* [1. Rust and C++](#1-rust-and-c)
+* [2. C++](#2-c)
+	* [2.1 Building](#21-building)
+	* [2.2 Dependencies](#22-dependencies)
+	* [2.3 Usage](#23-usage)
+	* [2.4 Notes](#24-notes)
+* [3. Future Expansion](#3-future-expansion)
 
 # 1. Rust and C++
 
