@@ -4,18 +4,18 @@ An audio engine designed to produce audio samples using basic generators (sound 
 
 # Rust and C++
 
-This library is programmed and maintained in parallel in both Rust and C++, and can each be found in their respective branches.
+~~This library is programmed and maintained in parallel in both Rust and C++, and can each be found in their respective branches.~~  
+This library is currently in the process of being ported to rust. Once this process is complete they will both be maintained in parallel.
 
 # C++
 
 ## Building
 
-Building is done through CMake, as it is the solition I am familiar with enough to set up for multi-platform C++ projects.
+Building is done through CMake, as it is the solution I am familiar with enough to set up for multi-platform C++ projects.
 
 Be sure you have CMake v3.8 or newer installed.
 
-Set the repository root as the source code location, and then set the build
-location of your choice.
+Set the repository root as the source code location, and then set the build location of your choice.
 
 Configure, check the options to see what (if anything) you'd like to change, then configure again.
 
@@ -43,5 +43,6 @@ The project will build the executibles and copy the necessary shared libs (if an
 	* Pan
 	* Fade in/out
 * Features:
-	* Side-chain
-	* FFT?
+	* Side-chain(?)
+	* FFT
+	* Refactor to use multiple audio formats (mono, stereo, 2.1, 5.1, 7.1, etc.) (means refactoring code to output mono and transform into other format)
