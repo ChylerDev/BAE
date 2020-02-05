@@ -27,16 +27,16 @@ mod tests {
 		for i in 0..7 {
 			let s = r.process();
 
-			assert!((s.left() - i as ocae::SampleT/2.0).abs() < EPSILON);
-			assert!((s.right() - i as ocae::SampleT/2.0).abs() < EPSILON);
+			assert!((s.left - i as ocae::SampleT/2.0).abs() < EPSILON);
+			assert!((s.right - i as ocae::SampleT/2.0).abs() < EPSILON);
 		}
 
 		let mut r = Resampler::new(sam.clone(), ocae::SAMPLE_RATE * 2, 0,0);
 		for i in 0..2 {
 			let s = r.process();
 
-			assert!((s.left() - (i * 2) as ocae::SampleT).abs() < EPSILON);
-			assert!((s.right() - (i * 2) as ocae::SampleT).abs() < EPSILON);
+			assert!((s.left - (i * 2) as ocae::SampleT).abs() < EPSILON);
+			assert!((s.right - (i * 2) as ocae::SampleT).abs() < EPSILON);
 		}
 
 		let mut r = Resampler::new(sam.clone(), ocae::SAMPLE_RATE, 0,0);
@@ -44,8 +44,8 @@ mod tests {
 		for i in 0..7 {
 			let s = r.process();
 
-			assert!((s.left() - i as ocae::SampleT/2.0).abs() < EPSILON);
-			assert!((s.right() - i as ocae::SampleT/2.0).abs() < EPSILON);
+			assert!((s.left - i as ocae::SampleT/2.0).abs() < EPSILON);
+			assert!((s.right - i as ocae::SampleT/2.0).abs() < EPSILON);
 		}
 
 		let mut r = Resampler::new(sam.clone(), ocae::SAMPLE_RATE * 2, 0,0);
@@ -53,8 +53,8 @@ mod tests {
 		for i in sam {
 			let s = r.process();
 
-			assert!((s.left() - i.left()).abs() < EPSILON);
-			assert!((s.right() - i.right()).abs() < EPSILON);
+			assert!((s.left - i.left).abs() < EPSILON);
+			assert!((s.right - i.right).abs() < EPSILON);
 		}
 	}
 }
