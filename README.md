@@ -16,6 +16,8 @@ An audio engine designed to produce audio samples using basic generators (sound 
 ~~This library is programmed and maintained in parallel in both Rust and C++, and can each be found in their respective branches.~~  
 This library is currently in the process of being ported to rust. Once this process is complete they will both be maintained in parallel.
 
+The purpose of developing this library in two languages in parallel is to learn rust and learn how to actively maintain a project in both languages and coordinate releases and feature development. At some point I'm sure I'll just call it quits on the C++ version and stick with the rust version.
+
 # 2. C++
 
 ## 2.1 Building
