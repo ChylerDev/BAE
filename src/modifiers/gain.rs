@@ -2,6 +2,7 @@
 
 use super::*;
 
+#[derive(Default,Copy,Clone)]
 pub struct Gain {
 	a: SampleT,
 }
@@ -19,7 +20,6 @@ impl Modifier for Gain {
 		x * self.a
 	}
 }
-
 
 impl Name for Gain {
 	fn get_name(&self) -> &str {

@@ -214,3 +214,9 @@ impl Block {
 		y
 	}
 }
+
+/// Type alias for an [`Rc`]-wrapped [`Block`] object.
+/// 
+/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
+/// [`Block`]: struct.Block.html
+pub type BlockRc = Box<Rc<Block>>;

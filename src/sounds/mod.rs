@@ -6,4 +6,7 @@
 use super::*;
 
 pub mod block;
+pub mod sound;
+
 pub use block::*;
+pub use sound::*;
