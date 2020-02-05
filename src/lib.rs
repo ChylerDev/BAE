@@ -3,6 +3,8 @@
 //! The Overly Complicated Audio Engine.
 //! A crate for processing audio samples for various uses.
 
+#![warn(missing_docs)]
+
 use std::vec::Vec;
 
 /// Type to perform infrequenty mathematic operations with when accuracy is needed.
