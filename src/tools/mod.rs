@@ -2,8 +2,6 @@
 //! 
 //! Module for audio related functions that make life easier.
 
-extern crate wav;
-
 use super::*;
 use std::vec::Vec;
 

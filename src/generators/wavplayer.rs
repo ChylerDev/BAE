@@ -5,7 +5,6 @@
 use riff;
 use super::*;
 use crate::tools::resampler::*;
-use crate::tools::WAVHeader;
 
 /// Struct for playing wave files.
 #[derive(Clone)]
@@ -39,9 +38,9 @@ impl Wav {
 	}
 
 	/// Reads in a file and parses the riff/wave data from it.
-	fn read_file(s: &str) -> (WAVHeader, TrackT) {
+	fn read_file(s: &str) -> (wav::Header, TrackT) {
 		let mut v = std::vec::Vec::new();
-		let mut h:WAVHeader = WAVHeader::default();
+		let mut h:wav::Header = wav::Header::default();
 
 			// Open the wave file
 		let mut f = std::fs::File::open(s).unwrap();
@@ -60,7 +59,7 @@ impl Wav {
 
 			if String::from_utf8(id.clone()).unwrap() == "fmt " {
 				if let riff::ChunkContent::Subchunk(sc) = c.content {
-					h=WAVHeader::from(&sc[0..16]);
+					h=wav::Header::from(&sc[0..16]);
 				}
 			} else if String::from_utf8(id.clone()).unwrap() == "data" {
 				if let riff::ChunkContent::Subchunk(sc) = c.content {
