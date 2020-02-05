@@ -1,3 +1,5 @@
+//! # Gain
+
 use super::*;
 
 pub struct Gain {

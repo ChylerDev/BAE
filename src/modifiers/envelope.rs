@@ -1,3 +1,5 @@
+//! # Envelope
+
 use super::*;
 
 pub struct Envelope {

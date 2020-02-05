@@ -44,6 +44,11 @@ mod tests {
 		run_generator(&mut Triangle::new(440.0), "triangle.wav");
 	}
 
+	#[test]
+	fn test_wavplayer() {
+		todo!();
+	}
+
 	fn run_generator(g: &mut impl ocae::generators::Generator, file:&str) {
 		let mut t = ocae::TrackT::new();
 	

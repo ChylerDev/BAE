@@ -1,14 +1,25 @@
+//! # ADSR
+
 use super::*;
 use std::time::Duration;
 
+/// Enum of the states an ADSR filter exists in.
 pub enum ADSRState {
+	/// Attack state.
 	Attack,
+	/// Decay state.
 	Decay,
+	/// Sustain state.
 	Sustain,
+	/// Release state.
 	Release,
+	/// State for when the ADSR has completed it's processing.
 	Stopped,
 }
 
+/// Attack-decay-sustain-release filter.
+/// 
+/// Creates a simple envelope for the given signal.
 pub struct ADSR {
 	a:SampleT,
 	d:SampleT,

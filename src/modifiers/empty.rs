@@ -1,3 +1,5 @@
+//! # Empty
+
 use super::*;
 
 #[derive(Copy,Clone,Default,Debug)]

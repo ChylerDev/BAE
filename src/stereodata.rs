@@ -1,13 +1,15 @@
 //! # Stereo Data
 //! 
-//! Module containing type for handling stereo audio data
+//! Module containing type for handling stereo audio data.
 
 use super::*;
 
 #[derive(Debug,Default,Copy,Clone)]
-/// Struct representing a stereophonic audio sample
+/// Struct representing a stereophonic audio sample.
 pub struct StereoData{
+	/// Left sample value.
 	pub left:SampleT,
+	/// Right sample value.
 	pub right:SampleT,
 }
 
@@ -27,7 +29,7 @@ impl StereoData {
 	}
 
 	/// Returns a new StereoData object where both left and right channels are
-	/// set from the passed sample value.
+	/// copied from the passed sample value.
 	pub fn single_stereo(x:SampleT) -> StereoData {
 		StereoData{
 			left:x,
@@ -123,10 +125,8 @@ impl std::ops::MulAssign<StereoData> for StereoData {
 }
 
 impl std::ops::Mul<SampleT> for StereoData {
-	/// Output type of the multiplication
 	type Output = StereoData;
 
-	/// Multiplies a sample by a value. E.g. scaling the sample by a gain amount.
 	fn mul(self, rhs: SampleT) -> Self::Output {
 		StereoData {
 			left: self.left * rhs,

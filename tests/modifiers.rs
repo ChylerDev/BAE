@@ -29,15 +29,15 @@ mod tests {
 		let f = ".junk/modifiers/adsr.wav";
 		ocae::tools::write_wav(t, f).unwrap();
 
-		ocae::tools::filter_gain(
-			|| ADSR::new(
-				Duration::from_secs_f64(0.03125),
-				Duration::from_secs_f64(0.125),
-				ocae::linear_db(0.5),
-				Duration::from_secs_f64(0.5)
-			),
-			512
-		);
+		// ocae::tools::filter_gain(
+		// 	|| ADSR::new(
+		// 		Duration::from_secs_f64(0.03125),
+		// 		Duration::from_secs_f64(0.125),
+		// 		ocae::linear_db(0.5),
+		// 		Duration::from_secs_f64(0.5)
+		// 	),
+		// 	512
+		// );
 	}
 
 	#[test]
@@ -55,7 +55,7 @@ mod tests {
 		run_modifier(&mut bp2, f2);
 		run_modifier(&mut bp3, f3);
 
-		ocae::tools::filter_gain(|| BandPass::from_corners((200.0,4000.0)), 512);
+		// ocae::tools::filter_gain(|| BandPass::from_corners((200.0,4000.0)), 512);
 	}
 
 	#[test]
@@ -170,7 +170,7 @@ mod tests {
 
 		run_modifier(&mut hp, "highpass.wav");
 
-		ocae::tools::filter_gain(|| HighPass::new(4400.0, 1.0), 512);
+		// ocae::tools::filter_gain(|| HighPass::new(4400.0, 1.0), 512);
 	}
 
 	#[test]

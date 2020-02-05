@@ -5,6 +5,8 @@
 
 use super::*;
 
+/// Frequency Moderator. This trait defines types who take in a frequency as a
+/// primary argument.
 pub trait FreqMod {
 	/// Creates a new object for the given frequency.
 	/// 
@@ -24,6 +26,7 @@ pub trait FreqMod {
 	fn get_frequency(&self) -> MathT;
 }
 
+/// The `Generator` trait defines types that create audio samples.
 pub trait Generator {
 	/// Generates a rendered audio sample
 	fn process(&mut self) -> StereoData;

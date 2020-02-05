@@ -4,11 +4,13 @@
 
 use super::*;
 
+/// Empty struct to allow for a Generator object that doesn't do anything.
 #[derive(Default,Copy,Clone)]
 pub struct Empty {
 }
 
 impl Empty {
+	/// Returns new Empty object.
 	pub fn new() -> Self {
 		Empty{}
 	}

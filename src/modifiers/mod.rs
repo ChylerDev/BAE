@@ -5,6 +5,7 @@
 
 use super::*;
 
+/// The `Modifier` trait defines types that filter audio samples.
 pub trait Modifier {
 	/// Filters the given audio sample.
 	/// 

@@ -2,6 +2,7 @@
 
 use super::*;
 
+/// -12dB per octave BandPass filter.
 pub struct BandPass {
 	central_f: MathT,
 	quality: MathT,
@@ -15,6 +16,11 @@ pub struct BandPass {
 }
 
 impl BandPass {
+	/// Creates a new BandPass object from the given central frequency and q
+	/// value.
+	/// 
+	/// The filter's quality is set to the central frequency divided by the
+	/// difference between the corner frequencies.
 	pub fn new(f: MathT, q: MathT) -> Self {
 		let mut bp = BandPass {
 			central_f: f,
@@ -33,6 +39,7 @@ impl BandPass {
 		bp
 	}
 
+	/// Creates a new BandPass object from given corner frequencies.
 	pub fn from_corners(f: (MathT,MathT)) -> Self {
 		let mut bp = BandPass {
 			central_f: (f.0*f.1).abs().sqrt(),
@@ -51,26 +58,34 @@ impl BandPass {
 		bp
 	}
 
+	/// Returns the central frequency of the filter.
 	pub fn get_central_frequency(&self) -> MathT {
 		self.central_f
 	}
 
+	/// Sets a new central frequency.
 	pub fn set_central_frequency(&mut self, f: MathT) {
 		self.central_f = f;
 
 		self.reset();
 	}
 
+	/// Returns the quality of the filter.
 	pub fn get_quality(&self) -> MathT {
 		self.quality
 	}
 
+	/// Sets the quality of the filter.
+	/// 
+	/// The filter's quality is set to the central frequency divided by the
+	/// difference between the corner frequencies.
 	pub fn set_quality(&mut self, q: MathT) {
 		self.quality = q;
 
 		self.reset();
 	}
 
+	/// Returns the corner frequencies of the filter.
 	pub fn get_corner_frequencies(&self) -> (MathT,MathT) {
 		let b = -self.central_f/self.quality;
 
@@ -89,6 +104,7 @@ impl BandPass {
 		}
 	}
 
+	/// Sets the corner frequencies of the filter.
 	pub fn set_corner_frequencies(&mut self, f: (MathT,MathT)) {
 		self.central_f = (f.0 * f.1).sqrt();
 		self.quality = self.central_f/(f.0-f.1).abs();

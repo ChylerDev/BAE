@@ -1,3 +1,5 @@
+//! # Echo
+
 use super::*;
 use std::collections::VecDeque;
 use std::time::Duration;
