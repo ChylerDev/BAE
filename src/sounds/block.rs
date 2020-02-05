@@ -40,7 +40,7 @@ pub type Inter = Rc<InterBase>;
 /// [`Generator`] and [`Modifier`] output. See [`Sound`] documentation for more info.
 /// 
 /// Internally, the [`Generator`], [`Modifier`], and [`Inter`] are stored wrapped
-/// within an [`Rc`] (note: may become `Arc` depending on future needs of the
+/// within an [`Rc`] (note: may become [`Arc`] depending on future needs of the
 /// library). This means that when you clone a [`Block`], the internal objects
 /// are *not* cloned. Rather, their reference count is incremented, and the
 /// wrapped objects stay where they are.
@@ -51,6 +51,7 @@ pub type Inter = Rc<InterBase>;
 /// [`Sound`]: struct.Sound.html
 /// [`Inter`]: type.Inter.html
 /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
+/// [`Arc`]: https://doc.rust-lang.org/std/sync/struct.Arc.html
 pub struct Block {
 	g: Gen,
 	m: Mod,
