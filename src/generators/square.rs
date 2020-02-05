@@ -29,12 +29,11 @@ impl FreqMod for Square {
 
 impl Generator for Square {
 	fn process(&mut self) -> StereoData {
-		let y:SampleT =
-			if self.ind >= self.inv as SampleT && self.ind < 2.0 * self.inv as SampleT {
-				-1.0
-			} else {
-				1.0
-			};
+		let y: SampleT = if self.ind >= self.inv as SampleT && self.ind < 2.0 * self.inv as SampleT {
+			-1.0
+		} else {
+			1.0
+		};
 
 		if self.ind >= 2.0 * self.inv as SampleT {
 			self.ind -= 2.0 * self.inv as SampleT;
