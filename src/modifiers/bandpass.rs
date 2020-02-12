@@ -162,3 +162,19 @@ impl Name for BandPass {
 		"Modifier.BandPass"
 	}
 }
+
+impl Clone for BandPass {
+	fn clone(&self) -> Self {
+		BandPass {
+			central_f: self.central_f,
+			quality: self.quality,
+			a0: self.a0,
+			b1: self.b1,
+			b2: self.b2,
+			x1: StereoData::default(),
+			x2: StereoData::default(),
+			y1: StereoData::default(),
+			y2: StereoData::default(),
+		}
+	}
+}

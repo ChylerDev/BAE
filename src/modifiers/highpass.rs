@@ -110,9 +110,30 @@ impl Modifier for HighPass {
 	}
 }
 
-
 impl Name for HighPass {
 	fn get_name(&self) -> &str {
 		"Modifiers.HighPass"
+	}
+}
+
+impl Clone for HighPass {
+	fn clone(&self) -> Self {
+		HighPass {
+			a0: self.a0,
+			a1: self.a1,
+			a2: self.a2,
+			a3: self.a3,
+			b1: self.b1,
+			b2: self.b2,
+			b3: self.b3,
+			x1: StereoData::default(),
+			x2: StereoData::default(),
+			x3: StereoData::default(),
+			y1: StereoData::default(),
+			y2: StereoData::default(),
+			y3: StereoData::default(),
+			fc: self.fc,
+			r: self.r,
+		}
 	}
 }

@@ -68,9 +68,31 @@ impl Modifier for Generic {
 	}
 }
 
-
 impl Name for Generic {
 	fn get_name(&self) -> &str {
 		"Modifiers.Generic"
+	}
+}
+
+impl Clone for Generic {
+	fn clone(&self) -> Self {
+		Generic {
+			zeros: self.zeros,
+			poles: self.poles,
+			inputs: {
+				let mut v = Samples::new();
+				for _ in 0..self.inputs.len() {
+					v.push_back(StereoData::default());
+				}
+				v
+			},
+			outputs: {
+				let mut v = Samples::new();
+				for _ in 0..self.outputs.len() {
+					v.push_back(StereoData::default());
+				}
+				v
+			}
+		}
 	}
 }

@@ -51,9 +51,22 @@ impl Modifier for Envelope {
 	}
 }
 
-
 impl Name for Envelope {
 	fn get_name(&self) -> &str {
 		"Modifiers.Envelope"
+	}
+}
+
+impl Clone for Envelope {
+	fn clone(&self) -> Self {
+		Envelope {
+			au: self.au,
+			bu: self.bu,
+			ad: self.ad,
+			bd: self.bd,
+			
+			x1: Default::default(),
+			y1: Default::default(),
+		}
 	}
 }

@@ -32,9 +32,25 @@ impl Modifier for Echo {
 	}
 }
 
-
 impl Name for Echo {
 	fn get_name(&self) -> &str {
 		"Modifiers.Echo"
+	}
+}
+
+impl Clone for Echo {
+	fn clone(&self) -> Self {
+		Echo {
+			delay: {
+				let mut v = VecDeque::new();
+
+				for _ in 0..(self.delay.len() * SAMPLE_RATE as usize) {
+					v.push_back(StereoData::default());
+				}
+
+				v
+			},
+			gain: self.gain,
+		}
 	}
 }

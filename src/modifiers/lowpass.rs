@@ -78,9 +78,19 @@ impl Modifier for LowPass {
 	}
 }
 
-
 impl Name for LowPass {
 	fn get_name(&self) -> &str {
 		"Modifiers.LowPass"
+	}
+}
+
+impl Clone for LowPass {
+	fn clone(&self) -> Self {
+		LowPass {
+			fc: self.fc,
+			r: self.r,
+			coeff: self.coeff,
+			outs: [StereoData::default(); 3]
+		}
 	}
 }

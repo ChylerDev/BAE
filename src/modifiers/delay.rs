@@ -39,9 +39,24 @@ impl Modifier for Delay {
 	}
 }
 
-
 impl Name for Delay {
 	fn get_name(&self) -> &str {
 		"Modifiers.Delay"
+	}
+}
+
+impl Clone for Delay {
+	fn clone(&self) -> Self {
+		Delay {
+			delay: {
+				let mut v = VecDeque::new();
+
+				for _ in 0..(self.delay.len() * SAMPLE_RATE as usize) {
+					v.push_back(StereoData::default());
+				}
+
+				v
+			}
+		}
 	}
 }

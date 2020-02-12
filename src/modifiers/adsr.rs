@@ -94,3 +94,16 @@ impl Name for ADSR {
 		"Modifiers.ADSR"
 	}
 }
+
+impl Clone for ADSR {
+	fn clone(&self) -> Self {
+		ADSR {
+			a: self.a,
+			d: self.d,
+			s: self.s,
+			r: self.r,
+			state: ADSRState::Attack,
+			g: 0.0
+		}
+	}
+}
