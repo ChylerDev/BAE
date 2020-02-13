@@ -7,12 +7,13 @@ use crate::driver::*;
 use super::basic_block::*;
 use petgraph::graph;
 
-pub type BlockList = VecDeque<BlockRc>;
 pub type Graph = graph::DiGraph<BlockRc, ()>;
 pub type GraphNode = graph::NodeIndex;
+pub type ProcessOrder = VecDeque<GraphNode>;
 
 pub struct Sound {
 	graph: Graph,
+	process_order: ProcessOrder,
 	input_gain: GraphNode,
 	output_gain: GraphNode,
 	driver: Option<DriverRc>,
@@ -41,6 +42,7 @@ impl Sound {
 
 		Sound {
 			graph,
+			process_order: ProcessOrder::new(),
 			input_gain,
 			output_gain,
 			driver: None,
@@ -80,12 +82,16 @@ impl Sound {
 
 	pub fn add_connection(&mut self, from: GraphNode, to: GraphNode) {
 		self.graph.update_edge(from, to, ());
+
+		self.process_order();
 	}
 
 	pub fn remove_connection(&mut self, from: GraphNode, to: GraphNode) {
 		if let Some(e) = self.graph.find_edge(from, to) {
 			self.graph.remove_edge(e);
 		}
+
+		self.process_order();
 	}
 
 	pub fn register(this: SoundRc, mut driver: DriverRc) {
@@ -113,6 +119,75 @@ impl Sound {
 
 				sound.driver = None;
 				sound.id = None;
+			}
+		}
+	}
+
+	pub fn process(&mut self, input: StereoData) -> StereoData {
+		if self.is_paused {
+			return Default::default();
+		}
+
+		let mut out = Default::default();
+
+		Rc::get_mut(
+			self.graph.node_weight_mut(self.input_gain).unwrap()
+		).unwrap().prime_input(input);
+
+		for b in &self.process_order {
+			let block = Rc::get_mut(self.graph.node_weight_mut(*b).unwrap()).unwrap();
+			out = block.process();
+
+			let mut neighbors = self.graph.neighbors(*b).detach();
+
+			while let Some(t) = neighbors.next(&self.graph) {
+				Rc::get_mut(self.graph.node_weight_mut(t.1).unwrap()).unwrap().
+				prime_input(out);
+			}
+		}
+
+		if self.is_muted {
+			Default::default()
+		} else {
+			out
+		}
+	}
+
+	fn process_order(&mut self) {
+		self.process_order.clear();
+
+		self.process_order.extend(self.graph.externals(petgraph::Direction::Incoming));
+		let mut i = 0;
+		while i < self.process_order.len() {
+			let neighbors = self.graph.neighbors(self.process_order[i]);
+			self.process_order.extend(neighbors);
+
+			let mut j = 0;
+			while j < i {
+				Sound::remove_dups(&mut self.process_order, j);
+				j += 1;
+			}
+
+			i += 1;
+		}
+
+		let ig = self.input_gain;
+		let og = self.output_gain;
+
+		self.process_order.retain(|e| *e != ig && *e != og);
+
+		self.process_order.push_front(self.input_gain);
+		self.process_order.push_back(self.output_gain);
+	}
+
+	fn remove_dups(v: &mut ProcessOrder, whitelist: usize) {
+		let mut i = whitelist + 1;
+
+		while i < v.len() {
+			if v[i] == v[whitelist] {
+				v.remove(i);
+			} else {
+				i += 1;
 			}
 		}
 	}
