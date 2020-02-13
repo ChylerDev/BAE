@@ -47,7 +47,7 @@ impl Generic {
 	}
 }
 
-impl Modifier for Generic {
+impl Modifier<Generic> for Generic {
 	fn process(&mut self, x: StereoData) -> StereoData {
 		let mut y = StereoData::default();
 

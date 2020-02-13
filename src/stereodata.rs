@@ -4,8 +4,8 @@
 
 use super::*;
 
-#[derive(Debug,Default,Copy,Clone)]
 /// Struct representing a stereophonic audio sample.
+#[derive(Copy,Clone,Default)]
 pub struct StereoData{
 	/// Left sample value.
 	pub left:SampleT,

@@ -23,7 +23,7 @@ impl Echo {
 	}
 }
 
-impl Modifier for Echo {
+impl Modifier<Echo> for Echo {
 	fn process(&mut self, x: StereoData) -> StereoData {
 		let wet = self.delay.pop_front().unwrap() * self.gain + x;
 		self.delay.push_back(wet);

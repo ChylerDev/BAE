@@ -29,7 +29,7 @@ impl Envelope {
 	}
 }
 
-impl Modifier for Envelope {
+impl Modifier<Envelope> for Envelope {
 	fn process(&mut self, x: StereoData) -> StereoData {
 		let y = StereoData::from_stereo(
 			if x.left.abs() > self.y1.left {

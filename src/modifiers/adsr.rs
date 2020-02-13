@@ -56,7 +56,7 @@ impl ADSR {
 	}
 }
 
-impl Modifier for ADSR {
+impl Modifier<ADSR> for ADSR {
 	fn process(&mut self, x: StereoData) -> StereoData {
 		match self.state {
 			ADSRState::Attack => {

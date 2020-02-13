@@ -130,7 +130,7 @@ impl BandPass {
 	}
 }
 
-impl Modifier for BandPass {
+impl Modifier<BandPass> for BandPass {
 	fn process(&mut self, x: StereoData) -> StereoData {
 		let y = StereoData::from_stereo(
 			(self.a0 * (x.left - self.x2.left) as MathT +

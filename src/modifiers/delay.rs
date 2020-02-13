@@ -31,7 +31,7 @@ impl Delay {
 	}
 }
 
-impl Modifier for Delay {
+impl Modifier<Delay> for Delay {
 	fn process(&mut self, x: StereoData) -> StereoData {
 		self.delay.push_back(x);
 

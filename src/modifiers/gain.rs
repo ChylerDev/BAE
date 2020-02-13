@@ -15,7 +15,7 @@ impl Gain {
 	}
 }
 
-impl Modifier for Gain {
+impl Modifier<Gain> for Gain {
 	fn process(&mut self, x: StereoData) -> StereoData {
 		x * self.a
 	}

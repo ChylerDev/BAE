@@ -18,7 +18,7 @@ pub type Gen = Rc<dyn generators::Generator>;
 /// Reference-counted wrapper for a [`Modifier`]
 /// 
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
-pub type Mod = Rc<dyn modifiers::Modifier>;
+pub type Mod<T> where T: Clone = Rc<dyn modifiers::Modifier<T>>;
 
 /// Type defining the closure that combines inputted StereoData samples from the
 /// outputs of the [`Generator`]s and [`Modifier`]s of the cointaining [`Block`]
@@ -52,14 +52,18 @@ pub type Inter = Rc<InterBase>;
 /// [`Inter`]: type.Inter.html
 /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 /// [`Arc`]: https://doc.rust-lang.org/std/sync/struct.Arc.html
-pub struct Block {
+pub struct Block<C>
+	where C: Clone
+{
 	g: Gen,
-	m: Mod,
+	m: Mod<C>,
 	i: Inter,
 	input: StereoData,
 }
 
-impl Block {
+impl<C> Block<C>
+	where C: Clone
+{
 	/// Creates a new Block from the given [`Generator`], [`Modifier`], and
 	/// [`Inter`].
 	/// 
@@ -74,9 +78,9 @@ impl Block {
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
 	/// [`Block`]: struct.Block.html
 	/// [`Inter`]: type.Inter.html
-	pub fn new<T, U>(g: T, m: U, i: Inter) -> Block
+	pub fn new<T, U, V>(g: T, m: U, i: Inter) -> Self
 		where T: 'static + generators::Generator + Clone,
-		      U: 'static + modifiers::Modifier + Clone
+		      U: 'static + modifiers::Modifier<C>
 	{
 		Block {
 			g: Rc::new(g),
@@ -98,7 +102,7 @@ impl Block {
 	/// [`Block::generator_passthrough`]: struct.Block.html#method.generator_passthrough
 	/// [`Inter`]: type.Inter.html
 	/// [`Empty`]: ../../generators/empty/struct.Empty.html
-	pub fn from_generator<T>(g: T) -> Block
+	pub fn from_generator<T>(g: T) -> Block<modifiers::Empty>
 		where T: 'static + generators::Generator + Clone
 	{
 		Block {
@@ -106,7 +110,7 @@ impl Block {
 			m: Rc::new(
 				modifiers::Empty::new()
 			),
-			i: Block::generator_passthrough(),
+			i: Block::<C>::generator_passthrough(),
 			input: StereoData::default()
 		}
 	}
@@ -123,15 +127,15 @@ impl Block {
 	/// [`Block::modifier_passthrough`]: struct.Block.html#method.modifier_passthrough
 	/// [`Inter`]: type.Inter.html
 	/// [`Empty`]: ../../modifiers/empty/struct.Empty.html
-	pub fn from_modifier<U>(m: U) -> Block
-		where U: 'static + modifiers::Modifier + Clone
+	pub fn from_modifier<U>(m: U) -> Self
+		where U: 'static + modifiers::Modifier<C>
 	{
 		Block {
 			g: Rc::new(
 				generators::Empty::new()
 			),
 			m: Rc::new(m),
-			i: Block::modifier_passthrough(),
+			i: Block::<C>::modifier_passthrough(),
 			input: StereoData::default()
 		}
 	}
@@ -170,7 +174,7 @@ impl Block {
 	/// 
 	/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-	pub fn get_m(&self) -> &Mod {
+	pub fn get_m(&self) -> &Mod<C> {
 		&self.m
 	}
 
@@ -186,24 +190,19 @@ impl Block {
 	/// 
 	/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-	pub fn get_m_mut(&mut self) -> &mut Mod {
+	pub fn get_m_mut(&mut self) -> &mut Mod<C> {
 		&mut self.m
 	}
+}
 
-	/// Increments the internal input sample by the give sample.
-	pub fn prime_input(&mut self, x: StereoData) {
+impl<C> BasicBlock for Block<C>
+	where C: Clone
+{
+	fn prime_input(&mut self, x: StereoData) {
 		self.input += x;
 	}
 
-	/// Process the [`Block`]. Individually processes the stored [`Generator`]
-	/// and [`Modifier`] which are both combined using the [`Inter`] and
-	/// returned.
-	/// 
-	/// [`Block`]: struct.Block.html
-	/// [`Generator`]: ../../generators/trait.Generator.html
-	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-	/// [`Inter`]: type.Inter.html
-	pub fn process(&mut self) -> StereoData {
+	fn process(&mut self) -> StereoData {
 		let y = Rc::get_mut(&mut self.i).unwrap()(
 			Rc::get_mut(&mut self.g).unwrap().process(),
 			Rc::get_mut(&mut self.m).unwrap().process(self.input)
@@ -214,9 +213,3 @@ impl Block {
 		y
 	}
 }
-
-/// Type alias for an [`Rc`]-wrapped [`Block`] object.
-/// 
-/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-/// [`Block`]: struct.Block.html
-pub type BlockRc = Box<Rc<Block>>;

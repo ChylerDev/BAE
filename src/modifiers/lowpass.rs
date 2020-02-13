@@ -63,7 +63,7 @@ impl LowPass {
 	}
 }
 
-impl Modifier for LowPass {
+impl Modifier<LowPass> for LowPass {
 	fn process(&mut self, x: StereoData) -> StereoData {
 		let y = self.coeff[0]*x +
 				self.coeff[1]*self.outs[0] +

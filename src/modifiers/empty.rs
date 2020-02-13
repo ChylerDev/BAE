@@ -12,7 +12,7 @@ impl Empty {
 	}
 }
 
-impl Modifier for Empty {
+impl Modifier<Empty> for Empty {
 	fn process(&mut self, x: StereoData) -> StereoData {
 		x
 	}

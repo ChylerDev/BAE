@@ -9,7 +9,7 @@ use crate::sounds::sound::*;
 #[derive(Clone)]
 pub struct Driver {
 	output: TrackT,
-	sounds: HashMap<usize, Rc<sounds::Sound>>,
+	sounds: HashMap<usize, SoundRc>,
 	gain: SampleT,
 	id_counter: usize
 }
@@ -53,6 +53,14 @@ impl Driver {
 		self.id_counter += 1;
 
 		old
+	}
+
+	pub fn register(&mut self, sound: SoundRc) -> usize {
+		1
+	}
+
+	pub fn unregister(&mut self, id: usize) {
+
 	}
 }
 

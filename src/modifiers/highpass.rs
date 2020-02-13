@@ -90,7 +90,7 @@ impl HighPass {
 	}
 }
 
-impl Modifier for HighPass {
+impl Modifier<HighPass> for HighPass {
 	fn process(&mut self, x: StereoData) -> StereoData {
 		let y = StereoData::from_stereo(
 			self.a0*x.left + self.a1*self.x1.left + self.a2*self.x2.left + self.a3*self.x3.left +
