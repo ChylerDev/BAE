@@ -101,7 +101,7 @@ impl Sound {
 
 			sound.driver = Some(driver.clone());
 			if let Some(driver) = Rc::get_mut(&mut driver) {
-				sound.id = Some(driver.register(this));
+				sound.id = Some(driver.add_sound(this));
 			}
 		}
 	}
@@ -112,7 +112,7 @@ impl Sound {
 				if let Some(mut driver) = sound.driver.clone() {
 					if let Some(driver) = Rc::get_mut(&mut driver) {
 						if let Some(id) = sound.id {
-							driver.unregister(id);
+							driver.remove_sound(id);
 						}
 					}
 				}

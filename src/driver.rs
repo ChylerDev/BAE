@@ -16,16 +16,12 @@ pub struct Driver {
 
 impl Driver {
 	pub fn new(track_size: usize, gain: MathT) -> Self {
-		let mut d = Driver {
-			output: TrackT::new(),
+		Driver {
+			output: TrackT::with_capacity(track_size),
 			sounds: HashMap::new(),
 			gain: gain as SampleT,
 			id_counter: 0
-		};
-
-		d.output.reserve(track_size);
-
-		d
+		}
 	}
 
 	pub fn add_sound(&mut self, sound: SoundRc) -> usize {
@@ -47,20 +43,26 @@ impl Driver {
 		&self.output
 	}
 
+	pub fn process(&mut self) {
+		self.output.resize_with(self.output.len(), Default::default);
+
+		for sample in &mut self.output {
+			for mut sound in &mut self.sounds {
+				let out = Rc::get_mut(&mut sound.1).unwrap().process(Default::default());
+
+				*sample += out;
+			}
+
+			*sample *= self.gain;
+		}
+	}
+
 	fn get_id(&mut self) -> usize {
 		let old = self.id_counter;
 
 		self.id_counter += 1;
 
 		old
-	}
-
-	pub fn register(&mut self, sound: SoundRc) -> usize {
-		1
-	}
-
-	pub fn unregister(&mut self, id: usize) {
-
 	}
 }
 
