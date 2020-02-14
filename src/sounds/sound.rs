@@ -27,14 +27,14 @@ impl Sound {
 		let mut graph = Graph::new();
 		let input_gain = graph.add_node(
 			Rc::new(
-				Block::from_modifier(
+				ModifierBlock::from_modifier(
 					modifiers::Gain::new(input_gain as SampleT)
 				)
 			)
 		);
 		let output_gain = graph.add_node(
 			Rc::new(
-				Block::from_modifier(
+				ModifierBlock::from_modifier(
 					modifiers::Gain::new(output_gain as SampleT)
 				)
 			)
@@ -53,11 +53,11 @@ impl Sound {
 	}
 
 	pub fn get_input_gain(&self) -> GraphNode {
-		self.input_gain.clone()
+		self.input_gain
 	}
 
 	pub fn get_output_gain(&self) -> GraphNode {
-		self.output_gain.clone()
+		self.output_gain
 	}
 
 	pub fn toggle_pause(&mut self) {

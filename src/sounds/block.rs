@@ -33,6 +33,9 @@ pub type InterBase = dyn FnMut(StereoData, StereoData) -> StereoData;
 /// [`InterBase`]: type.InterBase.html
 pub type Inter = Rc<InterBase>;
 
+pub type ModifierBlock<M> where M: Clone = Block<generators::Empty,M>;
+pub type GeneratorBlock<G> where G: Clone = Block<G,modifiers::Empty>;
+
 /// Struct used for generalizing the structure of and abstracting the [`Sound`]
 /// struct. This allows us to create complex sounds as a graph of [`Block`]s,
 /// where each block can be a [`Modifier`], [`Generator`], or both, and there output
@@ -103,7 +106,7 @@ impl<G,M> Block<G,M>
 	/// [`Block::generator_passthrough`]: struct.Block.html#method.generator_passthrough
 	/// [`Inter`]: type.Inter.html
 	/// [`Empty`]: ../../generators/empty/struct.Empty.html
-	pub fn from_generator<T>(g: T) -> Block<G, modifiers::Empty>
+	pub fn from_generator<T>(g: T) -> GeneratorBlock<G>
 		where T: 'static + generators::Generator<G>
 	{
 		Block {
@@ -128,7 +131,7 @@ impl<G,M> Block<G,M>
 	/// [`Block::modifier_passthrough`]: struct.Block.html#method.modifier_passthrough
 	/// [`Inter`]: type.Inter.html
 	/// [`Empty`]: ../../modifiers/empty/struct.Empty.html
-	pub fn from_modifier<U>(m: U) -> Block<generators::Empty, M>
+	pub fn from_modifier<U>(m: U) -> ModifierBlock<M>
 		where U: 'static + modifiers::Modifier<M>
 	{
 		Block {
