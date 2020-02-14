@@ -77,8 +77,8 @@ impl Name for Generic {
 impl Clone for Generic {
 	fn clone(&self) -> Self {
 		Generic {
-			zeros: self.zeros,
-			poles: self.poles,
+			zeros: self.zeros.clone(),
+			poles: self.poles.clone(),
 			inputs: {
 				let mut v = Samples::new();
 				for _ in 0..self.inputs.len() {
