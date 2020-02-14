@@ -27,7 +27,9 @@ pub trait FreqMod {
 }
 
 /// The `Generator` trait defines types that create audio samples.
-pub trait Generator {
+pub trait Generator<T>
+	where T: Clone
+{
 	/// Generates a rendered audio sample
 	fn process(&mut self) -> StereoData;
 }

@@ -20,7 +20,7 @@ impl Noise {
 	}
 }
 
-impl Generator for Noise {
+impl Generator<Noise> for Noise {
 	fn process(&mut self) -> StereoData {
 		use rand::Rng;
 

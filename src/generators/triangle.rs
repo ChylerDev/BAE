@@ -27,7 +27,7 @@ impl FreqMod for Triangle {
 	}
 }
 
-impl Generator for Triangle {
+impl Generator<Triangle> for Triangle {
 	fn process(&mut self) -> StereoData {
 		let y = StereoData::from_mono(self.inc);
 

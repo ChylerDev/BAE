@@ -112,7 +112,7 @@ impl Wav {
 	}
 }
 
-impl Generator for Wav {
+impl Generator<Wav> for Wav {
 	fn process(&mut self) -> StereoData {
 		self.resam.process()
 	}

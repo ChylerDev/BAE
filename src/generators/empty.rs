@@ -16,7 +16,7 @@ impl Empty {
 	}
 }
 
-impl Generator for Empty {
+impl Generator<Empty> for Empty {
 	fn process(&mut self) -> StereoData {
 		StereoData::default()
 	}

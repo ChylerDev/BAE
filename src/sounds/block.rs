@@ -13,7 +13,7 @@ use std::rc::Rc;
 /// Reference-counted wrapper for a [`Generator`]
 /// 
 /// [`Generator`]: ../../generators/trait.Generator.html
-pub type Gen = Rc<dyn generators::Generator>;
+pub type Gen<T> where T: Clone = Rc<dyn generators::Generator<T>>;
 
 /// Reference-counted wrapper for a [`Modifier`]
 /// 
@@ -52,17 +52,18 @@ pub type Inter = Rc<InterBase>;
 /// [`Inter`]: type.Inter.html
 /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 /// [`Arc`]: https://doc.rust-lang.org/std/sync/struct.Arc.html
-pub struct Block<C>
-	where C: Clone
+pub struct Block<G,M>
+	where G: Clone, M: Clone
 {
-	g: Gen,
-	m: Mod<C>,
+	g: Gen<G>,
+	m: Mod<M>,
 	i: Inter,
 	input: StereoData,
 }
 
-impl<C> Block<C>
-	where C: Clone
+impl<G,M> Block<G,M>
+	where G: Clone,
+	      M: Clone
 {
 	/// Creates a new Block from the given [`Generator`], [`Modifier`], and
 	/// [`Inter`].
@@ -79,8 +80,8 @@ impl<C> Block<C>
 	/// [`Block`]: struct.Block.html
 	/// [`Inter`]: type.Inter.html
 	pub fn new<T, U, V>(g: T, m: U, i: Inter) -> Self
-		where T: 'static + generators::Generator + Clone,
-		      U: 'static + modifiers::Modifier<C>
+		where T: 'static + generators::Generator<G>,
+		      U: 'static + modifiers::Modifier<M>
 	{
 		Block {
 			g: Rc::new(g),
@@ -102,15 +103,15 @@ impl<C> Block<C>
 	/// [`Block::generator_passthrough`]: struct.Block.html#method.generator_passthrough
 	/// [`Inter`]: type.Inter.html
 	/// [`Empty`]: ../../generators/empty/struct.Empty.html
-	pub fn from_generator<T>(g: T) -> Block<modifiers::Empty>
-		where T: 'static + generators::Generator + Clone
+	pub fn from_generator<T>(g: T) -> Block<G, modifiers::Empty>
+		where T: 'static + generators::Generator<G>
 	{
 		Block {
 			g: Rc::new(g),
 			m: Rc::new(
 				modifiers::Empty::new()
 			),
-			i: Block::<C>::generator_passthrough(),
+			i: Self::generator_passthrough(),
 			input: StereoData::default()
 		}
 	}
@@ -127,15 +128,15 @@ impl<C> Block<C>
 	/// [`Block::modifier_passthrough`]: struct.Block.html#method.modifier_passthrough
 	/// [`Inter`]: type.Inter.html
 	/// [`Empty`]: ../../modifiers/empty/struct.Empty.html
-	pub fn from_modifier<U>(m: U) -> Self
-		where U: 'static + modifiers::Modifier<C>
+	pub fn from_modifier<U>(m: U) -> Block<generators::Empty, M>
+		where U: 'static + modifiers::Modifier<M>
 	{
 		Block {
 			g: Rc::new(
 				generators::Empty::new()
 			),
 			m: Rc::new(m),
-			i: Block::<C>::modifier_passthrough(),
+			i: Self::modifier_passthrough(),
 			input: StereoData::default()
 		}
 	}
@@ -166,7 +167,7 @@ impl<C> Block<C>
 	/// 
 	/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 	/// [`Generator`]: ../../generators/trait.Generator.html
-	pub fn get_g(&self) -> &Gen {
+	pub fn get_g(&self) -> &Gen<G> {
 		&self.g
 	}
 
@@ -174,7 +175,7 @@ impl<C> Block<C>
 	/// 
 	/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-	pub fn get_m(&self) -> &Mod<C> {
+	pub fn get_m(&self) -> &Mod<M> {
 		&self.m
 	}
 
@@ -182,7 +183,7 @@ impl<C> Block<C>
 	/// 
 	/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 	/// [`Generator`]: ../../generators/trait.Generator.html
-	pub fn get_g_mut(&mut self) -> &mut Gen {
+	pub fn get_g_mut(&mut self) -> &mut Gen<G> {
 		&mut self.g
 	}
 
@@ -190,13 +191,14 @@ impl<C> Block<C>
 	/// 
 	/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-	pub fn get_m_mut(&mut self) -> &mut Mod<C> {
+	pub fn get_m_mut(&mut self) -> &mut Mod<M> {
 		&mut self.m
 	}
 }
 
-impl<C> BasicBlock for Block<C>
-	where C: Clone
+impl<G,M> BasicBlock for Block<G,M>
+	where G: Clone,
+	      M: Clone
 {
 	fn prime_input(&mut self, x: StereoData) {
 		self.input += x;
