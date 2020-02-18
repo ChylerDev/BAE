@@ -18,10 +18,12 @@ use petgraph::graph;
 /// 
 /// [`ComplexSound`]: struct.ComplexSound.html
 pub type Graph = graph::DiGraph<BlockRc, ()>;
+
 /// Alias for the nodes of the graph used by [`ComplexSound`].
 /// 
 /// [`ComplexSound`]: struct.ComplexSound.html
 pub type GraphNode = graph::NodeIndex;
+
 /// Alias for the container storing the order of processing [`GraphNode`]s.
 /// 
 /// [`GraphNode`]: type.GraphNode.html
@@ -117,6 +119,8 @@ impl ComplexSound {
 	}
 
 	/// Removes a connection between the two given [`GraphNode`]s.
+	/// 
+	/// [`GraphNode`]: type.GraphNode.html
 	pub fn remove_connection(&mut self, from: GraphNode, to: GraphNode) {
 		if let Some(e) = self.graph.find_edge(from, to) {
 			self.graph.remove_edge(e);
@@ -125,7 +129,16 @@ impl ComplexSound {
 		self.process_order();
 	}
 
-	/// Processes the graph and constructs the order to process the nodes.
+	/// Returns a copy of the list of all nodes of the graph in the order in
+	/// which they will be processed.
+	pub fn get_nodes(&self) -> ProcessOrder {
+		self.process_order.clone()
+	}
+
+	/// Processes the graph and constructs the order to process the
+	/// [`GraphNode`]s.
+	/// 
+	/// [`GraphNode`]: type.GraphNode.html
 	fn process_order(&mut self) {
 		self.process_order.clear();
 
@@ -153,7 +166,9 @@ impl ComplexSound {
 		self.process_order.push_back(self.output_gain);
 	}
 
-	/// Removes duplicates from the process order to prevent parsing cycles
+	/// Removes duplicate [`GraphNode`]s from the process order to prevent parsing cycles
+	/// 
+	/// [`GraphNode`]: type.GraphNode.html
 	fn remove_dups(v: &mut ProcessOrder, whitelist: usize) {
 		let mut i = whitelist + 1;
 
@@ -245,5 +260,6 @@ impl Sound<ComplexSound> for ComplexSound {
 
 /// Type alias for a [`ComplexSound`] wrapped in an [`Rc`].
 /// 
-/// [`ComplexSound`]: 
+/// [`ComplexSound`]: struct.ComplexSound.html
+/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 pub type ComplexSoundRc = Rc<ComplexSound>;
