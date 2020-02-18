@@ -1,3 +1,10 @@
+//! # Sound Drivers
+//! 
+//! This module includes the types and traits needed to process a group of
+//! [`Sound`]s to generate a single output sample.
+//! 
+//! [`Sound`]: ../sounds/sound/trait.Sound.html
+
 use super::*;
 use std::rc::Rc;
 
