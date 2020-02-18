@@ -5,7 +5,6 @@ use std::rc::Rc;
 pub trait Sound<S>
 	where S: Clone
 {
-	fn new(input_gain: SampleT, output_gain: SampleT) -> Self;
 	fn toggle_pause(&mut self);
 	fn is_paused(&self) -> bool;
 	fn toggle_mute(&mut self);
