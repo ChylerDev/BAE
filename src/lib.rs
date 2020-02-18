@@ -25,7 +25,7 @@ pub trait Name {
 	fn get_name(&self) -> &str;
 }
 
-pub mod driver;
+pub mod core;
 pub mod generators;
 pub mod modifiers;
 pub mod sounds;

@@ -1,59 +1,26 @@
-//! # Driver
+//! # Complex Driver
 
 use super::*;
 
 use std::rc::Rc;
 use std::collections::HashMap;
-use crate::sounds::sound::*;
+use crate::sounds::*;
 
 #[derive(Clone)]
-pub struct Driver {
+pub struct ComplexDriver {
 	output: TrackT,
-	sounds: HashMap<usize, SoundRc>,
+	sounds: HashMap<usize, ComplexSoundRc>,
 	gain: SampleT,
 	id_counter: usize
 }
 
-impl Driver {
+impl ComplexDriver {
 	pub fn new(track_size: usize, gain: MathT) -> Self {
-		Driver {
+		ComplexDriver {
 			output: TrackT::with_capacity(track_size),
 			sounds: HashMap::new(),
 			gain: gain as SampleT,
 			id_counter: 0
-		}
-	}
-
-	pub fn add_sound(&mut self, sound: SoundRc) -> usize {
-		let id = self.get_id();
-		self.sounds.insert(id, sound);
-
-		id
-	}
-
-	pub fn remove_sound(&mut self, id: usize) -> Option<SoundRc> {
-		self.sounds.remove(&id)
-	}
-
-	pub fn set_gain(&mut self, gain: MathT) {
-		self.gain = gain as SampleT;
-	}
-
-	pub fn get_output(&self) -> &TrackT {
-		&self.output
-	}
-
-	pub fn process(&mut self) {
-		self.output.resize_with(self.output.len(), Default::default);
-
-		for sample in &mut self.output {
-			for mut sound in &mut self.sounds {
-				let out = Rc::get_mut(&mut sound.1).unwrap().process(Default::default());
-
-				*sample += out;
-			}
-
-			*sample *= self.gain;
 		}
 	}
 
@@ -66,4 +33,39 @@ impl Driver {
 	}
 }
 
-pub type DriverRc = Rc<Driver>;
+impl Driver<ComplexSound> for ComplexDriver {
+	fn add_sound(&mut self, sound: ComplexSoundRc) -> usize {
+		let id = self.get_id();
+		self.sounds.insert(id, sound);
+
+		id
+	}
+
+	fn remove_sound(&mut self, id: usize) -> Option<ComplexSoundRc> {
+		self.sounds.remove(&id)
+	}
+
+	fn set_gain(&mut self, gain: MathT) {
+		self.gain = gain as SampleT;
+	}
+
+	fn get_output(&self) -> &TrackT {
+		&self.output
+	}
+
+	fn process(&mut self) {
+		self.output.resize_with(self.output.len(), Default::default);
+
+		for sample in &mut self.output {
+			for mut sound in &mut self.sounds {
+				let out = Rc::get_mut(&mut sound.1).unwrap().process(Default::default());
+
+				*sample += out;
+			}
+
+			*sample *= self.gain;
+		}
+	}
+}
+
+pub type ComplexDriverRc = DriverRc<ComplexSound>;

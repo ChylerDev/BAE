@@ -13,12 +13,12 @@ use std::rc::Rc;
 /// Reference-counted wrapper for a [`Generator`]
 /// 
 /// [`Generator`]: ../../generators/trait.Generator.html
-pub type Gen<T> where T: Clone = Rc<dyn generators::Generator<T>>;
+pub type Gen<T> = Rc<dyn generators::Generator<T>>;
 
 /// Reference-counted wrapper for a [`Modifier`]
 /// 
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
-pub type Mod<T> where T: Clone = Rc<dyn modifiers::Modifier<T>>;
+pub type Mod<T> = Rc<dyn modifiers::Modifier<T>>;
 
 /// Type defining the closure that combines inputted StereoData samples from the
 /// outputs of the [`Generator`]s and [`Modifier`]s of the cointaining [`Block`]
@@ -33,8 +33,25 @@ pub type InterBase = dyn FnMut(StereoData, StereoData) -> StereoData;
 /// [`InterBase`]: type.InterBase.html
 pub type Inter = Rc<InterBase>;
 
-pub type ModifierBlock<M> where M: Clone = Block<generators::Empty,M>;
-pub type GeneratorBlock<G> where G: Clone = Block<G,modifiers::Empty>;
+/// Alias for a [`Block`] that only uses a custom [`Modifier`]
+/// 
+/// In conforming with the requirements for the generic parameter of the
+/// [`Modifier`] trait, the given type `M` should implement [`Clone`].
+/// 
+/// [`Block`]: struct.Block.html
+/// [`Modifier`]: ../../modifiers/trait.Modifier.html
+/// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
+pub type ModifierBlock<M> = Block<generators::Empty,M>;
+
+/// Alias for a [`Block`] that only uses a custom [`Block`]
+/// 
+/// In conforming with the requirements for the generic parameter of the
+/// [`Generator`] trait, the given type `G` should implement [`Clone`].
+/// 
+/// [`Block`]: struct.Block.html
+/// [`Generator`]: ../../generators/trait.Generator.html
+/// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
+pub type GeneratorBlock<G> = Block<G,modifiers::Empty>;
 
 /// Struct used for generalizing the structure of and abstracting the [`Sound`]
 /// struct. This allows us to create complex sounds as a graph of [`Block`]s,
