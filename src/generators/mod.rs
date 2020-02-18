@@ -4,6 +4,7 @@
 //! sawtooth, square, white noise, and more.
 
 use super::*;
+use std::rc::Rc;
 
 /// Frequency Moderator. This trait defines types who take in a frequency as a
 /// primary argument.
@@ -33,6 +34,12 @@ pub trait Generator<T>
 	/// Generates a rendered audio sample
 	fn process(&mut self) -> StereoData;
 }
+
+/// Type alias for a [`Generator`] wrapped in an [`Rc`].
+/// 
+/// [`Generator`]: trait.Generator.html
+/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
+pub type GeneratorRc<T> = Rc<dyn Generator<T>>;
 
 pub mod empty;
 pub mod noise;

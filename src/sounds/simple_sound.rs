@@ -1,3 +1,13 @@
+//! # Simple Sound
+//! 
+//! Module containing types implementing the ability to run a single
+//! [`Generator`] and [`Modifier`] within a single object, granting the ability
+//! for fast processing of simple [`Generator`]s and [`Modifier`]s into a single
+//! output.
+//! 
+//! [`Generator`]: ../../generators/trait.Generator.html
+//! [`Modifier`]: ../../generators/trait.Modifier.html
+
 use super::*;
 
 use std::rc::Rc;
@@ -6,7 +16,8 @@ use super::basic_block::*;
 
 #[derive(Clone)]
 pub struct SimpleSound {
-	block: BlockRc,
+	generator: BlockRc,
+	modifier_list: Vec<BlockRc>,
 	input_gain: SampleT,
 	output_gain: SampleT,
 	channel: Option<SimpleChannelRc>,
@@ -16,9 +27,10 @@ pub struct SimpleSound {
 }
 
 impl SimpleSound {
-	pub fn new(input_gain: MathT, output_gain: MathT, block: BlockRc) -> Self {
+	pub fn new(input_gain: MathT, output_gain: MathT, generator: BlockRc) -> Self {
 		SimpleSound {
-			block,
+			generator,
+			modifier_list: Vec::new(),
 			input_gain: input_gain as SampleT,
 			output_gain: output_gain as SampleT,
 			channel: None,
@@ -26,6 +38,12 @@ impl SimpleSound {
 			is_muted: false,
 			is_paused: false,
 		}
+	}
+
+	pub fn add_modifier<M>(&mut self, m: ModifierBlockRc<M>)
+		where M: 'static + Clone
+	{
+		self.modifier_list.push(m);
 	}
 
 	pub fn get_input_gain(&self) -> MathT {
@@ -90,17 +108,24 @@ impl Sound<SimpleSound> for SimpleSound {
 		}
 	}
 
-	fn process(&mut self, mut input: StereoData) -> StereoData {
+	fn process(&mut self, input: StereoData) -> StereoData {
 		if self.is_paused {
 			return Default::default();
 		}
 
-		let out = if let Some(b) = Rc::get_mut(&mut self.block) {
+		let mut out = if let Some(b) = Rc::get_mut(&mut self.generator) {
 			b.prime_input(input * self.input_gain);
 			b.process() * self.output_gain
 		} else {
 			Default::default()
 		};
+
+		for m in &mut self.modifier_list {
+			if let Some(m) = Rc::get_mut(m) {
+				m.prime_input(out);
+				out = m.process();
+			}
+		}
 
 		if self.is_muted {
 			Default::default()

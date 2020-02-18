@@ -4,6 +4,7 @@
 //! bandpass, echo, delay, etc.
 
 use super::*;
+use std::rc::Rc;
 
 /// The `Modifier` trait defines types that filter audio samples.
 /// 
@@ -24,6 +25,12 @@ pub trait Modifier<T>
 	/// * `x` - The "dry" audio sample before filtering.
 	fn process(&mut self, x: StereoData) -> StereoData;
 }
+
+/// Type alias for a [`Modifier`] wrapped in an [`Rc`].
+/// 
+/// [`Modifier`]: trait.Modifier.html
+/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
+pub type ModifierRc<T> = Rc<dyn Modifier<T>>;
 
 pub mod adsr;
 pub mod bandpass;
