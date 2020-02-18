@@ -1,12 +1,12 @@
 //! # Sound
 //! 
 //! Module containing the trait [`Sound`] defining the interface for anything
-//! that will produce sound to be processed by a [`Driver`]. Two implementations
+//! that will produce sound to be processed by a [`Channel`]. Two implementations
 //! of this trait are provided in the form of [`ComplexSound`] and
 //! [`SimpleSound`].
 //! 
 //! [`Sound`]: trait.Sound.html
-//! [`Driver`]: ../../core/trait.Driver.html
+//! [`Channel`]: ../../core/trait.Channel.html
 //! [`ComplexSound`]: ../complex_sound/struct.ComplexSound.html
 //! [`SimpleSound`]: ../simple_sound/struct.SimpleSound.html
 
@@ -15,7 +15,7 @@ use crate::core::*;
 use std::rc::Rc;
 
 /// This trait defines the interface that anything producing sound that will be
-/// output to a [`Driver`] must define.
+/// output to a [`Channel`] must define.
 /// 
 /// # Generic
 /// 
@@ -23,7 +23,7 @@ use std::rc::Rc;
 /// implementing type. This allows constraints to be placed on the types that
 /// can can implement [`Sound`], namely that they also implement [`Clone`].
 /// 
-/// [`Driver`]: ../../core/trait.Driver.html
+/// [`Channel`]: ../../core/trait.Channel.html
 /// [`Sound`]: trait.Sound.html
 /// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
 pub trait Sound<S>
@@ -63,36 +63,36 @@ pub trait Sound<S>
 	/// [`Default::default()`]: https://doc.rust-lang.org/std/default/trait.Default.html#tymethod.default
 	fn process(&mut self, input: StereoData) -> StereoData;
 
-	/// Registers a sound wrapped in an [`Rc`] with the provided [`Driver`],
-	/// giving the [`Driver`] the ability to process the sound and retrieve
+	/// Registers a sound wrapped in an [`Rc`] with the provided [`Channel`],
+	/// giving the [`Channel`] the ability to process the sound and retrieve
 	/// samples for output.
 	/// 
 	/// In this function the [`Sound`] registers itself with the given
-	/// [`Driver`]. Calling [`Driver::add_sound()`] yourself is not necessary.
+	/// [`Channel`]. Calling [`Channel::add_sound()`] yourself is not necessary.
 	/// 
-	/// If a [`Driver`] is already registered with this [`Sound`] then it will
+	/// If a [`Channel`] is already registered with this [`Sound`] then it will
 	/// first unregister itself with [`unregister`].
 	/// 
 	/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-	/// [`Driver`]: ../../core/trait.Driver.html
-	/// [`Driver::add_sound`]: ../../core/trait.Driver.html#tymethod.add_sound
+	/// [`Channel`]: ../../core/trait.Channel.html
+	/// [`Channel::add_sound`]: ../../core/trait.Channel.html#tymethod.add_sound
 	/// [`Sound`]: trait.Sound.html
 	/// [`unregister`]: trait.Sound.html#tymethod.unregister
-	fn register(this: Rc<S>, driver: DriverRc<S>);
+	fn register(this: Rc<S>, channel: ChannelRc<S>);
 
-	/// Unregisters a sound wrapped in an [`Rc`] from its [`Driver`], freeing
+	/// Unregisters a sound wrapped in an [`Rc`] from its [`Channel`], freeing
 	/// the [`Sound`] to be processed individually or allow registration with a
-	/// different [`Driver`].
+	/// different [`Channel`].
 	/// 
-	/// In this function the [`Sound`] unregisters itself from its [`Driver`].
-	/// Calling [`Driver::remove_sound()`] yourself is not necessary.
+	/// In this function the [`Sound`] unregisters itself from its [`Channel`].
+	/// Calling [`Channel::remove_sound()`] yourself is not necessary.
 	/// 
-	/// If the [`Sound`] is not registered to any [`Driver`], then nothing
+	/// If the [`Sound`] is not registered to any [`Channel`], then nothing
 	/// happens.
 	/// 
 	/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-	/// [`Driver`]: ../../core/trait.Driver.html
-	/// [`Driver::add_sound`]: ../../core/trait.Driver.html#tymethod.remove_sound
+	/// [`Channel`]: ../../core/trait.Channel.html
+	/// [`Channel::add_sound`]: ../../core/trait.Channel.html#tymethod.remove_sound
 	/// [`Sound`]: trait.Sound.html
 	/// [`unregister`]: trait.Sound.html#tymethod.unregister
 	fn unregister(this: Rc<S>);

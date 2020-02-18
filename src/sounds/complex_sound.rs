@@ -41,7 +41,7 @@ pub struct ComplexSound {
 	process_order: ProcessOrder,
 	input_gain: GraphNode,
 	output_gain: GraphNode,
-	driver: Option<ComplexDriverRc>,
+	channel: Option<ComplexChannelRc>,
 	id: Option<usize>,
 	is_muted: bool,
 	is_paused: bool
@@ -52,19 +52,19 @@ impl ComplexSound {
 	/// values.
 	/// 
 	/// [`ComplexSound`]: struct.ComplexSound.html
-	pub fn new(input_gain: SampleT, output_gain: SampleT) -> Self {
+	pub fn new(input_gain: MathT, output_gain: MathT) -> Self {
 		let mut graph = Graph::new();
 		let input_gain = graph.add_node(
 			Rc::new(
 				ModifierBlock::from_modifier(
-					modifiers::Gain::new(input_gain)
+					modifiers::Gain::new(input_gain as SampleT)
 				)
 			)
 		);
 		let output_gain = graph.add_node(
 			Rc::new(
 				ModifierBlock::from_modifier(
-					modifiers::Gain::new(output_gain)
+					modifiers::Gain::new(output_gain as SampleT)
 				)
 			)
 		);
@@ -74,7 +74,7 @@ impl ComplexSound {
 			process_order: ProcessOrder::new(),
 			input_gain,
 			output_gain,
-			driver: None,
+			channel: None,
 			id: None,
 			is_muted: false,
 			is_paused: false
@@ -199,13 +199,13 @@ impl Sound<ComplexSound> for ComplexSound {
 		self.is_muted
 	}
 
-	fn register(this: ComplexSoundRc, mut driver: ComplexDriverRc) {
+	fn register(this: ComplexSoundRc, mut channel: ComplexChannelRc) {
 		Self::unregister(this.clone());
 
 		if let Some(sound) = Rc::get_mut(&mut this.clone()) {
-			sound.driver = Some(driver.clone());
-			if let Some(driver) = Rc::get_mut(&mut driver) {
-				sound.id = Some(driver.add_sound(this));
+			sound.channel = Some(channel.clone());
+			if let Some(channel) = Rc::get_mut(&mut channel) {
+				sound.id = Some(channel.add_sound(this));
 			}
 		}
 	}
@@ -213,15 +213,15 @@ impl Sound<ComplexSound> for ComplexSound {
 	fn unregister(mut this: ComplexSoundRc) {
 		if this.id != None {
 			if let Some(sound) = Rc::get_mut(&mut this) {
-				if let Some(mut driver) = sound.driver.clone() {
-					if let Some(driver) = Rc::get_mut(&mut driver) {
+				if let Some(mut channel) = sound.channel.clone() {
+					if let Some(channel) = Rc::get_mut(&mut channel) {
 						if let Some(id) = sound.id {
-							let _ = driver.remove_sound(id);
+							let _ = channel.remove_sound(id);
 						}
 					}
 				}
 
-				sound.driver = None;
+				sound.channel = None;
 				sound.id = None;
 			}
 		}

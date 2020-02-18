@@ -1,5 +1,3 @@
-//! # Complex Driver
-
 use super::*;
 
 use std::rc::Rc;
@@ -7,16 +5,16 @@ use std::collections::HashMap;
 use crate::sounds::*;
 
 #[derive(Clone)]
-pub struct ComplexDriver {
+pub struct SimpleChannel {
 	output: TrackT,
-	sounds: HashMap<usize, ComplexSoundRc>,
+	sounds: HashMap<usize, SimpleSoundRc>,
 	gain: SampleT,
 	id_counter: usize
 }
 
-impl ComplexDriver {
+impl SimpleChannel {
 	pub fn new(track_size: usize, gain: MathT) -> Self {
-		ComplexDriver {
+		SimpleChannel {
 			output: TrackT::with_capacity(track_size),
 			sounds: HashMap::new(),
 			gain: gain as SampleT,
@@ -33,15 +31,15 @@ impl ComplexDriver {
 	}
 }
 
-impl Driver<ComplexSound> for ComplexDriver {
-	fn add_sound(&mut self, sound: ComplexSoundRc) -> usize {
+impl Channel<SimpleSound> for SimpleChannel {
+	fn add_sound(&mut self, sound: SimpleSoundRc) -> usize {
 		let id = self.get_id();
 		self.sounds.insert(id, sound);
 
 		id
 	}
 
-	fn remove_sound(&mut self, id: usize) -> Option<ComplexSoundRc> {
+	fn remove_sound(&mut self, id: usize) -> Option<SimpleSoundRc> {
 		self.sounds.remove(&id)
 	}
 
@@ -52,15 +50,15 @@ impl Driver<ComplexSound> for ComplexDriver {
 	fn get_output(&self) -> &TrackT {
 		&self.output
 	}
+}
 
+impl BaseChannel for SimpleChannel {
 	fn process(&mut self) {
 		self.output.resize_with(self.output.len(), Default::default);
 
 		for sample in &mut self.output {
 			for mut sound in &mut self.sounds {
-				let out = Rc::get_mut(&mut sound.1).unwrap().process(Default::default());
-
-				*sample += out;
+				*sample += Rc::get_mut(&mut sound.1).unwrap().process(Default::default());
 			}
 
 			*sample *= self.gain;
@@ -68,4 +66,4 @@ impl Driver<ComplexSound> for ComplexDriver {
 	}
 }
 
-pub type ComplexDriverRc = DriverRc<ComplexSound>;
+pub type SimpleChannelRc = ChannelRc<SimpleSound>;
