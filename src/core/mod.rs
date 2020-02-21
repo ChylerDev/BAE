@@ -9,7 +9,7 @@ use super::*;
 use std::rc::Rc;
 
 pub trait Channel<S>
-	where S: sounds::Sound<S> + Clone
+	where S: Clone + sounds::Sound<S>
 {
 	fn add_sound(&mut self, sound: Rc<S>) -> usize;
 	fn remove_sound(&mut self, id: usize) -> Option<Rc<S>>;
@@ -22,9 +22,8 @@ pub trait BaseChannel {
 }
 
 pub type ChannelRc<S> = Rc<dyn Channel<S>>;
+pub type SimpleChannelRc = ChannelRc<crate::sounds::SimpleSound>;
+pub type ComplexChannelRc = ChannelRc<crate::sounds::ComplexSound>;
 
-pub mod complex_channel;
-pub mod simple_channel;
-
-pub use complex_channel::*;
-pub use simple_channel::*;
+pub mod standard_channel;
+pub use standard_channel::*;

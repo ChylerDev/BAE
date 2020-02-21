@@ -2,6 +2,8 @@
 
 use super::*;
 
+/// Envelope Follower filter. I don't remember my lectures well enough to write
+/// a detailed description.
 pub struct Envelope {
 	au: SampleT,
 	bu: SampleT,
@@ -13,6 +15,10 @@ pub struct Envelope {
 }
 
 impl Envelope {
+	/// Creates a new [`Envelope`] object from the given max and min frequencies
+	/// to follow.
+	/// 
+	/// [`Envelope`]: struct.Envelope.html
 	pub fn new(lower: SampleT, upper: SampleT) -> Envelope{
 		let theta_u = (std::f32::consts::PI * upper * INV_SAMPLE_RATE as SampleT).tan();
 		let theta_d = (std::f32::consts::PI * lower * INV_SAMPLE_RATE as SampleT).tan();

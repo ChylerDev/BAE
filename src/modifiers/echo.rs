@@ -4,13 +4,17 @@ use super::*;
 use std::collections::VecDeque;
 use std::time::Duration;
 
-/// Simple Echo filter utilizing
+/// Simple Echo filter: H(z) = 1/(1-az^-d)
 pub struct Echo {
 	delay: VecDeque<StereoData>,
 	gain: SampleT,
 }
 
 impl Echo {
+	/// Creates a new ['Echo'] object with the given delay duration and feedback
+	/// amount.
+	/// 
+	/// [`Echo`]: struct.Echo.html
 	pub fn new(d: Duration, g: MathT) -> Self{
 		let mut v = VecDeque::new();
 		for _ in 0..((d.as_secs_f64()*SAMPLE_RATE as MathT) as usize) {
@@ -33,13 +37,6 @@ impl Modifier<Echo> for Echo {
 	}
 }
 
-#[cfg(test)]
-impl Name for Echo {
-	fn get_name(&self) -> &str {
-		"Modifiers.Echo"
-	}
-}
-
 impl Clone for Echo {
 	fn clone(&self) -> Self {
 		Echo {
@@ -54,5 +51,12 @@ impl Clone for Echo {
 			},
 			gain: self.gain,
 		}
+	}
+}
+
+#[cfg(test)]
+impl Name for Echo {
+	fn get_name(&self) -> &str {
+		"Modifiers.Echo"
 	}
 }

@@ -3,10 +3,22 @@
 use super::*;
 use std::collections::VecDeque;
 
+/// Alias for a [`VecDeque`] describing a list of zeros for a filter.
+/// 
+/// [`VecDeque`]: https://doc.rust-lang.org/std/collections/struct.VecDeque.html
 pub type Zeros = VecDeque<(usize,MathT)>;
+
+/// Alias for a [`VecDeque`] describing a list of poles for a filter.
+/// 
+/// [`VecDeque`]: https://doc.rust-lang.org/std/collections/struct.VecDeque.html
 pub type Poles = VecDeque<(usize,MathT)>;
+
+/// Alias for a [`VecDeque`] describing a list of samples for a filter.
+/// 
+/// [`VecDeque`]: https://doc.rust-lang.org/std/collections/struct.VecDeque.html
 pub type Samples = VecDeque<StereoData>;
 
+/// Generic filter object.
 pub struct Generic {
 	zeros:Zeros,
 	poles:Poles,
@@ -15,6 +27,7 @@ pub struct Generic {
 }
 
 impl Generic {
+	/// Creates a new Generic filter from the given pole and zero parameters.
 	pub fn new(zeros: Zeros, poles: Poles) -> Generic {
 		let z_back = if let Some(z) = zeros.back() {
 			z.0 + 1

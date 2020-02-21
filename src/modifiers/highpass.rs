@@ -5,6 +5,8 @@
 
 use super::*;
 
+/// High pass filter adapted from the 3rd Order Butterworth Low Pass Filter with
+/// resonance.
 pub struct HighPass {
 	a0: SampleT,
 	a1: SampleT,
@@ -26,6 +28,14 @@ pub struct HighPass {
 }
 
 impl HighPass {
+	/// Creates a new high pass from the given cutoff frequency and resonance
+	/// values.
+	/// 
+	/// # Parameters
+	/// 
+	/// * `fc` - The cutoff frequency.
+	/// * `r` - The resonance of the filter. Value should be in the range [0,1].
+	/// If the value falls out of that range it is clamped to the closer value.
 	pub fn new(fc: MathT, r: MathT) -> HighPass {
 		let fc = fc.min(SAMPLE_RATE as MathT / 2.0);
 		let r = r.min(1.0).max(0.0);
@@ -52,9 +62,12 @@ impl HighPass {
 		hp
 	}
 
+	/// Returns the central frequency of the filter.
 	pub fn get_central_frequency(&self) -> MathT {
 		self.fc
 	}
+
+	/// Sets the central frequency of the filter.
 	pub fn set_central_frequency(&mut self, fc: MathT) {
 		let fc = fc.min(SAMPLE_RATE as MathT / 2.0);
 
@@ -62,9 +75,12 @@ impl HighPass {
 		self.reset();
 	}
 
+	/// Returns the resonance of the filter.
 	pub fn get_resonance(&self) -> MathT {
 		self.r
 	}
+
+	/// Sets the resonance of the filter.
 	pub fn set_resonance(&mut self, r: MathT) {
 		let r = r.min(1.0).max(0.0);
 

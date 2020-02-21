@@ -2,12 +2,15 @@
 
 use super::*;
 
+/// Simple gain filter, the simplest filter of all.
 #[derive(Default,Copy,Clone)]
 pub struct Gain {
-	a: SampleT,
+	/// The gain of the gain filter.
+	pub a: SampleT,
 }
 
 impl Gain {
+	/// Constructs a new gain filter from the given...... gain....
 	pub fn new(a: SampleT) -> Gain {
 		Gain{
 			a
