@@ -22,18 +22,22 @@ use super::basic_block::*;
 /// [`Generator`]: ../../generators/trait.Generator.html
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
 #[derive(Clone)]
-pub struct SimpleSound {
+pub struct SimpleSound<C>
+	where C: Clone + crate::core::Channel
+{
 	generator: BlockRc,
 	modifier_list: Vec<BlockRc>,
 	input_gain: SampleT,
 	output_gain: SampleT,
-	channel: Option<SimpleChannelRc>,
+	channel: Option<SimpleSoundChannelRc<C>>,
 	id: Option<usize>,
 	is_muted: bool,
 	is_paused: bool,
 }
 
-impl SimpleSound {
+impl<C> SimpleSound<C>
+	where C: Clone + crate::core::Channel
+{
 	/// Constructs a new [`SimpleSound`] object. The new object is initialized
 	/// with an empty [`Vec`] of [`Modifier`]s. Add [`Modifier`]s with
 	/// [`add_modifier`] or [`extend_modifiers`].
@@ -95,7 +99,9 @@ impl SimpleSound {
 	}
 }
 
-impl Sound<SimpleSound> for SimpleSound {
+impl<C> Sound<SimpleSound<C>,C> for SimpleSound<C>
+	where C: Clone + crate::core::Channel
+{
 	fn toggle_pause(&mut self) {
 		self.is_paused = !self.is_paused;
 	}
@@ -112,7 +118,7 @@ impl Sound<SimpleSound> for SimpleSound {
 		self.is_muted
 	}
 
-	fn register(this: SimpleSoundRc, mut channel: SimpleChannelRc) {		
+	fn register(this: SimpleSoundRc<C>, mut channel: SimpleSoundChannelRc<C>) {
 		Self::unregister(this.clone());
 
 		if let Some(sound) = Rc::get_mut(&mut this.clone()) {
@@ -123,7 +129,7 @@ impl Sound<SimpleSound> for SimpleSound {
 		}
 	}
 
-	fn unregister(mut this: SimpleSoundRc) {
+	fn unregister(mut this: SimpleSoundRc<C>) {
 		if this.id != None {
 			if let Some(sound) = Rc::get_mut(&mut this) {
 				if let Some(mut channel) = sound.channel.clone() {
@@ -171,4 +177,4 @@ impl Sound<SimpleSound> for SimpleSound {
 /// 
 /// [`SimpleSound`]: struct.SimpleSound.html
 /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-pub type SimpleSoundRc = Rc<SimpleSound>;
+pub type SimpleSoundRc<C> = Rc<SimpleSound<C>>;

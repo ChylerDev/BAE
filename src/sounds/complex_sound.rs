@@ -36,18 +36,22 @@ pub type ProcessOrder = VecDeque<GraphNode>;
 /// [`Generator`]: ../../generators/trait.Generator.html
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
 #[derive(Clone)]
-pub struct ComplexSound {
+pub struct ComplexSound<C>
+	where C: Clone + crate::core::Channel
+{
 	graph: Graph,
 	process_order: ProcessOrder,
 	input_gain: GraphNode,
 	output_gain: GraphNode,
-	channel: Option<ComplexChannelRc>,
+	channel: Option<ComplexSoundChannelRc<C>>,
 	id: Option<usize>,
 	is_muted: bool,
 	is_paused: bool
 }
 
-impl ComplexSound {
+impl<C> ComplexSound<C>
+	where C: Clone + crate::core::Channel
+{
 	/// Creates a new [`ComplexSound`] object with the given input and output gain
 	/// values.
 	/// 
@@ -182,7 +186,9 @@ impl ComplexSound {
 	}
 }
 
-impl Sound<ComplexSound> for ComplexSound {
+impl<C> Sound<ComplexSound<C>,C> for ComplexSound<C>
+	where C: Clone + crate::core::Channel
+{
 	fn toggle_pause(&mut self) {
 		self.is_paused = !self.is_paused;
 	}
@@ -199,7 +205,7 @@ impl Sound<ComplexSound> for ComplexSound {
 		self.is_muted
 	}
 
-	fn register(this: ComplexSoundRc, mut channel: ComplexChannelRc) {
+	fn register(this: ComplexSoundRc<C>, mut channel: ComplexSoundChannelRc<C>) {
 		Self::unregister(this.clone());
 
 		if let Some(sound) = Rc::get_mut(&mut this.clone()) {
@@ -210,7 +216,7 @@ impl Sound<ComplexSound> for ComplexSound {
 		}
 	}
 
-	fn unregister(mut this: ComplexSoundRc) {
+	fn unregister(mut this: ComplexSoundRc<C>) {
 		if this.id != None {
 			if let Some(sound) = Rc::get_mut(&mut this) {
 				if let Some(mut channel) = sound.channel.clone() {
@@ -262,4 +268,4 @@ impl Sound<ComplexSound> for ComplexSound {
 /// 
 /// [`ComplexSound`]: struct.ComplexSound.html
 /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-pub type ComplexSoundRc = Rc<ComplexSound>;
+pub type ComplexSoundRc<C> = Rc<ComplexSound<C>>;

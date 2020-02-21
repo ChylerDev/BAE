@@ -26,8 +26,9 @@ use std::rc::Rc;
 /// [`Channel`]: ../../core/trait.Channel.html
 /// [`Sound`]: trait.Sound.html
 /// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
-pub trait Sound<S>
-	where S: Clone + Sound<S>
+pub trait Sound<S,C>
+	where S: Clone + Sound<S,C>,
+	      C: Clone + crate::core::Channel
 {
 	/// Toggles the pause state of the sound. If the sound is paused, the
 	/// internal structures aren't process during a call to [`process`], instead
@@ -78,7 +79,7 @@ pub trait Sound<S>
 	/// [`Channel::add_sound`]: ../../core/trait.Channel.html#tymethod.add_sound
 	/// [`Sound`]: trait.Sound.html
 	/// [`unregister`]: trait.Sound.html#tymethod.unregister
-	fn register(this: Rc<S>, channel: ChannelRc<S>);
+	fn register(this: Rc<S>, channel: SoundChannelRc<S,C>);
 
 	/// Unregisters a sound wrapped in an [`Rc`] from its [`Channel`], freeing
 	/// the [`Sound`] to be processed individually or allow registration with a
@@ -106,4 +107,4 @@ pub trait Sound<S>
 /// [`Rc`]:https://doc.rust-lang.org/std/rc/struct.Rc.html
 /// [`ComplexSoundRc`]: ../complex_sound/type.ComplexSoundRc.html
 /// [`ComplexSound`]: ../complex_sound/struct.ComplexSound.html
-pub type SoundRc<S> = Rc<dyn Sound<S>>;
+pub type SoundRc<S,C> = Rc<dyn Sound<S,C>>;

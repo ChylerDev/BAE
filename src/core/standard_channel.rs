@@ -7,14 +7,18 @@ use std::collections::HashMap;
 use crate::sounds::*;
 
 #[derive(Clone)]
-pub struct StandardChannel {
+pub struct StandardChannel<S>
+	where S: Clone + crate::sounds::Sound<S,StandardChannel<S>>
+{
 	output: TrackT,
-	sounds: HashMap<usize, ComplexSoundRc>,
+	sounds: HashMap<usize, Rc<S>>,
 	gain: SampleT,
 	id_counter: usize
 }
 
-impl StandardChannel {
+impl<S> StandardChannel<S>
+	where S: Clone + crate::sounds::Sound<S,StandardChannel<S>>
+{
 	pub fn new(track_size: usize, gain: MathT) -> Self {
 		StandardChannel {
 			output: TrackT::with_capacity(track_size),
@@ -33,15 +37,17 @@ impl StandardChannel {
 	}
 }
 
-impl Channel<ComplexSound> for StandardChannel {
-	fn add_sound(&mut self, sound: ComplexSoundRc) -> usize {
+impl<S> SoundChannel<S,StandardChannel<S>> for StandardChannel<S>
+	where S: Clone + crate::sounds::Sound<S,StandardChannel<S>>
+{
+	fn add_sound(&mut self, sound: Rc<S>) -> usize {
 		let id = self.get_id();
 		self.sounds.insert(id, sound);
 
 		id
 	}
 
-	fn remove_sound(&mut self, id: usize) -> Option<ComplexSoundRc> {
+	fn remove_sound(&mut self, id: usize) -> Option<Rc<S>> {
 		self.sounds.remove(&id)
 	}
 
@@ -54,7 +60,9 @@ impl Channel<ComplexSound> for StandardChannel {
 	}
 }
 
-impl BaseChannel for StandardChannel {
+impl<S> Channel for StandardChannel<S>
+	where S: Clone + crate::sounds::Sound<S,StandardChannel<S>>
+{
 	fn process(&mut self) {
 		self.output.resize_with(self.output.len(), Default::default);
 
@@ -67,5 +75,3 @@ impl BaseChannel for StandardChannel {
 		}
 	}
 }
-
-pub type ComplexChannelRc = ChannelRc<ComplexSound>;
