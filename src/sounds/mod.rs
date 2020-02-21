@@ -1,7 +1,7 @@
 //! # Sounds
 //! 
-//! This module includes the types needed to represent a graph of [`Generator`]s
-//! and [`Modifier`]s in an abstract, simple way.
+//! This module includes the types needed to represent a collection of
+//! [`Generator`]s and [`Modifier`]s in an abstract, simple way.
 //! 
 //! [`Generator`]: ../generators/trait.Generator.html
 //! [`Modifier`]: ../modifiers/trait.Modifier.html

@@ -14,6 +14,13 @@ use std::rc::Rc;
 use crate::core::*;
 use super::basic_block::*;
 
+/// Type implementing the ablitiy to run multiple a single [`Generator`] by a
+/// given list of [`Modifier`]s operated in series. This allows for simple and
+/// fast processing of the structure's elements while still allowing for a wide
+/// range of complex sounds.
+/// 
+/// [`Generator`]: ../../generators/trait.Generator.html
+/// [`Modifier`]: ../../modifiers/trait.Modifier.html
 #[derive(Clone)]
 pub struct SimpleSound {
 	generator: BlockRc,
@@ -27,6 +34,15 @@ pub struct SimpleSound {
 }
 
 impl SimpleSound {
+	/// Constructs a new [`SimpleSound`] object. The new object is initialized
+	/// with an empty [`Vec`] of [`Modifier`]s. Add [`Modifier`]s with
+	/// [`add_modifier`] or [`extend_modifiers`].
+	/// 
+	/// [`SimpleSound`]: struct.SimpleSound.html
+	/// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
+	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
+	/// [`add_modifier`]: struct.SimpleSound.html#method.add_modifier
+	/// [`extend_modifiers`]: struct.SimpleSound.html#method.extend_modifiers
 	pub fn new(input_gain: MathT, output_gain: MathT, generator: BlockRc) -> Self {
 		SimpleSound {
 			generator,
@@ -40,24 +56,40 @@ impl SimpleSound {
 		}
 	}
 
+	/// Adds a single modifier to the internal [`Vec`] of [`Modifier`]s.
+	/// 
+	/// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
+	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
 	pub fn add_modifier<M>(&mut self, m: ModifierBlockRc<M>)
 		where M: 'static + Clone
 	{
 		self.modifier_list.push(m);
 	}
 
+	/// Extends the internal [`Vec`] of [`Modifier`]s with the given [`Vec`].
+	/// 
+	/// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
+	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
+	pub fn extend_modifiers(&mut self, m_list: Vec<BlockRc>) {
+		self.modifier_list.extend(m_list);
+	}
+
+	/// Returns the linear gain applied to the input during processing.
 	pub fn get_input_gain(&self) -> MathT {
 		self.input_gain as MathT
 	}
 
+	/// Returns the linear gain applied to the output during processing.
 	pub fn get_output_gain(&self) -> MathT {
 		self.output_gain as MathT
 	}
 
+	/// Sets the input linear gain that is applied during processing.
 	pub fn set_input_gain(&mut self, g: MathT) {
 		self.input_gain = g as SampleT;
 	}
 
+	/// Sets the output linear gain that is applied during processing.
 	pub fn set_output_gain(&mut self, g: MathT) {
 		self.output_gain = g as SampleT;
 	}
@@ -135,4 +167,8 @@ impl Sound<SimpleSound> for SimpleSound {
 	}
 }
 
+/// Alias for a [`SimpleSound`] wrapped in an [`Rc`].
+/// 
+/// [`SimpleSound`]: struct.SimpleSound.html
+/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 pub type SimpleSoundRc = Rc<SimpleSound>;

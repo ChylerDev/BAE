@@ -33,7 +33,7 @@ pub type InterBase = dyn FnMut(StereoData, StereoData) -> StereoData;
 /// [`InterBase`]: type.InterBase.html
 pub type Inter = Rc<InterBase>;
 
-/// Alias for a [`Block`] that only uses a custom [`Block`]
+/// Alias for a [`Block`] that only uses a custom [`Generator`].
 /// 
 /// In conforming with the requirements for the generic parameter of the
 /// [`Generator`] trait, the given type `G` should implement [`Clone`].
@@ -43,9 +43,18 @@ pub type Inter = Rc<InterBase>;
 /// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
 pub type GeneratorBlock<G> = Block<G,modifiers::Empty>;
 
+/// Alias for a [`GeneratorBlock`] wrapped in an [`Rc`].
+/// 
+/// In conforming with the requirements for the generic parameter of the
+/// [`Generator`] trait, the given type `G` should implement [`Clone`].
+/// 
+/// [`GeneratorBlock`]: type.GeneratorBlock.html
+/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
+/// [`Generator`]: ../../generators/trait.Generator.html
+/// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
 pub type GeneratorBlockRc<G> = Rc<GeneratorBlock<G>>;
 
-/// Alias for a [`Block`] that only uses a custom [`Modifier`]
+/// Alias for a [`Block`] that only uses a custom [`Modifier`].
 /// 
 /// In conforming with the requirements for the generic parameter of the
 /// [`Modifier`] trait, the given type `M` should implement [`Clone`].
@@ -55,6 +64,15 @@ pub type GeneratorBlockRc<G> = Rc<GeneratorBlock<G>>;
 /// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
 pub type ModifierBlock<M> = Block<generators::Empty,M>;
 
+/// ALias for a [`ModifierBlock`] wrapped in an [`Rc`]
+/// 
+/// In conforming with the requirements for the generic parameter of the
+/// [`Modifier`] trait, the given type `M` should implement [`Clone`].
+/// 
+/// [`ModifierBlock`]: type.ModifierBlock.html
+/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
+/// [`Modifier`]: ../../modifiers/trait.Modifier.html
+/// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
 pub type ModifierBlockRc<M> = Rc<ModifierBlock<M>>;
 
 /// Struct used for generalizing the structure of and abstracting the [`Sound`]
