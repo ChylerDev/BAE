@@ -41,7 +41,7 @@ pub trait Generator<T>
 /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 pub type GeneratorRc<T> = Rc<dyn Generator<T>>;
 
-pub mod empty;
+pub mod zero;
 pub mod noise;
 pub mod sawtooth;
 pub mod sine;
@@ -49,7 +49,7 @@ pub mod square;
 pub mod triangle;
 pub mod wavplayer;
 
-pub use empty::*;
+pub use zero::*;
 pub use noise::*;
 pub use sawtooth::*;
 pub use sine::*;

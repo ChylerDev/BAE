@@ -118,6 +118,7 @@ impl Generator<Wav> for Wav {
 	}
 }
 
+#[cfg(test)]
 impl Name for Wav {
 	fn get_name(&self) -> &str {
 		"Generator.Wav"

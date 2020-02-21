@@ -110,6 +110,7 @@ impl Modifier<HighPass> for HighPass {
 	}
 }
 
+#[cfg(test)]
 impl Name for HighPass {
 	fn get_name(&self) -> &str {
 		"Modifiers.HighPass"

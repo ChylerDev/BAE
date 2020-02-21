@@ -6,7 +6,7 @@ mod tests {
 	fn test_empty() {
 		use ocae::generators::*;
 
-		run_generator(&mut Empty::new(), "empty.wav");
+		run_generator(&mut Zero::new(), "empty.wav");
 	}
 
 	#[test]
@@ -49,7 +49,9 @@ mod tests {
 		todo!();
 	}
 
-	fn run_generator(g: &mut impl ocae::generators::Generator, file:&str) {
+	fn run_generator<G>(g: &mut G, file:&str)
+		where G: Clone + ocae::generators::Generator<G>
+	{
 		let mut t = ocae::TrackT::new();
 	
 		for _ in 0..ocae::SAMPLE_RATE {

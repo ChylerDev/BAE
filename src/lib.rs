@@ -20,6 +20,7 @@ pub const SAMPLE_RATE:u64 = 48_000;
 pub const INV_SAMPLE_RATE:MathT = 1.0/(SAMPLE_RATE as MathT);
 
 /// Trait that implements the ability to get the name of a type simply.
+#[cfg(test)]
 pub trait Name {
 	/// Returns a string slice for the name of the type.
 	fn get_name(&self) -> &str;

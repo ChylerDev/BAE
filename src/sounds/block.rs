@@ -41,7 +41,7 @@ pub type Inter = Rc<InterBase>;
 /// [`Block`]: struct.Block.html
 /// [`Generator`]: ../../generators/trait.Generator.html
 /// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
-pub type GeneratorBlock<G> = Block<G,modifiers::Empty>;
+pub type GeneratorBlock<G> = Block<G,modifiers::Passthrough>;
 
 /// Alias for a [`GeneratorBlock`] wrapped in an [`Rc`].
 /// 
@@ -62,7 +62,7 @@ pub type GeneratorBlockRc<G> = Rc<GeneratorBlock<G>>;
 /// [`Block`]: struct.Block.html
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
 /// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
-pub type ModifierBlock<M> = Block<generators::Empty,M>;
+pub type ModifierBlock<M> = Block<generators::Zero,M>;
 
 /// ALias for a [`ModifierBlock`] wrapped in an [`Rc`]
 /// 
@@ -151,7 +151,7 @@ impl<G,M> Block<G,M>
 		Block {
 			g: Rc::new(g),
 			m: Rc::new(
-				modifiers::Empty::new()
+				modifiers::Passthrough::new()
 			),
 			i: Self::generator_passthrough(),
 			input: StereoData::default()
@@ -175,7 +175,7 @@ impl<G,M> Block<G,M>
 	{
 		Block {
 			g: Rc::new(
-				generators::Empty::new()
+				generators::Zero::new()
 			),
 			m: Rc::new(m),
 			i: Self::modifier_passthrough(),

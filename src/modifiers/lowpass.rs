@@ -78,6 +78,7 @@ impl Modifier<LowPass> for LowPass {
 	}
 }
 
+#[cfg(test)]
 impl Name for LowPass {
 	fn get_name(&self) -> &str {
 		"Modifiers.LowPass"

@@ -52,6 +52,7 @@ impl Clone for Sawtooth {
 	}
 }
 
+#[cfg(test)]
 impl Name for Sawtooth {
 	fn get_name(&self) -> &str {
 		"Generator.Sawtooth"

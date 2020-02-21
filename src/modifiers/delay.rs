@@ -39,6 +39,7 @@ impl Modifier<Delay> for Delay {
 	}
 }
 
+#[cfg(test)]
 impl Name for Delay {
 	fn get_name(&self) -> &str {
 		"Modifiers.Delay"

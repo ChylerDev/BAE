@@ -30,7 +30,7 @@ impl Generator<Noise> for Noise {
 	}
 }
 
-
+#[cfg(test)]
 impl Name for Noise {
 	fn get_name(&self) -> &str {
 		"Generator.Noise"

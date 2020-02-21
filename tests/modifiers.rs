@@ -191,7 +191,9 @@ mod tests {
 		ocae::tools::write_wav(t, f).unwrap();
 	}
 
-	fn run_modifier(m: &mut impl ocae::modifiers::Modifier, file:&str) {
+	fn run_modifier<M>(m: &mut M, file:&str)
+		where M: Clone + ocae::modifiers::Modifier<M>
+	{
 		use ocae::generators::*;
 
 		let mut g = Noise::new();

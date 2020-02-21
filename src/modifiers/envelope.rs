@@ -51,6 +51,7 @@ impl Modifier<Envelope> for Envelope {
 	}
 }
 
+#[cfg(test)]
 impl Name for Envelope {
 	fn get_name(&self) -> &str {
 		"Modifiers.Envelope"

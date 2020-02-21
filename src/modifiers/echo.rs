@@ -4,6 +4,7 @@ use super::*;
 use std::collections::VecDeque;
 use std::time::Duration;
 
+/// Simple Echo filter utilizing
 pub struct Echo {
 	delay: VecDeque<StereoData>,
 	gain: SampleT,
@@ -32,6 +33,7 @@ impl Modifier<Echo> for Echo {
 	}
 }
 
+#[cfg(test)]
 impl Name for Echo {
 	fn get_name(&self) -> &str {
 		"Modifiers.Echo"

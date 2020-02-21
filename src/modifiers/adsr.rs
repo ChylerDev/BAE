@@ -89,6 +89,7 @@ impl Modifier<ADSR> for ADSR {
 	}
 }
 
+#[cfg(test)]
 impl Name for ADSR {
 	fn get_name(&self) -> &str {
 		"Modifiers.ADSR"

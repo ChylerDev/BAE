@@ -54,6 +54,7 @@ impl Clone for Square {
 	}
 }
 
+#[cfg(test)]
 impl Name for Square {
 	fn get_name(&self) -> &str {
 		"Generator.Square"
