@@ -62,7 +62,7 @@ pub trait Sound<S,C>
 	/// [`Default::default()`] is still returned.
 	/// 
 	/// [`Default::default()`]: https://doc.rust-lang.org/std/default/trait.Default.html#tymethod.default
-	fn process(&mut self, input: StereoData) -> StereoData;
+	fn process(&mut self, input: SampleT) -> SampleT;
 
 	/// Registers a sound wrapped in an [`Rc`] with the provided [`Channel`],
 	/// giving the [`Channel`] the ability to process the sound and retrieve

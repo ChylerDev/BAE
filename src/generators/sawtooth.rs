@@ -30,7 +30,7 @@ impl FreqMod for Sawtooth {
 }
 
 impl Generator<Sawtooth> for Sawtooth {
-	fn process(&mut self) -> StereoData {
+	fn process(&mut self) -> SampleT {
 		let y = self.inc;
 
 		self.inc += self.irate as SampleT;
@@ -39,7 +39,7 @@ impl Generator<Sawtooth> for Sawtooth {
 			self.inc -= 2.0;
 		}
 
-		StereoData::from_mono(y)
+		y
 	}
 }
 

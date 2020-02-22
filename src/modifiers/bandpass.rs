@@ -9,10 +9,10 @@ pub struct BandPass {
 	a0: MathT,
 	b1: MathT,
 	b2: MathT,
-	x1: StereoData,
-	x2: StereoData,
-	y1: StereoData,
-	y2: StereoData,
+	x1: SampleT,
+	x2: SampleT,
+	y1: SampleT,
+	y2: SampleT,
 }
 
 impl BandPass {
@@ -28,10 +28,10 @@ impl BandPass {
 			a0: 0.0,
 			b1: 0.0,
 			b2: 0.0,
-			x1: StereoData::default(),
-			x2: StereoData::default(),
-			y1: StereoData::default(),
-			y2: StereoData::default(),
+			x1: SampleT::default(),
+			x2: SampleT::default(),
+			y1: SampleT::default(),
+			y2: SampleT::default(),
 		};
 
 		bp.reset();
@@ -47,10 +47,10 @@ impl BandPass {
 			a0: 0.0,
 			b1: 0.0,
 			b2: 0.0,
-			x1: StereoData::default(),
-			x2: StereoData::default(),
-			y1: StereoData::default(),
-			y2: StereoData::default(),
+			x1: SampleT::default(),
+			x2: SampleT::default(),
+			y1: SampleT::default(),
+			y2: SampleT::default(),
 		};
 
 		bp.reset();
@@ -131,15 +131,10 @@ impl BandPass {
 }
 
 impl Modifier<BandPass> for BandPass {
-	fn process(&mut self, x: StereoData) -> StereoData {
-		let y = StereoData::from_stereo(
-			(self.a0 * (x.left - self.x2.left) as MathT +
-			self.b1 * self.y1.left as MathT - 
-			self.b2 * self.y2.left as MathT) as SampleT,
-			(self.a0 * (x.right - self.x2.right) as MathT +
-			self.b1 * self.y1.right as MathT - 
-			self.b2 * self.y2.right as MathT) as SampleT
-		);
+	fn process(&mut self, x: SampleT) -> SampleT {
+		let y = (self.a0 * (x - self.x2) as MathT +
+			self.b1 * self.y1 as MathT - 
+			self.b2 * self.y2 as MathT) as SampleT;
 
 		self.y2 = self.y1;
 		self.y1 = y;
@@ -172,10 +167,10 @@ impl Clone for BandPass {
 			a0: self.a0,
 			b1: self.b1,
 			b2: self.b2,
-			x1: StereoData::default(),
-			x2: StereoData::default(),
-			y1: StereoData::default(),
-			y2: StereoData::default(),
+			x1: SampleT::default(),
+			x2: SampleT::default(),
+			y1: SampleT::default(),
+			y2: SampleT::default(),
 		}
 	}
 }

@@ -45,7 +45,7 @@ impl FreqMod for Sine {
 }
 
 impl Generator<Sine> for Sine {
-	fn process(&mut self) -> StereoData {
+	fn process(&mut self) -> SampleT {
 		let k = MathT::floor(self.ind);
 		let g:MathT = self.ind - k;
 		let k1 = if k+1.0 >= WAVETABLE_SIZE as MathT {
@@ -63,7 +63,7 @@ impl Generator<Sine> for Sine {
 			self.ind -= WAVETABLE_SIZE as MathT;
 		}
 
-		StereoData::from_mono(y)
+		y
 	}
 }
 

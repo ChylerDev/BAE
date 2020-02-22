@@ -23,7 +23,7 @@ pub trait Modifier<T>
 	/// # Parameters
 	/// 
 	/// * `x` - The "dry" audio sample before filtering.
-	fn process(&mut self, x: StereoData) -> StereoData;
+	fn process(&mut self, x: SampleT) -> SampleT;
 }
 
 /// Type alias for a [`Modifier`] wrapped in an [`Rc`].

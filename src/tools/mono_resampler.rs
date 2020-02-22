@@ -1,4 +1,4 @@
-//! # Resampler
+//! # MonoResampler
 //! 
 //! Trans codes the given audio signal from it's source sampling rate to the
 //! sampling rate OCAE runs at.
@@ -10,7 +10,7 @@ type IndexT = SampleT;
 
 /// Struct tracking all of the data required for resampling, with some extra
 /// features like playback speed and looping.
-pub struct Resampler {
+pub struct MonoResampler {
 	data: TrackT,
 	ind: IndexT,
 	inc: SampleT,
@@ -19,8 +19,8 @@ pub struct Resampler {
 	loop_end: u64,
 }
 
-impl Resampler {
-	/// Creates a new Resampler object.
+impl MonoResampler {
+	/// Creates a new MonoResampler object.
 	/// 
 	/// # Parameters
 	/// 
@@ -35,10 +35,10 @@ impl Resampler {
 			std::mem::swap(&mut loop_start, &mut loop_end);
 		}
 
-		Resampler {
+		MonoResampler {
 			data,
 			ind: 0.0,
-			inc: source_sample_rate as SampleT * INV_SAMPLE_RATE as SampleT,
+			inc: (source_sample_rate as MathT * INV_SAMPLE_RATE) as SampleT,
 			speed: 1.0,
 			loop_start,
 			loop_end,
@@ -56,14 +56,14 @@ impl Resampler {
 	}
 
 	/// Calculates and returns the next sample.
-	pub fn process(&mut self) -> StereoData {
+	pub fn process(&mut self) -> SampleT {
 		if self.ind as usize >= self.data.len() && self.loop_end == 0 {
-			return StereoData::default();
+			return SampleT::default();
 		}
 
 		let frac: SampleT = self.ind.fract();
 
-		let p1: StereoData = if self.ind.trunc() as usize + 1 >= self.data.len() && self.loop_end != 0 {
+		let p1: SampleT = if self.ind.trunc() as usize + 1 >= self.data.len() && self.loop_end != 0 {
 			self.data[(self.ind - (self.loop_end - self.loop_start) as IndexT) as usize]
 		} else if self.ind.trunc() as usize + 1 >= self.data.len() {
 			self.data[self.ind.trunc() as usize]
@@ -71,15 +71,10 @@ impl Resampler {
 			self.data[(self.ind + 1.0).trunc() as usize]
 		};
 
-		let l_x1: SampleT = self.data[self.ind.trunc() as usize].left;
-		let l_x2: SampleT = p1.left;
-		let r_x1: SampleT = self.data[self.ind.trunc() as usize].right;
-		let r_x2: SampleT = p1.right;
+		let x1: SampleT = self.data[self.ind.trunc() as usize];
+		let x2: SampleT = p1;
 
-		let l:SampleT = l_x1 + frac as SampleT * (l_x2 - l_x1);
-		let r:SampleT = r_x1 + frac as SampleT * (r_x2 - r_x1);
-
-		let y = StereoData::from_stereo(l, r);
+		let y = x1 + frac as SampleT * (x2 - x1);
 
 		self.ind += self.inc * self.speed as SampleT;
 
@@ -91,9 +86,9 @@ impl Resampler {
 	}
 }
 
-impl Clone for Resampler {
+impl Clone for MonoResampler {
 	fn clone(&self) -> Self {
-		Resampler {
+		MonoResampler {
 			data: self.data.clone(),
 			ind: 0.0,
 			inc: self.inc,

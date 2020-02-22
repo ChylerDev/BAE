@@ -6,17 +6,17 @@ use std::collections::VecDeque;
 /// Alias for a [`VecDeque`] describing a list of zeros for a filter.
 /// 
 /// [`VecDeque`]: https://doc.rust-lang.org/std/collections/struct.VecDeque.html
-pub type Zeros = VecDeque<(usize,MathT)>;
+pub type Zeros = VecDeque<(usize,SampleT)>;
 
 /// Alias for a [`VecDeque`] describing a list of poles for a filter.
 /// 
 /// [`VecDeque`]: https://doc.rust-lang.org/std/collections/struct.VecDeque.html
-pub type Poles = VecDeque<(usize,MathT)>;
+pub type Poles = VecDeque<(usize,SampleT)>;
 
 /// Alias for a [`VecDeque`] describing a list of samples for a filter.
 /// 
 /// [`VecDeque`]: https://doc.rust-lang.org/std/collections/struct.VecDeque.html
-pub type Samples = VecDeque<StereoData>;
+pub type Samples = VecDeque<SampleT>;
 
 /// Generic filter object.
 pub struct Generic {
@@ -45,14 +45,14 @@ impl Generic {
 			inputs: {
 				let mut v = Samples::new();
 				for _ in 0..z_back {
-					v.push_back(StereoData::default());
+					v.push_back(SampleT::default());
 				}
 				v
 			},
 			outputs: {
 				let mut v = Samples::new();
 				for _ in 0..p_back {
-					v.push_back(StereoData::default());
+					v.push_back(SampleT::default());
 				}
 				v
 			}
@@ -61,8 +61,8 @@ impl Generic {
 }
 
 impl Modifier<Generic> for Generic {
-	fn process(&mut self, x: StereoData) -> StereoData {
-		let mut y = StereoData::default();
+	fn process(&mut self, x: SampleT) -> SampleT {
+		let mut y = SampleT::default();
 
 		self.inputs.push_front(x);
 		self.inputs.pop_back();
@@ -96,14 +96,14 @@ impl Clone for Generic {
 			inputs: {
 				let mut v = Samples::new();
 				for _ in 0..self.inputs.len() {
-					v.push_back(StereoData::default());
+					v.push_back(SampleT::default());
 				}
 				v
 			},
 			outputs: {
 				let mut v = Samples::new();
 				for _ in 0..self.outputs.len() {
-					v.push_back(StereoData::default());
+					v.push_back(SampleT::default());
 				}
 				v
 			}

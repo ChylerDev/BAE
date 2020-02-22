@@ -10,7 +10,7 @@ pub struct LowPass {
 	fc: MathT,
 	r: MathT,
 	coeff: [SampleT; 4],
-	outs: [StereoData; 3]
+	outs: [SampleT; 3]
 }
 
 impl LowPass {
@@ -30,7 +30,7 @@ impl LowPass {
 			fc,
 			r,
 			coeff: [0.0; 4],
-			outs: [StereoData::default(); 3]
+			outs: [SampleT::default(); 3]
 		};
 
 		lp.reset();
@@ -79,7 +79,7 @@ impl LowPass {
 }
 
 impl Modifier<LowPass> for LowPass {
-	fn process(&mut self, x: StereoData) -> StereoData {
+	fn process(&mut self, x: SampleT) -> SampleT {
 		let y = self.coeff[0]*x +
 				self.coeff[1]*self.outs[0] +
 				self.coeff[2]*self.outs[1] +
@@ -106,7 +106,7 @@ impl Clone for LowPass {
 			fc: self.fc,
 			r: self.r,
 			coeff: self.coeff,
-			outs: [StereoData::default(); 3]
+			outs: [SampleT::default(); 3]
 		}
 	}
 }

@@ -16,12 +16,12 @@ pub struct HighPass {
 	b2: SampleT,
 	b3: SampleT,
 
-	x1: StereoData,
-	x2: StereoData,
-	x3: StereoData,
-	y1: StereoData,
-	y2: StereoData,
-	y3: StereoData,
+	x1: SampleT,
+	x2: SampleT,
+	x3: SampleT,
+	y1: SampleT,
+	y2: SampleT,
+	y3: SampleT,
 
 	fc: MathT,
 	r: MathT
@@ -47,12 +47,12 @@ impl HighPass {
 			b1: SampleT::default(),
 			b2: SampleT::default(),
 			b3: SampleT::default(),
-			x1: StereoData::default(),
-			x2: StereoData::default(),
-			x3: StereoData::default(),
-			y1: StereoData::default(),
-			y2: StereoData::default(),
-			y3: StereoData::default(),
+			x1: SampleT::default(),
+			x2: SampleT::default(),
+			x3: SampleT::default(),
+			y1: SampleT::default(),
+			y2: SampleT::default(),
+			y3: SampleT::default(),
 			fc,
 			r,
 		};
@@ -107,13 +107,9 @@ impl HighPass {
 }
 
 impl Modifier<HighPass> for HighPass {
-	fn process(&mut self, x: StereoData) -> StereoData {
-		let y = StereoData::from_stereo(
-			self.a0*x.left + self.a1*self.x1.left + self.a2*self.x2.left + self.a3*self.x3.left +
-			self.b1*self.y1.left + self.b2*self.y2.left + self.b3*self.y3.left,
-			self.a0*x.right + self.a1*self.x1.right + self.a2*self.x2.right + self.a3*self.x3.right +
-			self.b1*self.y1.right + self.b2*self.y2.right + self.b3*self.y3.right
-		);
+	fn process(&mut self, x: SampleT) -> SampleT {
+		let y = self.a0*x + self.a1*self.x1 + self.a2*self.x2 + self.a3*self.x3 +
+			self.b1*self.y1 + self.b2*self.y2 + self.b3*self.y3;
 
 		self.x3 = self.x2;
 		self.x2 = self.x1;
@@ -143,12 +139,12 @@ impl Clone for HighPass {
 			b1: self.b1,
 			b2: self.b2,
 			b3: self.b3,
-			x1: StereoData::default(),
-			x2: StereoData::default(),
-			x3: StereoData::default(),
-			y1: StereoData::default(),
-			y2: StereoData::default(),
-			y3: StereoData::default(),
+			x1: SampleT::default(),
+			x2: SampleT::default(),
+			x3: SampleT::default(),
+			y1: SampleT::default(),
+			y2: SampleT::default(),
+			y3: SampleT::default(),
 			fc: self.fc,
 			r: self.r,
 		}

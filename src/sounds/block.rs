@@ -20,13 +20,13 @@ pub type Gen<T> = Rc<dyn generators::Generator<T>>;
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
 pub type Mod<T> = Rc<dyn modifiers::Modifier<T>>;
 
-/// Type defining the closure that combines inputted StereoData samples from the
+/// Type defining the closure that combines inputted SampleT samples from the
 /// outputs of the [`Generator`]s and [`Modifier`]s of the cointaining [`Block`]
 /// 
 /// [`Generator`]: ../../generators/trait.Generator.html
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
 /// [`Block`]: struct.Block.html
-pub type InterBase = dyn FnMut(StereoData, StereoData) -> StereoData;
+pub type InterBase = dyn FnMut(SampleT, SampleT) -> SampleT;
 
 /// Reference-counted wrapper for the closure [`InterBase`]
 /// 
@@ -100,7 +100,7 @@ pub struct Block<G,M>
 	g: Gen<G>,
 	m: Mod<M>,
 	i: Inter,
-	input: StereoData,
+	input: SampleT,
 }
 
 impl<G,M> Block<G,M>
@@ -129,7 +129,7 @@ impl<G,M> Block<G,M>
 			g: Rc::new(g),
 			m: Rc::new(m),
 			i,
-			input: StereoData::default(),
+			input: SampleT::default(),
 		}
 	}
 
@@ -154,7 +154,7 @@ impl<G,M> Block<G,M>
 				modifiers::Passthrough::new()
 			),
 			i: Self::generator_passthrough(),
-			input: StereoData::default()
+			input: SampleT::default()
 		}
 	}
 
@@ -179,7 +179,7 @@ impl<G,M> Block<G,M>
 			),
 			m: Rc::new(m),
 			i: Self::modifier_passthrough(),
-			input: StereoData::default()
+			input: SampleT::default()
 		}
 	}
 
@@ -242,17 +242,17 @@ impl<G,M> BasicBlock for Block<G,M>
 	where G: Clone,
 	      M: Clone
 {
-	fn prime_input(&mut self, x: StereoData) {
+	fn prime_input(&mut self, x: SampleT) {
 		self.input += x;
 	}
 
-	fn process(&mut self) -> StereoData {
+	fn process(&mut self) -> SampleT {
 		let y = Rc::get_mut(&mut self.i).unwrap()(
 			Rc::get_mut(&mut self.g).unwrap().process(),
 			Rc::get_mut(&mut self.m).unwrap().process(self.input)
 		);
 
-		self.input = StereoData::default();
+		self.input = SampleT::default();
 
 		y
 	}

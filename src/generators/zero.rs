@@ -17,8 +17,8 @@ impl Zero {
 }
 
 impl Generator<Zero> for Zero {
-	fn process(&mut self) -> StereoData {
-		StereoData::default()
+	fn process(&mut self) -> SampleT {
+		0.0
 	}
 }
 

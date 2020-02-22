@@ -21,12 +21,10 @@ impl Noise {
 }
 
 impl Generator<Noise> for Noise {
-	fn process(&mut self) -> StereoData {
+	fn process(&mut self) -> SampleT {
 		use rand::Rng;
 
-		StereoData::from_mono(
-			self.engine.gen::<SampleT>()*2.0-1.0
-		)
+		self.engine.gen::<SampleT>()*2.0-1.0
 	}
 }
 

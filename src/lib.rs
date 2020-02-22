@@ -12,7 +12,7 @@ pub type MathT = f64;
 /// Type to calculate samples with.
 pub type SampleT = f32;
 /// Shorthand for a vector containing sample data.
-pub type TrackT = std::vec::Vec<StereoData>;
+pub type TrackT = Vec<SampleT>;
 
 /// The sampling rate the engine is set to run at.
 pub const SAMPLE_RATE:u64 = 48_000;
@@ -30,7 +30,7 @@ pub mod core;
 pub mod generators;
 pub mod modifiers;
 pub mod sounds;
-pub mod stereodata;
+pub mod sample_format;
 pub mod tools;
 
-pub use stereodata::*;
+pub use sample_format::*;

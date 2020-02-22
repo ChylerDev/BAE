@@ -50,7 +50,8 @@ pub fn write_wav(track:TrackT, path: &str) -> std::io::Result<()> {
 	let d_id = riff::ChunkId::new("data").unwrap();
 	let mut d_vec = Vec::new();
 	for i in track {
-		let mut v:Vec<u8> = i.into();
+		let mut v:Vec<u8> = Vec::new();
+		v.extend(((i * 32768_f32) as i16).to_le_bytes().iter());
 		d_vec.append(&mut v);
 	}
 	let d_dat = riff::Chunk::new_data(d_id, d_vec);
@@ -64,6 +65,6 @@ pub fn write_wav(track:TrackT, path: &str) -> std::io::Result<()> {
 	Ok(())
 }
 
-pub mod resampler;
+pub mod mono_resampler;
 
-pub use resampler::*;
+pub use mono_resampler::*;

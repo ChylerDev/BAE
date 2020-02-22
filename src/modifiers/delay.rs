@@ -7,7 +7,7 @@ use std::collections::VecDeque;
 /// Delay modifier, delays a signal by a given amount of time rounded to the
 /// nearest sample.
 pub struct Delay {
-	delay: VecDeque<StereoData>,
+	delay: VecDeque<SampleT>,
 }
 
 impl Delay {
@@ -17,7 +17,7 @@ impl Delay {
 		let mut v = VecDeque::new();
 
 		for _ in 0..((d.as_secs_f64()*SAMPLE_RATE as MathT).round() as usize) {
-			v.push_back(StereoData::default());
+			v.push_back(SampleT::default());
 		}
 
 		Delay {
@@ -32,7 +32,7 @@ impl Delay {
 }
 
 impl Modifier<Delay> for Delay {
-	fn process(&mut self, x: StereoData) -> StereoData {
+	fn process(&mut self, x: SampleT) -> SampleT {
 		self.delay.push_back(x);
 
 		self.delay.pop_front().unwrap()
@@ -53,7 +53,7 @@ impl Clone for Delay {
 				let mut v = VecDeque::new();
 
 				for _ in 0..(self.delay.len() * SAMPLE_RATE as usize) {
-					v.push_back(StereoData::default());
+					v.push_back(SampleT::default());
 				}
 
 				v

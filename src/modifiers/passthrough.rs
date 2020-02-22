@@ -15,7 +15,7 @@ impl Passthrough {
 }
 
 impl Modifier<Passthrough> for Passthrough {
-	fn process(&mut self, x: StereoData) -> StereoData {
+	fn process(&mut self, x: SampleT) -> SampleT {
 		x
 	}
 }

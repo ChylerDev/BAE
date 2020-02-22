@@ -32,7 +32,7 @@ pub trait Generator<T>
 	where T: Clone
 {
 	/// Generates a rendered audio sample
-	fn process(&mut self) -> StereoData;
+	fn process(&mut self) -> SampleT;
 }
 
 /// Type alias for a [`Generator`] wrapped in an [`Rc`].
@@ -47,7 +47,7 @@ pub mod sawtooth;
 pub mod sine;
 pub mod square;
 pub mod triangle;
-pub mod wavplayer;
+pub mod mono_wav;
 
 pub use zero::*;
 pub use noise::*;
@@ -55,4 +55,4 @@ pub use sawtooth::*;
 pub use sine::*;
 pub use square::*;
 pub use triangle::*;
-pub use wavplayer::*;
+pub use mono_wav::*;

@@ -4,36 +4,36 @@
 
 use riff;
 use super::*;
-use crate::tools::resampler::*;
+use crate::tools::mono_resampler::*;
 
 /// Struct for playing wave files.
 #[derive(Clone)]
-pub struct Wav {
-	resam: Resampler,
+pub struct MonoWav {
+	resam: MonoResampler,
 }
 
-impl Wav {
+impl MonoWav {
 	/// Constructs from a given path.
-	pub fn from_file(s: &str) -> Wav {
-		let (h, t) = Wav::read_file(s);
+	pub fn from_file(s: &str) -> MonoWav {
+		let (h, t) = MonoWav::read_file(s);
 
-		Wav::from_track(h.sampling_rate as u64,t)
+		MonoWav::from_track(h.sampling_rate as u64,t)
 	}
 
 	/// Converts from the given track and source sample rate.
 	pub fn from_track(sampling_rate:u64, t:TrackT) -> Self {
-		Wav{
-			resam: Resampler::new(t, sampling_rate, 0, 0)
+		MonoWav{
+			resam: MonoResampler::new(t, sampling_rate, 0, 0)
 		}
 	}
 
 	/// Borrows the resampler object.
-	pub fn get(&self) -> &Resampler {
+	pub fn get(&self) -> &MonoResampler {
 		&self.resam
 	}
 
 	/// Mutably borrows the resampler object.
-	pub fn get_mut(&mut self) -> &mut Resampler {
+	pub fn get_mut(&mut self) -> &mut MonoResampler {
 		&mut self.resam
 	}
 
@@ -76,31 +76,31 @@ impl Wav {
 			match h.bits_per_sample {
 				8 => match h.channel_count {
 					1 => {
-						v.push(StereoData::from_mono(sample_from_u8([sam[ind]])));
+						v.push(sample_from_u8([sam[ind]]));
 						ind += 1;
 					},
 					cc => {
-						v.push(StereoData::from([sam[ind],sam[ind+1]]));
+						v.push(sample_from_u8([sam[ind]]));
 						ind += cc as usize;
 					},
 				},
 				16 => match h.channel_count {
 					1 => {
-						v.push(StereoData::from_mono(sample_from_i16([sam[ind],sam[ind+1]])));
+						v.push(sample_from_i16([sam[ind],sam[ind+1]]));
 						ind += 2;
 					},
 					cc => {
-						v.push(StereoData::from([sam[ind],sam[ind+1],sam[ind+2],sam[ind+3]]));
+						v.push(sample_from_i16([sam[ind],sam[ind+1]]));
 						ind += (cc as usize)*2;
 					},
 				},
 				24 => match h.channel_count {
 					1 => {
-						v.push(StereoData::from_mono(sample_from_i24([sam[ind],sam[ind+1],sam[ind+2]])));
+						v.push(sample_from_i24([sam[ind],sam[ind+1],sam[ind+2]]));
 						ind += 3;
 					},
 					cc => {
-						v.push(StereoData::from([sam[ind],sam[ind+1],sam[ind+2],sam[ind+3],sam[ind+4],sam[ind+5]]));
+						v.push(sample_from_i24([sam[ind],sam[ind+1],sam[ind+2]]));
 						ind += (cc as usize)*3;
 					},
 				},
@@ -112,15 +112,15 @@ impl Wav {
 	}
 }
 
-impl Generator<Wav> for Wav {
-	fn process(&mut self) -> StereoData {
+impl Generator<MonoWav> for MonoWav {
+	fn process(&mut self) -> SampleT {
 		self.resam.process()
 	}
 }
 
 #[cfg(test)]
-impl Name for Wav {
+impl Name for MonoWav {
 	fn get_name(&self) -> &str {
-		"Generator.Wav"
+		"Generator.MonoWav"
 	}
 }

@@ -146,7 +146,7 @@ impl<C> Sound<SimpleSound<C>,C> for SimpleSound<C>
 		}
 	}
 
-	fn process(&mut self, input: StereoData) -> StereoData {
+	fn process(&mut self, input: SampleT) -> SampleT {
 		if self.is_paused {
 			return Default::default();
 		}

@@ -28,8 +28,8 @@ impl FreqMod for Triangle {
 }
 
 impl Generator<Triangle> for Triangle {
-	fn process(&mut self) -> StereoData {
-		let y = StereoData::from_mono(self.inc);
+	fn process(&mut self) -> SampleT {
+		let y = self.inc;
 
 		self.inc += self.irate as SampleT;
 

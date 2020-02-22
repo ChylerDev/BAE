@@ -57,7 +57,7 @@ impl ADSR {
 }
 
 impl Modifier<ADSR> for ADSR {
-	fn process(&mut self, x: StereoData) -> StereoData {
+	fn process(&mut self, x: SampleT) -> SampleT {
 		match self.state {
 			ADSRState::Attack => {
 				self.g += self.a;
@@ -82,7 +82,7 @@ impl Modifier<ADSR> for ADSR {
 					self.g = 0.0;
 				}
 			},
-			ADSRState::Stopped => return StereoData::default(),
+			ADSRState::Stopped => return SampleT::default(),
 		}
 
 		x * self.g
