@@ -19,6 +19,13 @@ pub const SAMPLE_RATE:u64 = 48_000;
 /// The inverse of the sampling rate for easy referencing.
 pub const INV_SAMPLE_RATE:MathT = 1.0/(SAMPLE_RATE as MathT);
 
+/// Linear interpolation of a given value.
+pub fn lerp<T>(x:T, x1:T, x2:T, y1:T, y2:T) -> T
+	where T: Copy + Sized + std::ops::Add<Output=T> + std::ops::Sub<Output=T> + std::ops::Mul<Output=T> + std::ops::Div<Output=T>
+{
+	((y2 - y1) / (x2 - x1)) * (x - x1) + y1
+}
+
 /// Trait that implements the ability to get the name of a type simply.
 #[cfg(test)]
 pub trait Name {
