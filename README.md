@@ -1,4 +1,4 @@
-This project is currently being reimplemented in [rust](https://rust-lang.org), view the progress in its branch [here](../../tree/8-move-to-rust)
+This project is currently being reimplemented in [rust](https://rust-lang.org), view the progress in its branch [![here](../../tree/8-move-to-rust)](-/tree/8-move-to-rust)
 
 # Overly Complicated Audio Engine (OCAE)
 
