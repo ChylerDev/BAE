@@ -2,6 +2,8 @@
 
 The Broad Audio Engine presents the ability to process sounds and wav files for applications like video games and DAWs.
 
+For more information please see the [documentation](https://docs.rs/bae_rs)
+
 |   |                                       |
 |--:|---------------------------------------|
 |1  |[Rust and C++](#1-rust-and-c)          |
