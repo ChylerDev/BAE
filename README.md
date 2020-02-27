@@ -1,14 +1,18 @@
 # Broad Audio Engine (BAE)
 
-An audio engine designed to produce audio samples using basic generators (sound sources) and modifiers (filters).
+The Broad Audio Engine presents the ability to process sounds and wav files for applications like video games and DAWs.
 
-1. [Rust and C++](#1-rust-and-c)
-2. [C++](#2-c)
-	1. [Building](#21-building)
-	2. [Dependencies](#22-dependencies)
-	3. [Usage](#23-usage)
-	4. [Notes](#24-notes)
-3. [Future Expansion](#3-future-expansion)
+|   |                                       |
+|--:|---------------------------------------|
+|1  |[Rust and C++](#1-rust-and-c)          |
+|2  |[C++](#2-c)                            |
+|2.1|[Building](#21-building)               |
+|2.2|[Dependencies](#22-dependencies)       |
+|2.3|[Usage](#23-usage)                     |
+|2.4|[Notes](#24-notes)                     |
+|3  |[Future Expansion](#3-future-expansion)|
+
+---
 
 ## 1. Rust and C++
 
@@ -16,6 +20,8 @@ This library is programmed and maintained in parallel in both Rust and C++, and 
 This library is currently in the process of being ported to rust. Once this process is complete they will both be maintained in parallel.
 
 The rust crate can be found [here](https://crates.io/bae).
+
+---
 
 ## 2. C++
 
@@ -46,6 +52,8 @@ It should be noted that the factories within this library use std::shared_ptr, w
 ### 2.4 Notes
 
 The project will build the executibles and copy the necessary shared libs (if any) to repo/bin for easy access of the binaries.
+
+---
 
 ## 3. Future Expansion
 
