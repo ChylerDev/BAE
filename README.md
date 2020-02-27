@@ -1,43 +1,32 @@
-This project is currently being reimplemented in [rust](https://rust-lang.org), view the progress in its branch on origin/8-move-to-rust
+# Broad Audio Engine (BAE)
 
-# Overly Complicated Audio Engine (OCAE)
+The Broad Audio Engine presents the ability to process sounds and wav files for applications like video games and DAWs.
 
-An audio engine designed to produce audio samples using basic generators (sound sources) and modifiers (filters).
+For more information please see the [documentation](https://docs.rs/bae_rs)
 
-# Building
+|   |                                       |
+|--:|---------------------------------------|
+|1  |[Rust and C++](#1-rust-and-c)          |
+|2  |[Future Expansion](#2-future-expansion)|
 
-Building is done through CMake, as it is the solition I am familiar with enough to set up for multi-platform C++ projects.
+---
 
-Be sure you have CMake v3.8 or newer installed.
+## 1. Rust and C++
 
-Set the repository root as the source code location, and then set the build
-location of your choice.
+This library is programmed and maintained in parallel in both Rust and C++, and can each be found in their respective branches.  
 
-Configure, check the options to see what (if anything) you'd like to change, then configure again.
+The rust crate can be found [here](https://crates.io/bae_rs).
 
-Once you're ready to generated the project files, use the Generate command.
+SoonTM this will be split off into two different README's on the separate branches. I'm probably gonna forget to change that.
 
-Currently the library has only been tested on Windows 10 (Visual Studio 2019) and Ubuntu (WSL2, GCC 7.4.0/LLVM clang 6.0.0)
+---
 
-# Dependencies
-
-This project uses the [RIFF-Util library](https://gitlab.com/ChylerDev/RIFF-Util) to read and write WAVE data structures (whether loaded from disk or not).
-
-Currently there is no option to disable it if it isn't needed, but this may be an added feature in the future.
-
-# Usage
-
-It should be noted that the factories within this library use std::shared_ptr, which means that any pointer-level copying will not copy the managed objects. This means that improper care of copying could yield to, for example, a generator running twice per process loop which is likely not the intended use. This could be fairly easily mitigated however by modifying the define in Macro.hpp or adding your own define before it and rebuilding the project.
-
-# Notes
-
-The project will build the executibles and copy the necessary shared libs (if any) to repo/bin for easy access of the binaries.
-
-# Future Expansion
+## 2. Future Expansion
 
 * Modifiers to add:
-	* Pan
-	* Fade in/out
+  * Pan (C++-specific)
+  * Fade in/out
 * Features:
-	* Side-chain
-	* FFT?
+  * Side-chain (?)
+  * FFT (use FFTW?)
+  * Refactor to use multiple audio formats (mono, stereo, 2.1, 5.1, 7.1, etc.) (means refactoring code to output mono and transform into other format) (C++-specific)

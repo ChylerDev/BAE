@@ -1,4 +1,8 @@
-# OCAE Changelog
+# BAE Changelog
+
+## Version 2.0.0
+
+* Implemented rust
 
 ## Version 1.0.0
 
