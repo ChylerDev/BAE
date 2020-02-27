@@ -1,4 +1,4 @@
-extern crate bae;
+extern crate bae_audio;
 
 #[cfg(test)]
 mod tests {

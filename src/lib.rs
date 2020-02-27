@@ -1,4 +1,4 @@
-//! # BAE
+//! # BAE_Audio
 //! 
 //! The Overly Complicated Audio Engine.
 //! A crate for processing audio samples for various uses.

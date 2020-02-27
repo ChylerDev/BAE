@@ -24,7 +24,7 @@ use std::vec::Vec;
 /// # Example
 /// 
 /// ```
-/// use bae::{*,generators::*};
+/// use bae_audio::{*,generators::*};
 /// let mut n = Noise::new();
 /// let mut t = TrackT::new();
 ///

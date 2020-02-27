@@ -1,15 +1,15 @@
-extern crate bae;
+extern crate bae_audio;
 
 #[cfg(test)]
 mod tests {
 	#[test]
 	fn test_write_wav() {
-		use bae::tools::*;
+		use bae_audio::tools::*;
 
-		let mut t = bae::TrackT::new();
+		let mut t = bae_audio::TrackT::new();
 
 		for i in 0..16 {
-			t.push((2.0 * std::f32::consts::PI * 440.0 * i as f32 * bae::INV_SAMPLE_RATE as f32).sin());
+			t.push((2.0 * std::f32::consts::PI * 440.0 * i as f32 * bae_audio::INV_SAMPLE_RATE as f32).sin());
 		}
 
 		write_wav(t, ".junk/tools/wavwrite.wav").unwrap();
@@ -17,34 +17,34 @@ mod tests {
 
 	#[test]
 	fn test_resampler() {
-		use bae::tools::*;
+		use bae_audio::tools::*;
 		use std::f32::EPSILON;
 
 		let sam = vec![0.0, 1.0, 2.0, 3.0];
 
-		let mut r = MonoResampler::new(sam.clone(), bae::SAMPLE_RATE/2, 0,0);
+		let mut r = MonoResampler::new(sam.clone(), bae_audio::SAMPLE_RATE/2, 0,0);
 		for i in 0..7 {
 			let s = r.process();
 
-			assert!((s - i as bae::SampleT/2.0).abs() < EPSILON);
+			assert!((s - i as bae_audio::SampleT/2.0).abs() < EPSILON);
 		}
 
-		let mut r = MonoResampler::new(sam.clone(), bae::SAMPLE_RATE * 2, 0,0);
+		let mut r = MonoResampler::new(sam.clone(), bae_audio::SAMPLE_RATE * 2, 0,0);
 		for i in 0..2 {
 			let s = r.process();
 
-			assert!((s - (i * 2) as bae::SampleT).abs() < EPSILON);
+			assert!((s - (i * 2) as bae_audio::SampleT).abs() < EPSILON);
 		}
 
-		let mut r = MonoResampler::new(sam.clone(), bae::SAMPLE_RATE, 0,0);
+		let mut r = MonoResampler::new(sam.clone(), bae_audio::SAMPLE_RATE, 0,0);
 		r.set_playback_speed(0.5);
 		for i in 0..7 {
 			let s = r.process();
 
-			assert!((s - i as bae::SampleT/2.0).abs() < EPSILON);
+			assert!((s - i as bae_audio::SampleT/2.0).abs() < EPSILON);
 		}
 
-		let mut r = MonoResampler::new(sam.clone(), bae::SAMPLE_RATE * 2, 0,0);
+		let mut r = MonoResampler::new(sam.clone(), bae_audio::SAMPLE_RATE * 2, 0,0);
 		r.set_playback_speed(0.5);
 		for i in sam {
 			let s = r.process();

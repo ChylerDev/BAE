@@ -1,25 +1,25 @@
-extern crate bae;
+extern crate bae_audio;
 
 #[cfg(test)]
 mod tests {
 	#[test]
 	fn test_adsr() {
-		use bae::modifiers::*;
-		use bae::generators::*;
+		use bae_audio::modifiers::*;
+		use bae_audio::generators::*;
 		use std::time::Duration;
 
 		let mut a = ADSR::new(
 			Duration::from_secs_f64(0.03125),
 			Duration::from_secs_f64(0.125),
-			bae::linear_db(0.5),
+			bae_audio::linear_db(0.5),
 			Duration::from_secs_f64(0.5)
 		);
 
 		let mut g = Sine::new(440.0);
-		let mut t = bae::TrackT::new();
+		let mut t = bae_audio::TrackT::new();
 
-		for i in 0..bae::SAMPLE_RATE {
-			if i == bae::SAMPLE_RATE/2 {
+		for i in 0..bae_audio::SAMPLE_RATE {
+			if i == bae_audio::SAMPLE_RATE/2 {
 				a.release();
 			}
 
@@ -27,13 +27,13 @@ mod tests {
 		}
 
 		let f = ".junk/modifiers/adsr.wav";
-		bae::tools::write_wav(t, f).unwrap();
+		bae_audio::tools::write_wav(t, f).unwrap();
 
-		// bae::tools::filter_gain(
+		// bae_audio::tools::filter_gain(
 		// 	|| ADSR::new(
 		// 		Duration::from_secs_f64(0.03125),
 		// 		Duration::from_secs_f64(0.125),
-		// 		bae::linear_db(0.5),
+		// 		bae_audio::linear_db(0.5),
 		// 		Duration::from_secs_f64(0.5)
 		// 	),
 		// 	512
@@ -42,7 +42,7 @@ mod tests {
 
 	#[test]
 	fn test_bandpass() {
-		use bae::modifiers::*;
+		use bae_audio::modifiers::*;
 
 		let mut bp1 = BandPass::from_corners((100.0,200.0));
 		let f1 = "bandpass_100_200.wav";
@@ -55,12 +55,12 @@ mod tests {
 		run_modifier(&mut bp2, f2);
 		run_modifier(&mut bp3, f3);
 
-		// bae::tools::filter_gain(|| BandPass::from_corners((200.0,4000.0)), 512);
+		// bae_audio::tools::filter_gain(|| BandPass::from_corners((200.0,4000.0)), 512);
 	}
 
 	#[test]
 	fn test_delay() {
-		use bae::modifiers::*;
+		use bae_audio::modifiers::*;
 
 		let mut d = Delay::new(std::time::Duration::from_secs_f64(0.5));
 
@@ -69,26 +69,26 @@ mod tests {
 
 	#[test]
 	fn test_echo() {
-		use bae::modifiers::*;
-		use bae::generators::*;
+		use bae_audio::modifiers::*;
+		use bae_audio::generators::*;
 
 		let mut e = Echo::new(std::time::Duration::from_secs_f64(0.25), 0.5);
 
 		let mut g = Sine::new(440.0);
-		let mut t = bae::TrackT::new();
+		let mut t = bae_audio::TrackT::new();
 
-		for _ in 0..bae::SAMPLE_RATE {
+		for _ in 0..bae_audio::SAMPLE_RATE {
 			t.push(e.process(g.process()*0.5));
 		}
 
 		let f = ".junk/modifiers/echo.wav";
-		bae::tools::write_wav(t, f).unwrap();
+		bae_audio::tools::write_wav(t, f).unwrap();
 	}
 
 	#[test]
 	fn test_envelope() {
-		use bae::modifiers::*;
-		use bae::generators::*;
+		use bae_audio::modifiers::*;
+		use bae_audio::generators::*;
 		use std::time::Duration;
 
 		let mut e = Envelope::new(20.0, 20_000.0);
@@ -96,14 +96,14 @@ mod tests {
 		let mut a = ADSR::new(
 			Duration::from_secs_f64(0.03125),
 			Duration::from_secs_f64(0.125),
-			bae::linear_db(0.5),
+			bae_audio::linear_db(0.5),
 			Duration::from_secs_f64(0.5)
 		);
 		let mut g = Sine::new(440.0);
-		let mut t = bae::TrackT::new();
+		let mut t = bae_audio::TrackT::new();
 
-		for i in 0..bae::SAMPLE_RATE {
-			if i == bae::SAMPLE_RATE/2 {
+		for i in 0..bae_audio::SAMPLE_RATE {
+			if i == bae_audio::SAMPLE_RATE/2 {
 				a.release();
 			}
 
@@ -111,12 +111,12 @@ mod tests {
 		}
 
 		let f = ".junk/modifiers/envelope.wav";
-		bae::tools::write_wav(t, f).unwrap();
+		bae_audio::tools::write_wav(t, f).unwrap();
 	}
 
 	#[test]
 	fn test_gain() {
-		use bae::modifiers::*;
+		use bae_audio::modifiers::*;
 
 		let mut g = Gain::new(0.125);
 
@@ -125,7 +125,7 @@ mod tests {
 
 	#[test]
 	fn test_generic() {
-		use bae::modifiers::*;
+		use bae_audio::modifiers::*;
 
 		let mut g = Generic::new(
 			{
@@ -149,58 +149,58 @@ mod tests {
 			},
 		);
 
-		use bae::generators::*;
+		use bae_audio::generators::*;
 		let mut s = Sine::new(440.0);
-		let mut t = bae::TrackT::new();
+		let mut t = bae_audio::TrackT::new();
 
-		for _ in 0..bae::SAMPLE_RATE {
+		for _ in 0..bae_audio::SAMPLE_RATE {
 			t.push(g.process(s.process() * 0.25));
 		}
 
 		let f = ".junk/modifiers/generic.wav";
-		bae::tools::write_wav(t, f).unwrap();
+		bae_audio::tools::write_wav(t, f).unwrap();
 	}
 
 	#[test]
 	fn test_highpass() {
-		use bae::modifiers::*;
+		use bae_audio::modifiers::*;
 
 		let mut hp = HighPass::new(440.0, 1.0);
 
 		run_modifier(&mut hp, "highpass.wav");
 
-		// bae::tools::filter_gain(|| HighPass::new(4400.0, 1.0), 512);
+		// bae_audio::tools::filter_gain(|| HighPass::new(4400.0, 1.0), 512);
 	}
 
 	#[test]
 	fn test_lowpass() {
-		use bae::{generators::*, modifiers::*};
+		use bae_audio::{generators::*, modifiers::*};
 
 		let mut lp = LowPass::new(440.0, 0.0);
 		let mut n = Noise::new();
-		let mut t = bae::TrackT::new();
+		let mut t = bae_audio::TrackT::new();
 
-		for i in 0..8*bae::SAMPLE_RATE {
-			lp.set_resonance(i as bae::MathT / (8*bae::SAMPLE_RATE) as bae::MathT);
+		for i in 0..8*bae_audio::SAMPLE_RATE {
+			lp.set_resonance(i as bae_audio::MathT / (8*bae_audio::SAMPLE_RATE) as bae_audio::MathT);
 
 			t.push(lp.process(n.process()));
 		}
 
 		let f = ".junk/modifiers/lowpass.wav";
-		bae::tools::write_wav(t, f).unwrap();
+		bae_audio::tools::write_wav(t, f).unwrap();
 	}
 
 	fn run_modifier<M>(m: &mut M, file:&str)
-		where M: Clone + bae::modifiers::Modifier<M>
+		where M: Clone + bae_audio::modifiers::Modifier<M>
 	{
-		use bae::generators::*;
+		use bae_audio::generators::*;
 
 		let mut g = Noise::new();
-		let mut t = bae::TrackT::new();
+		let mut t = bae_audio::TrackT::new();
 
 		let before = std::time::Instant::now();
 
-		for _ in 0..bae::SAMPLE_RATE {
+		for _ in 0..bae_audio::SAMPLE_RATE {
 			t.push(m.process(g.process()));
 		}
 
@@ -211,6 +211,6 @@ mod tests {
 		let mut f = String::from(".junk/modifiers/");
 		f.push_str(file);
 
-		bae::tools::write_wav(t, f.as_str()).unwrap();
+		bae_audio::tools::write_wav(t, f.as_str()).unwrap();
 	}
 }

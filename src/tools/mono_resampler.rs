@@ -1,7 +1,7 @@
 //! # MonoResampler
 //! 
 //! Trans codes the given audio signal from it's source sampling rate to the
-//! sampling rate BAE runs at.
+//! sampling rate BAE_Audio runs at.
 
 use super::*;
 
