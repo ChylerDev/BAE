@@ -2,7 +2,7 @@
 name = "bae_rs"
 description = "The Broad Audio Engine presents the ability to process sounds and wav files for applications like video games and DAWs."
 readme = "README.md"
-homepage = "https://github.com/ChylerDev/"
+homepage = "https://github.com/ChylerDev/bae"
 documentation = "https://docs.rs/bae_rs"
 license = "MIT"
 version = "0.9.3"
