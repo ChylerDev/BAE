@@ -21,6 +21,8 @@ This library is currently in the process of being ported to rust. Once this proc
 
 The rust crate can be found [here](https://crates.io/bae).
 
+SoonTM this will be split off into two different README's on the separate branches. I'm probably gonna forget to change that.
+
 ---
 
 ## 2. C++
