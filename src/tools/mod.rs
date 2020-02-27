@@ -44,7 +44,7 @@ pub fn write_wav(track:TrackT, path: &str) -> std::io::Result<()> {
 	let w_id = riff::ChunkId::new("WAVE").unwrap();
 
 	let h_id = riff::ChunkId::new("fmt ").unwrap();
-	let h_vec:[u8;16] = wav::Header::new(1, 2, SAMPLE_RATE as u32, 16).into();
+	let h_vec:[u8;16] = wav::Header::new(1, 1, SAMPLE_RATE as u32, 16).into();
 	let h_dat = riff::Chunk::new_data(h_id, Vec::from(&h_vec[0..16]));
 
 	let d_id = riff::ChunkId::new("data").unwrap();
