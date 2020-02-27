@@ -4,12 +4,18 @@
 
 use super::*;
 
+/// Trait implementing the ability to pan a monophonic sample into a ployphonic
+/// sample. This is generic for the polyphonic type and the type that defines
+/// how it is panned. To see an implementation, see
+/// [`StereoData::to_sample_format`].
+/// 
+/// [`StereoData::to_sample_format`]: stereodata/struct.StereoData.html#method.to_sample_format
 pub trait Panner<SF,G>
 	where SF: Panner<SF,G>,
 	      G: Sized
 {
-	type Output;
-	fn to_sample_format(s: SampleT, g: G) -> Self::Output;
+	/// Converts the monophonic sample into a polyphonic sample.
+	fn to_sample_format(s: SampleT, g: G) -> SF;
 }
 
 /// Converts a raw bytes to a Sample

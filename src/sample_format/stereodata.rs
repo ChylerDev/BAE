@@ -60,9 +60,7 @@ impl StereoData {
 }
 
 impl Panner<StereoData, f32> for StereoData {
-	type Output = StereoData;
-
-	fn to_sample_format(s: SampleT, g: f32) -> Self::Output {
+	fn to_sample_format(s: SampleT, g: f32) -> StereoData {
 		let l_lerp = lerp(g, -1.0, 1.0, 0.0, -120.0);
 		let r_lerp = lerp(g, -1.0, 1.0, -120.0, 0.0);
 		
