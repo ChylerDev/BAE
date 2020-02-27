@@ -1,0 +1,21 @@
+[package]
+name = "bae_rs"
+description = "The Broad Audio Engine presents the ability to process sounds and wav files for applications like video games and DAWs."
+readme = "README.md"
+homepage = "https://github.com/ChylerDev/bae"
+documentation = "https://docs.rs/bae_rs"
+license = "MIT"
+version = "0.9.3"
+authors = ["Chyler Morrison <contact@chyler.info>"]
+edition = "2018"
+keywords = ["audio","audio-processing"]
+categories = ["data-structures", "mathematics", "multimedia::audio"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+lazy_static = "1"
+petgraph = "0.5"
+riff = "0.1"
+rand = "0.7"
+wav = "0.1"

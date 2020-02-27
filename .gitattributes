@@ -1,0 +1,2 @@
+[core]
+	*.rs	text eol=lf

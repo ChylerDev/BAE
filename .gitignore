@@ -1,7 +1,9 @@
 build*/
 bin/
+.junk/
 
 \.vscode/
 target/
 Cargo.lock
 docs/*/
+doc/
