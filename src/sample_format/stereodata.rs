@@ -59,6 +59,20 @@ impl StereoData {
 	}
 }
 
+impl Panner<StereoData, f32> for StereoData {
+	type Output = StereoData;
+
+	fn to_sample_format(s: SampleT, g: f32) -> Self::Output {
+		let l_lerp = lerp(g, -1.0, 1.0, 0.0, -120.0);
+		let r_lerp = lerp(g, -1.0, 1.0, -120.0, 0.0);
+		
+		StereoData {
+			left: db_linear(l_lerp as MathT) as SampleT * s,
+			right: db_linear(r_lerp as MathT) as SampleT * s
+		}
+	}
+}
+
 impl std::ops::Neg for StereoData {
 	type Output = Self;
 
@@ -198,6 +212,19 @@ impl Into<Vec<u8>> for StereoData {
 		v.push(n[1]);
 
 		v
+	}
+}
+
+impl From<SampleT> for StereoData {
+	/// Copies the given sample to the left and right channels. If you want to
+	/// use the half-power conversion, use [`StereoData::from_mono`].
+	/// 
+	/// [`StereoData::from_mono`]: struct.StereoData.html#method.from_mono
+	fn from(s: SampleT) -> Self {
+		StereoData{
+			left: s,
+			right: s,
+		}
 	}
 }
 

@@ -4,6 +4,13 @@
 
 use super::*;
 
+pub trait Panner<SF,G>
+	where SF: Panner<SF,G>,
+	      G: Sized
+{
+	type Output;
+	fn to_sample_format(s: SampleT, g: G) -> Self::Output;
+}
 
 /// Converts a raw bytes to a Sample
 /// It is assumed the bytes are 8-bit unsigned audio samples.
