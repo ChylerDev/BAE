@@ -34,7 +34,7 @@ pub trait Channel {
 /// 
 /// [`Channel`]: trait.Channel.html
 pub trait SoundChannel<S,C>
-	where S: Clone + sounds::Sound<S,C>,
+	where S: Clone + sounds::Sound<S>,
 	      C: Clone + Channel
 {
 	/// Adds a sound to the driver for processing.
@@ -68,13 +68,13 @@ pub type SoundChannelRc<S,C> = Rc<dyn SoundChannel<S,C>>;
 /// 
 /// [`SoundChannelRc`]: type.SoundChannelRc.html
 /// [`SimpleSound`]: ../sounds/simple_sound/struct.SimpleSound.html
-pub type SimpleSoundChannelRc<C> = SoundChannelRc<crate::sounds::SimpleSound<C>,C>;
+pub type SimpleSoundChannelRc<C> = SoundChannelRc<crate::sounds::SimpleSound,C>;
 
 /// Alias for a [`SoundChannelRc`] templated for [`ComplexSound`].
 /// 
 /// [`SoundChannelRc`]: type.SoundChannelRc.html
 /// [`SimpleSound`]: ../sounds/complex_sound/struct.ComplexSound.html
-pub type ComplexSoundChannelRc<C> = SoundChannelRc<crate::sounds::ComplexSound<C>,C>;
+pub type ComplexSoundChannelRc<C> = SoundChannelRc<crate::sounds::ComplexSound,C>;
 
 pub mod standard_channel;
 pub use standard_channel::*;

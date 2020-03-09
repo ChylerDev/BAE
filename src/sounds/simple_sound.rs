@@ -22,22 +22,17 @@ use super::basic_block::*;
 /// [`Generator`]: ../../generators/trait.Generator.html
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
 #[derive(Clone)]
-pub struct SimpleSound<C>
-	where C: Clone + crate::core::Channel
-{
+pub struct SimpleSound {
 	generator: BlockRc,
 	modifier_list: Vec<BlockRc>,
 	input_gain: SampleT,
 	output_gain: SampleT,
-	channel: Option<SimpleSoundChannelRc<C>>,
 	id: Option<usize>,
 	is_muted: bool,
 	is_paused: bool,
 }
 
-impl<C> SimpleSound<C>
-	where C: Clone + crate::core::Channel
-{
+impl SimpleSound {
 	/// Constructs a new [`SimpleSound`] object. The new object is initialized
 	/// with an empty [`Vec`] of [`Modifier`]s. Add [`Modifier`]s with
 	/// [`add_modifier`] or [`extend_modifiers`].
@@ -53,7 +48,6 @@ impl<C> SimpleSound<C>
 			modifier_list: Vec::new(),
 			input_gain: input_gain as SampleT,
 			output_gain: output_gain as SampleT,
-			channel: None,
 			id: None,
 			is_muted: false,
 			is_paused: false,
@@ -99,9 +93,7 @@ impl<C> SimpleSound<C>
 	}
 }
 
-impl<C> Sound<SimpleSound<C>,C> for SimpleSound<C>
-	where C: Clone + crate::core::Channel
-{
+impl Sound<SimpleSound> for SimpleSound {
 	fn toggle_pause(&mut self) {
 		self.is_paused = !self.is_paused;
 	}
@@ -118,29 +110,29 @@ impl<C> Sound<SimpleSound<C>,C> for SimpleSound<C>
 		self.is_muted
 	}
 
-	fn register(this: SimpleSoundRc<C>, mut channel: SimpleSoundChannelRc<C>) {
-		Self::unregister(this.clone());
+	fn register<C>(this: SimpleSoundRc, mut channel: SimpleSoundChannelRc<C>)
+		where C: Clone + crate::core::Channel
+	{
+		Self::unregister(this.clone(), channel.clone());
 
 		if let Some(sound) = Rc::get_mut(&mut this.clone()) {
-			sound.channel = Some(channel.clone());
 			if let Some(channel) = Rc::get_mut(&mut channel) {
 				sound.id = Some(channel.add_sound(this));
 			}
 		}
 	}
 
-	fn unregister(mut this: SimpleSoundRc<C>) {
+	fn unregister<C>(mut this: SimpleSoundRc, mut channel: SimpleSoundChannelRc<C>)
+		where C: Clone + crate::core::Channel
+	{
 		if this.id != None {
 			if let Some(sound) = Rc::get_mut(&mut this) {
-				if let Some(mut channel) = sound.channel.clone() {
-					if let Some(channel) = Rc::get_mut(&mut channel) {
-						if let Some(id) = sound.id {
-							let _ = channel.remove_sound(id);
-						}
+				if let Some(channel) = Rc::get_mut(&mut channel) {
+					if let Some(id) = sound.id {
+						let _ = channel.remove_sound(id);
 					}
 				}
 
-				sound.channel = None;
 				sound.id = None;
 			}
 		}
@@ -153,7 +145,7 @@ impl<C> Sound<SimpleSound<C>,C> for SimpleSound<C>
 
 		let mut out = if let Some(b) = Rc::get_mut(&mut self.generator) {
 			b.prime_input(input * self.input_gain);
-			b.process() * self.output_gain
+			b.process()
 		} else {
 			Default::default()
 		};
@@ -168,7 +160,7 @@ impl<C> Sound<SimpleSound<C>,C> for SimpleSound<C>
 		if self.is_muted {
 			Default::default()
 		} else {
-			out
+			out * self.output_gain
 		}
 	}
 }
@@ -177,4 +169,4 @@ impl<C> Sound<SimpleSound<C>,C> for SimpleSound<C>
 /// 
 /// [`SimpleSound`]: struct.SimpleSound.html
 /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-pub type SimpleSoundRc<C> = Rc<SimpleSound<C>>;
+pub type SimpleSoundRc = Rc<SimpleSound>;

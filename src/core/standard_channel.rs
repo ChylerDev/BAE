@@ -11,7 +11,7 @@ use crate::sounds::*;
 /// [`Channel`]: ../trait.Channel.html
 #[derive(Clone)]
 pub struct StandardChannel<S>
-	where S: Clone + Sound<S,StandardChannel<S>>
+	where S: Clone + Sound<S>
 {
 	output: TrackT,
 	sounds: HashMap<usize, Rc<S>>,
@@ -20,7 +20,7 @@ pub struct StandardChannel<S>
 }
 
 impl<S> StandardChannel<S>
-	where S: Clone + Sound<S,StandardChannel<S>>
+	where S: Clone + Sound<S>
 {
 	/// Creates a new channel with the given gain.
 	/// 
@@ -47,7 +47,7 @@ impl<S> StandardChannel<S>
 }
 
 impl<S> SoundChannel<S,StandardChannel<S>> for StandardChannel<S>
-	where S: Clone + Sound<S,StandardChannel<S>>
+	where S: Clone + Sound<S>
 {
 	fn add_sound(&mut self, sound: Rc<S>) -> usize {
 		let id = self.get_id();
@@ -62,7 +62,7 @@ impl<S> SoundChannel<S,StandardChannel<S>> for StandardChannel<S>
 }
 
 impl<S> Channel for StandardChannel<S>
-	where S: Clone + Sound<S,StandardChannel<S>>
+	where S: Clone + Sound<S>
 {
 	fn set_process_time(&mut self, d: Duration) {
 		self.output = TrackT::with_capacity((d.as_secs_f64() * SAMPLE_RATE as MathT) as usize);
