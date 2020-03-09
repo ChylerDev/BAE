@@ -19,23 +19,6 @@ pub const SAMPLE_RATE:u64 = 48_000;
 /// The inverse of the sampling rate for easy referencing.
 pub const INV_SAMPLE_RATE:MathT = 1.0/(SAMPLE_RATE as MathT);
 
-/// Linear interpolation of a given value.
-pub fn lerp<T>(x:T, x1:T, x2:T, y1:T, y2:T) -> T
-	where T: Copy + Sized + std::ops::Add<Output=T> + std::ops::Sub<Output=T> + std::ops::Mul<Output=T> + std::ops::Div<Output=T>
-{
-	((y2 - y1) / (x2 - x1)) * (x - x1) + y1
-}
-
-/// Converts a given sample count to seconds.
-pub fn samples_to_seconds(s: usize) -> std::time::Duration {
-	std::time::Duration::from_secs_f64(s as f64 * SAMPLE_RATE as f64)
-}
-
-/// Converts the given duration to samples, rounded to the nearest sample.
-pub fn seconds_to_samples(s: std::time::Duration) -> usize {
-	(s.as_secs_f64() * SAMPLE_RATE as f64).round() as usize
-}
-
 /// Trait that implements the ability to get the name of a type simply.
 #[cfg(test)]
 pub trait Name {

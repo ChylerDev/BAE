@@ -5,6 +5,55 @@
 use super::*;
 use std::vec::Vec;
 
+
+/// Linear interpolation of a given value.
+pub fn lerp<T>(x:T, x1:T, x2:T, y1:T, y2:T) -> T
+	where T: Copy + Sized + std::ops::Add<Output=T> + std::ops::Sub<Output=T> + std::ops::Mul<Output=T> + std::ops::Div<Output=T>
+{
+	((y2 - y1) / (x2 - x1)) * (x - x1) + y1
+}
+
+/// Converts a given sample count to seconds.
+pub fn samples_to_seconds(s: usize) -> std::time::Duration {
+	std::time::Duration::from_secs_f64(s as f64 * SAMPLE_RATE as f64)
+}
+
+/// Converts the given duration to samples, rounded to the nearest sample.
+pub fn seconds_to_samples(s: std::time::Duration) -> usize {
+	(s.as_secs_f64() * SAMPLE_RATE as f64).round() as usize
+}
+
+pub fn linear_to_dB(g: MathT) -> MathT {
+	20.0 * g.log10()
+}
+
+pub fn db_to_linear(dB: MathT) -> MathT {
+	10.0_f64.powf(dB/20.0)
+}
+
+pub fn normalize(dB: MathT, t: &mut TrackT) {
+	let y = t.clone();
+	let mut dc = 0.0;
+
+	for s in &y {
+		dc += s;
+	}
+
+	let mut max = 0.0;
+
+	for s in y {
+		if (s - dc).abs() > max {
+			max = (s - dc).abs();
+		}
+	}
+
+	let factor = db_to_linear(dB) as SampleT / max;
+
+	for s in t {
+		*s = (*s - dc) * factor;
+	}
+}
+
 /// Takes the given track and filename and writes the track data to the wavefile
 /// at the given location.
 /// 
