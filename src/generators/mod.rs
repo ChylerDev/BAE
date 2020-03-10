@@ -6,6 +6,22 @@
 use super::*;
 use std::rc::Rc;
 
+pub mod zero;
+pub mod noise;
+pub mod sawtooth;
+pub mod sine;
+pub mod square;
+pub mod triangle;
+pub mod mono_wav;
+
+pub use zero::*;
+pub use noise::*;
+pub use sawtooth::*;
+pub use sine::*;
+pub use square::*;
+pub use triangle::*;
+pub use mono_wav::*;
+
 /// Frequency Moderator. This trait defines types who take in a frequency as a
 /// primary argument.
 pub trait FreqMod {
@@ -28,8 +44,7 @@ pub trait FreqMod {
 }
 
 /// The `Generator` trait defines types that create audio samples.
-pub trait Generator<T>
-	where T: Clone
+pub trait Generator
 {
 	/// Generates a rendered audio sample
 	fn process(&mut self) -> SampleT;
@@ -39,20 +54,4 @@ pub trait Generator<T>
 /// 
 /// [`Generator`]: trait.Generator.html
 /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-pub type GeneratorRc<T> = Rc<dyn Generator<T>>;
-
-pub mod zero;
-pub mod noise;
-pub mod sawtooth;
-pub mod sine;
-pub mod square;
-pub mod triangle;
-pub mod mono_wav;
-
-pub use zero::*;
-pub use noise::*;
-pub use sawtooth::*;
-pub use sine::*;
-pub use square::*;
-pub use triangle::*;
-pub use mono_wav::*;
+pub type GeneratorRc = Rc<dyn Generator>;

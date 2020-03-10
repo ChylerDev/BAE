@@ -190,8 +190,7 @@ mod tests {
 		bae_rs::tools::write_wav(t, f).unwrap();
 	}
 
-	fn run_modifier<M>(m: &mut M, file:&str)
-		where M: Clone + bae_rs::modifiers::Modifier<M>
+	fn run_modifier(m: &mut dyn bae_rs::modifiers::Modifier, file:&str)
 	{
 		use bae_rs::generators::*;
 

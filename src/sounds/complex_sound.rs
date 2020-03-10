@@ -10,14 +10,13 @@
 use super::*;
 use std::rc::Rc;
 use std::collections::VecDeque;
-use crate::core::*;
 use super::basic_block::*;
 use petgraph::graph;
 
 /// Alias for the graph type used by [`ComplexSound`].
 /// 
 /// [`ComplexSound`]: struct.ComplexSound.html
-pub type Graph = graph::DiGraph<BlockRc, ()>;
+pub type Graph = graph::DiGraph<BasicBlockRc, ()>;
 
 /// Alias for the nodes of the graph used by [`ComplexSound`].
 /// 
@@ -36,22 +35,17 @@ pub type ProcessOrder = VecDeque<GraphNode>;
 /// [`Generator`]: ../../generators/trait.Generator.html
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
 #[derive(Clone)]
-pub struct ComplexSound<C>
-	where C: Clone + crate::core::Channel
-{
+pub struct ComplexSound {
 	graph: Graph,
 	process_order: ProcessOrder,
 	input_gain: GraphNode,
 	output_gain: GraphNode,
-	channel: Option<ComplexSoundChannelRc<C>>,
 	id: Option<usize>,
 	is_muted: bool,
 	is_paused: bool
 }
 
-impl<C> ComplexSound<C>
-	where C: Clone + crate::core::Channel
-{
+impl ComplexSound {
 	/// Creates a new [`ComplexSound`] object with the given input and output gain
 	/// values.
 	/// 
@@ -60,14 +54,14 @@ impl<C> ComplexSound<C>
 		let mut graph = Graph::new();
 		let input_gain = graph.add_node(
 			Rc::new(
-				ModifierBlock::from_modifier(
+				Block::from_modifier(
 					modifiers::Gain::new(input_gain as SampleT)
 				)
 			)
 		);
 		let output_gain = graph.add_node(
 			Rc::new(
-				ModifierBlock::from_modifier(
+				Block::from_modifier(
 					modifiers::Gain::new(output_gain as SampleT)
 				)
 			)
@@ -78,7 +72,6 @@ impl<C> ComplexSound<C>
 			process_order: ProcessOrder::new(),
 			input_gain,
 			output_gain,
-			channel: None,
 			id: None,
 			is_muted: false,
 			is_paused: false
@@ -109,7 +102,7 @@ impl<C> ComplexSound<C>
 	/// [`Block`]: trait.Block.html
 	/// [`add_connection]: struct.ComplexSound.html#method.add_connection
 	/// [`remove_connection]: struct.ComplexSound.html#method.remove_connection
-	pub fn add_block(&mut self, block: BlockRc) -> GraphNode {
+	pub fn add_block(&mut self, block: BasicBlockRc) -> GraphNode {
 		self.graph.add_node(block)
 	}
 
@@ -186,9 +179,7 @@ impl<C> ComplexSound<C>
 	}
 }
 
-impl<C> Sound<ComplexSound<C>,C> for ComplexSound<C>
-	where C: Clone + crate::core::Channel
-{
+impl Sound for ComplexSound {
 	fn toggle_pause(&mut self) {
 		self.is_paused = !self.is_paused;
 	}
@@ -205,32 +196,12 @@ impl<C> Sound<ComplexSound<C>,C> for ComplexSound<C>
 		self.is_muted
 	}
 
-	fn register(this: ComplexSoundRc<C>, mut channel: ComplexSoundChannelRc<C>) {
-		Self::unregister(this.clone());
-
-		if let Some(sound) = Rc::get_mut(&mut this.clone()) {
-			sound.channel = Some(channel.clone());
-			if let Some(channel) = Rc::get_mut(&mut channel) {
-				sound.id = Some(channel.add_sound(this));
-			}
-		}
+	fn register(&mut self, id: usize) {
+		self.id = Some(id);
 	}
 
-	fn unregister(mut this: ComplexSoundRc<C>) {
-		if this.id != None {
-			if let Some(sound) = Rc::get_mut(&mut this) {
-				if let Some(mut channel) = sound.channel.clone() {
-					if let Some(channel) = Rc::get_mut(&mut channel) {
-						if let Some(id) = sound.id {
-							let _ = channel.remove_sound(id);
-						}
-					}
-				}
-
-				sound.channel = None;
-				sound.id = None;
-			}
-		}
+	fn unregister(&mut self) {
+		self.id = None;
 	}
 
 	fn process(&mut self, input: SampleT) -> SampleT {
@@ -262,10 +233,14 @@ impl<C> Sound<ComplexSound<C>,C> for ComplexSound<C>
 			out
 		}
 	}
+
+	fn get_id(&self) -> Option<usize> {
+		self.id
+	}
 }
 
 /// Type alias for a [`ComplexSound`] wrapped in an [`Rc`].
 /// 
 /// [`ComplexSound`]: struct.ComplexSound.html
 /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-pub type ComplexSoundRc<C> = Rc<ComplexSound<C>>;
+pub type ComplexSoundRc = Rc<ComplexSound>;

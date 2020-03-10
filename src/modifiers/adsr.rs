@@ -56,7 +56,7 @@ impl ADSR {
 	}
 }
 
-impl Modifier<ADSR> for ADSR {
+impl Modifier for ADSR {
 	fn process(&mut self, x: SampleT) -> SampleT {
 		match self.state {
 			ADSRState::Attack => {
@@ -86,13 +86,6 @@ impl Modifier<ADSR> for ADSR {
 		}
 
 		x * self.g
-	}
-}
-
-#[cfg(test)]
-impl Name for ADSR {
-	fn get_name(&self) -> &str {
-		"Modifiers.ADSR"
 	}
 }
 

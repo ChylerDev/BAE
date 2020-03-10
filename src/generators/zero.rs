@@ -16,15 +16,8 @@ impl Zero {
 	}
 }
 
-impl Generator<Zero> for Zero {
+impl Generator for Zero {
 	fn process(&mut self) -> SampleT {
 		0.0
-	}
-}
-
-#[cfg(test)]
-impl Name for Zero {
-	fn get_name(&self) -> &str {
-		"Generator.Zero"
 	}
 }

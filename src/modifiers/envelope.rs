@@ -35,7 +35,7 @@ impl Envelope {
 	}
 }
 
-impl Modifier<Envelope> for Envelope {
+impl Modifier for Envelope {
 	fn process(&mut self, x: SampleT) -> SampleT {
 		let y = if x.abs() > self.y1 {
 			self.au * (x.abs() + self.x1.abs()) + self.bu * self.y1
@@ -47,13 +47,6 @@ impl Modifier<Envelope> for Envelope {
 		self.x1 = x;
 
 		y
-	}
-}
-
-#[cfg(test)]
-impl Name for Envelope {
-	fn get_name(&self) -> &str {
-		"Modifiers.Envelope"
 	}
 }
 

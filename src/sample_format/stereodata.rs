@@ -61,9 +61,9 @@ impl StereoData {
 
 impl Panner<StereoData, f32> for StereoData {
 	fn to_sample_format(s: SampleT, g: f32) -> StereoData {
-		let l_lerp = lerp(g, -1.0, 1.0, 0.0, -120.0);
-		let r_lerp = lerp(g, -1.0, 1.0, -120.0, 0.0);
-		
+		let l_lerp = tools::lerp(g, -1.0, 1.0, 0.0, -120.0);
+		let r_lerp = tools::lerp(g, -1.0, 1.0, -120.0, 0.0);
+
 		StereoData {
 			left: db_linear(l_lerp as MathT) as SampleT * s,
 			right: db_linear(r_lerp as MathT) as SampleT * s

@@ -29,7 +29,7 @@ impl FreqMod for Sawtooth {
 	}
 }
 
-impl Generator<Sawtooth> for Sawtooth {
+impl Generator for Sawtooth {
 	fn process(&mut self) -> SampleT {
 		let y = self.inc;
 
@@ -49,12 +49,5 @@ impl Clone for Sawtooth {
 			irate: self.irate,
 			inc: 0.0
 		}
-	}
-}
-
-#[cfg(test)]
-impl Name for Sawtooth {
-	fn get_name(&self) -> &str {
-		"Generator.Sawtooth"
 	}
 }

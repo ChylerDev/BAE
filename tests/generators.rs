@@ -49,8 +49,7 @@ mod tests {
 		todo!();
 	}
 
-	fn run_generator<G>(g: &mut G, file:&str)
-		where G: Clone + bae_rs::generators::Generator<G>
+	fn run_generator(g: &mut dyn bae_rs::generators::Generator, file:&str)
 	{
 		let mut t = bae_rs::TrackT::new();
 	

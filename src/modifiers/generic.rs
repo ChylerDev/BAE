@@ -60,7 +60,7 @@ impl Generic {
 	}
 }
 
-impl Modifier<Generic> for Generic {
+impl Modifier for Generic {
 	fn process(&mut self, x: SampleT) -> SampleT {
 		let mut y = SampleT::default();
 
@@ -78,13 +78,6 @@ impl Modifier<Generic> for Generic {
 		self.outputs.pop_back();
 
 		y
-	}
-}
-
-#[cfg(test)]
-impl Name for Generic {
-	fn get_name(&self) -> &str {
-		"Modifiers.Generic"
 	}
 }
 
