@@ -6,12 +6,13 @@ mod tests {
 	fn test_adsr() {
 		use bae_rs::modifiers::*;
 		use bae_rs::generators::*;
+		use bae_rs::tools::*;
 		use std::time::Duration;
 
 		let mut a = ADSR::new(
 			Duration::from_secs_f64(0.03125),
 			Duration::from_secs_f64(0.125),
-			bae_rs::linear_db(0.5),
+			linear_to_db(0.5),
 			Duration::from_secs_f64(0.5)
 		);
 
@@ -89,6 +90,7 @@ mod tests {
 	fn test_envelope() {
 		use bae_rs::modifiers::*;
 		use bae_rs::generators::*;
+		use bae_rs::tools::*;
 		use std::time::Duration;
 
 		let mut e = Envelope::new(20.0, 20_000.0);
@@ -96,7 +98,7 @@ mod tests {
 		let mut a = ADSR::new(
 			Duration::from_secs_f64(0.03125),
 			Duration::from_secs_f64(0.125),
-			bae_rs::linear_db(0.5),
+			linear_to_db(0.5),
 			Duration::from_secs_f64(0.5)
 		);
 		let mut g = Sine::new(440.0);

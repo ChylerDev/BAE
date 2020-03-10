@@ -2,6 +2,7 @@
 
 use super::*;
 use std::time::Duration;
+use crate::tools::*;
 
 /// Enum of the states an ADSR filter exists in.
 pub enum ADSRState {
@@ -42,9 +43,9 @@ impl ADSR {
 		let s = s.min(0.0);
 		ADSR {
 			a: 1.0/(a.as_secs_f64() * SAMPLE_RATE as MathT) as SampleT,
-			d: ((db_linear(s)-1.0)/(d.as_secs_f64() * SAMPLE_RATE as MathT)) as SampleT,
-			s: db_linear(s) as SampleT,
-			r: ((-db_linear(s))/(r.as_secs_f64() * SAMPLE_RATE as MathT)) as SampleT,
+			d: ((db_to_linear(s)-1.0)/(d.as_secs_f64() * SAMPLE_RATE as MathT)) as SampleT,
+			s: db_to_linear(s) as SampleT,
+			r: ((-db_to_linear(s))/(r.as_secs_f64() * SAMPLE_RATE as MathT)) as SampleT,
 			state: ADSRState::Attack,
 			g: 0.0
 		}

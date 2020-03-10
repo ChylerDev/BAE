@@ -3,6 +3,7 @@
 //! Module containing type for handling stereo audio data.
 
 use super::*;
+use crate::tools::*;
 
 /// Struct representing a stereophonic audio sample.
 #[derive(Copy,Clone,Default)]
@@ -65,8 +66,8 @@ impl Panner<StereoData, f32> for StereoData {
 		let r_lerp = tools::lerp(g, -1.0, 1.0, -120.0, 0.0);
 
 		StereoData {
-			left: db_linear(l_lerp as MathT) as SampleT * s,
-			right: db_linear(r_lerp as MathT) as SampleT * s
+			left: db_to_linear(l_lerp as MathT) as SampleT * s,
+			right: db_to_linear(r_lerp as MathT) as SampleT * s
 		}
 	}
 }
@@ -235,8 +236,8 @@ impl From<[u8;2]> for StereoData {
 	/// * `v` - The raw bytes to convert from.
 	fn from(v:[u8;2]) -> Self {
 		StereoData {
-			left: sample_from_u8([v[0]]),
-			right: sample_from_u8([v[1]])
+			left:  sample_from_u8_bytes([v[0]]),
+			right: sample_from_u8_bytes([v[1]])
 		}
 	}
 }
@@ -250,8 +251,8 @@ impl From<[u8;4]> for StereoData {
 	/// * `v` - The raw bytes to convert from.
 	fn from(v:[u8;4]) -> Self {
 		StereoData {
-			left: sample_from_i16([v[0],v[1]]),
-			right: sample_from_i16([v[2],v[3]])
+			left:  sample_from_i16_bytes([v[0],v[1]]),
+			right: sample_from_i16_bytes([v[2],v[3]])
 		}
 	}
 }
@@ -265,8 +266,8 @@ impl From<[u8;6]> for StereoData {
 	/// * `v` - The raw bytes to convert from.
 	fn from(v:[u8;6]) -> Self {
 		StereoData {
-			left:  sample_from_i24([v[0],v[1],v[2]]),
-			right: sample_from_i24([v[3],v[4],v[5]])
+			left:  sample_from_i24_bytes([v[0],v[1],v[2]]),
+			right: sample_from_i24_bytes([v[3],v[4],v[5]])
 		}
 	}
 }

@@ -5,6 +5,7 @@
 * Reorganized project to use trait objects instead of CRTP everywhere.
 * Added/moved some utility functions to the `tools` module.
 * Removed `Name` debug trait.
+* Fixed `MonoWav`.
 
 ## Version 0.9.3
 
