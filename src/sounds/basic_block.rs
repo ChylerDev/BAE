@@ -27,4 +27,4 @@ pub trait BasicBlock {
 /// 
 /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 /// [`BasicBlock`]: trait.BasicBlock.html
-pub type BlockRc = Rc<dyn BasicBlock>;
+pub type BasicBlockRc = Rc<dyn BasicBlock>;

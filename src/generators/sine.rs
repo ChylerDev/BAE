@@ -44,7 +44,7 @@ impl FreqMod for Sine {
 	}
 }
 
-impl Generator<Sine> for Sine {
+impl Generator for Sine {
 	fn process(&mut self) -> SampleT {
 		let k = MathT::floor(self.ind);
 		let g:MathT = self.ind - k;
@@ -73,12 +73,5 @@ impl Clone for Sine {
 			ind: 0.0,
 			inc: self.inc
 		}
-	}
-}
-
-#[cfg(test)]
-impl Name for Sine {
-	fn get_name(&self) -> &str {
-		"Generator.Sine"
 	}
 }

@@ -18,15 +18,8 @@ impl Gain {
 	}
 }
 
-impl Modifier<Gain> for Gain {
+impl Modifier for Gain {
 	fn process(&mut self, x: SampleT) -> SampleT {
 		x * self.a
-	}
-}
-
-#[cfg(test)]
-impl Name for Gain {
-	fn get_name(&self) -> &str {
-		"Modifiers.Gain"
 	}
 }

@@ -11,7 +11,6 @@
 use super::*;
 
 use std::rc::Rc;
-use crate::core::*;
 use super::basic_block::*;
 
 /// Type implementing the ablitiy to run multiple a single [`Generator`] by a
@@ -22,22 +21,17 @@ use super::basic_block::*;
 /// [`Generator`]: ../../generators/trait.Generator.html
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
 #[derive(Clone)]
-pub struct SimpleSound<C>
-	where C: Clone + crate::core::Channel
-{
-	generator: BlockRc,
-	modifier_list: Vec<BlockRc>,
+pub struct SimpleSound {
+	generator: BasicBlockRc,
+	modifier_list: Vec<BasicBlockRc>,
 	input_gain: SampleT,
 	output_gain: SampleT,
-	channel: Option<SimpleSoundChannelRc<C>>,
 	id: Option<usize>,
 	is_muted: bool,
 	is_paused: bool,
 }
 
-impl<C> SimpleSound<C>
-	where C: Clone + crate::core::Channel
-{
+impl SimpleSound {
 	/// Constructs a new [`SimpleSound`] object. The new object is initialized
 	/// with an empty [`Vec`] of [`Modifier`]s. Add [`Modifier`]s with
 	/// [`add_modifier`] or [`extend_modifiers`].
@@ -47,13 +41,12 @@ impl<C> SimpleSound<C>
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
 	/// [`add_modifier`]: struct.SimpleSound.html#method.add_modifier
 	/// [`extend_modifiers`]: struct.SimpleSound.html#method.extend_modifiers
-	pub fn new(input_gain: MathT, output_gain: MathT, generator: BlockRc) -> Self {
+	pub fn new(input_gain: MathT, output_gain: MathT, generator: BasicBlockRc) -> Self {
 		SimpleSound {
 			generator,
 			modifier_list: Vec::new(),
 			input_gain: input_gain as SampleT,
 			output_gain: output_gain as SampleT,
-			channel: None,
 			id: None,
 			is_muted: false,
 			is_paused: false,
@@ -64,7 +57,7 @@ impl<C> SimpleSound<C>
 	/// 
 	/// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-	pub fn add_modifier<M>(&mut self, m: ModifierBlockRc<M>)
+	pub fn add_modifier<M>(&mut self, m: BasicBlockRc)
 		where M: 'static + Clone
 	{
 		self.modifier_list.push(m);
@@ -74,7 +67,7 @@ impl<C> SimpleSound<C>
 	/// 
 	/// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-	pub fn extend_modifiers(&mut self, m_list: Vec<BlockRc>) {
+	pub fn extend_modifiers(&mut self, m_list: Vec<BasicBlockRc>) {
 		self.modifier_list.extend(m_list);
 	}
 
@@ -99,9 +92,7 @@ impl<C> SimpleSound<C>
 	}
 }
 
-impl<C> Sound<SimpleSound<C>,C> for SimpleSound<C>
-	where C: Clone + crate::core::Channel
-{
+impl Sound for SimpleSound {
 	fn toggle_pause(&mut self) {
 		self.is_paused = !self.is_paused;
 	}
@@ -118,32 +109,12 @@ impl<C> Sound<SimpleSound<C>,C> for SimpleSound<C>
 		self.is_muted
 	}
 
-	fn register(this: SimpleSoundRc<C>, mut channel: SimpleSoundChannelRc<C>) {
-		Self::unregister(this.clone());
-
-		if let Some(sound) = Rc::get_mut(&mut this.clone()) {
-			sound.channel = Some(channel.clone());
-			if let Some(channel) = Rc::get_mut(&mut channel) {
-				sound.id = Some(channel.add_sound(this));
-			}
-		}
+	fn register(&mut self, id: usize) {
+		self.id = Some(id);
 	}
 
-	fn unregister(mut this: SimpleSoundRc<C>) {
-		if this.id != None {
-			if let Some(sound) = Rc::get_mut(&mut this) {
-				if let Some(mut channel) = sound.channel.clone() {
-					if let Some(channel) = Rc::get_mut(&mut channel) {
-						if let Some(id) = sound.id {
-							let _ = channel.remove_sound(id);
-						}
-					}
-				}
-
-				sound.channel = None;
-				sound.id = None;
-			}
-		}
+	fn unregister(&mut self) {
+		self.id = None;
 	}
 
 	fn process(&mut self, input: SampleT) -> SampleT {
@@ -153,7 +124,7 @@ impl<C> Sound<SimpleSound<C>,C> for SimpleSound<C>
 
 		let mut out = if let Some(b) = Rc::get_mut(&mut self.generator) {
 			b.prime_input(input * self.input_gain);
-			b.process() * self.output_gain
+			b.process()
 		} else {
 			Default::default()
 		};
@@ -168,8 +139,12 @@ impl<C> Sound<SimpleSound<C>,C> for SimpleSound<C>
 		if self.is_muted {
 			Default::default()
 		} else {
-			out
+			out * self.output_gain
 		}
+	}
+
+	fn get_id(&self) -> Option<usize> {
+		self.id
 	}
 }
 
@@ -177,4 +152,4 @@ impl<C> Sound<SimpleSound<C>,C> for SimpleSound<C>
 /// 
 /// [`SimpleSound`]: struct.SimpleSound.html
 /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-pub type SimpleSoundRc<C> = Rc<SimpleSound<C>>;
+pub type SimpleSoundRc = Rc<SimpleSound>;

@@ -31,18 +31,11 @@ impl Delay {
 	}
 }
 
-impl Modifier<Delay> for Delay {
+impl Modifier for Delay {
 	fn process(&mut self, x: SampleT) -> SampleT {
 		self.delay.push_back(x);
 
 		self.delay.pop_front().unwrap()
-	}
-}
-
-#[cfg(test)]
-impl Name for Delay {
-	fn get_name(&self) -> &str {
-		"Modifiers.Delay"
 	}
 }
 

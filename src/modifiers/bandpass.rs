@@ -130,7 +130,7 @@ impl BandPass {
 	}
 }
 
-impl Modifier<BandPass> for BandPass {
+impl Modifier for BandPass {
 	fn process(&mut self, x: SampleT) -> SampleT {
 		let y = (self.a0 * (x - self.x2) as MathT +
 			self.b1 * self.y1 as MathT - 
@@ -150,13 +150,6 @@ fn quadratic(a: MathT, b: MathT, c: MathT) -> (MathT,MathT) {
 		(-b + (b*b - 4.0*a*c).sqrt())/(2.0*a),
 		(-b - (b*b - 4.0*a*c).sqrt())/(2.0*a)
 	)
-}
-
-#[cfg(test)]
-impl Name for BandPass {
-	fn get_name(&self) -> &str {
-		"Modifier.BandPass"
-	}
 }
 
 impl Clone for BandPass {

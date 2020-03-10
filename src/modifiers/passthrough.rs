@@ -14,7 +14,7 @@ impl Passthrough {
 	}
 }
 
-impl Modifier<Passthrough> for Passthrough {
+impl Modifier for Passthrough {
 	fn process(&mut self, x: SampleT) -> SampleT {
 		x
 	}

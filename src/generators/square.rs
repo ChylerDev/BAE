@@ -27,7 +27,7 @@ impl FreqMod for Square {
 	}
 }
 
-impl Generator<Square> for Square {
+impl Generator for Square {
 	fn process(&mut self) -> SampleT {
 		let y: SampleT = if self.ind >= self.inv as SampleT && self.ind < 2.0 * self.inv as SampleT {
 			-1.0
@@ -51,12 +51,5 @@ impl Clone for Square {
 			ind: 0.0,
 			inv: self.inv
 		}
-	}
-}
-
-#[cfg(test)]
-impl Name for Square {
-	fn get_name(&self) -> &str {
-		"Generator.Square"
 	}
 }

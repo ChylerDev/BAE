@@ -27,7 +27,7 @@ impl FreqMod for Triangle {
 	}
 }
 
-impl Generator<Triangle> for Triangle {
+impl Generator for Triangle {
 	fn process(&mut self) -> SampleT {
 		let y = self.inc;
 
@@ -53,12 +53,5 @@ impl Clone for Triangle {
 			irate: self.irate,
 			inc: 0.0
 		}
-	}
-}
-
-#[cfg(test)]
-impl Name for Triangle {
-	fn get_name(&self) -> &str {
-		"Generator.Triangle"
 	}
 }

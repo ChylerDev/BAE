@@ -11,25 +11,13 @@
 //! [`SimpleSound`]: ../simple_sound/struct.SimpleSound.html
 
 use super::*;
-use crate::core::*;
 use std::rc::Rc;
 
 /// This trait defines the interface that anything producing sound that will be
 /// output to a [`Channel`] must define.
 /// 
-/// # Generic
-/// 
-/// To ensure a sound object can be cloned, this trait implements CRTP for the
-/// implementing type. This allows constraints to be placed on the types that
-/// can can implement [`Sound`], namely that they also implement [`Clone`].
-/// 
 /// [`Channel`]: ../../core/trait.Channel.html
-/// [`Sound`]: trait.Sound.html
-/// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
-pub trait Sound<S,C>
-	where S: Clone + Sound<S,C>,
-	      C: Clone + crate::core::Channel
-{
+pub trait Sound {
 	/// Toggles the pause state of the sound. If the sound is paused, the
 	/// internal structures aren't process during a call to [`process`], instead
 	/// only [`Default::default()`] is returned.
@@ -64,39 +52,35 @@ pub trait Sound<S,C>
 	/// [`Default::default()`]: https://doc.rust-lang.org/std/default/trait.Default.html#tymethod.default
 	fn process(&mut self, input: SampleT) -> SampleT;
 
-	/// Registers a sound wrapped in an [`Rc`] with the provided [`Channel`],
-	/// giving the [`Channel`] the ability to process the sound and retrieve
-	/// samples for output.
+	/// Sets itself as registered with the given ID.
 	/// 
-	/// In this function the [`Sound`] registers itself with the given
-	/// [`Channel`]. Calling [`Channel::add_sound()`] yourself is not necessary.
+	/// Caution should be taken when registering and unregistering sounds to or
+	/// from a [`Channel`], as [`Sound`]s don't control their own registration.
+	/// As such you should be registering through [`Channel::add_sound`].
 	/// 
-	/// If a [`Channel`] is already registered with this [`Sound`] then it will
-	/// first unregister itself with [`unregister`].
-	/// 
-	/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 	/// [`Channel`]: ../../core/trait.Channel.html
 	/// [`Channel::add_sound`]: ../../core/trait.Channel.html#tymethod.add_sound
 	/// [`Sound`]: trait.Sound.html
-	/// [`unregister`]: trait.Sound.html#tymethod.unregister
-	fn register(this: Rc<S>, channel: SoundChannelRc<S,C>);
+	/// [`Sound::unregister`]: trait.Sound.html#tymethod.unregister
+	fn register(&mut self, id: usize);
 
-	/// Unregisters a sound wrapped in an [`Rc`] from its [`Channel`], freeing
-	/// the [`Sound`] to be processed individually or allow registration with a
-	/// different [`Channel`].
+	/// Sets itself as unregistered and clears the saved ID.
 	/// 
-	/// In this function the [`Sound`] unregisters itself from its [`Channel`].
-	/// Calling [`Channel::remove_sound()`] yourself is not necessary.
+	/// Caution should be taken when registering and unregistering sounds to or
+	/// from a [`Channel`] as [`Sound`]s don't control their own registration.
+	/// As such you should be registering through [`Channel::remove_sound`].
 	/// 
-	/// If the [`Sound`] is not registered to any [`Channel`], then nothing
-	/// happens.
-	/// 
-	/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 	/// [`Channel`]: ../../core/trait.Channel.html
-	/// [`Channel::add_sound`]: ../../core/trait.Channel.html#tymethod.remove_sound
+	/// [`Channel::remove_sound`]: ../../core/trait.Channel.html#tymethod.remove_sound
 	/// [`Sound`]: trait.Sound.html
-	/// [`unregister`]: trait.Sound.html#tymethod.unregister
-	fn unregister(this: Rc<S>);
+	fn unregister(&mut self);
+
+	/// Returns the ID given to the [`Sound`] during registration with a
+	/// [`Channel`]. If the [`Sound`] is unregistered, it will return `None`.
+	/// 
+	/// [`Channel`]: ../../core/trait.Channel.html
+	/// [`Sound`]: trait.Sound.html
+	fn get_id(&self) -> Option<usize>;
 }
 
 /// Type alias for a [`Sound`] wrapped in an [`Rc`]. Types implementing
@@ -107,4 +91,4 @@ pub trait Sound<S,C>
 /// [`Rc`]:https://doc.rust-lang.org/std/rc/struct.Rc.html
 /// [`ComplexSoundRc`]: ../complex_sound/type.ComplexSoundRc.html
 /// [`ComplexSound`]: ../complex_sound/struct.ComplexSound.html
-pub type SoundRc<S,C> = Rc<dyn Sound<S,C>>;
+pub type SoundRc = Rc<dyn Sound>;

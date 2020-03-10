@@ -4,24 +4,19 @@ use super::*;
 
 use std::rc::Rc;
 use std::collections::HashMap;
-use crate::sounds::*;
 
 /// Standard implementation of the [`Channel`] trait.
 /// 
 /// [`Channel`]: ../trait.Channel.html
 #[derive(Clone)]
-pub struct StandardChannel<S>
-	where S: Clone + Sound<S,StandardChannel<S>>
-{
+pub struct StandardChannel {
 	output: TrackT,
-	sounds: HashMap<usize, Rc<S>>,
+	sounds: HashMap<usize, SoundRc>,
 	gain: SampleT,
 	id_counter: usize
 }
 
-impl<S> StandardChannel<S>
-	where S: Clone + Sound<S,StandardChannel<S>>
-{
+impl StandardChannel {
 	/// Creates a new channel with the given gain.
 	/// 
 	/// The internal track is initialized for 10ms' worth of samples. Call
@@ -46,24 +41,7 @@ impl<S> StandardChannel<S>
 	}
 }
 
-impl<S> SoundChannel<S,StandardChannel<S>> for StandardChannel<S>
-	where S: Clone + Sound<S,StandardChannel<S>>
-{
-	fn add_sound(&mut self, sound: Rc<S>) -> usize {
-		let id = self.get_id();
-		self.sounds.insert(id, sound);
-
-		id
-	}
-
-	fn remove_sound(&mut self, id: usize) -> Option<Rc<S>> {
-		self.sounds.remove(&id)
-	}
-}
-
-impl<S> Channel for StandardChannel<S>
-	where S: Clone + Sound<S,StandardChannel<S>>
-{
+impl Channel for StandardChannel {
 	fn set_process_time(&mut self, d: Duration) {
 		self.output = TrackT::with_capacity((d.as_secs_f64() * SAMPLE_RATE as MathT) as usize);
 	}
@@ -86,5 +64,15 @@ impl<S> Channel for StandardChannel<S>
 
 			*sample *= self.gain;
 		}
+	}
+
+	fn add_sound(&mut self, sound: &mut SoundRc) {
+		let id = self.get_id();
+		Rc::get_mut(sound).unwrap().register(id);
+		self.sounds.insert(id, sound.clone());
+	}
+
+	fn remove_sound(&mut self, id: usize) {
+		self.sounds.remove(&id);
 	}
 }
