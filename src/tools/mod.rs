@@ -5,6 +5,8 @@
 use super::*;
 use std::vec::Vec;
 
+pub mod mono_resampler;
+pub use mono_resampler::*;
 
 /// Linear interpolation of a given value.
 pub fn lerp<T>(x:T, x1:T, x2:T, y1:T, y2:T) -> T
@@ -23,15 +25,19 @@ pub fn seconds_to_samples(s: std::time::Duration) -> usize {
 	(s.as_secs_f64() * SAMPLE_RATE as f64).round() as usize
 }
 
-pub fn linear_to_dB(g: MathT) -> MathT {
+/// Converts from a linear gain value to a decibel (dBFS) value.
+pub fn linear_to_db(g: MathT) -> MathT {
 	20.0 * g.log10()
 }
 
-pub fn db_to_linear(dB: MathT) -> MathT {
-	10.0_f64.powf(dB/20.0)
+/// Converts from a decibel (dBFS) to a linear gain value
+pub fn db_to_linear(db: MathT) -> MathT {
+	10.0_f64.powf(db/20.0)
 }
 
-pub fn normalize(dB: MathT, t: &mut TrackT) {
+/// Normalizes the given audio track to have a peak value at the given dBFS
+/// value.
+pub fn normalize(db: MathT, t: &mut TrackT) {
 	let y = t.clone();
 	let mut dc = 0.0;
 
@@ -47,7 +53,7 @@ pub fn normalize(dB: MathT, t: &mut TrackT) {
 		}
 	}
 
-	let factor = db_to_linear(dB) as SampleT / max;
+	let factor = db_to_linear(db) as SampleT / max;
 
 	for s in t {
 		*s = (*s - dc) * factor;
@@ -113,7 +119,3 @@ pub fn write_wav(track:TrackT, path: &str) -> std::io::Result<()> {
 
 	Ok(())
 }
-
-pub mod mono_resampler;
-
-pub use mono_resampler::*;

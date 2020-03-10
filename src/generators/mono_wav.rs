@@ -112,7 +112,7 @@ impl MonoWav {
 	}
 }
 
-impl Generator<MonoWav> for MonoWav {
+impl Generator for MonoWav {
 	fn process(&mut self) -> SampleT {
 		self.resam.process()
 	}

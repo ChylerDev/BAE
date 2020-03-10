@@ -28,7 +28,7 @@ impl Echo {
 	}
 }
 
-impl Modifier<Echo> for Echo {
+impl Modifier for Echo {
 	fn process(&mut self, x: SampleT) -> SampleT {
 		let wet = self.delay.pop_front().unwrap() * self.gain + x;
 		self.delay.push_back(wet);

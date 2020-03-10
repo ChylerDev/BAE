@@ -44,7 +44,7 @@ impl FreqMod for Sine {
 	}
 }
 
-impl Generator<Sine> for Sine {
+impl Generator for Sine {
 	fn process(&mut self) -> SampleT {
 		let k = MathT::floor(self.ind);
 		let g:MathT = self.ind - k;

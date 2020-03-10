@@ -19,14 +19,7 @@ pub const SAMPLE_RATE:u64 = 48_000;
 /// The inverse of the sampling rate for easy referencing.
 pub const INV_SAMPLE_RATE:MathT = 1.0/(SAMPLE_RATE as MathT);
 
-/// Trait that implements the ability to get the name of a type simply.
-#[cfg(test)]
-pub trait Name {
-	/// Returns a string slice for the name of the type.
-	fn get_name(&self) -> &str;
-}
-
-pub mod core;
+pub mod channels;
 pub mod generators;
 pub mod modifiers;
 pub mod sounds;
@@ -34,3 +27,10 @@ pub mod sample_format;
 pub mod tools;
 
 pub use sample_format::*;
+
+/// Trait that implements the ability to get the name of a type simply.
+#[cfg(test)]
+pub trait Name {
+	/// Returns a string slice for the name of the type.
+	fn get_name(&self) -> &str;
+}

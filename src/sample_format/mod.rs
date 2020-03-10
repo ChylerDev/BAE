@@ -4,6 +4,9 @@
 
 use super::*;
 
+pub mod stereodata;
+pub use stereodata::*;
+
 /// Trait implementing the ability to pan a monophonic sample into a ployphonic
 /// sample. This is generic for the polyphonic type and the type that defines
 /// how it is panned. To see an implementation, see
@@ -59,7 +62,3 @@ pub fn db_linear(db:MathT) -> MathT {
 pub fn linear_db(g:MathT) -> MathT {
 	20.0 * g.log10()
 }
-
-pub mod stereodata;
-
-pub use stereodata::*;

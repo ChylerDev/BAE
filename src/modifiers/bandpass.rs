@@ -130,7 +130,7 @@ impl BandPass {
 	}
 }
 
-impl Modifier<BandPass> for BandPass {
+impl Modifier for BandPass {
 	fn process(&mut self, x: SampleT) -> SampleT {
 		let y = (self.a0 * (x - self.x2) as MathT +
 			self.b1 * self.y1 as MathT - 

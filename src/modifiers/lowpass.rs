@@ -78,7 +78,7 @@ impl LowPass {
 	}
 }
 
-impl Modifier<LowPass> for LowPass {
+impl Modifier for LowPass {
 	fn process(&mut self, x: SampleT) -> SampleT {
 		let y = self.coeff[0]*x +
 				self.coeff[1]*self.outs[0] +

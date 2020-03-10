@@ -10,16 +10,6 @@
 use super::*;
 use std::rc::Rc;
 
-/// Reference-counted wrapper for a [`Generator`]
-/// 
-/// [`Generator`]: ../../generators/trait.Generator.html
-pub type Gen<T> = Rc<dyn generators::Generator<T>>;
-
-/// Reference-counted wrapper for a [`Modifier`]
-/// 
-/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-pub type Mod<T> = Rc<dyn modifiers::Modifier<T>>;
-
 /// Type defining the closure that combines inputted SampleT samples from the
 /// outputs of the [`Generator`]s and [`Modifier`]s of the cointaining [`Block`]
 /// 
@@ -32,48 +22,6 @@ pub type InterBase = dyn FnMut(SampleT, SampleT) -> SampleT;
 /// 
 /// [`InterBase`]: type.InterBase.html
 pub type Inter = Rc<InterBase>;
-
-/// Alias for a [`Block`] that only uses a custom [`Generator`].
-/// 
-/// In conforming with the requirements for the generic parameter of the
-/// [`Generator`] trait, the given type `G` should implement [`Clone`].
-/// 
-/// [`Block`]: struct.Block.html
-/// [`Generator`]: ../../generators/trait.Generator.html
-/// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
-pub type GeneratorBlock<G> = Block<G,modifiers::Passthrough>;
-
-/// Alias for a [`GeneratorBlock`] wrapped in an [`Rc`].
-/// 
-/// In conforming with the requirements for the generic parameter of the
-/// [`Generator`] trait, the given type `G` should implement [`Clone`].
-/// 
-/// [`GeneratorBlock`]: type.GeneratorBlock.html
-/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-/// [`Generator`]: ../../generators/trait.Generator.html
-/// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
-pub type GeneratorBlockRc<G> = Rc<GeneratorBlock<G>>;
-
-/// Alias for a [`Block`] that only uses a custom [`Modifier`].
-/// 
-/// In conforming with the requirements for the generic parameter of the
-/// [`Modifier`] trait, the given type `M` should implement [`Clone`].
-/// 
-/// [`Block`]: struct.Block.html
-/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-/// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
-pub type ModifierBlock<M> = Block<generators::Zero,M>;
-
-/// ALias for a [`ModifierBlock`] wrapped in an [`Rc`]
-/// 
-/// In conforming with the requirements for the generic parameter of the
-/// [`Modifier`] trait, the given type `M` should implement [`Clone`].
-/// 
-/// [`ModifierBlock`]: type.ModifierBlock.html
-/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-/// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
-pub type ModifierBlockRc<M> = Rc<ModifierBlock<M>>;
 
 /// Struct used for generalizing the structure of and abstracting the [`Sound`]
 /// struct. This allows us to create complex sounds as a graph of [`Block`]s,
@@ -94,19 +42,14 @@ pub type ModifierBlockRc<M> = Rc<ModifierBlock<M>>;
 /// [`Inter`]: type.Inter.html
 /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 /// [`Arc`]: https://doc.rust-lang.org/std/sync/struct.Arc.html
-pub struct Block<G,M>
-	where G: Clone, M: Clone
-{
-	g: Gen<G>,
-	m: Mod<M>,
+pub struct Block {
+	g: generators::GeneratorRc,
+	m: modifiers::ModifierRc,
 	i: Inter,
 	input: SampleT,
 }
 
-impl<G,M> Block<G,M>
-	where G: Clone,
-	      M: Clone
-{
+impl Block {
 	/// Creates a new Block from the given [`Generator`], [`Modifier`], and
 	/// [`Inter`].
 	/// 
@@ -121,9 +64,9 @@ impl<G,M> Block<G,M>
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
 	/// [`Block`]: struct.Block.html
 	/// [`Inter`]: type.Inter.html
-	pub fn new<T, U, V>(g: T, m: U, i: Inter) -> Self
-		where T: 'static + generators::Generator<G>,
-		      U: 'static + modifiers::Modifier<M>
+	pub fn new<T, U>(g: T, m: U, i: Inter) -> Self
+		where T: 'static + generators::Generator,
+		      U: 'static + modifiers::Modifier
 	{
 		Block {
 			g: Rc::new(g),
@@ -145,8 +88,8 @@ impl<G,M> Block<G,M>
 	/// [`Block::generator_passthrough`]: struct.Block.html#method.generator_passthrough
 	/// [`Inter`]: type.Inter.html
 	/// [`Empty`]: ../../generators/empty/struct.Empty.html
-	pub fn from_generator<T>(g: T) -> GeneratorBlock<G>
-		where T: 'static + generators::Generator<G>
+	pub fn from_generator<T>(g: T) -> Self
+		where T: 'static + generators::Generator
 	{
 		Block {
 			g: Rc::new(g),
@@ -170,8 +113,8 @@ impl<G,M> Block<G,M>
 	/// [`Block::modifier_passthrough`]: struct.Block.html#method.modifier_passthrough
 	/// [`Inter`]: type.Inter.html
 	/// [`Empty`]: ../../modifiers/empty/struct.Empty.html
-	pub fn from_modifier<U>(m: U) -> ModifierBlock<M>
-		where U: 'static + modifiers::Modifier<M>
+	pub fn from_modifier<U>(m: U) -> Self
+		where U: 'static + modifiers::Modifier
 	{
 		Block {
 			g: Rc::new(
@@ -209,7 +152,7 @@ impl<G,M> Block<G,M>
 	/// 
 	/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 	/// [`Generator`]: ../../generators/trait.Generator.html
-	pub fn get_g(&self) -> &Gen<G> {
+	pub fn get_g(&self) -> &generators::GeneratorRc {
 		&self.g
 	}
 
@@ -217,7 +160,7 @@ impl<G,M> Block<G,M>
 	/// 
 	/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-	pub fn get_m(&self) -> &Mod<M> {
+	pub fn get_m(&self) -> &modifiers::ModifierRc {
 		&self.m
 	}
 
@@ -225,7 +168,7 @@ impl<G,M> Block<G,M>
 	/// 
 	/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 	/// [`Generator`]: ../../generators/trait.Generator.html
-	pub fn get_g_mut(&mut self) -> &mut Gen<G> {
+	pub fn get_g_mut(&mut self) -> &mut generators::GeneratorRc {
 		&mut self.g
 	}
 
@@ -233,15 +176,12 @@ impl<G,M> Block<G,M>
 	/// 
 	/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-	pub fn get_m_mut(&mut self) -> &mut Mod<M> {
+	pub fn get_m_mut(&mut self) -> &mut modifiers::ModifierRc {
 		&mut self.m
 	}
 }
 
-impl<G,M> BasicBlock for Block<G,M>
-	where G: Clone,
-	      M: Clone
-{
+impl BasicBlock for Block {
 	fn prime_input(&mut self, x: SampleT) {
 		self.input += x;
 	}
@@ -257,3 +197,9 @@ impl<G,M> BasicBlock for Block<G,M>
 		y
 	}
 }
+
+/// Alias for an [`Rc`]-wrapped [`Block`] object.
+/// 
+/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
+/// [`Block`]: struct.Block.html
+pub type BlockRc = Rc<Block>;

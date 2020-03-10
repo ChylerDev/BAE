@@ -18,7 +18,7 @@ impl Gain {
 	}
 }
 
-impl Modifier<Gain> for Gain {
+impl Modifier for Gain {
 	fn process(&mut self, x: SampleT) -> SampleT {
 		x * self.a
 	}

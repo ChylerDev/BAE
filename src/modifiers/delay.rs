@@ -31,7 +31,7 @@ impl Delay {
 	}
 }
 
-impl Modifier<Delay> for Delay {
+impl Modifier for Delay {
 	fn process(&mut self, x: SampleT) -> SampleT {
 		self.delay.push_back(x);
 

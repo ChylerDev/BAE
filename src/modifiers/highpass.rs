@@ -106,7 +106,7 @@ impl HighPass {
 	}
 }
 
-impl Modifier<HighPass> for HighPass {
+impl Modifier for HighPass {
 	fn process(&mut self, x: SampleT) -> SampleT {
 		let y = self.a0*x + self.a1*self.x1 + self.a2*self.x2 + self.a3*self.x3 +
 			self.b1*self.y1 + self.b2*self.y2 + self.b3*self.y3;

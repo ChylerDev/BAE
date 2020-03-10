@@ -60,7 +60,7 @@ impl Generic {
 	}
 }
 
-impl Modifier<Generic> for Generic {
+impl Modifier for Generic {
 	fn process(&mut self, x: SampleT) -> SampleT {
 		let mut y = SampleT::default();
 

@@ -10,14 +10,13 @@
 use super::*;
 use std::rc::Rc;
 use std::collections::VecDeque;
-use crate::core::*;
 use super::basic_block::*;
 use petgraph::graph;
 
 /// Alias for the graph type used by [`ComplexSound`].
 /// 
 /// [`ComplexSound`]: struct.ComplexSound.html
-pub type Graph = graph::DiGraph<BlockRc, ()>;
+pub type Graph = graph::DiGraph<BasicBlockRc, ()>;
 
 /// Alias for the nodes of the graph used by [`ComplexSound`].
 /// 
@@ -55,14 +54,14 @@ impl ComplexSound {
 		let mut graph = Graph::new();
 		let input_gain = graph.add_node(
 			Rc::new(
-				ModifierBlock::from_modifier(
+				Block::from_modifier(
 					modifiers::Gain::new(input_gain as SampleT)
 				)
 			)
 		);
 		let output_gain = graph.add_node(
 			Rc::new(
-				ModifierBlock::from_modifier(
+				Block::from_modifier(
 					modifiers::Gain::new(output_gain as SampleT)
 				)
 			)
@@ -103,7 +102,7 @@ impl ComplexSound {
 	/// [`Block`]: trait.Block.html
 	/// [`add_connection]: struct.ComplexSound.html#method.add_connection
 	/// [`remove_connection]: struct.ComplexSound.html#method.remove_connection
-	pub fn add_block(&mut self, block: BlockRc) -> GraphNode {
+	pub fn add_block(&mut self, block: BasicBlockRc) -> GraphNode {
 		self.graph.add_node(block)
 	}
 
@@ -180,7 +179,7 @@ impl ComplexSound {
 	}
 }
 
-impl Sound<ComplexSound> for ComplexSound {
+impl Sound for ComplexSound {
 	fn toggle_pause(&mut self) {
 		self.is_paused = !self.is_paused;
 	}
@@ -197,32 +196,12 @@ impl Sound<ComplexSound> for ComplexSound {
 		self.is_muted
 	}
 
-	fn register<C>(this: ComplexSoundRc, mut channel: ComplexSoundChannelRc<C>)
-		where C: Clone + crate::core::Channel
-	{
-		Self::unregister(this.clone(), channel.clone());
-
-		if let Some(sound) = Rc::get_mut(&mut this.clone()) {
-			if let Some(channel) = Rc::get_mut(&mut channel) {
-				sound.id = Some(channel.add_sound(this));
-			}
-		}
+	fn register(&mut self, id: usize) {
+		self.id = Some(id);
 	}
 
-	fn unregister<C>(mut this: ComplexSoundRc, mut channel: ComplexSoundChannelRc<C>)
-		where C: Clone + crate::core::Channel
-	{
-		if this.id != None {
-			if let Some(sound) = Rc::get_mut(&mut this) {
-				if let Some(channel) = Rc::get_mut(&mut channel) {
-					if let Some(id) = sound.id {
-						let _ = channel.remove_sound(id);
-					}
-				}
-
-				sound.id = None;
-			}
-		}
+	fn unregister(&mut self) {
+		self.id = None;
 	}
 
 	fn process(&mut self, input: SampleT) -> SampleT {
@@ -253,6 +232,10 @@ impl Sound<ComplexSound> for ComplexSound {
 		} else {
 			out
 		}
+	}
+
+	fn get_id(&self) -> Option<usize> {
+		self.id
 	}
 }
 

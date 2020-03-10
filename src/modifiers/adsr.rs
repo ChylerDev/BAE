@@ -56,7 +56,7 @@ impl ADSR {
 	}
 }
 
-impl Modifier<ADSR> for ADSR {
+impl Modifier for ADSR {
 	fn process(&mut self, x: SampleT) -> SampleT {
 		match self.state {
 			ADSRState::Attack => {

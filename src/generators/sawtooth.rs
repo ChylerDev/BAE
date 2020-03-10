@@ -29,7 +29,7 @@ impl FreqMod for Sawtooth {
 	}
 }
 
-impl Generator<Sawtooth> for Sawtooth {
+impl Generator for Sawtooth {
 	fn process(&mut self) -> SampleT {
 		let y = self.inc;
 

@@ -27,7 +27,7 @@ impl FreqMod for Square {
 	}
 }
 
-impl Generator<Square> for Square {
+impl Generator for Square {
 	fn process(&mut self) -> SampleT {
 		let y: SampleT = if self.ind >= self.inv as SampleT && self.ind < 2.0 * self.inv as SampleT {
 			-1.0

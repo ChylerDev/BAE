@@ -27,7 +27,7 @@ impl FreqMod for Triangle {
 	}
 }
 
-impl Generator<Triangle> for Triangle {
+impl Generator for Triangle {
 	fn process(&mut self) -> SampleT {
 		let y = self.inc;
 

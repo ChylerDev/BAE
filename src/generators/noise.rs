@@ -20,7 +20,7 @@ impl Noise {
 	}
 }
 
-impl Generator<Noise> for Noise {
+impl Generator for Noise {
 	fn process(&mut self) -> SampleT {
 		use rand::Rng;
 

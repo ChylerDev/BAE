@@ -11,7 +11,6 @@
 use super::*;
 
 use std::rc::Rc;
-use crate::core::*;
 use super::basic_block::*;
 
 /// Type implementing the ablitiy to run multiple a single [`Generator`] by a
@@ -23,8 +22,8 @@ use super::basic_block::*;
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
 #[derive(Clone)]
 pub struct SimpleSound {
-	generator: BlockRc,
-	modifier_list: Vec<BlockRc>,
+	generator: BasicBlockRc,
+	modifier_list: Vec<BasicBlockRc>,
 	input_gain: SampleT,
 	output_gain: SampleT,
 	id: Option<usize>,
@@ -42,7 +41,7 @@ impl SimpleSound {
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
 	/// [`add_modifier`]: struct.SimpleSound.html#method.add_modifier
 	/// [`extend_modifiers`]: struct.SimpleSound.html#method.extend_modifiers
-	pub fn new(input_gain: MathT, output_gain: MathT, generator: BlockRc) -> Self {
+	pub fn new(input_gain: MathT, output_gain: MathT, generator: BasicBlockRc) -> Self {
 		SimpleSound {
 			generator,
 			modifier_list: Vec::new(),
@@ -58,7 +57,7 @@ impl SimpleSound {
 	/// 
 	/// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-	pub fn add_modifier<M>(&mut self, m: ModifierBlockRc<M>)
+	pub fn add_modifier<M>(&mut self, m: BasicBlockRc)
 		where M: 'static + Clone
 	{
 		self.modifier_list.push(m);
@@ -68,7 +67,7 @@ impl SimpleSound {
 	/// 
 	/// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-	pub fn extend_modifiers(&mut self, m_list: Vec<BlockRc>) {
+	pub fn extend_modifiers(&mut self, m_list: Vec<BasicBlockRc>) {
 		self.modifier_list.extend(m_list);
 	}
 
@@ -93,7 +92,7 @@ impl SimpleSound {
 	}
 }
 
-impl Sound<SimpleSound> for SimpleSound {
+impl Sound for SimpleSound {
 	fn toggle_pause(&mut self) {
 		self.is_paused = !self.is_paused;
 	}
@@ -110,32 +109,12 @@ impl Sound<SimpleSound> for SimpleSound {
 		self.is_muted
 	}
 
-	fn register<C>(this: SimpleSoundRc, mut channel: SimpleSoundChannelRc<C>)
-		where C: Clone + crate::core::Channel
-	{
-		Self::unregister(this.clone(), channel.clone());
-
-		if let Some(sound) = Rc::get_mut(&mut this.clone()) {
-			if let Some(channel) = Rc::get_mut(&mut channel) {
-				sound.id = Some(channel.add_sound(this));
-			}
-		}
+	fn register(&mut self, id: usize) {
+		self.id = Some(id);
 	}
 
-	fn unregister<C>(mut this: SimpleSoundRc, mut channel: SimpleSoundChannelRc<C>)
-		where C: Clone + crate::core::Channel
-	{
-		if this.id != None {
-			if let Some(sound) = Rc::get_mut(&mut this) {
-				if let Some(channel) = Rc::get_mut(&mut channel) {
-					if let Some(id) = sound.id {
-						let _ = channel.remove_sound(id);
-					}
-				}
-
-				sound.id = None;
-			}
-		}
+	fn unregister(&mut self) {
+		self.id = None;
 	}
 
 	fn process(&mut self, input: SampleT) -> SampleT {
@@ -162,6 +141,10 @@ impl Sound<SimpleSound> for SimpleSound {
 		} else {
 			out * self.output_gain
 		}
+	}
+
+	fn get_id(&self) -> Option<usize> {
+		self.id
 	}
 }
 
