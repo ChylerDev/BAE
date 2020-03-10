@@ -2,6 +2,8 @@ extern crate bae_rs;
 
 #[cfg(test)]
 mod tests {
+	const FILE_PREFIX: &'static str = ".junk/generators/";
+
 	#[test]
 	fn test_empty() {
 		use bae_rs::generators::*;
@@ -46,7 +48,14 @@ mod tests {
 
 	#[test]
 	fn test_wavplayer() {
-		todo!();
+		use bae_rs::generators::*;
+
+		let input = "wavplayer_input.wav";
+		let mut path = String::from(FILE_PREFIX);
+		path.push_str(input);
+
+		run_generator(&mut Triangle::new(440.0), input);
+		run_generator(&mut MonoWav::from_file(path.as_str()), "wavplayer.wav");
 	}
 
 	fn run_generator(g: &mut dyn bae_rs::generators::Generator, file:&str)
@@ -57,7 +66,7 @@ mod tests {
 			t.push(g.process());
 		}
 	
-		let mut f = String::from(".junk/generators/");
+		let mut f = String::from(FILE_PREFIX);
 		f.push_str(file);
 
 		bae_rs::tools::write_wav(t, f.as_str()).unwrap();

@@ -21,44 +21,32 @@ pub trait Panner<SF,G>
 	fn to_sample_format(s: SampleT, g: G) -> SF;
 }
 
-/// Converts a raw bytes to a Sample
-/// It is assumed the bytes are 8-bit unsigned audio samples.
-/// 
-/// # Parameters
-/// 
-/// * `v` - The raw bytes to convert from.
-pub fn sample_from_u8(v:[u8;1]) -> SampleT {
+/// Converts a u8 8-bit sample to a `SampleT`.
+pub fn sample_from_u8(v: u8) -> SampleT {
+	(v as SampleT - 128.0) / 128.0
+}
+
+/// Converts a raw byte to a `SampleT`.
+pub fn sample_from_u8_bytes(v:[u8;1]) -> SampleT {
 	(v[0] as SampleT - 128.0) / 128.0
 }
 
-/// Converts raw bytes to a Sample
-/// It is assumed that the bytes are 16-bit signed audio samples.
-/// 
-/// # Parameters
-/// 
-/// * `v` - The raw bytes to convert from.
-pub fn sample_from_i16(v:[u8;2]) -> SampleT {
-	(i16::from_le_bytes(v) as SampleT) / (32768_f32)
+/// Converts an i16 16-bit sample to a `SampleT`.
+pub fn sample_from_i16(v: i16) -> SampleT {
+	v as SampleT / ((1 << 15) as SampleT - 1.0)
 }
 
-/// Converts raw bytes to a Sample
-/// It is assumed that the bytes are 24-bit signed audio samples.
-/// 
-/// # Parameters
-/// 
-/// * `v` - The raw bytes to convert from.
-pub fn sample_from_i24(v:[u8;3]) -> SampleT {
-	(i32::from_le_bytes([v[0],v[1],v[2],0]) as SampleT) / (32768_f32)
+/// Converts raw bytes to a `SampleT`.
+pub fn sample_from_i16_bytes(v:[u8;2]) -> SampleT {
+	(i16::from_le_bytes(v) as SampleT) / ((1 << 15) as SampleT - 1.0)
 }
 
-/// Converts a decibel value to a linear gain value.
-/// This assumes that 0dB is unity gain, and ~-6bB is 0.5 gain
-pub fn db_linear(db:MathT) -> MathT {
-	10.0_f64.powf(db/20.0)
+/// Converts an i32 24-bit sample to a `SampleT`.
+pub fn sample_from_i24(v: i32) -> SampleT {
+	v as SampleT / ((1 << 23) as SampleT - 1.0)
 }
 
-/// Converts a linear gain value to a decibel value.
-/// This assumes that 0dB is unity gain, and ~-6bB is 0.5 gain
-pub fn linear_db(g:MathT) -> MathT {
-	20.0 * g.log10()
+/// Converts raw bytes to a `SampleT`.
+pub fn sample_from_i24_bytes(v:[u8;3]) -> SampleT {
+	(i32::from_le_bytes([v[0],v[1],v[2],0]) as SampleT) / ((1 << 23) as SampleT - 1.0)
 }
