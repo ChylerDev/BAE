@@ -9,8 +9,6 @@ For more information please see the [documentation](https://docs.rs/bae_rs)
 |1  |[Rust and C++](#1-rust-and-c)          |
 |2  |[Future Expansion](#2-future-expansion)|
 
----
-
 ## 1. Rust and C++
 
 This library is programmed and maintained in parallel in both Rust and C++, and can each be found in their respective branches.  
@@ -18,8 +16,6 @@ This library is programmed and maintained in parallel in both Rust and C++, and 
 The rust crate can be found [here](https://crates.io/crates/bae_rs).
 
 SoonTM this will be split off into two different README's on the separate branches. I'm probably gonna forget to change that.
-
----
 
 ## 2. Future Expansion
 
