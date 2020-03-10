@@ -117,10 +117,3 @@ impl Generator for MonoWav {
 		self.resam.process()
 	}
 }
-
-#[cfg(test)]
-impl Name for MonoWav {
-	fn get_name(&self) -> &str {
-		"Generator.MonoWav"
-	}
-}

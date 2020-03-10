@@ -89,13 +89,6 @@ impl Modifier for ADSR {
 	}
 }
 
-#[cfg(test)]
-impl Name for ADSR {
-	fn get_name(&self) -> &str {
-		"Modifiers.ADSR"
-	}
-}
-
 impl Clone for ADSR {
 	fn clone(&self) -> Self {
 		ADSR {

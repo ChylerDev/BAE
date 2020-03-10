@@ -53,10 +53,3 @@ impl Clone for Echo {
 		}
 	}
 }
-
-#[cfg(test)]
-impl Name for Echo {
-	fn get_name(&self) -> &str {
-		"Modifiers.Echo"
-	}
-}

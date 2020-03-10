@@ -75,10 +75,3 @@ impl Clone for Sine {
 		}
 	}
 }
-
-#[cfg(test)]
-impl Name for Sine {
-	fn get_name(&self) -> &str {
-		"Generator.Sine"
-	}
-}

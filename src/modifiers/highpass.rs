@@ -122,13 +122,6 @@ impl Modifier for HighPass {
 	}
 }
 
-#[cfg(test)]
-impl Name for HighPass {
-	fn get_name(&self) -> &str {
-		"Modifiers.HighPass"
-	}
-}
-
 impl Clone for HighPass {
 	fn clone(&self) -> Self {
 		HighPass {

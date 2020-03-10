@@ -93,13 +93,6 @@ impl Modifier for LowPass {
 	}
 }
 
-#[cfg(test)]
-impl Name for LowPass {
-	fn get_name(&self) -> &str {
-		"Modifiers.LowPass"
-	}
-}
-
 impl Clone for LowPass {
 	fn clone(&self) -> Self {
 		LowPass {

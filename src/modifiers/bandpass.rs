@@ -152,13 +152,6 @@ fn quadratic(a: MathT, b: MathT, c: MathT) -> (MathT,MathT) {
 	)
 }
 
-#[cfg(test)]
-impl Name for BandPass {
-	fn get_name(&self) -> &str {
-		"Modifier.BandPass"
-	}
-}
-
 impl Clone for BandPass {
 	fn clone(&self) -> Self {
 		BandPass {

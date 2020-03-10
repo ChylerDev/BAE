@@ -55,10 +55,3 @@ impl Clone for Triangle {
 		}
 	}
 }
-
-#[cfg(test)]
-impl Name for Triangle {
-	fn get_name(&self) -> &str {
-		"Generator.Triangle"
-	}
-}

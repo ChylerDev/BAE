@@ -81,13 +81,6 @@ impl Modifier for Generic {
 	}
 }
 
-#[cfg(test)]
-impl Name for Generic {
-	fn get_name(&self) -> &str {
-		"Modifiers.Generic"
-	}
-}
-
 impl Clone for Generic {
 	fn clone(&self) -> Self {
 		Generic {

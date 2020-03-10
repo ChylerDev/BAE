@@ -50,13 +50,6 @@ impl Modifier for Envelope {
 	}
 }
 
-#[cfg(test)]
-impl Name for Envelope {
-	fn get_name(&self) -> &str {
-		"Modifiers.Envelope"
-	}
-}
-
 impl Clone for Envelope {
 	fn clone(&self) -> Self {
 		Envelope {

@@ -21,10 +21,3 @@ impl Generator for Zero {
 		0.0
 	}
 }
-
-#[cfg(test)]
-impl Name for Zero {
-	fn get_name(&self) -> &str {
-		"Generator.Zero"
-	}
-}

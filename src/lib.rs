@@ -1,7 +1,7 @@
 //! # bae_rs
 //! 
-//! The Overly Complicated Audio Engine.
-//! A crate for processing audio samples for various uses.
+//! The Broad Audio Engine presents the ability to process sounds and wav files
+//! for applications like video games and DAWs.
 
 #![warn(missing_docs)]
 
@@ -16,7 +16,7 @@ pub type TrackT = Vec<SampleT>;
 
 /// The sampling rate the engine is set to run at.
 pub const SAMPLE_RATE:u64 = 48_000;
-/// The inverse of the sampling rate for easy referencing.
+/// The inverse of the sampling rate for easy referencing and calculating.
 pub const INV_SAMPLE_RATE:MathT = 1.0/(SAMPLE_RATE as MathT);
 
 pub mod channels;
@@ -27,10 +27,3 @@ pub mod sample_format;
 pub mod tools;
 
 pub use sample_format::*;
-
-/// Trait that implements the ability to get the name of a type simply.
-#[cfg(test)]
-pub trait Name {
-	/// Returns a string slice for the name of the type.
-	fn get_name(&self) -> &str;
-}

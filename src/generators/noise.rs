@@ -27,10 +27,3 @@ impl Generator for Noise {
 		self.engine.gen::<SampleT>()*2.0-1.0
 	}
 }
-
-#[cfg(test)]
-impl Name for Noise {
-	fn get_name(&self) -> &str {
-		"Generator.Noise"
-	}
-}

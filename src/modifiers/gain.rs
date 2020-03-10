@@ -23,10 +23,3 @@ impl Modifier for Gain {
 		x * self.a
 	}
 }
-
-#[cfg(test)]
-impl Name for Gain {
-	fn get_name(&self) -> &str {
-		"Modifiers.Gain"
-	}
-}
