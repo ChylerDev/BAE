@@ -1,5 +1,8 @@
 # Broad Audio Engine (BAE)
 
+[![Latest version](https://img.shields.io/crates/v/bae_rs.svg)](https://crates.io/crates/bae_rs)
+[![Documentation](https://docs.rs/bae_rs/badge.svg)](https://docs.rs/bae_rs)
+
 The Broad Audio Engine presents the ability to process sounds and wav files for applications like video games and DAWs.
 
 For more information please see the [documentation](https://docs.rs/bae_rs)
@@ -11,9 +14,7 @@ For more information please see the [documentation](https://docs.rs/bae_rs)
 
 ## 1. Rust and C++
 
-This library is programmed and maintained in parallel in both Rust and C++, and can each be found in their respective branches.  
-
-The rust crate can be found [here](https://crates.io/crates/bae_rs).
+This library is programmed and maintained in parallel in both Rust and C++, and can each be found in their respective branches.
 
 SoonTM this will be split off into two different README's on the separate branches. I'm probably gonna forget to change that.
 
