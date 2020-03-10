@@ -60,6 +60,42 @@ pub fn normalize(db: MathT, t: &mut TrackT) {
 	}
 }
 
+/// Takes the given filename and reads the track data from the wavefile at the
+/// given location.
+pub fn read_file(s: &str) -> std::io::Result<(wav::Header, TrackT)> {
+	let (h, bd) = wav::read_file(std::path::Path::new(s))?;
+
+	let mut t = TrackT::new();
+
+	match bd {
+		wav::BitDepth::Eight(d) => {
+			for i in 0..d.len() {
+				if i % h.channel_count as usize == 0 {
+					t.push(sample_from_u8(d[i]));
+				}
+			}
+		},
+		wav::BitDepth::Sixteen(d) => {
+			for i in 0..d.len() {
+				if i % h.channel_count as usize == 0 {
+					t.push(sample_from_i16(d[i]));
+				}
+			}
+		},
+		wav::BitDepth::TwentyFour(d) => {
+			for i in 0..d.len() {
+				if i % h.channel_count as usize == 0 {
+					t.push(sample_from_i24(d[i]));
+				}
+			}
+		},
+
+		_ => (),
+	}
+
+	Ok((h, t))
+}
+
 /// Takes the given track and filename and writes the track data to the wavefile
 /// at the given location.
 /// 
@@ -106,7 +142,7 @@ pub fn write_wav(track:TrackT, path: &str) -> std::io::Result<()> {
 	let mut d_vec = Vec::new();
 	for i in track {
 		let mut v:Vec<u8> = Vec::new();
-		v.extend(((i * 32768_f32) as i16).to_le_bytes().iter());
+		v.extend(((i * 32767_f32) as i16).to_le_bytes().iter());
 		d_vec.append(&mut v);
 	}
 	let d_dat = riff::Chunk::new_data(d_id, d_vec);
