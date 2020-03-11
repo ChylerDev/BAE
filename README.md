@@ -7,11 +7,6 @@ The Broad Audio Engine presents the ability to process sounds and wav files for 
 
 For more information please see the [documentation](https://docs.rs/bae_rs)
 
-|   |                                       |
-|--:|---------------------------------------|
-|1  |[Rust and C++](#1-rust-and-c)          |
-|2  |[Future Expansion](#2-future-expansion)|
-
 ## 1. Rust and C++
 
 This library is programmed and maintained in parallel in both Rust and C++, and can each be found in their respective branches.
