@@ -28,7 +28,7 @@ mod tests {
 		}
 
 		let f = ".junk/modifiers/adsr.wav";
-		bae_rs::tools::write_wav(t, f).unwrap();
+		bae_rs::tools::write_wav(vec![t], 24, f).unwrap();
 
 		// bae_rs::tools::filter_gain(
 		// 	|| ADSR::new(
@@ -83,7 +83,7 @@ mod tests {
 		}
 
 		let f = ".junk/modifiers/echo.wav";
-		bae_rs::tools::write_wav(t, f).unwrap();
+		bae_rs::tools::write_wav(vec![t], 24, f).unwrap();
 	}
 
 	#[test]
@@ -113,7 +113,7 @@ mod tests {
 		}
 
 		let f = ".junk/modifiers/envelope.wav";
-		bae_rs::tools::write_wav(t, f).unwrap();
+		bae_rs::tools::write_wav(vec![t], 24, f).unwrap();
 	}
 
 	#[test]
@@ -160,7 +160,7 @@ mod tests {
 		}
 
 		let f = ".junk/modifiers/generic.wav";
-		bae_rs::tools::write_wav(t, f).unwrap();
+		bae_rs::tools::write_wav(vec![t], 24, f).unwrap();
 	}
 
 	#[test]
@@ -189,7 +189,7 @@ mod tests {
 		}
 
 		let f = ".junk/modifiers/lowpass.wav";
-		bae_rs::tools::write_wav(t, f).unwrap();
+		bae_rs::tools::write_wav(vec![t], 24, f).unwrap();
 	}
 
 	fn run_modifier(m: &mut dyn bae_rs::modifiers::Modifier, file:&str)
@@ -212,6 +212,6 @@ mod tests {
 		let mut f = String::from(".junk/modifiers/");
 		f.push_str(file);
 
-		bae_rs::tools::write_wav(t, f.as_str()).unwrap();
+		bae_rs::tools::write_wav(vec![t], 24, f.as_str()).unwrap();
 	}
 }

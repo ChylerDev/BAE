@@ -12,7 +12,7 @@ mod tests {
 			t.push((2.0 * std::f32::consts::PI * 440.0 * i as f32 * bae_rs::INV_SAMPLE_RATE as f32).sin());
 		}
 
-		write_wav(t, ".junk/tools/wavwrite.wav").unwrap();
+		write_wav(vec![t], 24, ".junk/tools/wavwrite.wav").unwrap();
 	}
 
 	#[test]

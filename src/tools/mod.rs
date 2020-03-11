@@ -97,11 +97,12 @@ pub fn read_file(s: &str) -> std::io::Result<(wav::Header, TrackT)> {
 }
 
 /// Takes the given track and filename and writes the track data to the wavefile
-/// at the given location.
+/// at the given location with a given bitdepth.
 /// 
 /// # Parameters
 /// 
-/// * `track` - The track to write.
+/// * `track` - A vector of tracks to write. Each track is considered a channel.
+/// * `bps` - The number of bits per sample. Should be 8, 16, or 24.
 /// * `path` - The path to the file to write to.
 /// 
 /// # Errors
@@ -111,6 +112,8 @@ pub fn read_file(s: &str) -> std::io::Result<(wav::Header, TrackT)> {
 /// * Parent directiories within the given path couldn't be created.
 /// * Creating the file fails.
 /// * Writing the data to the file fails.
+/// * The channels don't have equal lengths.
+/// * The given vector contains no data.
 /// 
 /// # Example
 /// 
@@ -123,35 +126,73 @@ pub fn read_file(s: &str) -> std::io::Result<(wav::Header, TrackT)> {
 /// 	t.push(n.process());
 /// }
 ///
-/// tools::write_wav(t, ".junk/some/path/noise.wav");
+/// tools::write_wav(vec![t], 16, ".junk/some/path/noise.wav");
 /// ```
-pub fn write_wav(track:TrackT, path: &str) -> std::io::Result<()> {
-	use std::fs::File;
+pub fn write_wav(tracks: Vec<TrackT>, bps: u16, path: &str) -> std::io::Result<()> {
+	use std::path::Path;
+	use std::io::{Error, ErrorKind};
+	use crate::sample_format::*;
 
-	if let Some(i) = path.rfind('/') {
-		std::fs::create_dir_all(String::from(path.split_at(i).0))?;
+	if tracks.len() == 0 {
+		return Err(Error::new(ErrorKind::Other, "No channels given, aborting."));
 	}
 
-	let w_id = riff::ChunkId::new("WAVE").unwrap();
+	let len = tracks[0].len();
 
-	let h_id = riff::ChunkId::new("fmt ").unwrap();
-	let h_vec:[u8;16] = wav::Header::new(1, 1, SAMPLE_RATE as u32, 16).into();
-	let h_dat = riff::Chunk::new_data(h_id, Vec::from(&h_vec[0..16]));
-
-	let d_id = riff::ChunkId::new("data").unwrap();
-	let mut d_vec = Vec::new();
-	for i in track {
-		let mut v:Vec<u8> = Vec::new();
-		v.extend(((i * 32767_f32) as i16).to_le_bytes().iter());
-		d_vec.append(&mut v);
+	for t in &tracks {
+		if t.len() != len {
+			return Err(Error::new(ErrorKind::Other, "Channels have mismatching lengths, aborting."));
+		}
 	}
-	let d_dat = riff::Chunk::new_data(d_id, d_vec);
 
-	let r = riff::Chunk::new_riff(w_id, vec![h_dat, d_dat]);
+	match bps {
+		8 => {
+			let mut v = Vec::new();
 
-	let mut f = File::create(path)?;
+			for i in 0..len {
+				for t in &tracks {
+					v.push(sample_to_u8(t[i]));
+				}
+			}
 
-	riff::write_chunk(&mut f, &r)?;
+			wav::write_wav(
+				wav::Header::new(1, tracks.len() as u16, SAMPLE_RATE as u32, bps),
+				wav::BitDepth::Eight(v),
+				Path::new(path)
+			)?;
+		},
+		16 => {
+			let mut v = Vec::new();
+
+			for i in 0..len {
+				for t in &tracks {
+					v.push(sample_to_i16(t[i]));
+				}
+			}
+
+			wav::write_wav(
+				wav::Header::new(1, tracks.len() as u16, SAMPLE_RATE as u32, bps),
+				wav::BitDepth::Sixteen(v),
+				Path::new(path)
+			)?;
+		},
+		24 => {
+			let mut v = Vec::new();
+
+			for i in 0..len {
+				for t in &tracks {
+					v.push(sample_to_i24(t[i]));
+				}
+			}
+
+			wav::write_wav(
+				wav::Header::new(1, tracks.len() as u16, SAMPLE_RATE as u32, bps),
+				wav::BitDepth::TwentyFour(v),
+				Path::new(path)
+			)?;
+		},
+		_ => return Err(Error::new(ErrorKind::Other, "Unsupported bit depth, aborting.")),
+	}
 
 	Ok(())
 }

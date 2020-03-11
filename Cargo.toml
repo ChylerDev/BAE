@@ -16,6 +16,5 @@ categories = ["data-structures", "mathematics", "multimedia::audio"]
 [dependencies]
 lazy_static = "1"
 petgraph = "0.5"
-riff = "0.1"
 rand = "0.7"
 wav = "0.1"

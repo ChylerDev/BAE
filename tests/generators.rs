@@ -69,6 +69,6 @@ mod tests {
 		let mut f = String::from(FILE_PREFIX);
 		f.push_str(file);
 
-		bae_rs::tools::write_wav(t, f.as_str()).unwrap();
+		bae_rs::tools::write_wav(vec![t], 24, f.as_str()).unwrap();
 	}
 }

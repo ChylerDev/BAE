@@ -26,7 +26,7 @@ mod tests {
 
 		bae_rs::tools::normalize(-1.5, &mut t);
 
-		bae_rs::tools::write_wav(t, ".junk/sounds/block_NoiseLP.wav")
+		bae_rs::tools::write_wav(vec![t], 24, ".junk/sounds/block_NoiseLP.wav")
 		.expect("Failed to write wav file");
 	}
 
@@ -58,7 +58,7 @@ mod tests {
 
 		bae_rs::tools::normalize(-1.5, &mut t);
 
-		bae_rs::tools::write_wav(t, ".junk/sounds/simple_sounds.wav")
+		bae_rs::tools::write_wav(vec![t], 24, ".junk/sounds/simple_sounds.wav")
 		.expect("Failed to write wav file");
 	}
 
@@ -95,7 +95,7 @@ mod tests {
 
 		bae_rs::tools::normalize(-1.5, &mut t);
 
-		bae_rs::tools::write_wav(t, ".junk/sounds/complex_sounds.wav")
+		bae_rs::tools::write_wav(vec![t], 24, ".junk/sounds/complex_sounds.wav")
 		.expect("Failed to write wav file");
 	}
 }
