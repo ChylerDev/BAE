@@ -81,7 +81,7 @@ pub fn normalize(db: MathT, t: &mut TrackT) {
 /// [`TrackT`]: ../../type.TrackT.html
 /// [`wav::read_wav`]: https://docs.rs/wav/0.1.1/wav/fn.read_wav.html
 pub fn read_wav(s: &std::path::Path) -> std::io::Result<(wav::Header, Vec<TrackT>)> {
-	let (h, bd) = wav::read_file(s)?;
+	let (h, bd) = wav::read_wav(s)?;
 
 	let mut tracks = Vec::new();
 	for _ in 0..h.channel_count {
