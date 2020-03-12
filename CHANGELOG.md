@@ -8,7 +8,7 @@
 * Moved the `Sound` trait into `src/sounds/mod.rs` and deleted `src/sounds/sound.rs`.
 * Renamed `Block` to `StandardBlock` and `BasicBlock` to `Block`.
 * Moved `Block` into `src/sounds/mod.rs` and deleted `src/sounds/sound.rs`.
-* Fixed bug in `normaliz` function.
+* Fixed bug in `normalize` function.
 
 ## Version 0.10.0
 
