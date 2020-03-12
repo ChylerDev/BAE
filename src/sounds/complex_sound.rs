@@ -10,7 +10,6 @@
 use super::*;
 use std::rc::Rc;
 use std::collections::VecDeque;
-use super::basic_block::*;
 use petgraph::graph;
 
 /// Alias for the graph type used by [`ComplexSound`].
@@ -54,14 +53,14 @@ impl ComplexSound {
 		let mut graph = Graph::new();
 		let input_gain = graph.add_node(
 			Rc::new(
-				Block::from_modifier(
+				StandardBlock::from_modifier(
 					modifiers::Gain::new(input_gain as SampleT)
 				)
 			)
 		);
 		let output_gain = graph.add_node(
 			Rc::new(
-				Block::from_modifier(
+				StandardBlock::from_modifier(
 					modifiers::Gain::new(output_gain as SampleT)
 				)
 			)
@@ -99,7 +98,7 @@ impl ComplexSound {
 	/// with [`add_connection`] and [`remove_connection`].
 	/// 
 	/// [`Graph`]: type.Graph.html
-	/// [`Block`]: trait.Block.html
+	/// [`Block`]: ../trait.Block.html
 	/// [`add_connection]: struct.ComplexSound.html#method.add_connection
 	/// [`remove_connection]: struct.ComplexSound.html#method.remove_connection
 	pub fn add_block(&mut self, block: BasicBlockRc) -> GraphNode {

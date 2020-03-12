@@ -13,7 +13,7 @@ To get started, there is always the [documentation], but additionally I recommen
 [documentation]: https://docs.rs/bae_rs
 [`Generator`]: https://docs.rs/bae_rs/0.10.0/bae_rs/generators/trait.Generator.html
 [`Modifier`]: https://docs.rs/bae_rs/0.10.0/bae_rs/modifiers/trait.Modifier.html
-[`Sound`]: https://docs.rs/bae_rs/0.10.0/bae_rs/sounds/sound/trait.Sound.html
+[`Sound`]: https://docs.rs/bae_rs/0.10.0/bae_rs/sounds/trait.Sound.html
 [`SimpleSound`]: https://docs.rs/bae_rs/0.10.0/bae_rs/sounds/simple_sound/struct.SimpleSound.html
 
 ## Dependencies

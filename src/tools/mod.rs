@@ -82,7 +82,7 @@ pub fn read_wav(s: &std::path::Path) -> std::io::Result<(wav::Header, Vec<TrackT
 	let (h, bd) = wav::read_file(s)?;
 
 	let mut tracks = Vec::new();
-	for i in 0..h.channel_count {
+	for _ in 0..h.channel_count {
 		tracks.push(TrackT::new());
 	}
 

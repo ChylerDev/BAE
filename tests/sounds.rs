@@ -7,14 +7,14 @@ mod tests {
 
 	#[test]
 	fn test_blocks() {
-		let mut b = Block::from_generator(Sine::new(440.0));
+		let mut b = StandardBlock::from_generator(Sine::new(440.0));
 		let mut s = Sine::new(440.0);
 
 		for _ in 0..bae_rs::tools::seconds_to_samples(std::time::Duration::from_secs_f64(1.0/440.0)) {
 			assert!((b.process() - s.process()).abs() < 1e-15);
 		}
 
-		let mut b = Block::from_modifier(LowPass::new(440.0, 1.0));
+		let mut b = StandardBlock::from_modifier(LowPass::new(440.0, 1.0));
 		let mut n = Noise::new();
 
 		let mut t = bae_rs::TrackT::new();
@@ -33,17 +33,17 @@ mod tests {
 	#[test]
 	fn test_simple_sounds() {
 		let mut ss = SimpleSound::new(1.0, 0.5,
-			BlockRc::new(Block::from_generator(Noise::new()))
+			BlockRc::new(StandardBlock::from_generator(Noise::new()))
 		);
 		ss.extend_modifiers(
 			vec![
 				BlockRc::new(
-					Block::from_modifier(
+					StandardBlock::from_modifier(
 						LowPass::new(440.0, 1.0)
 					)
 				),
 				BlockRc::new(
-					Block::from_modifier(
+					StandardBlock::from_modifier(
 						HighPass::new(220.0, 1.0)
 					)
 				)
@@ -68,17 +68,17 @@ mod tests {
 
 		let n = cs.add_block(
 			BlockRc::new(
-				Block::from_generator(Noise::new())
+				StandardBlock::from_generator(Noise::new())
 			)
 		);
 		let lp = cs.add_block(
 			BlockRc::new(
-				Block::from_modifier(LowPass::new(440.0, 1.0))
+				StandardBlock::from_modifier(LowPass::new(440.0, 1.0))
 			)
 		);
 		let hp = cs.add_block(
 			BlockRc::new(
-				Block::from_modifier(HighPass::new(220.0, 1.0))
+				StandardBlock::from_modifier(HighPass::new(220.0, 1.0))
 			)
 		);
 

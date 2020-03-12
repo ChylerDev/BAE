@@ -11,7 +11,6 @@
 use super::*;
 
 use std::rc::Rc;
-use super::basic_block::*;
 
 /// Type implementing the ablitiy to run multiple a single [`Generator`] by a
 /// given list of [`Modifier`]s operated in series. This allows for simple and

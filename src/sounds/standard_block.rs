@@ -1,4 +1,4 @@
-//! # Block
+//! # StandardBlock
 //! 
 //! A structure implementing the ability to create a graph of different
 //! [`Generator`]s, [`Modifier`]s, and the form of interaction between them to
@@ -11,11 +11,11 @@ use super::*;
 use std::rc::Rc;
 
 /// Type defining the closure that combines inputted SampleT samples from the
-/// outputs of the [`Generator`]s and [`Modifier`]s of the cointaining [`Block`]
+/// outputs of the [`Generator`]s and [`Modifier`]s of the cointaining [`StandardBlock`]
 /// 
 /// [`Generator`]: ../../generators/trait.Generator.html
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
-/// [`Block`]: struct.Block.html
+/// [`StandardBlock`]: struct.StandardBlock.html
 pub type InterBase = dyn FnMut(SampleT, SampleT) -> SampleT;
 
 /// Reference-counted wrapper for the closure [`InterBase`]
@@ -24,51 +24,51 @@ pub type InterBase = dyn FnMut(SampleT, SampleT) -> SampleT;
 pub type Inter = Rc<InterBase>;
 
 /// Struct used for generalizing the structure of and abstracting the [`Sound`]
-/// struct. This allows us to create complex sounds as a graph of [`Block`]s,
+/// struct. This allows us to create complex sounds as a graph of [`StandardBlock`]s,
 /// where each block can be a [`Modifier`], [`Generator`], or both, and there output
-/// of the [`Block`] is defined as some user-definable combination of the
+/// of the [`StandardBlock`] is defined as some user-definable combination of the
 /// [`Generator`] and [`Modifier`] output. See [`Sound`] documentation for more info.
 /// 
 /// Internally, the [`Generator`], [`Modifier`], and [`Inter`] are stored wrapped
 /// within an [`Rc`] (note: may become [`Arc`] depending on future needs of the
-/// library). This means that when you clone a [`Block`], the internal objects
+/// library). This means that when you clone a [`StandardBlock`], the internal objects
 /// are *not* cloned. Rather, their reference count is incremented, and the
 /// wrapped objects stay where they are.
 /// 
 /// [`Generator`]: ../../generators/trait.Generator.html
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
-/// [`Block`]: struct.Block.html
+/// [`StandardBlock`]: struct.StandardBlock.html
 /// [`Sound`]: struct.Sound.html
 /// [`Inter`]: type.Inter.html
 /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 /// [`Arc`]: https://doc.rust-lang.org/std/sync/struct.Arc.html
-pub struct Block {
+pub struct StandardBlock {
 	g: generators::GeneratorRc,
 	m: modifiers::ModifierRc,
 	i: Inter,
 	input: SampleT,
 }
 
-impl Block {
-	/// Creates a new Block from the given [`Generator`], [`Modifier`], and
+impl StandardBlock {
+	/// Creates a new StandardBlock from the given [`Generator`], [`Modifier`], and
 	/// [`Inter`].
 	/// 
 	/// # Parameters
 	/// 
-	/// * `g` - The [`Generator`] for the [`Block`].
-	/// * `m` - The [`Modifier`] for the [`Block`].
+	/// * `g` - The [`Generator`] for the [`StandardBlock`].
+	/// * `m` - The [`Modifier`] for the [`StandardBlock`].
 	/// * `i` - The interactor (typically a closure) that defines the combination
-	/// of `g`s and `m`s samples when `Block::process()` is called.
+	/// of `g`s and `m`s samples when `StandardBlock::process()` is called.
 	/// 
 	/// [`Generator`]: ../../generators/trait.Generator.html
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-	/// [`Block`]: struct.Block.html
+	/// [`StandardBlock`]: struct.StandardBlock.html
 	/// [`Inter`]: type.Inter.html
 	pub fn new<T, U>(g: T, m: U, i: Inter) -> Self
 		where T: 'static + generators::Generator,
 		      U: 'static + modifiers::Modifier
 	{
-		Block {
+		StandardBlock {
 			g: Rc::new(g),
 			m: Rc::new(m),
 			i,
@@ -76,22 +76,22 @@ impl Block {
 		}
 	}
 
-	/// Creates a new block from the given [`Generator`]. For the [`Block`],
+	/// Creates a new block from the given [`Generator`]. For the [`StandardBlock`],
 	/// [`Empty`] is used for the `m`, and the return value of
-	/// [`Block::generator_passthrough`] is used for `i`.
+	/// [`StandardBlock::generator_passthrough`] is used for `i`.
 	/// 
 	/// # Parameters
-	/// * `g` - The [`Generator`] for the [`Block`].
+	/// * `g` - The [`Generator`] for the [`StandardBlock`].
 	/// 
 	/// [`Generator`]: ../../generators/trait.Generator.html
-	/// [`Block`]: struct.Block.html
-	/// [`Block::generator_passthrough`]: struct.Block.html#method.generator_passthrough
+	/// [`StandardBlock`]: struct.StandardBlock.html
+	/// [`StandardBlock::generator_passthrough`]: struct.StandardBlock.html#method.generator_passthrough
 	/// [`Inter`]: type.Inter.html
 	/// [`Empty`]: ../../generators/empty/struct.Empty.html
 	pub fn from_generator<T>(g: T) -> Self
 		where T: 'static + generators::Generator
 	{
-		Block {
+		StandardBlock {
 			g: Rc::new(g),
 			m: Rc::new(
 				modifiers::Passthrough::new()
@@ -101,22 +101,22 @@ impl Block {
 		}
 	}
 
-	/// Creates a new block from the given [`Modifier`]. For the [`Block`],
+	/// Creates a new block from the given [`Modifier`]. For the [`StandardBlock`],
 	/// [`Empty`] is used for `g`, and the return value of
-	/// [`Block::modifier_passthrough`] is used for `i`.
+	/// [`StandardBlock::modifier_passthrough`] is used for `i`.
 	/// 
 	/// # Parametrs
-	/// * `m` - The [`Modifier`] for the [`Block`].
+	/// * `m` - The [`Modifier`] for the [`StandardBlock`].
 	/// 
 	/// [`Modifier`]: ../../modifiers/trait.Modifier.html
-	/// [`Block`]: struct.Block.html
-	/// [`Block::modifier_passthrough`]: struct.Block.html#method.modifier_passthrough
+	/// [`StandardBlock`]: struct.StandardBlock.html
+	/// [`StandardBlock::modifier_passthrough`]: struct.StandardBlock.html#method.modifier_passthrough
 	/// [`Inter`]: type.Inter.html
 	/// [`Empty`]: ../../modifiers/empty/struct.Empty.html
 	pub fn from_modifier<U>(m: U) -> Self
 		where U: 'static + modifiers::Modifier
 	{
-		Block {
+		StandardBlock {
 			g: Rc::new(
 				generators::Zero::new()
 			),
@@ -181,7 +181,7 @@ impl Block {
 	}
 }
 
-impl BasicBlock for Block {
+impl Block for StandardBlock {
 	fn prime_input(&mut self, x: SampleT) {
 		self.input += x;
 	}
@@ -198,8 +198,8 @@ impl BasicBlock for Block {
 	}
 }
 
-/// Alias for an [`Rc`]-wrapped [`Block`] object.
+/// Alias for an [`Rc`]-wrapped [`StandardBlock`] object.
 /// 
 /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-/// [`Block`]: struct.Block.html
-pub type BlockRc = Rc<Block>;
+/// [`StandardBlock`]: struct.StandardBlock.html
+pub type BlockRc = Rc<StandardBlock>;

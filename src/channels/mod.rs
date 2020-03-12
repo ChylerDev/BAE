@@ -3,7 +3,7 @@
 //! This module includes the types and traits needed to process a group of
 //! [`Sound`]s to generate a single output sample.
 //! 
-//! [`Sound`]: ../sounds/sound/trait.Sound.html
+//! [`Sound`]: ../sounds/trait.Sound.html
 
 use super::*;
 use std::rc::Rc;
@@ -35,7 +35,7 @@ pub trait Channel {
 	/// Adds a [`Sound`] to the [`Channel`] for processing.
 	/// 
 	/// [`Channel`]: trait.Channel.html
-	/// [`Sound`]: ../sounds/sound/trait.Sound.html
+	/// [`Sound`]: ../sounds/trait.Sound.html
 	fn add_sound(&mut self, sound: &mut SoundRc);
 
 	/// Removes a [`Sound`] from the [`Channel`].
@@ -43,7 +43,7 @@ pub trait Channel {
 	/// The `id` parameter can be accessed from the registered [`Sound`] itself.
 	/// 
 	/// [`Channel`]: trait.Channel.html
-	/// [`Sound`]: ../sounds/sound/trait.Sound.html
+	/// [`Sound`]: ../sounds/trait.Sound.html
 	fn remove_sound(&mut self, id: usize);
 }
 
