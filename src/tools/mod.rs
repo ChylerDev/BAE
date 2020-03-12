@@ -45,6 +45,8 @@ pub fn normalize(db: MathT, t: &mut TrackT) {
 		dc += s;
 	}
 
+	dc /= y.len() as SampleT;
+
 	let mut max = 0.0;
 
 	for s in y {
