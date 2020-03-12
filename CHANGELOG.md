@@ -1,5 +1,7 @@
 # BAE Rust Changelog
 
+* Updated `wav` dependency to 0.2
+
 ## Version 0.11.0
 
 * Renamed `StereoData` to `Stereo`.
