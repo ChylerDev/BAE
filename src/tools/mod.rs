@@ -60,40 +60,53 @@ pub fn normalize(db: MathT, t: &mut TrackT) {
 	}
 }
 
-/// Takes the given filename and reads the track data from the wavefile at the
-/// given location.
-pub fn read_file(s: &str) -> std::io::Result<(wav::Header, TrackT)> {
-	let (h, bd) = wav::read_file(std::path::Path::new(s))?;
+/// Takes the given path and reads the track data from the wavefile at the given
+/// location.
+/// 
+/// # Parameters/Returns
+/// 
+/// * `s` - The path to the file to be opened and read.
+/// * Returned value is a [`std::io::Result`] with the `Ok` data being a tuple
+/// of a [`wav::Header`] and a vector of [`TrackT`]s.
+/// 
+/// # Errors
+/// 
+/// This function fails if:
+/// * Anything that [`wav::read_wav`] specifies.
+/// 
+/// [`std::io::Result`]: https://doc.rust-lang.org/std/io/type.Result.html
+/// [`wav::Header`]: https://docs.rs/wav/0.1.1/wav/struct.Header.html
+/// [`TrackT`]: ../../type.TrackT.html
+/// [`wav::read_wav`]: https://docs.rs/wav/0.1.1/wav/fn.read_wav.html
+pub fn read_wav(s: &std::path::Path) -> std::io::Result<(wav::Header, Vec<TrackT>)> {
+	let (h, bd) = wav::read_file(s)?;
 
-	let mut t = TrackT::new();
+	let mut tracks = Vec::new();
+	for i in 0..h.channel_count {
+		tracks.push(TrackT::new());
+	}
 
 	match bd {
 		wav::BitDepth::Eight(d) => {
 			for i in 0..d.len() {
-				if i % h.channel_count as usize == 0 {
-					t.push(sample_from_u8(d[i]));
-				}
+				tracks[i % h.channel_count as usize].push(sample_from_u8(d[i]));
 			}
 		},
 		wav::BitDepth::Sixteen(d) => {
 			for i in 0..d.len() {
-				if i % h.channel_count as usize == 0 {
-					t.push(sample_from_i16(d[i]));
-				}
+				tracks[i % h.channel_count as usize].push(sample_from_i16(d[i]));
 			}
 		},
 		wav::BitDepth::TwentyFour(d) => {
 			for i in 0..d.len() {
-				if i % h.channel_count as usize == 0 {
-					t.push(sample_from_i24(d[i]));
-				}
+				tracks[i % h.channel_count as usize].push(sample_from_i24(d[i]));
 			}
 		},
 
 		_ => (),
 	}
 
-	Ok((h, t))
+	Ok((h, tracks))
 }
 
 /// Takes the given track and filename and writes the track data to the wavefile
@@ -108,10 +121,7 @@ pub fn read_file(s: &str) -> std::io::Result<(wav::Header, TrackT)> {
 /// # Errors
 /// 
 /// This function fails if:
-/// * The given filename/path is invalid.
-/// * Parent directiories within the given path couldn't be created.
-/// * Creating the file fails.
-/// * Writing the data to the file fails.
+/// * Anything that [`wav::write_wav`] specifies.
 /// * The channels don't have equal lengths.
 /// * The given vector contains no data.
 /// 
@@ -128,6 +138,8 @@ pub fn read_file(s: &str) -> std::io::Result<(wav::Header, TrackT)> {
 ///
 /// tools::write_wav(vec![t], 16, ".junk/some/path/noise.wav");
 /// ```
+/// 
+/// [`wav::write_wav`]: https://docs.rs/wav/0.1.1/wav/fn.write_wav.html
 pub fn write_wav(tracks: Vec<TrackT>, bps: u16, path: &str) -> std::io::Result<()> {
 	use std::path::Path;
 	use std::io::{Error, ErrorKind};
