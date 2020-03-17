@@ -67,7 +67,7 @@ pub fn normalize(db: MathT, t: &mut TrackT) {
 /// 
 /// # Parameters/Returns
 /// 
-/// * `s` - The path to the file to be opened and read.
+/// * `s` - The source to read from.
 /// * Returned value is a [`std::io::Result`] with the `Ok` data being a tuple
 /// of a [`wav::Header`] and a vector of [`TrackT`]s.
 /// 
@@ -80,7 +80,7 @@ pub fn normalize(db: MathT, t: &mut TrackT) {
 /// [`wav::Header`]: https://docs.rs/wav/0.1.1/wav/struct.Header.html
 /// [`TrackT`]: ../../type.TrackT.html
 /// [`wav::read_wav`]: https://docs.rs/wav/0.1.1/wav/fn.read_wav.html
-pub fn read_wav(s: &std::path::Path) -> std::io::Result<(wav::Header, Vec<TrackT>)> {
+pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<TrackT>)> {
 	let (h, bd) = wav::read_wav(s)?;
 
 	let mut tracks = Vec::new();
@@ -118,7 +118,7 @@ pub fn read_wav(s: &std::path::Path) -> std::io::Result<(wav::Header, Vec<TrackT
 /// 
 /// * `track` - A vector of tracks to write. Each track is considered a channel.
 /// * `bps` - The number of bits per sample. Should be 8, 16, or 24.
-/// * `path` - The path to the file to write to.
+/// * `d` - The destination to write to.
 /// 
 /// # Errors
 /// 
@@ -142,8 +142,7 @@ pub fn read_wav(s: &std::path::Path) -> std::io::Result<(wav::Header, Vec<TrackT
 /// ```
 /// 
 /// [`wav::write_wav`]: https://docs.rs/wav/0.1.1/wav/fn.write_wav.html
-pub fn write_wav(tracks: Vec<TrackT>, bps: u16, path: &str) -> std::io::Result<()> {
-	use std::path::Path;
+pub fn write_wav(tracks: Vec<TrackT>, bps: u16, d: &mut dyn std::io::Write) -> std::io::Result<()> {
 	use std::io::{Error, ErrorKind};
 	use crate::sample_format::*;
 
@@ -172,7 +171,7 @@ pub fn write_wav(tracks: Vec<TrackT>, bps: u16, path: &str) -> std::io::Result<(
 			wav::write_wav(
 				wav::Header::new(1, tracks.len() as u16, SAMPLE_RATE as u32, bps),
 				wav::BitDepth::Eight(v),
-				Path::new(path)
+				d
 			)?;
 		},
 		16 => {
@@ -187,7 +186,7 @@ pub fn write_wav(tracks: Vec<TrackT>, bps: u16, path: &str) -> std::io::Result<(
 			wav::write_wav(
 				wav::Header::new(1, tracks.len() as u16, SAMPLE_RATE as u32, bps),
 				wav::BitDepth::Sixteen(v),
-				Path::new(path)
+				d
 			)?;
 		},
 		24 => {
@@ -202,7 +201,7 @@ pub fn write_wav(tracks: Vec<TrackT>, bps: u16, path: &str) -> std::io::Result<(
 			wav::write_wav(
 				wav::Header::new(1, tracks.len() as u16, SAMPLE_RATE as u32, bps),
 				wav::BitDepth::TwentyFour(v),
-				Path::new(path)
+				d
 			)?;
 		},
 		_ => return Err(Error::new(ErrorKind::Other, "Unsupported bit depth, aborting.")),

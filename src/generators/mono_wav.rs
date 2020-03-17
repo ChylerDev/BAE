@@ -13,8 +13,8 @@ pub struct MonoWav {
 
 impl MonoWav {
 	/// Constructs from a given path.
-	pub fn from_file(s: &str) -> Self {
-		let (h, t) = tools::read_wav(std::path::Path::new(s))
+	pub fn from_source(s: &mut dyn std::io::Read) -> Self {
+		let (h, t) = tools::read_wav(s)
 		.expect("File could not be read");
 
 		MonoWav::from_track(h.sampling_rate as u64, t.first().expect("No audio data read").clone())

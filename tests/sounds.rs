@@ -2,6 +2,7 @@ extern crate bae_rs;
 
 #[cfg(test)]
 mod tests {
+	use std::fs::File;
 	use std::time::Duration;
 	use bae_rs::{generators::*, modifiers::*, sounds::*};
 
@@ -26,7 +27,7 @@ mod tests {
 
 		bae_rs::tools::normalize(-1.5, &mut t);
 
-		bae_rs::tools::write_wav(vec![t], 24, ".junk/sounds/block_NoiseLP.wav")
+		bae_rs::tools::write_wav(vec![t], 24, &mut File::create(".junk/sounds/block_NoiseLP.wav").unwrap())
 		.expect("Failed to write wav file");
 	}
 
@@ -58,7 +59,7 @@ mod tests {
 
 		bae_rs::tools::normalize(-1.5, &mut t);
 
-		bae_rs::tools::write_wav(vec![t], 24, ".junk/sounds/simple_sounds.wav")
+		bae_rs::tools::write_wav(vec![t], 24, &mut File::create(".junk/sounds/simple_sounds.wav").unwrap())
 		.expect("Failed to write wav file");
 	}
 
@@ -95,7 +96,7 @@ mod tests {
 
 		bae_rs::tools::normalize(-1.5, &mut t);
 
-		bae_rs::tools::write_wav(vec![t], 24, ".junk/sounds/complex_sounds.wav")
+		bae_rs::tools::write_wav(vec![t], 24, &mut File::create(".junk/sounds/complex_sounds.wav").unwrap())
 		.expect("Failed to write wav file");
 	}
 }

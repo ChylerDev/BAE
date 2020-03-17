@@ -2,9 +2,11 @@ extern crate bae_rs;
 
 #[cfg(test)]
 mod tests {
+	use std::fs::File;
+	use bae_rs::tools::*;
+
 	#[test]
 	fn test_write_wav() {
-		use bae_rs::tools::*;
 
 		let mut t = bae_rs::TrackT::new();
 
@@ -12,13 +14,13 @@ mod tests {
 			t.push((2.0 * std::f32::consts::PI * 440.0 * i as f32 * bae_rs::INV_SAMPLE_RATE as f32).sin());
 		}
 
-		write_wav(vec![t], 24, ".junk/tools/wavwrite.wav").unwrap();
+		write_wav(vec![t], 24, &mut File::create(".junk/tools/wavwrite.wav").unwrap()).unwrap();
 	}
 
 	#[test]
 	fn test_resampler() {
+		use bae_rs::SampleT;
 		use bae_rs::tools::*;
-		use std::f32::EPSILON;
 
 		let sam = vec![0.0, 1.0, 2.0, 3.0];
 
@@ -26,14 +28,14 @@ mod tests {
 		for i in 0..7 {
 			let s = r.process();
 
-			assert!((s - i as bae_rs::SampleT/2.0).abs() < EPSILON);
+			assert!(f32_equal(s, i as SampleT/2.0));
 		}
 
 		let mut r = MonoResampler::new(sam.clone(), bae_rs::SAMPLE_RATE * 2, 0,0);
 		for i in 0..2 {
 			let s = r.process();
 
-			assert!((s - (i * 2) as bae_rs::SampleT).abs() < EPSILON);
+			assert!(f32_equal(s, (i*2) as SampleT));
 		}
 
 		let mut r = MonoResampler::new(sam.clone(), bae_rs::SAMPLE_RATE, 0,0);
@@ -41,7 +43,7 @@ mod tests {
 		for i in 0..7 {
 			let s = r.process();
 
-			assert!((s - i as bae_rs::SampleT/2.0).abs() < EPSILON);
+			assert!(f32_equal(s, i as SampleT/2.0));
 		}
 
 		let mut r = MonoResampler::new(sam.clone(), bae_rs::SAMPLE_RATE * 2, 0,0);
@@ -49,7 +51,13 @@ mod tests {
 		for i in sam {
 			let s = r.process();
 
-			assert!((s - i).abs() < EPSILON);
+			assert!(f32_equal(s, i));
 		}
+	}
+
+	fn f32_equal(a: f32, b: f32) -> bool {
+		use std::f32::EPSILON;
+
+		(a-b).abs() < EPSILON
 	}
 }
