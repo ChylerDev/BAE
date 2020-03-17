@@ -4,7 +4,7 @@
 [![Documentation](https://docs.rs/bae_rs/badge.svg)](https://docs.rs/bae_rs "bae_rs documentation")
 [![License](https://img.shields.io/crates/l/bae_rs.svg)](https://github.com/ChylerDev/BAE#license "bae_rs license")
 
-The Broad Audio Engine presents the ability to process sounds and wav files for applications like video games and DAWs.
+The Broad Audio Engine presents the ability to process sounds and audio files for applications like video games and DAWs.
 
 This engine was born out of a frustration with other audio systems for their lack of readable code that results from the large monolithic structures and architecture-specific systems they contain. I do understand why these structures and systems are the way they are, but nevertheless they are a pain to work with in most cases. With this audio engine, I intend to create an interface that is well documented and has minimal time to start writing code and calculate samples.
 
