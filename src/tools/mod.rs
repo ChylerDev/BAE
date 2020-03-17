@@ -10,56 +10,56 @@ pub use mono_resampler::*;
 
 /// Linear interpolation of a given value.
 pub fn lerp<T>(x:T, x1:T, x2:T, y1:T, y2:T) -> T
-	where T: Copy + Sized + std::ops::Add<Output=T> + std::ops::Sub<Output=T> + std::ops::Mul<Output=T> + std::ops::Div<Output=T>
+    where T: Copy + Sized + std::ops::Add<Output=T> + std::ops::Sub<Output=T> + std::ops::Mul<Output=T> + std::ops::Div<Output=T>
 {
-	((y2 - y1) / (x2 - x1)) * (x - x1) + y1
+    ((y2 - y1) / (x2 - x1)) * (x - x1) + y1
 }
 
 /// Converts a given sample count to seconds.
 pub fn samples_to_seconds(s: usize) -> std::time::Duration {
-	std::time::Duration::from_secs_f64(s as f64 * SAMPLE_RATE as f64)
+    std::time::Duration::from_secs_f64(s as f64 * SAMPLE_RATE as f64)
 }
 
 /// Converts the given duration to samples, rounded to the nearest sample.
 pub fn seconds_to_samples(s: std::time::Duration) -> usize {
-	(s.as_secs_f64() * SAMPLE_RATE as f64).round() as usize
+    (s.as_secs_f64() * SAMPLE_RATE as f64).round() as usize
 }
 
 /// Converts from a linear gain value to a decibel (dBFS) value.
 pub fn linear_to_db(g: MathT) -> MathT {
-	20.0 * g.log10()
+    20.0 * g.log10()
 }
 
 /// Converts from a decibel (dBFS) to a linear gain value
 pub fn db_to_linear(db: MathT) -> MathT {
-	10.0_f64.powf(db/20.0)
+    10.0_f64.powf(db/20.0)
 }
 
 /// Normalizes the given audio track to have a peak value at the given dBFS
 /// value.
 pub fn normalize(db: MathT, t: &mut TrackT) {
-	let y = t.clone();
-	let mut dc = 0.0;
+    let y = t.clone();
+    let mut dc = 0.0;
 
-	for s in &y {
-		dc += s;
-	}
+    for s in &y {
+        dc += s;
+    }
 
-	dc /= y.len() as SampleT;
+    dc /= y.len() as SampleT;
 
-	let mut max = 0.0;
+    let mut max = 0.0;
 
-	for s in y {
-		if (s - dc).abs() > max {
-			max = (s - dc).abs();
-		}
-	}
+    for s in y {
+        if (s - dc).abs() > max {
+            max = (s - dc).abs();
+        }
+    }
 
-	let factor = db_to_linear(db) as SampleT / max;
+    let factor = db_to_linear(db) as SampleT / max;
 
-	for s in t {
-		*s = (*s - dc) * factor;
-	}
+    for s in t {
+        *s = (*s - dc) * factor;
+    }
 }
 
 /// Takes the given path and reads the track data from the wavefile at the given
@@ -81,34 +81,34 @@ pub fn normalize(db: MathT, t: &mut TrackT) {
 /// [`TrackT`]: ../../type.TrackT.html
 /// [`wav::read_wav`]: https://docs.rs/wav/0.1.1/wav/fn.read_wav.html
 pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<TrackT>)> {
-	let (h, bd) = wav::read_wav(s)?;
+    let (h, bd) = wav::read_wav(s)?;
 
-	let mut tracks = Vec::new();
-	for _ in 0..h.channel_count {
-		tracks.push(TrackT::new());
-	}
+    let mut tracks = Vec::new();
+    for _ in 0..h.channel_count {
+        tracks.push(TrackT::new());
+    }
 
-	match bd {
-		wav::BitDepth::Eight(d) => {
-			for i in 0..d.len() {
-				tracks[i % h.channel_count as usize].push(sample_from_u8(d[i]));
-			}
-		},
-		wav::BitDepth::Sixteen(d) => {
-			for i in 0..d.len() {
-				tracks[i % h.channel_count as usize].push(sample_from_i16(d[i]));
-			}
-		},
-		wav::BitDepth::TwentyFour(d) => {
-			for i in 0..d.len() {
-				tracks[i % h.channel_count as usize].push(sample_from_i24(d[i]));
-			}
-		},
+    match bd {
+        wav::BitDepth::Eight(d) => {
+            for i in 0..d.len() {
+                tracks[i % h.channel_count as usize].push(sample_from_u8(d[i]));
+            }
+        },
+        wav::BitDepth::Sixteen(d) => {
+            for i in 0..d.len() {
+                tracks[i % h.channel_count as usize].push(sample_from_i16(d[i]));
+            }
+        },
+        wav::BitDepth::TwentyFour(d) => {
+            for i in 0..d.len() {
+                tracks[i % h.channel_count as usize].push(sample_from_i24(d[i]));
+            }
+        },
 
-		_ => (),
-	}
+        _ => (),
+    }
 
-	Ok((h, tracks))
+    Ok((h, tracks))
 }
 
 /// Takes the given track and filename and writes the track data to the wavefile
@@ -135,7 +135,7 @@ pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<
 /// let mut t = TrackT::new();
 ///
 /// for _ in 0..SAMPLE_RATE {
-/// 	t.push(n.process());
+///     t.push(n.process());
 /// }
 ///
 /// tools::write_wav(vec![t], 16, ".junk/some/path/noise.wav");
@@ -143,69 +143,69 @@ pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<
 /// 
 /// [`wav::write_wav`]: https://docs.rs/wav/0.1.1/wav/fn.write_wav.html
 pub fn write_wav(tracks: Vec<TrackT>, bps: u16, d: &mut dyn std::io::Write) -> std::io::Result<()> {
-	use std::io::{Error, ErrorKind};
-	use crate::sample_format::*;
+    use std::io::{Error, ErrorKind};
+    use crate::sample_format::*;
 
-	if tracks.len() == 0 {
-		return Err(Error::new(ErrorKind::Other, "No channels given, aborting."));
-	}
+    if tracks.len() == 0 {
+        return Err(Error::new(ErrorKind::Other, "No channels given, aborting."));
+    }
 
-	let len = tracks[0].len();
+    let len = tracks[0].len();
 
-	for t in &tracks {
-		if t.len() != len {
-			return Err(Error::new(ErrorKind::Other, "Channels have mismatching lengths, aborting."));
-		}
-	}
+    for t in &tracks {
+        if t.len() != len {
+            return Err(Error::new(ErrorKind::Other, "Channels have mismatching lengths, aborting."));
+        }
+    }
 
-	match bps {
-		8 => {
-			let mut v = Vec::new();
+    match bps {
+        8 => {
+            let mut v = Vec::new();
 
-			for i in 0..len {
-				for t in &tracks {
-					v.push(sample_to_u8(t[i]));
-				}
-			}
+            for i in 0..len {
+                for t in &tracks {
+                    v.push(sample_to_u8(t[i]));
+                }
+            }
 
-			wav::write_wav(
-				wav::Header::new(1, tracks.len() as u16, SAMPLE_RATE as u32, bps),
-				wav::BitDepth::Eight(v),
-				d
-			)?;
-		},
-		16 => {
-			let mut v = Vec::new();
+            wav::write_wav(
+                wav::Header::new(1, tracks.len() as u16, SAMPLE_RATE as u32, bps),
+                wav::BitDepth::Eight(v),
+                d
+            )?;
+        },
+        16 => {
+            let mut v = Vec::new();
 
-			for i in 0..len {
-				for t in &tracks {
-					v.push(sample_to_i16(t[i]));
-				}
-			}
+            for i in 0..len {
+                for t in &tracks {
+                    v.push(sample_to_i16(t[i]));
+                }
+            }
 
-			wav::write_wav(
-				wav::Header::new(1, tracks.len() as u16, SAMPLE_RATE as u32, bps),
-				wav::BitDepth::Sixteen(v),
-				d
-			)?;
-		},
-		24 => {
-			let mut v = Vec::new();
+            wav::write_wav(
+                wav::Header::new(1, tracks.len() as u16, SAMPLE_RATE as u32, bps),
+                wav::BitDepth::Sixteen(v),
+                d
+            )?;
+        },
+        24 => {
+            let mut v = Vec::new();
 
-			for i in 0..len {
-				for t in &tracks {
-					v.push(sample_to_i24(t[i]));
-				}
-			}
+            for i in 0..len {
+                for t in &tracks {
+                    v.push(sample_to_i24(t[i]));
+                }
+            }
 
-			wav::write_wav(
-				wav::Header::new(1, tracks.len() as u16, SAMPLE_RATE as u32, bps),
-				wav::BitDepth::TwentyFour(v),
-				d
-			)?;
-		},
-		_ => return Err(Error::new(ErrorKind::Other, "Unsupported bit depth, aborting.")),
-	}
+            wav::write_wav(
+                wav::Header::new(1, tracks.len() as u16, SAMPLE_RATE as u32, bps),
+                wav::BitDepth::TwentyFour(v),
+                d
+            )?;
+        },
+        _ => return Err(Error::new(ErrorKind::Other, "Unsupported bit depth, aborting.")),
+    }
 
-	Ok(())
+    Ok(())
 }

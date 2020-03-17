@@ -39,12 +39,12 @@ pub use lowpass::*;
 /// [CRTP]: https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern
 pub trait Modifier
 {
-	/// Filters the given audio sample.
-	/// 
-	/// # Parameters
-	/// 
-	/// * `x` - The "dry" audio sample before filtering.
-	fn process(&mut self, x: SampleT) -> SampleT;
+    /// Filters the given audio sample.
+    /// 
+    /// # Parameters
+    /// 
+    /// * `x` - The "dry" audio sample before filtering.
+    fn process(&mut self, x: SampleT) -> SampleT;
 }
 
 /// Type alias for a [`Modifier`] wrapped in an [`Rc`].

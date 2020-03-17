@@ -10,14 +10,14 @@ pub struct Zero {
 }
 
 impl Zero {
-	/// Returns new Zero object.
-	pub fn new() -> Self {
-		Zero{}
-	}
+    /// Returns new Zero object.
+    pub fn new() -> Self {
+        Zero{}
+    }
 }
 
 impl Generator for Zero {
-	fn process(&mut self) -> SampleT {
-		0.0
-	}
+    fn process(&mut self) -> SampleT {
+        0.0
+    }
 }

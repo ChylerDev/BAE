@@ -7,15 +7,15 @@ use super::*;
 pub struct Passthrough{}
 
 impl Passthrough {
-	/// Creates new Passthrough object.
-	pub fn new() -> Passthrough {
-		Passthrough {
-		}
-	}
+    /// Creates new Passthrough object.
+    pub fn new() -> Passthrough {
+        Passthrough {
+        }
+    }
 }
 
 impl Modifier for Passthrough {
-	fn process(&mut self, x: SampleT) -> SampleT {
-		x
-	}
+    fn process(&mut self, x: SampleT) -> SampleT {
+        x
+    }
 }

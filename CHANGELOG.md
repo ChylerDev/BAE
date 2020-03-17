@@ -1,6 +1,6 @@
 # BAE Rust Changelog
 
-* Updated `wav` dependency to 0.2
+* Updated `wav` dependency to 0.3, and mirrored the upgrade to relavant systems, moving away from Paths and Files to io::Read and io::Write.
 
 ## Version 0.11.0
 

@@ -4,7 +4,8 @@
 //! [![Documentation](https://docs.rs/bae_rs/badge.svg)](https://docs.rs/bae_rs "bae_rs documentation")
 //! [![License](https://img.shields.io/crates/l/bae_rs.svg)](https://github.com/ChylerDev/BAE#license "bae_rs license")
 //! 
-//! The Broad Audio Engine presents the ability to process sounds and wav files for applications like video games and DAWs.
+//! The Broad Audio Engine presents the ability to process sounds and audio
+//! files for applications like video games and DAWs.
 //! 
 //! This engine was born out of a frustration with other audio systems for their
 //! lack of readable code that results from the large monolithic structures and
@@ -37,8 +38,11 @@
 //! 
 //! ## Dependencies
 //! 
-//! * [`lazy_static`](https://crates.io/crates/lazy_static): For initializing large arrays at run-time for some systems that use a wavetable.
-//! * [`petgrah`](https://crates.io/crates/petgraph): For the graph structure used by the [`ComplexSound`](sounds/complex_sound/struct.ComplexSound.html) struct.
+//! * [`lazy_static`](https://crates.io/crates/lazy_static): For initializing
+//! large arrays at run-time for some systems that use a wavetable.
+//! * [`petgrah`](https://crates.io/crates/petgraph): For the graph structure
+//! used by the [`ComplexSound`](sounds/complex_sound/struct.ComplexSound.html)
+//! struct.
 //! * [`rand`](https://crates.io/crates/rand): To generate white noise.
 //! * [`wav`](https://crates.io/crates/wav): To read and write WAV files.
 //! 
@@ -55,7 +59,8 @@
 //! 
 //! ## License
 //! 
-//! This library is licensed under the MIT license. The loud words can be found [here](LICENSE)
+//! This library is licensed under the MIT license. The loud words can be found
+//! [here](https://github.com/ChylerDev/BAE/blob/master/LICENSE)
 
 #![warn(missing_docs)]
 
