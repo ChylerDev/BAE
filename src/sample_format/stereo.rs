@@ -3,7 +3,7 @@
 //! Module containing type for handling stereo audio data.
 
 use super::*;
-use crate::tools::*;
+use crate::utils::*;
 
 /// Struct representing a stereophonic audio sample.
 #[derive(Copy,Clone,Default)]
@@ -62,8 +62,8 @@ impl Stereo {
 
 impl Panner<Stereo, f32> for Stereo {
     fn to_sample_format(s: SampleT, g: f32) -> Stereo {
-        let l_lerp = tools::lerp(g, -1.0, 1.0, 0.0, -120.0);
-        let r_lerp = tools::lerp(g, -1.0, 1.0, -120.0, 0.0);
+        let l_lerp = utils::lerp(g, -1.0, 1.0, 0.0, -120.0);
+        let r_lerp = utils::lerp(g, -1.0, 1.0, -120.0, 0.0);
 
         Stereo {
             left: db_to_linear(l_lerp as MathT) as SampleT * s,

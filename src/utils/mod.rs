@@ -1,16 +1,17 @@
-//! # Tools
+//! # Utils
 //! 
-//! Module for audio related functions that make life easier.
+//! Module for audio related functions and types that make life easier.
 
 use super::*;
 use std::vec::Vec;
+use std::ops::{Add, Sub, Mul, Div};
 
 pub mod mono_resampler;
 pub use mono_resampler::*;
 
-/// Linear interpolation of a given value.
+/// Linear interpolation (y-y1 = m * (x-x1)) of a given value.
 pub fn lerp<T>(x:T, x1:T, x2:T, y1:T, y2:T) -> T
-    where T: Copy + Sized + std::ops::Add<Output=T> + std::ops::Sub<Output=T> + std::ops::Mul<Output=T> + std::ops::Div<Output=T>
+    where T: Copy + Sized + Add<Output=T> + Sub<Output=T> + Mul<Output=T> + Div<Output=T>
 {
     ((y2 - y1) / (x2 - x1)) * (x - x1) + y1
 }

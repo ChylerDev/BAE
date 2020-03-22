@@ -4,14 +4,14 @@ extern crate bae_rs;
 mod tests {
     use std::fs::File;
     use std::time::Duration;
-    use bae_rs::{generators::*, modifiers::*, sounds::*};
+    use bae_rs::{generators::*, modifiers::*, sounds::*, utils::*};
 
     #[test]
     fn test_blocks() {
         let mut b = StandardBlock::from_generator(Sine::new(440.0));
         let mut s = Sine::new(440.0);
 
-        for _ in 0..bae_rs::tools::seconds_to_samples(std::time::Duration::from_secs_f64(1.0/440.0)) {
+        for _ in 0..seconds_to_samples(std::time::Duration::from_secs_f64(1.0/440.0)) {
             assert!((b.process() - s.process()).abs() < 1e-15);
         }
 
@@ -20,14 +20,14 @@ mod tests {
 
         let mut t = bae_rs::TrackT::new();
 
-        for _ in 0..bae_rs::tools::seconds_to_samples(Duration::from_secs_f64(0.5)) {
+        for _ in 0..seconds_to_samples(Duration::from_secs_f64(0.5)) {
             b.prime_input(n.process());
             t.push(b.process());
         }
 
-        bae_rs::tools::normalize(-1.5, &mut t);
+        normalize(-1.5, &mut t);
 
-        bae_rs::tools::write_wav(vec![t], 24, &mut File::create(".junk/sounds/block_NoiseLP.wav").unwrap())
+        write_wav(vec![t], 24, &mut File::create(".junk/sounds/block_NoiseLP.wav").unwrap())
         .expect("Failed to write wav file");
     }
 
@@ -53,13 +53,13 @@ mod tests {
 
         let mut t = bae_rs::TrackT::new();
 
-        for _ in 0..bae_rs::tools::seconds_to_samples(Duration::from_secs(4)) {
+        for _ in 0..seconds_to_samples(Duration::from_secs(4)) {
             t.push(ss.process(0.0));
         }
 
-        bae_rs::tools::normalize(-1.5, &mut t);
+        normalize(-1.5, &mut t);
 
-        bae_rs::tools::write_wav(vec![t], 24, &mut File::create(".junk/sounds/simple_sounds.wav").unwrap())
+        write_wav(vec![t], 24, &mut File::create(".junk/sounds/simple_sounds.wav").unwrap())
         .expect("Failed to write wav file");
     }
 
@@ -90,13 +90,13 @@ mod tests {
 
         let mut t = bae_rs::TrackT::new();
 
-        for _ in 0..bae_rs::tools::seconds_to_samples(Duration::from_secs(4)) {
+        for _ in 0..seconds_to_samples(Duration::from_secs(4)) {
             t.push(cs.process(0.0));
         }
 
-        bae_rs::tools::normalize(-1.5, &mut t);
+        normalize(-1.5, &mut t);
 
-        bae_rs::tools::write_wav(vec![t], 24, &mut File::create(".junk/sounds/complex_sounds.wav").unwrap())
+        write_wav(vec![t], 24, &mut File::create(".junk/sounds/complex_sounds.wav").unwrap())
         .expect("Failed to write wav file");
     }
 }

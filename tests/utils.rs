@@ -3,7 +3,7 @@ extern crate bae_rs;
 #[cfg(test)]
 mod tests {
     use std::fs::File;
-    use bae_rs::tools::*;
+    use bae_rs::utils::*;
 
     #[test]
     fn test_write_wav() {

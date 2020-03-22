@@ -3,7 +3,7 @@
 //! A wave data player.
 
 use super::*;
-use crate::tools::mono_resampler::*;
+use crate::utils::mono_resampler::*;
 
 /// Struct for playing wave files.
 #[derive(Clone)]
@@ -14,7 +14,7 @@ pub struct MonoWav {
 impl MonoWav {
     /// Constructs from a given path.
     pub fn from_source(s: &mut dyn std::io::Read) -> Self {
-        let (h, t) = tools::read_wav(s)
+        let (h, t) = utils::read_wav(s)
         .expect("File could not be read");
 
         MonoWav::from_track(h.sampling_rate as MathT, t.first().expect("No audio data read").clone())

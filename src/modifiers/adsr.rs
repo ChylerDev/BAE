@@ -2,7 +2,7 @@
 
 use super::*;
 use std::time::Duration;
-use crate::tools::*;
+use crate::utils::*;
 
 /// Enum of the states an ADSR filter exists in.
 pub enum ADSRState {

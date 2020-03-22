@@ -49,7 +49,7 @@ mod tests {
 
     fn run_generator(g: &mut dyn bae_rs::generators::Generator, file:&str)
     {
-        use bae_rs::tools::write_wav;
+        use bae_rs::utils::write_wav;
 
         let mut t = bae_rs::TrackT::new();
     

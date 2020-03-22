@@ -4,7 +4,7 @@ extern crate bae_rs;
 mod tests {
     use std::fs::File;
     use std::time::Duration;
-    use bae_rs::{modifiers::*, generators::*, tools::*};
+    use bae_rs::{modifiers::*, generators::*, utils::*};
 
     const FILE_PREFIX: &'static str = ".junk/modifiers/";
 
@@ -29,7 +29,7 @@ mod tests {
         }
 
         let f = ".junk/modifiers/adsr.wav";
-        bae_rs::tools::write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
+        write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
 
         // bae_rs::tools::filter_gain(
         //     || ADSR::new(
@@ -77,7 +77,7 @@ mod tests {
         }
 
         let f = ".junk/modifiers/echo.wav";
-        bae_rs::tools::write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
+        write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
     }
 
     #[test]
@@ -102,7 +102,7 @@ mod tests {
         }
 
         let f = ".junk/modifiers/envelope.wav";
-        bae_rs::tools::write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
+        write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
     }
 
     #[test]
@@ -144,7 +144,7 @@ mod tests {
         }
 
         let f = ".junk/modifiers/generic.wav";
-        bae_rs::tools::write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
+        write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
     }
 
     #[test]
@@ -152,8 +152,6 @@ mod tests {
         let mut hp = HighPass::new(440.0, 1.0);
 
         run_modifier(&mut hp, "highpass.wav");
-
-        // bae_rs::tools::filter_gain(|| HighPass::new(4400.0, 1.0), 512);
     }
 
     #[test]
@@ -169,7 +167,7 @@ mod tests {
         }
 
         let f = ".junk/modifiers/lowpass.wav";
-        bae_rs::tools::write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
+        write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
     }
 
     fn run_modifier(m: &mut dyn bae_rs::modifiers::Modifier, file:&str)
@@ -190,6 +188,6 @@ mod tests {
         let mut f = String::from(FILE_PREFIX);
         f.push_str(file);
 
-        bae_rs::tools::write_wav(vec![t], 24, &mut File::create(f.as_str()).unwrap()).unwrap();
+        write_wav(vec![t], 24, &mut File::create(f.as_str()).unwrap()).unwrap();
     }
 }
