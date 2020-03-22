@@ -25,4 +25,4 @@ is-it-maintained-open-issues = { repository = "ChylerDev/BAE" }
 
 maintenance = { status = "actively-developed" }
 
-gitlab = { repository = "ChyleDev/bae_copy" }
+gitlab = { repository = "ChylerDev/bae_copy" }
