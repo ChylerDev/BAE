@@ -1,5 +1,7 @@
 # BAE Rust Changelog
 
+## Version 0.12.0
+
 * Renamed `tools` submodule to `utils`.
 * Updated `MonoResampler` interface.
 * Updated documentation.
