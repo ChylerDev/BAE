@@ -62,7 +62,7 @@ pub fn normalize(db: MathT, t: &mut TrackT) {
     }
 }
 
-/// Takes the given path and reads the track data from the wavefile at the given
+/// Takes the given path and reads the track data from the WAV file at the given
 /// location.
 /// 
 /// # Parameters/Returns
@@ -111,8 +111,8 @@ pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<
     Ok((h, tracks))
 }
 
-/// Takes the given track and filename and writes the track data to the wavefile
-/// at the given location with a given bitdepth.
+/// Takes the given track and filename and writes the track data to the WAV file
+/// at the given location with a given bit-depth.
 /// 
 /// # Parameters
 /// 
@@ -130,6 +130,7 @@ pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<
 /// # Example
 /// 
 /// ```
+/// # use std::fs::File;
 /// use bae_rs::{*,generators::*};
 /// let mut n = Noise::new();
 /// let mut t = TrackT::new();
@@ -138,7 +139,7 @@ pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<
 ///     t.push(n.process());
 /// }
 ///
-/// tools::write_wav(vec![t], 16, ".junk/some/path/noise.wav");
+/// tools::write_wav(vec![t], 16, &mut File::create(".junk/some/path/noise.wav").unwrap());
 /// ```
 /// 
 /// [`wav::write_wav`]: https://docs.rs/wav/0.1.1/wav/fn.write_wav.html
