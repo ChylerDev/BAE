@@ -15,8 +15,8 @@ pub struct MonoResampler {
     ind: IndexT,
     inc: SampleT,
     speed: MathT,
-    loop_start: u64,
-    loop_end: u64,
+    loop_start: usize,
+    loop_end: usize,
 }
 
 impl MonoResampler {
@@ -30,7 +30,7 @@ impl MonoResampler {
     /// * `loop_end` - The end point of looping. If this value is 0, no looping is assumed.
     /// 
     /// If `loop_end` is less than `loop_start`, they are swapped.
-    pub fn new(data:TrackT, source_sample_rate: u64, mut loop_start: u64, mut loop_end: u64) -> Self {
+    pub fn new(data:TrackT, source_sample_rate: MathT, mut loop_start: usize, mut loop_end: usize) -> Self {
         if loop_end < loop_start {
             std::mem::swap(&mut loop_start, &mut loop_end);
         }
@@ -61,8 +61,6 @@ impl MonoResampler {
             return SampleT::default();
         }
 
-        let frac: SampleT = self.ind.fract();
-
         let p1: SampleT = if self.ind.trunc() as usize + 1 >= self.data.len() && self.loop_end != 0 {
             self.data[(self.ind - (self.loop_end - self.loop_start) as IndexT) as usize]
         } else if self.ind.trunc() as usize + 1 >= self.data.len() {
@@ -74,7 +72,7 @@ impl MonoResampler {
         let x1: SampleT = self.data[self.ind.trunc() as usize];
         let x2: SampleT = p1;
 
-        let y = x1 + frac as SampleT * (x2 - x1);
+        let y = x1 + self.ind.fract() as SampleT * (x2 - x1);
 
         self.ind += self.inc * self.speed as SampleT;
 
