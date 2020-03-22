@@ -24,21 +24,21 @@ mod tests {
 
         let sam = vec![0.0, 1.0, 2.0, 3.0];
 
-        let mut r = MonoResampler::new(sam.clone(), bae_rs::SAMPLE_RATE/2, 0,0);
+        let mut r = MonoResampler::new(sam.clone(), bae_rs::SAMPLE_RATE as bae_rs::MathT / 2.0, 0,0);
         for i in 0..7 {
             let s = r.process();
 
             assert!(f32_equal(s, i as SampleT/2.0));
         }
 
-        let mut r = MonoResampler::new(sam.clone(), bae_rs::SAMPLE_RATE * 2, 0,0);
+        let mut r = MonoResampler::new(sam.clone(), bae_rs::SAMPLE_RATE as bae_rs::MathT * 2.0, 0,0);
         for i in 0..2 {
             let s = r.process();
 
             assert!(f32_equal(s, (i*2) as SampleT));
         }
 
-        let mut r = MonoResampler::new(sam.clone(), bae_rs::SAMPLE_RATE, 0,0);
+        let mut r = MonoResampler::new(sam.clone(), bae_rs::SAMPLE_RATE as bae_rs::MathT, 0,0);
         r.set_playback_speed(0.5);
         for i in 0..7 {
             let s = r.process();
@@ -46,7 +46,7 @@ mod tests {
             assert!(f32_equal(s, i as SampleT/2.0));
         }
 
-        let mut r = MonoResampler::new(sam.clone(), bae_rs::SAMPLE_RATE * 2, 0,0);
+        let mut r = MonoResampler::new(sam.clone(), bae_rs::SAMPLE_RATE as bae_rs::MathT * 2.0, 0,0);
         r.set_playback_speed(0.5);
         for i in sam {
             let s = r.process();
