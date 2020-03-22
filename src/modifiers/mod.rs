@@ -30,13 +30,8 @@ pub use lowpass::*;
 
 /// The `Modifier` trait defines types that filter audio samples.
 /// 
-/// There is a template parameter to allow for [CRTP], which is used to
-/// guarantee that any type that implements [`Modifier`] also implements
-/// [`Clone`].
-/// 
 /// [`Modifier`]: trait.Modifier.html
 /// [`Clone`]: https://doc.rust-lang.org/std/clone/trait.Clone.html
-/// [CRTP]: https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern
 pub trait Modifier
 {
     /// Filters the given audio sample.

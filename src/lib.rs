@@ -66,7 +66,7 @@
 
 use std::vec::Vec;
 
-/// Type to perform infrequenty mathematic operations with when accuracy is needed.
+/// Type to perform infrequent mathematical operations with when accuracy is needed.
 pub type MathT = f64;
 /// Type to calculate samples with.
 pub type SampleT = f32;
