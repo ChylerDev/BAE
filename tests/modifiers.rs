@@ -30,16 +30,6 @@ mod tests {
 
         let f = ".junk/modifiers/adsr.wav";
         write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
-
-        // bae_rs::tools::filter_gain(
-        //     || ADSR::new(
-        //         Duration::from_secs_f64(0.03125),
-        //         Duration::from_secs_f64(0.125),
-        //         bae_rs::linear_db(0.5),
-        //         Duration::from_secs_f64(0.5)
-        //     ),
-        //     512
-        // );
     }
 
     #[test]
@@ -54,8 +44,6 @@ mod tests {
         run_modifier(&mut bp1, f1);
         run_modifier(&mut bp2, f2);
         run_modifier(&mut bp3, f3);
-
-        // bae_rs::tools::filter_gain(|| BandPass::from_corners((200.0,4000.0)), 512);
     }
 
     #[test]
