@@ -132,7 +132,7 @@ pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<
 /// 
 /// ```
 /// # use std::fs::File;
-/// use bae_rs::{*,generators::*};
+/// use bae_rs::{*,generators::*, utils::*};
 /// let mut n = Noise::new();
 /// let mut t = TrackT::new();
 ///
@@ -140,7 +140,7 @@ pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<
 ///     t.push(n.process());
 /// }
 ///
-/// tools::write_wav(vec![t], 16, &mut File::create(".junk/some/path/noise.wav").unwrap());
+/// write_wav(vec![t], 16, &mut File::create(".junk/some/path/noise.wav").unwrap());
 /// ```
 /// 
 /// [`wav::write_wav`]: https://docs.rs/wav/0.1.1/wav/fn.write_wav.html

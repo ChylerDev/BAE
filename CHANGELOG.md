@@ -1,6 +1,10 @@
 # BAE Rust Changelog
 
-* Updated `wav` dependency to 0.3, and mirrored the upgrade to relavant systems, moving away from Paths and Files to io::Read and io::Write.
+* Renamed `tools` submodule to `utils`.
+* Updated `MonoResampler` interface.
+* Updated documentation.
+* Converted tabs to spaces.
+* Updated `wav` dependency to 0.3, and mirrored the upgrade to relevant systems, moving away from `Paths` and `Files` to `std::io::Read` and `std::io::Write`.
 
 ## Version 0.11.0
 

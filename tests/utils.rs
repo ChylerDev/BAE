@@ -20,7 +20,6 @@ mod tests {
     #[test]
     fn test_resampler() {
         use bae_rs::SampleT;
-        use bae_rs::tools::*;
 
         let sam = vec![0.0, 1.0, 2.0, 3.0];
 
