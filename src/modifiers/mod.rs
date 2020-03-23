@@ -4,7 +4,7 @@
 //! bandpass, echo, delay, etc.
 
 use super::*;
-use std::rc::Rc;
+use std::sync::Arc;
 
 pub mod adsr;
 pub mod bandpass;
@@ -42,8 +42,7 @@ pub trait Modifier
     fn process(&mut self, x: SampleT) -> SampleT;
 }
 
-/// Type alias for a [`Modifier`] wrapped in an [`Rc`].
+/// Type alias for a [`Modifier`] wrapped in a smart pointer.
 /// 
 /// [`Modifier`]: trait.Modifier.html
-/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-pub type ModifierRc = Rc<dyn Modifier>;
+pub type ModifierSP = Arc<dyn Modifier>;

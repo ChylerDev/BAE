@@ -8,10 +8,14 @@
 //! [`Modifier`]: ../../modifiers/trait.Modifier.html
 
 use super::*;
-use std::rc::Rc;
+
+use std::sync::Arc;
+use generators::GeneratorSP;
+use modifiers::ModifierSP;
 
 /// Type defining the closure that combines inputted SampleT samples from the
-/// outputs of the [`Generator`]s and [`Modifier`]s of the cointaining [`StandardBlock`]
+/// outputs of the [`Generator`]s and [`Modifier`]s of the containing
+/// [`StandardBlock`].
 /// 
 /// [`Generator`]: ../../generators/trait.Generator.html
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
@@ -21,7 +25,7 @@ pub type InterBase = dyn FnMut(SampleT, SampleT) -> SampleT;
 /// Reference-counted wrapper for the closure [`InterBase`]
 /// 
 /// [`InterBase`]: type.InterBase.html
-pub type Inter = Rc<InterBase>;
+pub type Inter = Arc<InterBase>;
 
 /// Struct used for generalizing the structure of and abstracting the [`Sound`]
 /// struct. This allows us to create complex sounds as a graph of [`StandardBlock`]s,
@@ -30,21 +34,19 @@ pub type Inter = Rc<InterBase>;
 /// [`Generator`] and [`Modifier`] output. See [`Sound`] documentation for more info.
 /// 
 /// Internally, the [`Generator`], [`Modifier`], and [`Inter`] are stored wrapped
-/// within an [`Rc`] (note: may become [`Arc`] depending on future needs of the
-/// library). This means that when you clone a [`StandardBlock`], the internal objects
-/// are *not* cloned. Rather, their reference count is incremented, and the
-/// wrapped objects stay where they are.
+/// within an [`Arc`]. This means that when you clone a [`StandardBlock`], the
+/// internal objects are *not* cloned. Rather, their reference count is incremented,
+/// and the wrapped objects stay where they are.
 /// 
 /// [`Generator`]: ../../generators/trait.Generator.html
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
 /// [`StandardBlock`]: struct.StandardBlock.html
 /// [`Sound`]: struct.Sound.html
 /// [`Inter`]: type.Inter.html
-/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 /// [`Arc`]: https://doc.rust-lang.org/std/sync/struct.Arc.html
 pub struct StandardBlock {
-    g: generators::GeneratorRc,
-    m: modifiers::ModifierRc,
+    g: GeneratorSP,
+    m: ModifierSP,
     i: Inter,
     input: SampleT,
 }
@@ -69,8 +71,8 @@ impl StandardBlock {
               U: 'static + modifiers::Modifier
     {
         StandardBlock {
-            g: Rc::new(g),
-            m: Rc::new(m),
+            g: Arc::new(g),
+            m: Arc::new(m),
             i,
             input: SampleT::default(),
         }
@@ -92,8 +94,8 @@ impl StandardBlock {
         where T: 'static + generators::Generator
     {
         StandardBlock {
-            g: Rc::new(g),
-            m: Rc::new(
+            g: Arc::new(g),
+            m: Arc::new(
                 modifiers::Passthrough::new()
             ),
             i: Self::generator_passthrough(),
@@ -117,10 +119,10 @@ impl StandardBlock {
         where U: 'static + modifiers::Modifier
     {
         StandardBlock {
-            g: Rc::new(
+            g: Arc::new(
                 generators::Zero::new()
             ),
-            m: Rc::new(m),
+            m: Arc::new(m),
             i: Self::modifier_passthrough(),
             input: SampleT::default()
         }
@@ -129,7 +131,7 @@ impl StandardBlock {
     /// Creates the default interactor which simply multiplies the two passed
     /// samples together.
     pub fn default_interactor() -> Inter {
-        Rc::new(|ge, mo| ge * mo)
+        Arc::new(|ge, mo| ge * mo)
     }
 
     /// Creates a passthrough interactor which passes the [`Generator`] sample
@@ -137,7 +139,7 @@ impl StandardBlock {
     /// 
     /// [`Generator`]: ../../generators/trait.Generator.html
     pub fn generator_passthrough() -> Inter {
-        Rc::new(|ge, _| ge)
+        Arc::new(|ge, _| ge)
     }
 
     /// Creates a passthrough interactor which passes the [`Modifier`] sample
@@ -145,38 +147,34 @@ impl StandardBlock {
     /// 
     /// [`Modifier`]: ../../modifiers/trait.Modifier.html
     pub fn modifier_passthrough() -> Inter {
-        Rc::new(|_, mo| mo)
+        Arc::new(|_, mo| mo)
     }
 
-    /// Returns a reference to the [`Rc`]-wrapped [`Generator`].
+    /// Returns a reference to the [`Generator`] wrapped in a smart pointer.
     /// 
-    /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
     /// [`Generator`]: ../../generators/trait.Generator.html
-    pub fn get_g(&self) -> &generators::GeneratorRc {
+    pub fn get_g(&self) -> &generators::GeneratorSP {
         &self.g
     }
 
-    /// Returns a reference to the [`Rc`]-wrapped [`Modifier`].
+    /// Returns a reference to the [`Modifier`] wrapped in a smart pointer.
     /// 
-    /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
     /// [`Modifier`]: ../../modifiers/trait.Modifier.html
-    pub fn get_m(&self) -> &modifiers::ModifierRc {
+    pub fn get_m(&self) -> &modifiers::ModifierSP {
         &self.m
     }
 
-    /// Returns a mutable reference to the [`Rc`]-wrapped [`Generator`].
+    /// Returns a mutable reference to the [`Generator`] wrapped in a smart pointer.
     /// 
-    /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
     /// [`Generator`]: ../../generators/trait.Generator.html
-    pub fn get_g_mut(&mut self) -> &mut generators::GeneratorRc {
+    pub fn get_g_mut(&mut self) -> &mut generators::GeneratorSP {
         &mut self.g
     }
 
-    /// Returns a mutable reference to the [`Rc`]-wrapped [`Modifier`].
+    /// Returns a mutable reference to the [`Modifier`] wrapped in a smart pointer.
     /// 
-    /// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
     /// [`Modifier`]: ../../modifiers/trait.Modifier.html
-    pub fn get_m_mut(&mut self) -> &mut modifiers::ModifierRc {
+    pub fn get_m_mut(&mut self) -> &mut modifiers::ModifierSP {
         &mut self.m
     }
 }
@@ -187,9 +185,9 @@ impl Block for StandardBlock {
     }
 
     fn process(&mut self) -> SampleT {
-        let y = Rc::get_mut(&mut self.i).unwrap()(
-            Rc::get_mut(&mut self.g).unwrap().process(),
-            Rc::get_mut(&mut self.m).unwrap().process(self.input)
+        let y = Inter::get_mut(&mut self.i).unwrap()(
+            GeneratorSP::get_mut(&mut self.g).unwrap().process(),
+            ModifierSP::get_mut(&mut self.m).unwrap().process(self.input)
         );
 
         self.input = SampleT::default();
@@ -198,8 +196,7 @@ impl Block for StandardBlock {
     }
 }
 
-/// Alias for an [`Rc`]-wrapped [`StandardBlock`] object.
+/// Alias for a [`StandardBlock`] object wrapped in a smart pointer.
 /// 
-/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
 /// [`StandardBlock`]: struct.StandardBlock.html
-pub type BlockRc = Rc<StandardBlock>;
+pub type StandardBlockSP = Arc<StandardBlock>;

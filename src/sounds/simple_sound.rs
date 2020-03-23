@@ -10,9 +10,9 @@
 
 use super::*;
 
-use std::rc::Rc;
+use std::sync::Arc;
 
-/// Type implementing the ablitiy to run multiple a single [`Generator`] by a
+/// Type implementing the ability to run multiple a single [`Generator`] by a
 /// given list of [`Modifier`]s operated in series. This allows for simple and
 /// fast processing of the structure's elements while still allowing for a wide
 /// range of complex sounds.
@@ -21,8 +21,8 @@ use std::rc::Rc;
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
 #[derive(Clone)]
 pub struct SimpleSound {
-    generator: BasicBlockRc,
-    modifier_list: Vec<BasicBlockRc>,
+    generator: BlockSP,
+    modifier_list: Vec<BlockSP>,
     input_gain: SampleT,
     output_gain: SampleT,
     id: Option<usize>,
@@ -40,7 +40,7 @@ impl SimpleSound {
     /// [`Modifier`]: ../../modifiers/trait.Modifier.html
     /// [`add_modifier`]: struct.SimpleSound.html#method.add_modifier
     /// [`extend_modifiers`]: struct.SimpleSound.html#method.extend_modifiers
-    pub fn new(input_gain: MathT, output_gain: MathT, generator: BasicBlockRc) -> Self {
+    pub fn new(input_gain: MathT, output_gain: MathT, generator: BlockSP) -> Self {
         SimpleSound {
             generator,
             modifier_list: Vec::new(),
@@ -56,7 +56,7 @@ impl SimpleSound {
     /// 
     /// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
     /// [`Modifier`]: ../../modifiers/trait.Modifier.html
-    pub fn add_modifier<M>(&mut self, m: BasicBlockRc)
+    pub fn add_modifier<M>(&mut self, m: BlockSP)
         where M: 'static + Clone
     {
         self.modifier_list.push(m);
@@ -66,7 +66,7 @@ impl SimpleSound {
     /// 
     /// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
     /// [`Modifier`]: ../../modifiers/trait.Modifier.html
-    pub fn extend_modifiers(&mut self, m_list: Vec<BasicBlockRc>) {
+    pub fn extend_modifiers(&mut self, m_list: Vec<BlockSP>) {
         self.modifier_list.extend(m_list);
     }
 
@@ -121,7 +121,7 @@ impl Sound for SimpleSound {
             return Default::default();
         }
 
-        let mut out = if let Some(b) = Rc::get_mut(&mut self.generator) {
+        let mut out = if let Some(b) = BlockSP::get_mut(&mut self.generator) {
             b.prime_input(input * self.input_gain);
             b.process()
         } else {
@@ -129,7 +129,7 @@ impl Sound for SimpleSound {
         };
 
         for m in &mut self.modifier_list {
-            if let Some(m) = Rc::get_mut(m) {
+            if let Some(m) = BlockSP::get_mut(m) {
                 m.prime_input(out);
                 out = m.process();
             }
@@ -147,8 +147,7 @@ impl Sound for SimpleSound {
     }
 }
 
-/// Alias for a [`SimpleSound`] wrapped in an [`Rc`].
+/// Alias for a [`SimpleSound`] wrapped in a smart pointer.
 /// 
 /// [`SimpleSound`]: struct.SimpleSound.html
-/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-pub type SimpleSoundRc = Rc<SimpleSound>;
+pub type SimpleSoundSP = Arc<SimpleSound>;

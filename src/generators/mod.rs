@@ -4,7 +4,7 @@
 //! sawtooth, square, white noise, and more.
 
 use super::*;
-use std::rc::Rc;
+use std::sync::Arc;
 
 pub mod zero;
 pub mod noise;
@@ -50,8 +50,7 @@ pub trait Generator
     fn process(&mut self) -> SampleT;
 }
 
-/// Type alias for a [`Generator`] wrapped in an [`Rc`].
+/// Type alias for a [`Generator`] wrapped in a smart pointer.
 /// 
 /// [`Generator`]: trait.Generator.html
-/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-pub type GeneratorRc = Rc<dyn Generator>;
+pub type GeneratorSP = Arc<dyn Generator>;

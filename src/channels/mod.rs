@@ -6,7 +6,7 @@
 //! [`Sound`]: ../sounds/trait.Sound.html
 
 use super::*;
-use std::rc::Rc;
+use std::sync::Arc;
 use std::time::Duration;
 use crate::sounds::*;
 
@@ -36,7 +36,7 @@ pub trait Channel {
     /// 
     /// [`Channel`]: trait.Channel.html
     /// [`Sound`]: ../sounds/trait.Sound.html
-    fn add_sound(&mut self, sound: &mut SoundRc);
+    fn add_sound(&mut self, sound: &mut SoundSP);
 
     /// Removes a [`Sound`] from the [`Channel`].
     /// 
@@ -47,8 +47,7 @@ pub trait Channel {
     fn remove_sound(&mut self, id: usize);
 }
 
-/// Alias for a [`Channel`] wrapped in an [`Rc`].
+/// Alias for a [`Channel`] wrapped in a smart pointer.
 /// 
 /// [`Channel`]: trait.Channel.html
-/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-pub type ChannelRc = Rc<dyn Channel>;
+pub type ChannelSP = Arc<dyn Channel>;

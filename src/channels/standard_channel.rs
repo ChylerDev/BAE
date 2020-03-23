@@ -2,7 +2,7 @@
 
 use super::*;
 
-use std::rc::Rc;
+use std::sync::Arc;
 use std::collections::HashMap;
 
 /// Standard implementation of the [`Channel`] trait.
@@ -11,7 +11,7 @@ use std::collections::HashMap;
 #[derive(Clone)]
 pub struct StandardChannel {
     output: TrackT,
-    sounds: HashMap<usize, SoundRc>,
+    sounds: HashMap<usize, SoundSP>,
     gain: SampleT,
     id_counter: usize
 }
@@ -59,16 +59,16 @@ impl Channel for StandardChannel {
 
         for sample in &mut self.output {
             for mut sound in &mut self.sounds {
-                *sample += Rc::get_mut(&mut sound.1).unwrap().process(Default::default());
+                *sample += Arc::get_mut(&mut sound.1).unwrap().process(Default::default());
             }
 
             *sample *= self.gain;
         }
     }
 
-    fn add_sound(&mut self, sound: &mut SoundRc) {
+    fn add_sound(&mut self, sound: &mut SoundSP) {
         let id = self.get_id();
-        Rc::get_mut(sound).unwrap().register(id);
+        SoundSP::get_mut(sound).unwrap().register(id);
         self.sounds.insert(id, sound.clone());
     }
 

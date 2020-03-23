@@ -7,7 +7,7 @@
 //! [`Modifier`]: ../modifiers/trait.Modifier.html
 
 use super::*;
-use std::rc::Rc;
+use std::sync::Arc;
 
 pub mod standard_block;
 pub mod complex_sound;
@@ -37,6 +37,11 @@ pub trait Block {
     fn process(&mut self) -> SampleT;
 }
 
+/// Alias for a [`Block`] object wrapped in a smart pointer.
+/// 
+/// [`Block`]: trait.Block.html
+pub type BlockSP = Arc<dyn Block>;
+
 /// This trait defines the interface that anything producing sound that will be
 /// output to a [`Channel`] must define.
 /// 
@@ -53,7 +58,7 @@ pub trait Sound {
     /// Returns the pause state of the sound.
     fn is_paused(&self) -> bool;
 
-    /// Toggels the mute state of the sound. If the sound is muted, the internal
+    /// Toggles the mute state of the sound. If the sound is muted, the internal
     /// structures are still processed during a call to [`process`], but 
     /// [`Default::default()`] is returned.
     /// 
@@ -107,18 +112,11 @@ pub trait Sound {
     fn get_id(&self) -> Option<usize>;
 }
 
-/// Alias for an [`Rc`]-wrapped [`Block`] object.
-/// 
-/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-/// [`Block`]: trait.Block.html
-pub type BasicBlockRc = Rc<dyn Block>;
-
-/// Type alias for a [`Sound`] wrapped in an [`Rc`]. Types implementing
+/// Type alias for a [`Sound`] wrapped in a smart pointer. Types implementing
 /// [`Sound`] can define their own custom name for this type that is
-/// interchangable, (e.g. [`ComplexSoundRc`] for [`ComplexSound`]).
+/// interchangeable, (e.g. [`ComplexSoundSP`] for [`ComplexSound`]).
 /// 
 /// [`Sound`]: trait.Sound.html
-/// [`Rc`]:https://doc.rust-lang.org/std/rc/struct.Rc.html
-/// [`ComplexSoundRc`]: ../complex_sound/type.ComplexSoundRc.html
+/// [`ComplexSoundSP`]: ../complex_sound/type.ComplexSoundSP.html
 /// [`ComplexSound`]: ../complex_sound/struct.ComplexSound.html
-pub type SoundRc = Rc<dyn Sound>;
+pub type SoundSP = Arc<dyn Sound>;

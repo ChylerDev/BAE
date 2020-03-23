@@ -8,14 +8,14 @@
 //! [`Modifier`]: ../../modifiers/trait.Modifier.html
 
 use super::*;
-use std::rc::Rc;
+use std::sync::Arc;
 use std::collections::VecDeque;
 use petgraph::graph;
 
 /// Alias for the graph type used by [`ComplexSound`].
 /// 
 /// [`ComplexSound`]: struct.ComplexSound.html
-pub type Graph = graph::DiGraph<BasicBlockRc, ()>;
+pub type Graph = graph::DiGraph<BlockSP, ()>;
 
 /// Alias for the nodes of the graph used by [`ComplexSound`].
 /// 
@@ -28,7 +28,7 @@ pub type GraphNode = graph::NodeIndex;
 pub type ProcessOrder = VecDeque<GraphNode>;
 
 /// Type implementing the ability to run multiple [`Generator`]s and
-/// [`Modifier`]s within a single object, granting the ability to creat complex
+/// [`Modifier`]s within a single object, granting the ability to create complex
 /// systems like those found in digital synthesizers.
 /// 
 /// [`Generator`]: ../../generators/trait.Generator.html
@@ -52,14 +52,14 @@ impl ComplexSound {
     pub fn new(input_gain: MathT, output_gain: MathT) -> Self {
         let mut graph = Graph::new();
         let input_gain = graph.add_node(
-            Rc::new(
+            Arc::new(
                 StandardBlock::from_modifier(
                     modifiers::Gain::new(input_gain as SampleT)
                 )
             )
         );
         let output_gain = graph.add_node(
-            Rc::new(
+            Arc::new(
                 StandardBlock::from_modifier(
                     modifiers::Gain::new(output_gain as SampleT)
                 )
@@ -94,14 +94,14 @@ impl ComplexSound {
     }
 
     /// Adds a new node to the [`Graph`], using the given [`Block`] for the node
-    /// value. Returns the [`GraphNode`] cointaing the [`Block`] for later use
+    /// value. Returns the [`GraphNode`] containing the [`Block`] for later use
     /// with [`add_connection`] and [`remove_connection`].
     /// 
     /// [`Graph`]: type.Graph.html
     /// [`Block`]: ../trait.Block.html
     /// [`add_connection]: struct.ComplexSound.html#method.add_connection
     /// [`remove_connection]: struct.ComplexSound.html#method.remove_connection
-    pub fn add_block(&mut self, block: BasicBlockRc) -> GraphNode {
+    pub fn add_block(&mut self, block: BlockSP) -> GraphNode {
         self.graph.add_node(block)
     }
 
@@ -210,18 +210,18 @@ impl Sound for ComplexSound {
 
         let mut out = Default::default();
 
-        Rc::get_mut(
+        BlockSP::get_mut(
             self.graph.node_weight_mut(self.input_gain).unwrap()
         ).unwrap().prime_input(input);
 
         for b in &self.process_order {
-            let block = Rc::get_mut(self.graph.node_weight_mut(*b).unwrap()).unwrap();
+            let block = BlockSP::get_mut(self.graph.node_weight_mut(*b).unwrap()).unwrap();
             out = block.process();
 
             let mut neighbors = self.graph.neighbors(*b).detach();
 
             while let Some(t) = neighbors.next(&self.graph) {
-                Rc::get_mut(self.graph.node_weight_mut(t.1).unwrap()).unwrap().
+                BlockSP::get_mut(self.graph.node_weight_mut(t.1).unwrap()).unwrap().
                 prime_input(out);
             }
         }
@@ -238,8 +238,7 @@ impl Sound for ComplexSound {
     }
 }
 
-/// Type alias for a [`ComplexSound`] wrapped in an [`Rc`].
+/// Type alias for a [`ComplexSound`] wrapped in a smart pointer.
 /// 
 /// [`ComplexSound`]: struct.ComplexSound.html
-/// [`Rc`]: https://doc.rust-lang.org/std/rc/struct.Rc.html
-pub type ComplexSoundRc = Rc<ComplexSound>;
+pub type ComplexSoundSP = Arc<ComplexSound>;

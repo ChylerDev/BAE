@@ -2,6 +2,7 @@ extern crate bae_rs;
 
 #[cfg(test)]
 mod tests {
+    use std::sync::Arc;
     use std::fs::File;
     use std::time::Duration;
     use bae_rs::{generators::*, modifiers::*, sounds::*, utils::*};
@@ -34,16 +35,16 @@ mod tests {
     #[test]
     fn test_simple_sounds() {
         let mut ss = SimpleSound::new(1.0, 0.5,
-            BlockRc::new(StandardBlock::from_generator(Noise::new()))
+            Arc::new(StandardBlock::from_generator(Noise::new()))
         );
         ss.extend_modifiers(
             vec![
-                BlockRc::new(
+                Arc::new(
                     StandardBlock::from_modifier(
                         LowPass::new(440.0, 1.0)
                     )
                 ),
-                BlockRc::new(
+                Arc::new(
                     StandardBlock::from_modifier(
                         HighPass::new(220.0, 1.0)
                     )
@@ -68,17 +69,17 @@ mod tests {
         let mut cs = ComplexSound::new(1.0, 1.0);
 
         let n = cs.add_block(
-            BlockRc::new(
+            Arc::new(
                 StandardBlock::from_generator(Noise::new())
             )
         );
         let lp = cs.add_block(
-            BlockRc::new(
+            Arc::new(
                 StandardBlock::from_modifier(LowPass::new(440.0, 1.0))
             )
         );
         let hp = cs.add_block(
-            BlockRc::new(
+            Arc::new(
                 StandardBlock::from_modifier(HighPass::new(220.0, 1.0))
             )
         );
