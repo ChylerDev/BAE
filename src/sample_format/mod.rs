@@ -1,7 +1,7 @@
 //! # Sample Format
-//! 
+//!
 //! Module containing different output formats like stereo, 2.1, 5.1, 7.1, etc.
-//! 
+//!
 //! All functions that deal with converting raw bytes to numeric types assume
 //! the bytes are in little-endian format.
 
@@ -10,18 +10,35 @@ use super::*;
 pub mod stereo;
 pub use stereo::*;
 
-/// Trait implementing the ability to pan a monophonic sample into a ployphonic
+use std::ops::*;
+
+/// Trait implementing the ability to perform math operations with a polyphonic
+/// sample format and a monophonic sample
+pub trait SampleFormat:
+    Neg<Output=Self> +
+    Add<Self, Output=Self> + AddAssign<Self> +
+    Sub<Self, Output=Self> + SubAssign<Self> +
+    Mul<Self, Output=Self> + MulAssign<Self> +
+    Mul<SampleT, Output=Self> + MulAssign<SampleT> +
+    Mul<MathT, Output=Self> + MulAssign<MathT> +
+    From<SampleT> + Into<SampleT>
+{
+    /// Creates an object from a single monophonic sample.
+    fn from_mono(x:SampleT) -> Self;
+
+    /// Converts the given polyphonic sample to a monophonic sample.
+    fn into_mono(self) -> SampleT;
+}
+
+/// Trait implementing the ability to pan a monophonic sample into a polyphonic
 /// sample. This is generic for the polyphonic type and the type that defines
 /// how it is panned. To see an implementation, see
 /// [`Stereo::to_sample_format`].
-/// 
+///
 /// [`Stereo::to_sample_format`]: stereo/struct.Stereo.html#method.to_sample_format
-pub trait Panner<SF,G>
-    where SF: Panner<SF,G>,
-          G: Sized
-{
+pub trait Panner<G>: SampleFormat {
     /// Converts the monophonic sample into a polyphonic sample.
-    fn to_sample_format(s: SampleT, g: G) -> SF;
+    fn to_sample_format(s: SampleT, g: G) -> Self;
 }
 
 /// Converts a u8 8-bit sample to a `SampleT`.

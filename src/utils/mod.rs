@@ -16,6 +16,31 @@ pub fn lerp<T>(x:T, x1:T, x2:T, y1:T, y2:T) -> T
     ((y2 - y1) / (x2 - x1)) * (x - x1) + y1
 }
 
+fn clamp<T>(x:T, x1:T, x2:T) -> T
+    where T: Copy + Sized + PartialOrd
+{
+    if x1 > x2 {
+        std::mem::swap(&mut x1, &mut x2);
+    }
+
+    if x > x2 {
+        x2
+    } else if x < x1 {
+        x1
+    } else {
+        x
+    }
+}
+
+/// Clamped linear interpolation (y-y1 = m * (x-x1)) of a given value. The input
+/// `x` is clamped to the range [`x1`,`x2`]. If `x1` is greater than `x2`, they
+/// are swapped.
+pub fn clerp<T>(x:T, x1:T, x2:T, y1:T, y2:T) -> T
+    where T: Copy + Sized + PartialOrd + Add<Output=T> + Sub<Output=T> + Mul<Output=T> + Div<Output=T>
+{
+    lerp(clamp(x, x1, x2), x1, x2, y1, y2)
+}
+
 /// Converts a given sample count to seconds.
 pub fn samples_to_seconds(s: usize) -> std::time::Duration {
     std::time::Duration::from_secs_f64(s as f64 * SAMPLE_RATE as f64)
