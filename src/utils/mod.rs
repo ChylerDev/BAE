@@ -16,7 +16,7 @@ pub fn lerp<T>(x:T, x1:T, x2:T, y1:T, y2:T) -> T
     ((y2 - y1) / (x2 - x1)) * (x - x1) + y1
 }
 
-fn clamp<T>(x:T, x1:T, x2:T) -> T
+fn clamp<T>(x: T, mut x1: T, mut x2: T) -> T
     where T: Copy + Sized + PartialOrd
 {
     if x1 > x2 {
