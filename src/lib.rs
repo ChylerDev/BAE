@@ -83,7 +83,7 @@ pub mod generators;
 pub mod modifiers;
 pub mod sounds;
 pub mod sample_format;
-pub mod tools;
+// pub mod tools;
 pub mod utils;
 
 pub use sample_format::*;
