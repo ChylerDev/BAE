@@ -52,7 +52,7 @@ mod tests {
         use bae_rs::utils::write_wav;
 
         let mut t = bae_rs::TrackT::new();
-    
+
         for _ in 0..bae_rs::SAMPLE_RATE {
             t.push(g.process());
         }

@@ -21,6 +21,7 @@ mod tests {
     #[test]
     fn test_resampler() {
         use bae_rs::SampleT;
+        use bae_rs::debug::*;
 
         let sam = vec![0.0, 1.0, 2.0, 3.0];
 
@@ -28,14 +29,14 @@ mod tests {
         for i in 0..7 {
             let s = r.process();
 
-            assert!(f32_equal(s, i as SampleT/2.0));
+            assert!(float_equal(s, i as SampleT/2.0, std::f32::EPSILON, |x| x.abs()));
         }
 
         let mut r = MonoResampler::new(sam.clone(), bae_rs::SAMPLE_RATE as bae_rs::MathT * 2.0, 0,0);
         for i in 0..2 {
             let s = r.process();
 
-            assert!(f32_equal(s, (i*2) as SampleT));
+            assert!(float_equal(s, (i*2) as SampleT, std::f32::EPSILON, |x| x.abs()));
         }
 
         let mut r = MonoResampler::new(sam.clone(), bae_rs::SAMPLE_RATE as bae_rs::MathT, 0,0);
@@ -43,7 +44,7 @@ mod tests {
         for i in 0..7 {
             let s = r.process();
 
-            assert!(f32_equal(s, i as SampleT/2.0));
+            assert!(float_equal(s, i as SampleT/2.0, std::f32::EPSILON, |x| x.abs()));
         }
 
         let mut r = MonoResampler::new(sam.clone(), bae_rs::SAMPLE_RATE as bae_rs::MathT * 2.0, 0,0);
@@ -51,13 +52,7 @@ mod tests {
         for i in sam {
             let s = r.process();
 
-            assert!(f32_equal(s, i));
+            assert!(float_equal(s, i, std::f32::EPSILON, |x| x.abs()));
         }
-    }
-
-    fn f32_equal(a: f32, b: f32) -> bool {
-        use std::f32::EPSILON;
-
-        (a-b).abs() < EPSILON
     }
 }

@@ -9,12 +9,20 @@ use crate::utils::*;
 #[derive(Copy,Clone,Default)]
 pub struct Stereo{
     /// Left sample value.
-    pub left:SampleT,
+    pub left:  SampleT,
     /// Right sample value.
-    pub right:SampleT,
+    pub right: SampleT,
 }
 
 impl Stereo {
+    /// Returns a new Stereo object with default <0,0> values.
+    pub fn new() -> Stereo {
+        Stereo {
+            left:  0.0,
+            right: 0.0,
+        }
+    }
+
     /// Returns a new Stereo object created from individual left and right
     /// audio samples.
     /// 
@@ -22,10 +30,10 @@ impl Stereo {
     /// 
     /// * `l` - the left audio sample.
     /// * `r` - the right audio sample.
-    pub fn new(l:SampleT, r:SampleT) -> Stereo {
-        Stereo{
-            left:l,
-            right:r
+    pub fn from(l:SampleT, r:SampleT) -> Stereo {
+        Stereo {
+            left:  l,
+            right: r,
         }
     }
 }
@@ -34,7 +42,7 @@ impl SampleFormat for Stereo
 {
     fn from_mono(x:SampleT) -> Self {
         Stereo{
-            left: x * SampleT::sqrt(0.5),
+            left:  x * SampleT::sqrt(0.5),
             right: x * SampleT::sqrt(0.5)
         }
     }

@@ -79,6 +79,7 @@ pub const SAMPLE_RATE:u64 = 48_000;
 pub const INV_SAMPLE_RATE:MathT = 1.0/(SAMPLE_RATE as MathT);
 
 pub mod channels;
+pub mod debug;
 pub mod generators;
 pub mod modifiers;
 pub mod sounds;

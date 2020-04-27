@@ -18,6 +18,7 @@ lazy_static = "1"
 petgraph = "0.5"
 rand = "0.7"
 wav = "0.3"
+# fftw = "0.6"
 
 [badges]
 is-it-maintained-issue-resolution = { repository = "ChylerDev/BAE" }
