@@ -86,14 +86,33 @@ mod tests {
         }
     }
 
-    // #[test]
-    // fn test_triangle() {
-    //     let mut t = Triangle::new(440.0);
-    //     assert!(float_equal(440.0, t.get_frequency(), std::f64::EPSILON, |x| x.abs()));
+    #[test]
+    fn test_triangle() {
+        let f = 440.0;
+        let mut t = Triangle::new(f);
+        assert!(float_equal(f, t.get_frequency(), std::f64::EPSILON, |x| x.abs()));
 
-    //     let time = std::time::Duration::from_secs_f64(1.0/t.get_frequency());
-    //     let samples = bae_rs::utils::seconds_to_samples(time);
+        let period = 1.0/t.get_frequency() as f32;
+        let samples = bae_rs::utils::seconds_to_samples(std::time::Duration::from_secs_f32(period));
 
-    //     let omega = |x: f32| 
-    // }
+        let gen_triangle = |t: f32| {
+            let q1 = (2.0/period * t + 0.5).floor();
+            let q2 = (2.0/period * t + 1.5).floor();
+            4.0/period*t*(-1.0_f32).powf(q1) + 2.0*q1*(-1.0_f32).powf(q2)
+        };
+
+        println!("period: {}", period);
+        println!("samples: {}", samples);
+        let before = std::time::Instant::now();
+        for i in 0..samples {
+            let y = t.process();
+            let t = i as f32 * bae_rs::INV_SAMPLE_RATE as f32;
+            let n = gen_triangle(t);
+
+            assert!(float_equal(y, n, std::f32::EPSILON * 10.0, |x| x.abs()));
+        }
+        let after = std::time::Instant::now();
+        let duration = after - before;
+        println!("Test ran in {} seconds", duration.as_secs_f64());
+    }
 }
