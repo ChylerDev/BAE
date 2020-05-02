@@ -21,3 +21,31 @@ pub fn float_equal<T, F>(a: T, b: T, e: T, abs: F) -> bool
 {
     abs(a-b) < e
 }
+
+/// Used for testing purposes to avoid reading a file from disk, and instead
+/// store the file contents in the binary.
+pub struct VectorReader {
+    vec: Vec<u8>,
+    pos: usize,
+}
+
+impl VectorReader {
+    pub fn new(vec: Vec<u8>) -> Self {
+        VectorReader {
+            vec,
+            pos: 0,
+        }
+    }
+}
+
+impl std::io::Read for VectorReader {
+    fn read(&mut self, buf: &mut[u8]) -> std::io::Result<usize> {
+        let mut n = 0;
+        while n < buf.len() && self.pos < self.vec.len() {
+            buf[n] = self.vec[self.pos];
+            n += 1;
+            self.pos += 1;
+        }
+        Ok(n)
+    }
+}
