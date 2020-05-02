@@ -1,6 +1,6 @@
-//! # Stereo Data
+//! # Stereo
 //! 
-//! Module containing type for handling stereo audio data.
+//! Module containing type for handling stereophonic audio data.
 
 use super::*;
 use crate::utils::*;
@@ -16,11 +16,8 @@ pub struct Stereo{
 
 impl Stereo {
     /// Returns a new Stereo object with default <0,0> values.
-    pub fn new() -> Stereo {
-        Stereo {
-            left:  0.0,
-            right: 0.0,
-        }
+    pub fn new() -> Self {
+        Stereo::default()
     }
 
     /// Returns a new Stereo object created from individual left and right
@@ -30,7 +27,7 @@ impl Stereo {
     /// 
     /// * `l` - the left audio sample.
     /// * `r` - the right audio sample.
-    pub fn from(l:SampleT, r:SampleT) -> Stereo {
+    pub fn from(l:SampleT, r:SampleT) -> Self {
         Stereo {
             left:  l,
             right: r,
@@ -41,7 +38,7 @@ impl Stereo {
 impl SampleFormat for Stereo
 {
     fn from_mono(x:SampleT) -> Self {
-        Stereo{
+        Stereo {
             left:  x * SampleT::sqrt(0.5),
             right: x * SampleT::sqrt(0.5)
         }
@@ -50,8 +47,16 @@ impl SampleFormat for Stereo
     fn into_mono(self) -> SampleT {
         (self.left + self.right)/SampleT::sqrt(0.5)
     }
+
+    fn num_samples() -> usize {
+        2
+    }
 }
 
+/// Pans a given sample between the left and right channels. The panning
+/// parameter `g` is a floating point value of the rang [-1,1], where -1 is 
+/// panned full left and 1 is panned full right. If the given value is not
+/// within this range, it is clamped to it.
 impl Panner<f32> for Stereo {
     fn to_sample_format(s: SampleT, g: f32) -> Self {
         let l_lerp = if g <= 0.0 {
@@ -66,7 +71,7 @@ impl Panner<f32> for Stereo {
         };
 
         Stereo {
-            left: (db_to_linear(l_lerp) * s as MathT) as SampleT,
+            left:  (db_to_linear(l_lerp) * s as MathT) as SampleT,
             right: (db_to_linear(r_lerp) * s as MathT) as SampleT
         }
     }
@@ -85,7 +90,7 @@ impl Panner<f64> for Stereo {
         };
 
         Stereo {
-            left: (db_to_linear(l_lerp) * s as MathT) as SampleT,
+            left:  (db_to_linear(l_lerp) * s as MathT) as SampleT,
             right: (db_to_linear(r_lerp) * s as MathT) as SampleT
         }
     }
@@ -96,7 +101,7 @@ impl std::ops::Neg for Stereo {
 
     fn neg(self) -> Self::Output {
         Stereo {
-            left: -self.left,
+            left:  -self.left,
             right: -self.right,
         }
     }
@@ -171,10 +176,8 @@ impl std::ops::MulAssign<SampleT> for Stereo {
 }
 
 impl std::ops::Mul<MathT> for Stereo {
-    /// Output type of the multiplication
     type Output = Stereo;
 
-    /// Multiplies a sample by a value. E.g. scaling the sample by a gain amount.
     fn mul(self, rhs: MathT) -> Self::Output {
         Stereo {
             left:(self.left as MathT * rhs) as SampleT,
@@ -190,10 +193,6 @@ impl std::ops::MulAssign<MathT> for Stereo {
 }
 
 impl From<SampleT> for Stereo {
-    /// Copies the given sample to the left and right channels. If you want to
-    /// use the half-power conversion, use [`Stereo::from_mono`].
-    /// 
-    /// [`Stereo::from_mono`]: struct.Stereo.html#method.from_mono
     fn from(s: SampleT) -> Self {
         Stereo::from_mono(s)
     }
@@ -204,68 +203,68 @@ impl Into<SampleT> for Stereo {
     }
 }
 
-impl From<[u8;2]> for Stereo {
-    /// Converts the array of 2 bytes into a Stereo object.
-    /// It is assumed that the bytes are 8-bit unsigned audio samples.
-    /// 
-    /// # Parameters
-    /// 
-    /// * `v` - The raw bytes to convert from.
-    fn from(v:[u8;2]) -> Self {
-        Stereo {
-            left:  sample_from_u8_bytes([v[0]]),
-            right: sample_from_u8_bytes([v[1]])
+impl TryFrom<Vec<u8>> for Stereo {
+    type Error = String;
+
+    fn try_from(v: Vec<u8>) -> Result<Self, Self::Error> {
+        if v.len() < 2 {
+            Err(format!("ERROR: Given vector was length {}. This function requires length 2.", v.len()))
+        } else {
+            Ok(
+                Stereo {
+                    left:  sample_from_u8(v[0]),
+                    right: sample_from_u8(v[1]),
+                }
+            )
         }
     }
 }
-impl Into<[u8;2]> for Stereo {
-    fn into(self) -> [u8;2] {
-        [sample_to_u8(self.left), sample_to_u8(self.right)]
+impl Into<Vec<u8>> for Stereo {
+    fn into(self) -> Vec<u8> {
+        vec![sample_to_u8(self.left), sample_to_u8(self.right)]
     }
 }
 
-impl From<[u8;4]> for Stereo {
-    /// Converts the array of 4 bytes into a Stereo object.
-    /// It is assumed that the bytes are 16-bit signed audio samples.
-    /// 
-    /// # Parameters
-    /// 
-    /// * `v` - The raw bytes to convert from.
-    fn from(v:[u8;4]) -> Self {
-        Stereo {
-            left:  sample_from_i16_bytes([v[0],v[1]]),
-            right: sample_from_i16_bytes([v[2],v[3]])
+impl TryFrom<Vec<i16>> for Stereo {
+    type Error = String;
+
+    fn try_from(v: Vec<i16>) -> Result<Self, Self::Error> {
+        if v.len() < 2 {
+            Err(format!("ERROR: Given vector was length {}. This function requires length 2.", v.len()))
+        } else {
+            Ok(
+                Stereo {
+                    left:  sample_from_i16(v[0]),
+                    right: sample_from_i16(v[1]),
+                }
+            )
         }
     }
 }
-impl Into<[u8;4]> for Stereo {
-    fn into(self) -> [u8;4] {
-        let l = sample_to_i16_bytes(self.left);
-        let r = sample_to_i16_bytes(self.right);
-
-        [l[0],l[1],r[0],r[1]]
+impl Into<Vec<i16>> for Stereo {
+    fn into(self) -> Vec<i16> {
+        vec![sample_to_i16(self.left), sample_to_i16(self.right)]
     }
 }
 
-impl From<[u8;6]> for Stereo {
-    /// Converts the array of 6 bytes into a Stereo object.
-    /// It is assumed that the bytes are 24-bit signed audio samples.
-    /// 
-    /// # Parameters
-    /// 
-    /// * `v` - The raw bytes to convert from.
-    fn from(v:[u8;6]) -> Self {
-        Stereo {
-            left:  sample_from_i24_bytes([v[0],v[1],v[2]]),
-            right: sample_from_i24_bytes([v[3],v[4],v[5]])
+impl TryFrom<Vec<i32>> for Stereo {
+    type Error = String;
+
+    fn try_from(v: Vec<i32>) -> Result<Self, Self::Error> {
+        if v.len() < 2 {
+            Err(format!("ERROR: Given vector was length {}. This function requires length 2.", v.len()))
+        } else {
+            Ok(
+                Stereo {
+                    left:  sample_from_i24(v[0]),
+                    right: sample_from_i24(v[1]),
+                }
+            )
         }
     }
 }
-impl Into<[u8;6]> for Stereo {
-    fn into(self) -> [u8;6] {
-        let l = sample_to_i24_bytes(self.left);
-        let r = sample_to_i24_bytes(self.right);
-
-        [l[0],l[1],l[2],r[0],r[1],r[2]]
+impl Into<Vec<i32>> for Stereo {
+    fn into(self) -> Vec<i32> {
+        vec![sample_to_i24(self.left), sample_to_i24(self.right)]
     }
 }

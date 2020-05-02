@@ -4,30 +4,86 @@
 //!
 //! All functions that deal with converting raw bytes to numeric types assume
 //! the bytes are in little-endian format.
+//! 
+//! As there is no i24 built-in type, i32 is used in it's place where
+//! applicable. In most cases where a 24-bit sample is stored in a 32-bit data
+//! type, the upper byte is ignored or explicitly set to 0.
 
 use super::*;
 
+pub mod mono;
 pub mod stereo;
+pub use mono::*;
 pub use stereo::*;
 
+use std::convert::TryFrom;
 use std::ops::*;
 
 /// Trait implementing the ability to perform math operations with a polyphonic
-/// sample format and a monophonic sample
+/// sample format and a monophonic sample.
+/// 
+/// # Dependencies:
+/// 
+/// * Most mathematical operators are overloaded to be able to perform
+/// operations on sample values.
+/// * [`Mul`]/[`MulAssign`] is defined for both [`MathT`] as well as [`SampleT`]
+/// for the convenience of common audio operations.
+/// * [`From`]/[`Into`] implemented for [`SampleT`], these functions should 
+/// be aliased to [`from_mono`] and [`into_mono`].
+/// * [`TryFrom`]/[`Into`] implemented for [`Vec<_>`], these functions should
+/// convert the sample values to the given standard integer types. As [`Vec`]s
+/// are generic types, it cannot be assumed that the [`Vec`]s passed to
+/// [`try_from`] cannot be guaranteed to be large enough to accomodate a
+/// specific sample format. Therefore those conversions use [`TryFrom`] to
+/// indicate when there is an issue, which can be communicated with the given
+/// [`String`] used for the error type. An example of such an error could be
+/// (for the [`Stereo`] type):
+/// 
+/// ```
+/// format!("ERROR: Given vector was length {}. This function requires length 2.", v.len())
+/// ```
+/// 
+/// [`Mul`]: https://doc.rust-lang.org/std/ops/trait.Mul.html
+/// [`MulAssign`]: https://doc.rust-lang.org/std/ops/trait.MulAssign.html
+/// [`MathT`]: ../type.MathT.html
+/// [`SampleT`]: ../type.SampleT.html
+/// [`From`]: https://doc.rust-lang.org/std/convert/trait.From.html
+/// [`Into`]: https://doc.rust-lang.org/std/convert/trait.Into.html
+/// [`from_mono`]: #tymethod.from_mono
+/// [`into_mono`]: #tymethod.into_mono
+/// [`TryFrom`]: https://doc.rust-lang.org/std/convert/trait.TryFrom.html
+/// [`Vec<_>`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
+/// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
+/// [`try_from`]: https://doc.rust-lang.org/std/convert/trait.TryFrom.html#tymethod.try_from
+/// [`String`]: https://doc.rust-lang.org/std/convert/trait.From.html
+/// [`Stereo`]: stereo/struct.Stereo.html
 pub trait SampleFormat:
     Neg<Output=Self> +
-    Add<Self, Output=Self> + AddAssign<Self> +
-    Sub<Self, Output=Self> + SubAssign<Self> +
-    Mul<Self, Output=Self> + MulAssign<Self> +
-    Mul<SampleT, Output=Self> + MulAssign<SampleT> +
-    Mul<MathT, Output=Self> + MulAssign<MathT> +
-    From<SampleT> + Into<SampleT>
+    Add<        Self,  Output=Self> + AddAssign<   Self> +
+    Sub<        Self,  Output=Self> + SubAssign<   Self> +
+    Mul<        Self,  Output=Self> + MulAssign<   Self> +
+    Mul<     SampleT,  Output=Self> + MulAssign<SampleT> +
+    Mul<       MathT,  Output=Self> + MulAssign<  MathT> +
+    From<                  SampleT> + Into<     SampleT> +
+    TryFrom<Vec< u8>, Error=String> + Into<    Vec< u8>> +
+    TryFrom<Vec<i16>, Error=String> + Into<    Vec<i16>> +
+    TryFrom<Vec<i32>, Error=String> + Into<    Vec<i32>>
 {
     /// Creates an object from a single monophonic sample.
     fn from_mono(x:SampleT) -> Self;
 
     /// Converts the given polyphonic sample to a monophonic sample.
     fn into_mono(self) -> SampleT;
+
+    /// Returns the number of [`SampleT`] values held within a given
+    /// [`SampleFormat`]. A common use for this would be for ensuring [`Vec`]s
+    /// given to [`try_from`] have the correct size.
+    /// 
+    /// [`SampleT`]: ../type.SampleT.html
+    /// [`SampleFormat`]: trait.SampleFormat.html
+    /// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
+    /// [`try_from`]: https://doc.rust-lang.org/std/convert/trait.TryFrom.html#tymethod.try_from
+    fn num_samples() -> usize;
 }
 
 /// Trait implementing the ability to pan a monophonic sample into a polyphonic
@@ -54,7 +110,7 @@ pub fn sample_from_u8_bytes(v:[u8;1]) -> SampleT {
 pub fn sample_to_u8(s: SampleT) -> u8 {
     (s * 128.0 + 128.0).round() as u8
 }
-/// Converts a `SampleT` to a raw byte.
+/// Converts a `SampleT` to a raw little-endian byte.
 pub fn sample_to_u8_bytes(s: SampleT) -> [u8;1] {
     [sample_to_u8(s)]
 }
@@ -72,7 +128,7 @@ pub fn sample_from_i16_bytes(v:[u8;2]) -> SampleT {
 pub fn sample_to_i16(s: SampleT) -> i16 {
     (s * ((1<<15) as SampleT - 1.0)).round() as i16
 }
-/// Converts a `SampleT` to raw bytes.
+/// Converts a `SampleT` to raw little-endian bytes.
 pub fn sample_to_i16_bytes(s: SampleT) -> [u8; 2] {
     sample_to_i16(s).to_le_bytes()
 }
@@ -90,7 +146,7 @@ pub fn sample_from_i24_bytes(v:[u8;3]) -> SampleT {
 pub fn sample_to_i24(s: SampleT) -> i32 {
     (s * ((1<<23) as SampleT - 1.0)).round() as i32
 }
-/// Converts a `SampleT` to raw bytes.
+/// Converts a `SampleT` to raw little-endian bytes.
 pub fn sample_to_i24_bytes(s: SampleT) -> [u8; 3] {
     let i = sample_to_i24(s).to_le_bytes();
 
