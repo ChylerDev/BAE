@@ -43,7 +43,7 @@ impl Generator for Triangle {
             };
         }
 
-        y as f32
+        y as SampleT
     }
 }
 

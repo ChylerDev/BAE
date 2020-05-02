@@ -6,7 +6,7 @@ use super::*;
 
 /// Struct for generating square wave samples at a specified frequency
 pub struct Square {
-    ind:SampleT,
+    ind:MathT,
     inv:MathT,
 }
 
@@ -29,14 +29,14 @@ impl FreqMod for Square {
 
 impl Generator for Square {
     fn process(&mut self) -> SampleT {
-        let y: SampleT = if self.ind >= self.inv as SampleT && self.ind < 2.0 * self.inv as SampleT {
+        let y = if self.ind >= self.inv && self.ind < 2.0 * self.inv {
             -1.0
         } else {
             1.0
         };
 
-        if self.ind >= 2.0 * self.inv as SampleT {
-            self.ind -= 2.0 * self.inv as SampleT;
+        if self.ind >= 2.0 * self.inv {
+            self.ind -= 2.0 * self.inv;
         }
 
         self.ind += 1.0;

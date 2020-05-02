@@ -9,7 +9,7 @@ use super::Generator;
 /// Struct for generating sawtooth samples.
 pub struct Sawtooth {
     irate: MathT,
-    inc: SampleT,
+    inc: MathT,
 }
 
 impl FreqMod for Sawtooth {
@@ -33,13 +33,13 @@ impl Generator for Sawtooth {
     fn process(&mut self) -> SampleT {
         let y = self.inc;
 
-        self.inc += self.irate as SampleT;
+        self.inc += self.irate;
 
         if self.inc >= 1.0 {
             self.inc -= 2.0;
         }
 
-        y
+        y as SampleT
     }
 }
 
