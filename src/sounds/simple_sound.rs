@@ -12,10 +12,10 @@ use super::*;
 
 use std::sync::Arc;
 
-/// Type implementing the ability to run multiple a single [`Generator`] by a
+/// Struct implementing the ability to run a single [`Generator`] through a
 /// given list of [`Modifier`]s operated in series. This allows for simple and
 /// fast processing of the structure's elements while still allowing for a wide
-/// range of complex sounds.
+/// range of more complex sounds.
 /// 
 /// [`Generator`]: ../../generators/trait.Generator.html
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
