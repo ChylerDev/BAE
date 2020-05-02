@@ -152,7 +152,7 @@ impl TryFrom<Vec<u8>> for Mono {
 
     fn try_from(v: Vec<u8>) -> Result<Self, Self::Error> {
         if v.len() < 1 {
-            Err(format!("ERROR: Given vector was length {}. This function requires length 2.", v.len()))
+            Err(format!("ERROR: Given vector was length {}. This function requires length 1.", v.len()))
         } else {
             Ok(
                 Mono {
@@ -173,7 +173,7 @@ impl TryFrom<Vec<i16>> for Mono {
 
     fn try_from(v: Vec<i16>) -> Result<Self, Self::Error> {
         if v.len() < 1 {
-            Err(format!("ERROR: Given vector was length {}. This function requires length 2.", v.len()))
+            Err(format!("ERROR: Given vector was length {}. This function requires length 1.", v.len()))
         } else {
             Ok(
                 Mono {
@@ -194,7 +194,7 @@ impl TryFrom<Vec<i32>> for Mono {
 
     fn try_from(v: Vec<i32>) -> Result<Self, Self::Error> {
         if v.len() < 1 {
-            Err(format!("ERROR: Given vector was length {}. This function requires length 2.", v.len()))
+            Err(format!("ERROR: Given vector was length {}. This function requires length 1.", v.len()))
         } else {
             Ok(
                 Mono {

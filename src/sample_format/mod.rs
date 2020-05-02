@@ -24,20 +24,19 @@ use std::ops::*;
 /// 
 /// # Dependencies:
 /// 
-/// * Most mathematical operators are overloaded to be able to perform
-/// operations on sample values.
+/// * Most mathematical operators are required to be implemented to be able to
+/// perform common operations on sample values.
 /// * [`Mul`]/[`MulAssign`] is defined for both [`MathT`] as well as [`SampleT`]
 /// for the convenience of common audio operations.
-/// * [`From`]/[`Into`] implemented for [`SampleT`], these functions should 
-/// be aliased to [`from_mono`] and [`into_mono`].
-/// * [`TryFrom`]/[`Into`] implemented for [`Vec<_>`], these functions should
+/// * [`From`]/[`Into`] implemented for [`SampleT`] - These functions should be
+/// simple calls to [`from_mono`] and [`into_mono`] respectively.
+/// * [`TryFrom`]/[`Into`] implemented for [`Vec<_>`] - These functions should
 /// convert the sample values to the given standard integer types. As [`Vec`]s
-/// are generic types, it cannot be assumed that the [`Vec`]s passed to
-/// [`try_from`] cannot be guaranteed to be large enough to accomodate a
-/// specific sample format. Therefore those conversions use [`TryFrom`] to
-/// indicate when there is an issue, which can be communicated with the given
-/// [`String`] used for the error type. An example of such an error could be
-/// (for the [`Stereo`] type):
+/// are generic types, it cannot be assumed that any attempted conversions of
+/// [`Vec`]s to a given sample format will succeed. Therefore those conversions
+/// use [`TryFrom`] to indicate when there is an issue, which can be
+/// communicated with the given [`String`] used for the error type. An example
+/// of such an error could be (for the [`Stereo`] type):
 /// 
 /// ```
 /// format!("ERROR: Given vector was length {}. This function requires length 2.", v.len())
@@ -54,7 +53,6 @@ use std::ops::*;
 /// [`TryFrom`]: https://doc.rust-lang.org/std/convert/trait.TryFrom.html
 /// [`Vec<_>`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
 /// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
-/// [`try_from`]: https://doc.rust-lang.org/std/convert/trait.TryFrom.html#tymethod.try_from
 /// [`String`]: https://doc.rust-lang.org/std/convert/trait.From.html
 /// [`Stereo`]: stereo/struct.Stereo.html
 pub trait SampleFormat:
