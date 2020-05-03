@@ -4,6 +4,8 @@
 
 use super::*;
 
+pub type MonoTrackT = Vec<Mono>;
+
 /// Struct representing a monophonic audio sample.
 #[derive(Copy,Clone,Default)]
 pub struct Mono {
@@ -26,13 +28,13 @@ impl Mono {
 }
 
 impl SampleFormat for Mono {
-    fn from_mono(x: SampleT) -> Self {
+    fn from_sample(x: SampleT) -> Self {
         Mono {
             mono: x
         }
     }
 
-    fn into_mono(self) -> SampleT {
+    fn into_sample(self) -> SampleT {
         self.mono
     }
 
@@ -138,12 +140,12 @@ impl MulAssign<MathT> for Mono {
 
 impl From<SampleT> for Mono {
     fn from(s: SampleT) -> Self {
-        Mono::from_mono(s)
+        Mono::from_sample(s)
     }
 }
 impl Into<SampleT> for Mono {
     fn into(self) -> SampleT {
-        self.mono
+        Mono::into_sample(self)
     }
 }
 

@@ -68,10 +68,10 @@ pub trait SampleFormat:
     TryFrom<Vec<i32>, Error=String> + Into<    Vec<i32>>
 {
     /// Creates an object from a single monophonic sample.
-    fn from_mono(x:SampleT) -> Self;
+    fn from_sample(x:SampleT) -> Self;
 
     /// Converts the given polyphonic sample to a monophonic sample.
-    fn into_mono(self) -> SampleT;
+    fn into_sample(self) -> SampleT;
 
     /// Returns the number of [`SampleT`] values held within a given
     /// [`SampleFormat`]. A common use for this would be for ensuring [`Vec`]s

@@ -5,6 +5,8 @@
 use super::*;
 use crate::utils::*;
 
+pub type StereoTrackT = Vec<Stereo>;
+
 /// Struct representing a stereophonic audio sample.
 #[derive(Copy,Clone,Default)]
 pub struct Stereo{
@@ -37,14 +39,14 @@ impl Stereo {
 
 impl SampleFormat for Stereo
 {
-    fn from_mono(x:SampleT) -> Self {
+    fn from_sample(x:SampleT) -> Self {
         Stereo {
             left:  x * SampleT::sqrt(0.5),
             right: x * SampleT::sqrt(0.5)
         }
     }
 
-    fn into_mono(self) -> SampleT {
+    fn into_sample(self) -> SampleT {
         (self.left + self.right)/SampleT::sqrt(0.5)
     }
 
@@ -194,12 +196,12 @@ impl std::ops::MulAssign<MathT> for Stereo {
 
 impl From<SampleT> for Stereo {
     fn from(s: SampleT) -> Self {
-        Stereo::from_mono(s)
+        Stereo::from_sample(s)
     }
 }
 impl Into<SampleT> for Stereo {
     fn into(self) -> SampleT {
-        self.into_mono()
+        self.into_sample()
     }
 }
 
