@@ -4,7 +4,6 @@
 //! sawtooth, square, white noise, and more.
 
 use super::*;
-use std::sync::Arc;
 
 pub mod zero;
 pub mod noise;
@@ -49,8 +48,3 @@ pub trait Generator
     /// Generates a rendered audio sample
     fn process(&mut self) -> SampleT;
 }
-
-/// Type alias for a [`Generator`] wrapped in a smart pointer.
-/// 
-/// [`Generator`]: trait.Generator.html
-pub type GeneratorSP = Arc<dyn Generator>;

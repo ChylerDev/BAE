@@ -10,8 +10,11 @@
 use super::*;
 
 use std::sync::Arc;
-use generators::GeneratorSP;
-use modifiers::ModifierSP;
+use generators::Generator;
+use modifiers::Modifier;
+
+type GeneratorSP = Arc<dyn Generator>;
+type ModifierSP = Arc<dyn Modifier>;
 
 /// Type defining the closure that combines inputted SampleT samples from the
 /// outputs of the [`Generator`]s and [`Modifier`]s of the containing
@@ -153,28 +156,28 @@ impl StandardBlock {
     /// Returns a reference to the [`Generator`] wrapped in a smart pointer.
     /// 
     /// [`Generator`]: ../../generators/trait.Generator.html
-    pub fn get_g(&self) -> &generators::GeneratorSP {
+    pub fn get_g(&self) -> &GeneratorSP {
         &self.g
     }
 
     /// Returns a reference to the [`Modifier`] wrapped in a smart pointer.
     /// 
     /// [`Modifier`]: ../../modifiers/trait.Modifier.html
-    pub fn get_m(&self) -> &modifiers::ModifierSP {
+    pub fn get_m(&self) -> &ModifierSP {
         &self.m
     }
 
     /// Returns a mutable reference to the [`Generator`] wrapped in a smart pointer.
     /// 
     /// [`Generator`]: ../../generators/trait.Generator.html
-    pub fn get_g_mut(&mut self) -> &mut generators::GeneratorSP {
+    pub fn get_g_mut(&mut self) -> &mut GeneratorSP {
         &mut self.g
     }
 
     /// Returns a mutable reference to the [`Modifier`] wrapped in a smart pointer.
     /// 
     /// [`Modifier`]: ../../modifiers/trait.Modifier.html
-    pub fn get_m_mut(&mut self) -> &mut modifiers::ModifierSP {
+    pub fn get_m_mut(&mut self) -> &mut ModifierSP {
         &mut self.m
     }
 }

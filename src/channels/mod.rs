@@ -6,12 +6,14 @@
 //! [`Sound`]: ../sounds/trait.Sound.html
 
 use super::*;
-use std::sync::Arc;
 use std::time::Duration;
-use crate::sounds::*;
+use std::sync::Arc;
+use crate::sounds::Sound;
 
 pub mod standard_channel;
 pub use standard_channel::*;
+
+type SoundSP = Arc<dyn Sound>;
 
 /// Trait defining the simplest possible interface for a channel, with the
 /// ability to process a batch of samples at a time.
@@ -48,8 +50,3 @@ pub trait Channel<SF>
     /// [`Sound`]: ../sounds/trait.Sound.html
     fn remove_sound(&mut self, id: usize);
 }
-
-/// Alias for a [`Channel`] wrapped in a smart pointer.
-/// 
-/// [`Channel`]: trait.Channel.html
-pub type ChannelSP<SF> = Arc<dyn Channel<SF>>;

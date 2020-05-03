@@ -10,8 +10,6 @@
 
 use super::*;
 
-use std::sync::Arc;
-
 /// Struct implementing the ability to run a single [`Generator`] through a
 /// given list of [`Modifier`]s operated in series. This allows for simple and
 /// fast processing of the structure's elements while still allowing for a wide
@@ -146,8 +144,3 @@ impl Sound for SimpleSound {
         self.id
     }
 }
-
-/// Alias for a [`SimpleSound`] wrapped in a smart pointer.
-/// 
-/// [`SimpleSound`]: struct.SimpleSound.html
-pub type SimpleSoundSP = Arc<SimpleSound>;

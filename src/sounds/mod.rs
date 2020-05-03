@@ -111,12 +111,3 @@ pub trait Sound {
     /// [`Sound`]: trait.Sound.html
     fn get_id(&self) -> Option<usize>;
 }
-
-/// Type alias for a [`Sound`] wrapped in a smart pointer. Types implementing
-/// [`Sound`] can define their own custom name for this type that is
-/// interchangeable, (e.g. [`ComplexSoundSP`] for [`ComplexSound`]).
-/// 
-/// [`Sound`]: trait.Sound.html
-/// [`ComplexSoundSP`]: ../complex_sound/type.ComplexSoundSP.html
-/// [`ComplexSound`]: ../complex_sound/struct.ComplexSound.html
-pub type SoundSP = Arc<dyn Sound>;

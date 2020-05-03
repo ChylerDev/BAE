@@ -4,7 +4,6 @@
 //! bandpass, echo, delay, etc.
 
 use super::*;
-use std::sync::Arc;
 
 pub mod adsr;
 pub mod bandpass;
@@ -41,8 +40,3 @@ pub trait Modifier
     /// * `x` - The "dry" audio sample before filtering.
     fn process(&mut self, x: SampleT) -> SampleT;
 }
-
-/// Type alias for a [`Modifier`] wrapped in a smart pointer.
-/// 
-/// [`Modifier`]: trait.Modifier.html
-pub type ModifierSP = Arc<dyn Modifier>;

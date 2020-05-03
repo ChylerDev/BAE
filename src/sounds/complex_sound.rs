@@ -237,8 +237,3 @@ impl Sound for ComplexSound {
         self.id
     }
 }
-
-/// Type alias for a [`ComplexSound`] wrapped in a smart pointer.
-/// 
-/// [`ComplexSound`]: struct.ComplexSound.html
-pub type ComplexSoundSP = Arc<ComplexSound>;
