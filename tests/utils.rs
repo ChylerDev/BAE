@@ -8,7 +8,7 @@ mod tests {
     #[test]
     fn test_write_wav() {
 
-        let mut t = bae_rs::TrackT::new();
+        let mut t = bae_rs::SampleTrackT::new();
 
         for i in 0..16 {
             t.push((2.0 * std::f32::consts::PI * 440.0 * i as f32 * bae_rs::INV_SAMPLE_RATE as f32).sin());
@@ -21,9 +21,10 @@ mod tests {
     #[test]
     fn test_resampler() {
         use bae_rs::SampleT;
+        use bae_rs::{SampleFormat, Mono};
         use bae_rs::debug::*;
 
-        let sam = vec![0.0, 1.0, 2.0, 3.0];
+        let sam = vec![Mono::from_sample(0.0), Mono::from_sample(1.0), Mono::from_sample(2.0), Mono::from_sample(3.0)];
 
         let mut r = MonoResampler::new(sam.clone(), bae_rs::SAMPLE_RATE as bae_rs::MathT / 2.0, 0,0);
         for i in 0..7 {
@@ -52,7 +53,7 @@ mod tests {
         for i in sam {
             let s = r.process();
 
-            assert!(float_equal(s, i, std::f32::EPSILON, |x| x.abs()));
+            assert!(float_equal(s, i.into_sample(), std::f32::EPSILON, |x| x.abs()));
         }
     }
 }

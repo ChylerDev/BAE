@@ -19,7 +19,7 @@ mod tests {
         let mut b = StandardBlock::from_modifier(LowPass::new(440.0, 1.0));
         let mut n = Noise::new();
 
-        let mut t = bae_rs::TrackT::new();
+        let mut t = bae_rs::SampleTrackT::new();
 
         for _ in 0..seconds_to_samples(Duration::from_secs_f64(0.5)) {
             b.prime_input(n.process());
@@ -52,7 +52,7 @@ mod tests {
             ]
         );
 
-        let mut t = bae_rs::TrackT::new();
+        let mut t = bae_rs::SampleTrackT::new();
 
         for _ in 0..seconds_to_samples(Duration::from_secs(4)) {
             t.push(ss.process(0.0));
@@ -89,7 +89,7 @@ mod tests {
         cs.add_connection(lp, hp);
         cs.add_connection(hp, cs.get_output_gain());
 
-        let mut t = bae_rs::TrackT::new();
+        let mut t = bae_rs::SampleTrackT::new();
 
         for _ in 0..seconds_to_samples(Duration::from_secs(4)) {
             t.push(cs.process(0.0));

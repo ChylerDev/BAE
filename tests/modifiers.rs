@@ -18,7 +18,7 @@ mod tests {
         );
 
         let mut g = Sine::new(440.0);
-        let mut t = bae_rs::TrackT::new();
+        let mut t = bae_rs::SampleTrackT::new();
 
         for i in 0..bae_rs::SAMPLE_RATE {
             if i == bae_rs::SAMPLE_RATE/2 {
@@ -58,7 +58,7 @@ mod tests {
         let mut e = Echo::new(std::time::Duration::from_secs_f64(0.25), 0.5);
 
         let mut g = Sine::new(440.0);
-        let mut t = bae_rs::TrackT::new();
+        let mut t = bae_rs::SampleTrackT::new();
 
         for _ in 0..bae_rs::SAMPLE_RATE {
             t.push(e.process(g.process()*0.5));
@@ -79,7 +79,7 @@ mod tests {
             Duration::from_secs_f64(0.5)
         );
         let mut g = Sine::new(440.0);
-        let mut t = bae_rs::TrackT::new();
+        let mut t = bae_rs::SampleTrackT::new();
 
         for i in 0..bae_rs::SAMPLE_RATE {
             if i == bae_rs::SAMPLE_RATE/2 {
@@ -125,7 +125,7 @@ mod tests {
         );
 
         let mut s = Sine::new(440.0);
-        let mut t = bae_rs::TrackT::new();
+        let mut t = bae_rs::SampleTrackT::new();
 
         for _ in 0..bae_rs::SAMPLE_RATE {
             t.push(g.process(s.process() * 0.25));
@@ -146,7 +146,7 @@ mod tests {
     fn test_lowpass() {
         let mut lp = LowPass::new(440.0, 0.0);
         let mut n = Noise::new();
-        let mut t = bae_rs::TrackT::new();
+        let mut t = bae_rs::SampleTrackT::new();
 
         for i in 0..8*bae_rs::SAMPLE_RATE {
             lp.set_resonance(i as bae_rs::MathT / (8*bae_rs::SAMPLE_RATE) as bae_rs::MathT);
@@ -161,7 +161,7 @@ mod tests {
     fn run_modifier(m: &mut dyn bae_rs::modifiers::Modifier, file:&str)
     {
         let mut g = Noise::new();
-        let mut t = bae_rs::TrackT::new();
+        let mut t = bae_rs::SampleTrackT::new();
 
         let before = std::time::Instant::now();
 
