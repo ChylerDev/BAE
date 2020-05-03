@@ -4,6 +4,9 @@
 
 use super::*;
 
+/// Type for a track of [`Mono`] samples
+/// 
+/// [`Mono`]: struct.Mono.html
 pub type MonoTrackT = Vec<Mono>;
 
 /// Struct representing a monophonic audio sample.

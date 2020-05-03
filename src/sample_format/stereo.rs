@@ -5,6 +5,9 @@
 use super::*;
 use crate::utils::*;
 
+/// Type for a track of [`Stereo`] samples
+/// 
+/// [`Stereo`]: struct.Stereo.html
 pub type StereoTrackT = Vec<Stereo>;
 
 /// Struct representing a stereophonic audio sample.
