@@ -15,7 +15,9 @@ pub use standard_channel::*;
 
 /// Trait defining the simplest possible interface for a channel, with the
 /// ability to process a batch of samples at a time.
-pub trait Channel {
+pub trait Channel<SF>
+    where SF: SampleFormat
+{
     /// Sets the amount of time [`process`] should calculate samples for. The
     /// given duration is truncated to a integer sample value.
     /// 
@@ -23,7 +25,7 @@ pub trait Channel {
     fn set_process_time(&mut self, d: Duration);
 
     /// Returns a reference to the internal track of samples.
-    fn get_output(&self) -> &TrackT;
+    fn get_output(&self) -> &Vec<SF>;
 
     /// Sets the gain of the output of the channel.
     fn set_gain(&mut self, gain: MathT);
@@ -50,4 +52,4 @@ pub trait Channel {
 /// Alias for a [`Channel`] wrapped in a smart pointer.
 /// 
 /// [`Channel`]: trait.Channel.html
-pub type ChannelSP = Arc<dyn Channel>;
+pub type ChannelSP<SF> = Arc<dyn Channel<SF>>;

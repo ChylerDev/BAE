@@ -4,19 +4,24 @@ use super::*;
 
 use std::sync::Arc;
 use std::collections::HashMap;
+use crate::sample_format::SampleFormat;
 
 /// Standard implementation of the [`Channel`] trait.
 /// 
 /// [`Channel`]: ../trait.Channel.html
 #[derive(Clone)]
-pub struct StandardChannel {
-    output: TrackT,
+pub struct StandardChannel<SF>
+    where SF: SampleFormat
+{
+    output: Vec<SF>,
     sounds: HashMap<usize, SoundSP>,
     gain: SampleT,
     id_counter: usize
 }
 
-impl StandardChannel {
+impl<SF> StandardChannel<SF>
+    where SF: SampleFormat
+{
     /// Creates a new channel with the given gain.
     /// 
     /// The internal track is initialized for 10ms' worth of samples. Call
@@ -25,7 +30,7 @@ impl StandardChannel {
     /// [`set_process_time`]: ../trait.Channel.html#tymethod.set_process_time
     pub fn new(gain: MathT) -> Self {
         StandardChannel {
-            output: TrackT::with_capacity((0.01 * SAMPLE_RATE as MathT) as usize),
+            output: Vec::with_capacity((0.01 * SAMPLE_RATE as MathT) as usize),
             sounds: HashMap::new(),
             gain: gain as SampleT,
             id_counter: 0
@@ -41,12 +46,14 @@ impl StandardChannel {
     }
 }
 
-impl Channel for StandardChannel {
+impl<SF> Channel<SF> for StandardChannel<SF>
+    where SF: SampleFormat
+{
     fn set_process_time(&mut self, d: Duration) {
-        self.output = TrackT::with_capacity((d.as_secs_f64() * SAMPLE_RATE as MathT) as usize);
+        self.output = Vec::with_capacity((d.as_secs_f64() * SAMPLE_RATE as MathT) as usize);
     }
 
-    fn get_output(&self) -> &TrackT {
+    fn get_output(&self) -> &Vec<SF> {
         &self.output
     }
 
@@ -55,11 +62,11 @@ impl Channel for StandardChannel {
     }
 
     fn process(&mut self) {
-        self.output.resize_with(self.output.len(), Default::default);
+        self.output.resize_with(self.output.len(), SF::default);
 
         for sample in &mut self.output {
             for mut sound in &mut self.sounds {
-                *sample += Arc::get_mut(&mut sound.1).unwrap().process(Default::default());
+                *sample += SF::from_sample(Arc::get_mut(&mut sound.1).unwrap().process(Default::default()));
             }
 
             *sample *= self.gain;

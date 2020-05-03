@@ -63,7 +63,7 @@ pub fn db_to_linear(db: MathT) -> MathT {
 
 /// Normalizes the given audio track to have a peak value at the given dBFS
 /// value.
-pub fn normalize(db: MathT, t: &mut TrackT) {
+pub fn normalize(db: MathT, t: &mut SampleTrackT) {
     let y = t.clone();
     let mut dc = 0.0;
 
@@ -106,12 +106,12 @@ pub fn normalize(db: MathT, t: &mut TrackT) {
 /// [`wav::Header`]: https://docs.rs/wav/0.1.1/wav/struct.Header.html
 /// [`TrackT`]: ../../type.TrackT.html
 /// [`wav::read_wav`]: https://docs.rs/wav/0.1.1/wav/fn.read_wav.html
-pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<TrackT>)> {
+pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<SampleTrackT>)> {
     let (h, bd) = wav::read_wav(s)?;
 
     let mut tracks = Vec::new();
     for _ in 0..h.channel_count {
-        tracks.push(TrackT::new());
+        tracks.push(SampleTrackT::new());
     }
 
     match bd {
@@ -169,7 +169,7 @@ pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<
 /// ```
 /// 
 /// [`wav::write_wav`]: https://docs.rs/wav/0.1.1/wav/fn.write_wav.html
-pub fn write_wav(tracks: Vec<TrackT>, bps: u16, d: &mut dyn std::io::Write) -> std::io::Result<()> {
+pub fn write_wav(tracks: Vec<SampleTrackT>, bps: u16, d: &mut dyn std::io::Write) -> std::io::Result<()> {
     use std::io::{Error, ErrorKind};
     use crate::sample_format::*;
 

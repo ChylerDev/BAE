@@ -4,6 +4,7 @@
 //! sampling rate BAE runs at.
 
 use super::*;
+use sample_format::{SampleFormat, MonoTrackT};
 
 /// Type used for fractional indexing.
 type IndexT = SampleT;
@@ -11,7 +12,7 @@ type IndexT = SampleT;
 /// Struct tracking all of the data required for resampling, with some extra
 /// features like playback speed and looping.
 pub struct MonoResampler {
-    data: TrackT,
+    data: MonoTrackT,
     ind: IndexT,
     inc: SampleT,
     speed: MathT,
@@ -30,7 +31,7 @@ impl MonoResampler {
     /// * `loop_end` - The end point of looping. If this value is 0, no looping is assumed.
     /// 
     /// If `loop_end` is less than `loop_start`, they are swapped.
-    pub fn new(data:TrackT, source_sample_rate: MathT, mut loop_start: usize, mut loop_end: usize) -> Self {
+    pub fn new(data:MonoTrackT, source_sample_rate: MathT, mut loop_start: usize, mut loop_end: usize) -> Self {
         if loop_end < loop_start {
             std::mem::swap(&mut loop_start, &mut loop_end);
         }
@@ -62,14 +63,14 @@ impl MonoResampler {
         }
 
         let p1: SampleT = if self.ind.trunc() as usize + 1 >= self.data.len() && self.loop_end != 0 {
-            self.data[(self.ind - (self.loop_end - self.loop_start) as IndexT) as usize]
+            self.data[(self.ind - (self.loop_end - self.loop_start) as IndexT) as usize].into_sample()
         } else if self.ind.trunc() as usize + 1 >= self.data.len() {
-            self.data[self.ind.trunc() as usize]
+            self.data[self.ind.trunc() as usize].into_sample()
         } else {
-            self.data[(self.ind + 1.0).trunc() as usize]
+            self.data[(self.ind + 1.0).trunc() as usize].into_sample()
         };
 
-        let x1: SampleT = self.data[self.ind.trunc() as usize];
+        let x1: SampleT = self.data[self.ind.trunc() as usize].into_sample();
         let x2: SampleT = p1;
 
         let y = x1 + self.ind.fract() as SampleT * (x2 - x1);

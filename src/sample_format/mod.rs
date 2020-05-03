@@ -24,6 +24,7 @@ use std::ops::*;
 /// 
 /// # Dependencies:
 /// 
+/// * Default - A good default value for audio samples is 0.
 /// * Most mathematical operators are required to be implemented to be able to
 /// perform common operations on sample values.
 /// * [`Mul`]/[`MulAssign`] is defined for both [`MathT`] as well as [`SampleT`]
@@ -56,6 +57,7 @@ use std::ops::*;
 /// [`String`]: https://doc.rust-lang.org/std/convert/trait.From.html
 /// [`Stereo`]: stereo/struct.Stereo.html
 pub trait SampleFormat:
+    Default +
     Neg<Output=Self> +
     Add<        Self,  Output=Self> + AddAssign<   Self> +
     Sub<        Self,  Output=Self> + SubAssign<   Self> +
