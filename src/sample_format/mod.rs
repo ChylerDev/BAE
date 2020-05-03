@@ -29,7 +29,7 @@ use std::ops::*;
 /// * [`Mul`]/[`MulAssign`] is defined for both [`MathT`] as well as [`SampleT`]
 /// for the convenience of common audio operations.
 /// * [`From`]/[`Into`] implemented for [`SampleT`] - These functions should be
-/// simple calls to [`from_mono`] and [`into_mono`] respectively.
+/// simple calls to [`from_sample`] and [`into_sample`] respectively.
 /// * [`TryFrom`]/[`Into`] implemented for [`Vec<_>`] - These functions should
 /// convert the sample values to the given standard integer types. As [`Vec`]s
 /// are generic types, it cannot be assumed that any attempted conversions of
@@ -48,8 +48,8 @@ use std::ops::*;
 /// [`SampleT`]: ../type.SampleT.html
 /// [`From`]: https://doc.rust-lang.org/std/convert/trait.From.html
 /// [`Into`]: https://doc.rust-lang.org/std/convert/trait.Into.html
-/// [`from_mono`]: #tymethod.from_mono
-/// [`into_mono`]: #tymethod.into_mono
+/// [`from_sample`]: #tymethod.from_sample
+/// [`into_sample`]: #tymethod.into_sample
 /// [`TryFrom`]: https://doc.rust-lang.org/std/convert/trait.TryFrom.html
 /// [`Vec<_>`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
 /// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
