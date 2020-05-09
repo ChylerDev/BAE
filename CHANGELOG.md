@@ -1,5 +1,16 @@
 # BAE Rust Changelog
 
+## Version 0.13.0
+
+* Created a book using the [`mdbook`](https://crates.io/crates/mdbook) crate to be used for describing the purpose and usage of this library in literature format, and hosted using [GitHub Pages](https://ChylerDev.github.io/BAE).
+* Source code cleaning and organizing.
+* Beginning of test rewriting.
+* Beginning of the mixer struct (disabled but in-place until the mixer is merged).
+* Created new module for specific sample formats and a trait governing how they work.
+* Improved some test code with more improvements to come.
+* Started sub-project to take a binary file and spit out a valid rust table of its bytes. This will be used for testing the use of wave files without needing file i/o (good for CI testing).
+* Various documentation updates.
+
 ## Version 0.12.1
 
 * Renamed `tools` submodule to `utils`.

@@ -5,7 +5,7 @@ readme = "README.md"
 repository = "https://github.com/ChylerDev/bae"
 documentation = "https://docs.rs/bae_rs"
 license = "MIT"
-version = "0.12.1"
+version = "0.13.0"
 authors = ["Chyler Morrison <contact@chyler.info>"]
 edition = "2018"
 keywords = ["audio","audio-processing"]
@@ -23,7 +23,5 @@ wav = "0.3"
 [badges]
 is-it-maintained-issue-resolution = { repository = "ChylerDev/BAE" }
 is-it-maintained-open-issues = { repository = "ChylerDev/BAE" }
-
 maintenance = { status = "actively-developed" }
-
 gitlab = { repository = "ChylerDev/bae_copy" }
