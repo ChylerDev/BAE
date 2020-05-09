@@ -5,5 +5,3 @@ bin/
 \.vscode/
 target/
 Cargo.lock
-docs/*/
-doc/
