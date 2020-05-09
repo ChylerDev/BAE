@@ -29,7 +29,7 @@ mod tests {
         }
 
         let f = ".junk/modifiers/adsr.wav";
-        write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
+        write_wav(vec![t], 24, &mut File::create(f).unwrap(), false).unwrap();
     }
 
     #[test]
@@ -65,7 +65,7 @@ mod tests {
         }
 
         let f = ".junk/modifiers/echo.wav";
-        write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
+        write_wav(vec![t], 24, &mut File::create(f).unwrap(), false).unwrap();
     }
 
     #[test]
@@ -90,7 +90,7 @@ mod tests {
         }
 
         let f = ".junk/modifiers/envelope.wav";
-        write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
+        write_wav(vec![t], 24, &mut File::create(f).unwrap(), false).unwrap();
     }
 
     #[test]
@@ -132,7 +132,7 @@ mod tests {
         }
 
         let f = ".junk/modifiers/generic.wav";
-        write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
+        write_wav(vec![t], 24, &mut File::create(f).unwrap(), false).unwrap();
     }
 
     #[test]
@@ -155,7 +155,7 @@ mod tests {
         }
 
         let f = ".junk/modifiers/lowpass.wav";
-        write_wav(vec![t], 24, &mut File::create(f).unwrap()).unwrap();
+        write_wav(vec![t], 24, &mut File::create(f).unwrap(), false).unwrap();
     }
 
     fn run_modifier(m: &mut dyn bae_rs::modifiers::Modifier, file:&str)
@@ -176,6 +176,6 @@ mod tests {
         let mut f = String::from(FILE_PREFIX);
         f.push_str(file);
 
-        write_wav(vec![t], 24, &mut File::create(f.as_str()).unwrap()).unwrap();
+        write_wav(vec![t], 24, &mut File::create(f.as_str()).unwrap(), false).unwrap();
     }
 }
