@@ -52,11 +52,6 @@ pub type SampleT = f32;
 /// Shorthand for a vector containing sample data.
 pub type SampleTrackT = Vec<SampleT>;
 
-/// The sampling rate the engine is set to run at.
-pub const SAMPLE_RATE:u64 = 48_000;
-/// The inverse of the sampling rate for easy referencing and calculating.
-pub const INV_SAMPLE_RATE:MathT = 1.0/(SAMPLE_RATE as MathT);
-
 pub mod channels;
 pub mod debug;
 pub mod generators;
