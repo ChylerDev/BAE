@@ -13,6 +13,7 @@ use crate::sample_format::SampleFormat;
 pub struct StandardChannel<SF>
     where SF: SampleFormat
 {
+    sample_rate: MathT,
     output: Vec<SF>,
     sounds: HashMap<usize, SoundSP>,
     gain: SampleT,
@@ -28,9 +29,10 @@ impl<SF> StandardChannel<SF>
     /// [`set_process_time`] to change this.
     /// 
     /// [`set_process_time`]: ../trait.Channel.html#tymethod.set_process_time
-    pub fn new(gain: MathT) -> Self {
+    pub fn new(gain: MathT, sample_rate: MathT) -> Self {
         StandardChannel {
-            output: Vec::with_capacity((0.01 * SAMPLE_RATE as MathT) as usize),
+            sample_rate,
+            output: Vec::with_capacity((0.01 * sample_rate as MathT) as usize),
             sounds: HashMap::new(),
             gain: gain as SampleT,
             id_counter: 0
@@ -50,7 +52,7 @@ impl<SF> Channel<SF> for StandardChannel<SF>
     where SF: SampleFormat
 {
     fn set_process_time(&mut self, d: Duration) {
-        self.output = Vec::with_capacity((d.as_secs_f64() * SAMPLE_RATE as MathT) as usize);
+        self.output = Vec::with_capacity((d.as_secs_f64() * self.sample_rate as MathT) as usize);
     }
 
     fn get_output(&self) -> &Vec<SF> {
