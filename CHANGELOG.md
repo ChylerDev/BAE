@@ -1,5 +1,11 @@
 # BAE Rust Changelog
 
+## Version 0.13.2
+
+* Added input parameter to `write_wav` allowing it to clip audio data that is outside the supported range of \[-1,1\].
+* Added new dependency.
+* Fixed documentation.
+
 ## Version 0.13.1
 
 * Fixed rendering issues for the book.
