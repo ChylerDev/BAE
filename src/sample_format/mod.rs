@@ -40,7 +40,8 @@ use std::ops::*;
 /// of such an error could be (for the [`Stereo`] type):
 /// 
 /// ```
-/// format!("ERROR: Given vector was length {}. This function requires length 2.", v.len())
+/// # let v: Vec<f32> = vec![];
+/// format!("ERROR: Given vector was length {}. This function requires length 2.", v.len());
 /// ```
 /// 
 /// [`Mul`]: https://doc.rust-lang.org/std/ops/trait.Mul.html

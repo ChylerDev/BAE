@@ -162,7 +162,7 @@ pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<
 /// # use std::fs::File;
 /// use bae_rs::{*,generators::*, utils::*};
 /// let mut n = Noise::new();
-/// let mut t = TrackT::new();
+/// let mut t = SampleTrackT::new();
 ///
 /// for _ in 0..SAMPLE_RATE {
 ///     t.push(n.process());
