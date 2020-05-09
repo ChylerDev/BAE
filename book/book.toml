@@ -1,0 +1,6 @@
+[book]
+authors = ["Chyler Morrison"]
+language = "en"
+multilingual = false
+src = "src"
+title = "BAE"
