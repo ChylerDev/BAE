@@ -3,9 +3,8 @@ name = "bae_rs"
 description = "The Broad Audio Engine presents the ability to process sounds and wav files for applications like video games and DAWs."
 readme = "README.md"
 repository = "https://github.com/ChylerDev/bae"
-documentation = "https://docs.rs/bae_rs"
 license = "MIT"
-version = "0.13.1"
+version = "0.13.1" # don't forget to fix version numbers in README.md documentation links
 authors = ["Chyler Morrison <contact@chyler.info>"]
 edition = "2018"
 keywords = ["audio","audio-processing"]
@@ -18,7 +17,7 @@ lazy_static = "1"
 petgraph = "0.5"
 rand = "0.7"
 wav = "0.3"
-# fftw = "0.6"
+version-sync = "0.9"
 
 [badges]
 is-it-maintained-issue-resolution = { repository = "ChylerDev/BAE" }

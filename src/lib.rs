@@ -63,6 +63,7 @@
 //! [here](https://github.com/ChylerDev/BAE/blob/master/LICENSE)
 
 #![warn(missing_docs)]
+#![doc(html_root_url = "https://docs.rs/bae_rs/0.13.1")]
 
 use std::vec::Vec;
 
