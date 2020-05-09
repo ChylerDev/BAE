@@ -145,6 +145,9 @@ pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<
 /// * `track` - A vector of tracks to write. Each track is considered a channel.
 /// * `bps` - The number of bits per sample. Should be 8, 16, or 24.
 /// * `d` - The destination to write to.
+/// * `clip` - Controls whether or not the function will clamp values outside
+///            the range of [-1,1] to that range. If you normalize your data
+///            beforehand it is safe to set this to false.
 /// 
 /// # Errors
 /// 
@@ -165,11 +168,11 @@ pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<
 ///     t.push(n.process());
 /// }
 ///
-/// write_wav(vec![t], 16, &mut File::create(".junk/some/path/noise.wav").unwrap());
+/// write_wav(vec![t], 16, &mut File::create(".junk/some/path/noise.wav").unwrap(), false);
 /// ```
 /// 
 /// [`wav::write_wav`]: https://docs.rs/wav/0.1.1/wav/fn.write_wav.html
-pub fn write_wav(tracks: Vec<SampleTrackT>, bps: u16, d: &mut dyn std::io::Write) -> std::io::Result<()> {
+pub fn write_wav(mut tracks: Vec<SampleTrackT>, bps: u16, d: &mut dyn std::io::Write, clip: bool) -> std::io::Result<()> {
     use std::io::{Error, ErrorKind};
     use crate::sample_format::*;
 
@@ -179,9 +182,18 @@ pub fn write_wav(tracks: Vec<SampleTrackT>, bps: u16, d: &mut dyn std::io::Write
 
     let len = tracks[0].len();
 
-    for t in &tracks {
+    for t in &mut tracks {
         if t.len() != len {
             return Err(Error::new(ErrorKind::Other, "Channels have mismatching lengths, aborting."));
+        }
+        if clip {
+            for s in t {
+                if *s > 1.0 {
+                    *s = 1.0;
+                } else if *s < -1.0 {
+                    *s = -1.0;
+                }
+            }
         }
     }
 

@@ -26,11 +26,8 @@ mod tests {
             t.push(b.process());
         }
 
-        normalize(-1.5, &mut t);
-
-        write_wav(vec![t], 24, &mut File::create(".junk/sounds/block_NoiseLP.wav").unwrap())
-        .expect("Failed to write wav file");
-    }
+        normalize_write(-1.5, t, &mut File::create(".junk/sounds/block_NoiseLP.wav").unwrap())
+}
 
     #[test]
     fn test_simple_sounds() {
@@ -58,10 +55,7 @@ mod tests {
             t.push(ss.process(0.0));
         }
 
-        normalize(-1.5, &mut t);
-
-        write_wav(vec![t], 24, &mut File::create(".junk/sounds/simple_sounds.wav").unwrap())
-        .expect("Failed to write wav file");
+        normalize_write(-1.5, t, &mut File::create(".junk/sounds/simple_sounds.wav").unwrap())
     }
 
     #[test]
@@ -95,9 +89,12 @@ mod tests {
             t.push(cs.process(0.0));
         }
 
-        normalize(-1.5, &mut t);
+        normalize_write(-1.5, t, &mut File::create(".junk/sounds/complex_sounds.wav").unwrap())
+    }
 
-        write_wav(vec![t], 24, &mut File::create(".junk/sounds/complex_sounds.wav").unwrap())
-        .expect("Failed to write wav file");
+    fn normalize_write(db: bae_rs::MathT, mut t: bae_rs::SampleTrackT, d: &mut dyn std::io::Write) {
+        normalize(db, &mut t);
+
+        write_wav(vec![t], 24, d, false).expect("Failed to write wav file");
     }
 }

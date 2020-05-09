@@ -15,7 +15,7 @@ mod tests {
         }
 
         std::fs::create_dir_all(".junk/utils").unwrap();
-        write_wav(vec![t], 24, &mut File::create(".junk/utils/wavwrite.wav").unwrap()).unwrap();
+        write_wav(vec![t], 24, &mut File::create(".junk/utils/wavwrite.wav").unwrap(), false).unwrap();
     }
 
     #[test]
