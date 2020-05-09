@@ -1,5 +1,9 @@
 # BAE Rust Changelog
 
+## Version 0.13.1
+
+* Fixed rendering issues for the book.
+
 ## Version 0.13.0
 
 * Created a book using the [`mdbook`](https://crates.io/crates/mdbook) crate to be used for describing the purpose and usage of this library in literature format, and hosted using [GitHub Pages](https://ChylerDev.github.io/BAE).
