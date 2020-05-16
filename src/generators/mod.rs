@@ -29,7 +29,8 @@ pub trait FreqMod {
     /// # Parameters
     /// 
     /// * `f` - The frequency for the new object
-    fn new(f: MathT) -> Self;
+    /// * `sample_rate` - The sample rate that will be used.
+    fn new(f: MathT, sample_rate: MathT) -> Self;
 
     /// Sets the frequency of the given object.
     /// 

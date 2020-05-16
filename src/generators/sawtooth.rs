@@ -8,24 +8,26 @@ use super::Generator;
 
 /// Struct for generating sawtooth samples.
 pub struct Sawtooth {
+    r: MathT,
     irate: MathT,
     inc: MathT,
 }
 
 impl FreqMod for Sawtooth {
-    fn new(f: MathT) -> Self {
+    fn new(f: MathT, sample_rate: MathT) -> Self {
         Sawtooth {
-            irate: 2.0*f*INV_SAMPLE_RATE,
+            r: sample_rate,
+            irate: 2.0*f/sample_rate,
             inc: 0.0,
         }
     }
 
     fn set_frequency(&mut self, f: MathT) {
-        self.irate = 2.0*f*INV_SAMPLE_RATE;
+        self.irate = 2.0*f/self.r;
     }
 
     fn get_frequency(&self) -> MathT {
-        self.irate / (2.0 * INV_SAMPLE_RATE)
+        self.irate * self.r / 2.0
     }
 }
 
@@ -46,6 +48,7 @@ impl Generator for Sawtooth {
 impl Clone for Sawtooth {
     fn clone(&self) -> Self {
         Sawtooth {
+            r: self.r,
             irate: self.irate,
             inc: 0.0
         }
