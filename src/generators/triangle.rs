@@ -6,24 +6,26 @@ use super::*;
 
 /// Struct for generating triangle waves at a given frequency.
 pub struct Triangle {
+    sample_rate: MathT,
     irate: MathT,
     inc: MathT,
 }
 
 impl FreqMod for Triangle {
-    fn new(f: MathT) -> Self {
+    fn new(f: MathT, sample_rate: MathT) -> Self {
         Triangle {
-            irate: 4.0 * f * INV_SAMPLE_RATE,
+            sample_rate,
+            irate: 4.0 * f / sample_rate,
             inc: 0.0,
         }
     }
 
     fn set_frequency(&mut self, f: MathT) {
-        self.irate = 4.0 * f * INV_SAMPLE_RATE;
+        self.irate = 4.0 * f / self.sample_rate;
     }
 
     fn get_frequency(&self) -> MathT {
-        self.irate / (4.0 * INV_SAMPLE_RATE)
+        self.irate / (4.0 / self.sample_rate)
     }
 }
 
@@ -50,6 +52,7 @@ impl Generator for Triangle {
 impl Clone for Triangle {
     fn clone(&self) -> Self {
         Triangle {
+            sample_rate: self.sample_rate,
             irate: self.irate,
             inc: 0.0
         }

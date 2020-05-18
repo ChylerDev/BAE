@@ -6,24 +6,26 @@ use super::*;
 
 /// Struct for generating square wave samples at a specified frequency
 pub struct Square {
-    ind:MathT,
-    inv:MathT,
+    sample_rate: MathT,
+    ind: MathT,
+    inv: MathT,
 }
 
 impl FreqMod for Square {
-    fn new(f:MathT) -> Self {
+    fn new(f: MathT, sample_rate: MathT) -> Self {
         Square {
+            sample_rate,
             ind: 0.0,
-            inv: SAMPLE_RATE as MathT/(2.0 * f)
+            inv: sample_rate/(2.0 * f)
         }
     }
 
     fn set_frequency(&mut self, f: MathT) {
-        self.inv = SAMPLE_RATE as MathT/(2.0 * f);
+        self.inv = self.sample_rate/(2.0 * f);
     }
 
     fn get_frequency(&self) -> MathT {
-        SAMPLE_RATE as MathT/(2.0 * self.inv)
+        self.sample_rate/(2.0 * self.inv)
     }
 }
 
@@ -48,6 +50,7 @@ impl Generator for Square {
 impl Clone for Square {
     fn clone(&self) -> Self {
         Square {
+            sample_rate: self.sample_rate,
             ind: 0.0,
             inv: self.inv
         }

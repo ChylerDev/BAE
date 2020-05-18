@@ -160,9 +160,9 @@ impl WaveWriteOptions {
     pub fn bps(mut self, bps: u16) -> Result<WaveWriteOptions,()> {
         if bps == 8 || bps == 16 || bps == 24 {
             self.bps = bps;
-            self
+            Ok(self)
         } else {
-            ()
+            Err(())
         }
     }
 
