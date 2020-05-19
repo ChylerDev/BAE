@@ -62,7 +62,7 @@ impl Generator for Sine {
         self.ind += self.inc;
 
         if self.ind >= (WAVETABLE_SIZE as MathT) - 1.0 {
-            self.ind -= WAVETABLE_SIZE as MathT;
+            self.ind -= WAVETABLE_SIZE as MathT - 1.0;
         }
 
         y

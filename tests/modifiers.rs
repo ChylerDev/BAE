@@ -10,7 +10,7 @@ mod tests {
 
     const FILE_PREFIX: &'static str = ".junk/modifiers/";
 
-        #[test]
+    #[test]
     fn test_adsr() -> Result<(),()> {
         let mut a = ADSR::new(
             Duration::from_secs_f64(0.03125),
@@ -26,6 +26,10 @@ mod tests {
         for i in 0..SAMPLE_RATE {
             if i == SAMPLE_RATE/2 {
                 a.trigger_release();
+            }
+
+            if i == 1199 {
+                println!("{} - {}", i, t.last().unwrap());
             }
 
             t.push(a.process(g.process()));

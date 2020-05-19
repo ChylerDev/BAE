@@ -10,12 +10,14 @@ pub mod mono_resampler;
 pub use mono_resampler::*;
 
 /// Linear interpolation (y-y1 = m * (x-x1)) of a given value.
+#[inline]
 pub fn lerp<T>(x:T, x1:T, x2:T, y1:T, y2:T) -> T
     where T: Copy + Sized + Add<Output=T> + Sub<Output=T> + Mul<Output=T> + Div<Output=T>
 {
     ((y2 - y1) / (x2 - x1)) * (x - x1) + y1
 }
 
+#[inline]
 fn clamp<T>(x: T, mut x1: T, mut x2: T) -> T
     where T: Copy + Sized + PartialOrd
 {
@@ -35,6 +37,7 @@ fn clamp<T>(x: T, mut x1: T, mut x2: T) -> T
 /// Clamped linear interpolation (y-y1 = m * (x-x1)) of a given value. The input
 /// `x` is clamped to the range [`x1`,`x2`]. If `x1` is greater than `x2`, they
 /// are swapped.
+#[inline]
 pub fn clerp<T>(x:T, x1:T, x2:T, y1:T, y2:T) -> T
     where T: Copy + Sized + PartialOrd + Add<Output=T> + Sub<Output=T> + Mul<Output=T> + Div<Output=T>
 {

@@ -40,9 +40,12 @@ use std::ops::*;
 /// of such an error could be (for the [`Stereo`] type):
 /// 
 /// ```rust
-/// let v = vec![];
+/// # use bae_rs::Stereo;
+/// # use std::convert::TryFrom;
 /// 
-/// assert_eq!(Err("ERROR: Given vector was length 0. This function requires length 2."), Stereo::try_from(v));
+/// let v: Vec<i16> = vec![];
+/// 
+/// assert_eq!(Err("ERROR: Given vector was length 0. This function requires length 2.".to_owned()), Stereo::try_from(v));
 /// ```
 /// 
 /// [`Mul`]: https://doc.rust-lang.org/std/ops/trait.Mul.html

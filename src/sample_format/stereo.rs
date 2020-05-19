@@ -11,7 +11,8 @@ use crate::utils::*;
 pub type StereoTrackT = Vec<Stereo>;
 
 /// Struct representing a stereophonic audio sample.
-#[derive(Copy,Clone,Default)]
+#[derive(Debug,Copy,Clone,Default,PartialEq)]
+#[repr(C)]
 pub struct Stereo{
     /// Left sample value.
     pub left:  SampleT,

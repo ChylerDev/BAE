@@ -10,7 +10,8 @@ use super::*;
 pub type MonoTrackT = Vec<Mono>;
 
 /// Struct representing a monophonic audio sample.
-#[derive(Copy,Clone,Default)]
+#[derive(Debug,Copy,Clone,Default,PartialEq)]
+#[repr(C)]
 pub struct Mono {
     /// The single, monophonic sample.
     pub mono: SampleT,
