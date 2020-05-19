@@ -6,7 +6,7 @@ mod tests {
     use std::time::Duration;
     use bae_rs::{*, modifiers::*, generators::*, utils::*};
 
-    static SAMPLE_RATE: usize = 48_000;
+    const SAMPLE_RATE: usize = 48_000;
 
     const FILE_PREFIX: &'static str = ".junk/modifiers/";
 

@@ -7,8 +7,8 @@ mod tests {
     use bae_rs::generators::*;
     use bae_rs::debug::*;
 
-    static SAMPLE_RATE: usize = 48_000;
-    static INV_SAMPLE_RATE: bae_rs::MathT = 1.0 / SAMPLE_RATE as bae_rs::MathT;
+    const SAMPLE_RATE: usize = 48_000;
+    const INV_SAMPLE_RATE: bae_rs::MathT = 1.0 / SAMPLE_RATE as bae_rs::MathT;
 
     #[test]
     fn test_zero() {
