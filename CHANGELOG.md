@@ -1,5 +1,10 @@
 # BAE Rust Changelog
 
+## Version 0.14.0
+
+* Removed const `SAMPLE_RATE` and `INV_SAMPLE_RATE` in favor of run-time sample rate parameters, allowing for greater flexibility.
+* New builder object `WaveWriteOptions` for writing a wav file.
+
 ## Version 0.13.2
 
 * Added input parameter to `write_wav` allowing it to clip audio data that is outside the supported range of \[-1,1\].
