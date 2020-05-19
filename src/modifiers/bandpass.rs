@@ -4,15 +4,15 @@ use super::*;
 
 /// -12dB per octave BandPass filter.
 pub struct BandPass {
+    coeffs: [MathT ; 3],
+
+    xn: [SampleT ; 2],
+    yn: [SampleT ; 2],
+
+    sample_rate: MathT,
+
     central_f: MathT,
     quality: MathT,
-    a0: MathT,
-    b1: MathT,
-    b2: MathT,
-    x1: SampleT,
-    x2: SampleT,
-    y1: SampleT,
-    y2: SampleT,
 }
 
 impl BandPass {
@@ -21,17 +21,17 @@ impl BandPass {
     /// 
     /// The filter's quality is set to the central frequency divided by the
     /// difference between the corner frequencies.
-    pub fn new(f: MathT, q: MathT) -> Self {
+    pub fn new(f: MathT, q: MathT, sample_rate: MathT) -> Self {
         let mut bp = BandPass {
+            coeffs: [Default::default() ; 3],
+
+            xn: [Default::default() ; 2],
+            yn: [Default::default() ; 2],
+
+            sample_rate,
+
             central_f: f,
             quality: q,
-            a0: 0.0,
-            b1: 0.0,
-            b2: 0.0,
-            x1: SampleT::default(),
-            x2: SampleT::default(),
-            y1: SampleT::default(),
-            y2: SampleT::default(),
         };
 
         bp.reset();
@@ -40,17 +40,17 @@ impl BandPass {
     }
 
     /// Creates a new BandPass object from given corner frequencies.
-    pub fn from_corners(f: (MathT,MathT)) -> Self {
+    pub fn from_corners(f: (MathT,MathT), sample_rate: MathT) -> Self {
         let mut bp = BandPass {
+            coeffs: [Default::default() ; 3],
+
+            xn: [Default::default() ; 2],
+            yn: [Default::default() ; 2],
+
+            sample_rate,
+
             central_f: (f.0*f.1).abs().sqrt(),
             quality: (f.0*f.1).abs().sqrt()/(f.1-f.0).abs(),
-            a0: 0.0,
-            b1: 0.0,
-            b2: 0.0,
-            x1: SampleT::default(),
-            x2: SampleT::default(),
-            y1: SampleT::default(),
-            y2: SampleT::default(),
         };
 
         bp.reset();
@@ -115,8 +115,8 @@ impl BandPass {
     fn reset(&mut self) {
         let (fh, fl) = self.get_corner_frequencies();
 
-        let theta_l = (std::f64::consts::PI * fl * INV_SAMPLE_RATE).tan();
-        let theta_h = (std::f64::consts::PI * fh * INV_SAMPLE_RATE).tan();
+        let theta_l = (std::f64::consts::PI * fl / self.sample_rate).tan();
+        let theta_h = (std::f64::consts::PI * fh / self.sample_rate).tan();
 
         let al = 1.0 / (1.0+theta_l);
         let ah = 1.0 / (1.0+theta_h);
@@ -124,22 +124,23 @@ impl BandPass {
         let bl = (1.0-theta_l) / (1.0+theta_l);
         let bh = (1.0-theta_h) / (1.0+theta_h);
 
-        self.a0 = (1.0-al) * ah;
-        self.b1 = bl + bh;
-        self.b2 = bl * bh;
+        self.coeffs[0] = (1.0-al) * ah;
+        self.coeffs[1] = bl + bh;
+        self.coeffs[2] = bl * bh;
     }
 }
 
 impl Modifier for BandPass {
     fn process(&mut self, x: SampleT) -> SampleT {
-        let y = (self.a0 * (x - self.x2) as MathT +
-            self.b1 * self.y1 as MathT - 
-            self.b2 * self.y2 as MathT) as SampleT;
+        let y =
+            (self.coeffs[0] * (x - self.xn[1]) as MathT +
+            self.coeffs[1] * self.yn[0] as MathT - 
+            self.coeffs[2] * self.yn[1] as MathT) as SampleT;
 
-        self.y2 = self.y1;
-        self.y1 = y;
-        self.x2 = self.x1;
-        self.x1 = x;
+        self.xn.rotate_right(1);
+        self.xn[0] = x;
+        self.yn.rotate_right(1);
+        self.yn[0] = y;
 
         y
     }
@@ -155,15 +156,15 @@ fn quadratic(a: MathT, b: MathT, c: MathT) -> (MathT,MathT) {
 impl Clone for BandPass {
     fn clone(&self) -> Self {
         BandPass {
+            coeffs: self.coeffs,
+
+            xn: [Default::default() ; 2],
+            yn: [Default::default() ; 2],
+
+            sample_rate: self.sample_rate,
+
             central_f: self.central_f,
             quality: self.quality,
-            a0: self.a0,
-            b1: self.b1,
-            b2: self.b2,
-            x1: SampleT::default(),
-            x2: SampleT::default(),
-            y1: SampleT::default(),
-            y2: SampleT::default(),
         }
     }
 }

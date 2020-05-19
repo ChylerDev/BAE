@@ -6,6 +6,7 @@ use std::time::Duration;
 
 /// Simple Echo filter: H(z) = 1/(1-az^-d)
 pub struct Echo {
+    sample_rate: MathT,
     delay: VecDeque<SampleT>,
     gain: SampleT,
 }
@@ -15,14 +16,23 @@ impl Echo {
     /// amount.
     /// 
     /// [`Echo`]: struct.Echo.html
-    pub fn new(d: Duration, g: MathT) -> Self{
+    pub fn new(d: Duration, g: MathT, sample_rate: MathT) -> Self{
         let mut v = VecDeque::new();
-        for _ in 0..((d.as_secs_f64()*SAMPLE_RATE as MathT) as usize) {
+        for _ in 0..((d.as_secs_f64() * sample_rate as MathT) as usize) {
             v.push_back(SampleT::default());
         }
 
         Echo {
-            delay: v,
+            sample_rate,
+            delay: {
+                let mut v = VecDeque::new();
+
+                for _ in 0..((d.as_secs_f64() * sample_rate as MathT) as usize) {
+                    v.push_back(SampleT::default());
+                }
+
+                v
+            },
             gain: g as SampleT,
         }
     }
@@ -40,10 +50,11 @@ impl Modifier for Echo {
 impl Clone for Echo {
     fn clone(&self) -> Self {
         Echo {
+            sample_rate: self.sample_rate,
             delay: {
                 let mut v = VecDeque::new();
 
-                for _ in 0..(self.delay.len() * SAMPLE_RATE as usize) {
+                for _ in 0..(self.delay.len() * self.sample_rate as usize) {
                     v.push_back(SampleT::default());
                 }
 
