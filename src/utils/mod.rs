@@ -165,7 +165,7 @@ impl WaveWriteOptions {
     /// Sets the bits per sample value.
     /// 
     /// Succeeds if bps is one of either 8, 16, or 24, fails otherwise.
-    pub fn bps(mut self, bps: u16) -> Result<WaveWriteOptions,()> {
+    pub fn bps<'a>(&'a mut self, bps: u16) -> Result<&'a mut WaveWriteOptions,()> {
         if bps == 8 || bps == 16 || bps == 24 {
             self.bps = bps;
             Ok(self)
@@ -175,13 +175,13 @@ impl WaveWriteOptions {
     }
 
     /// Sets the sampling rate.
-    pub fn r(mut self, r: MathT) -> WaveWriteOptions {
+    pub fn r<'a>(&'a mut self, r: MathT) -> &'a mut WaveWriteOptions {
         self.r = r;
         self
     }
 
     /// Sets whether or not values outside the range of \[-1,1\] will be clipped or not.
-    pub fn clip(mut self, clip: bool) -> WaveWriteOptions {
+    pub fn clip<'a>(&'a mut self, clip: bool) -> &'a mut WaveWriteOptions {
         self.clip = clip;
         self
     }
@@ -216,7 +216,7 @@ impl WaveWriteOptions {
     /// ```
     /// 
     /// [`wav::write_wav`]: https://docs.rs/wav/0.3.0/wav/fn.write_wav.html
-    pub fn write(self, mut tracks: Vec<SampleTrackT>, d: &mut dyn std::io::Write) -> std::io::Result<()> {
+    pub fn write(&self, mut tracks: Vec<SampleTrackT>, d: &mut dyn std::io::Write) -> std::io::Result<()> {
         use std::io::{Error, ErrorKind};
         use crate::sample_format::*;
 
@@ -289,7 +289,7 @@ impl WaveWriteOptions {
             },
             _ => return Err(Error::new(ErrorKind::Other, "Unsupported bit depth, aborting.")),
         }
-    
+
         Ok(())
     }
 }
