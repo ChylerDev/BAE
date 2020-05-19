@@ -70,9 +70,10 @@ mod tests {
         let omega = |f: f32, i: f32| f * 2.0 * std::f32::consts::PI * INV_SAMPLE_RATE as f32 * i;
 
         for i in 0..samples {
-             let y = s.process();
-             let n = omega(s.get_frequency() as f32, i as f32).sin();
-             assert!(float_equal(y, n, std::f32::EPSILON * 10.0, |x| x.abs()));
+            let y = s.process();
+            let n = omega(s.get_frequency() as f32, i as f32).sin();
+
+            assert!(float_equal(y, n, std::f32::EPSILON * 10.0, |x| x.abs()));
         }
     }
 
