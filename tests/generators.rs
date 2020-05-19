@@ -1,15 +1,20 @@
 extern crate bae_rs;
 
+
 #[cfg(test)]
 mod tests {
+    use bae_rs::*;
     use bae_rs::generators::*;
     use bae_rs::debug::*;
+
+    static SAMPLE_RATE: usize = 48_000;
+    static INV_SAMPLE_RATE: bae_rs::MathT = 1.0 / SAMPLE_RATE as bae_rs::MathT;
 
     #[test]
     fn test_zero() {
         let mut z = Zero::new();
 
-        for _ in 0..bae_rs::SAMPLE_RATE {
+        for _ in 0..SAMPLE_RATE {
             assert!(float_equal(z.process(), 0.0, std::f32::EPSILON, |x| x.abs()));
         }
     }
@@ -29,11 +34,11 @@ mod tests {
 
     #[test]
     fn test_sawtooth() {
-        let mut s = Sawtooth::new(440.0);
+        let mut s = Sawtooth::new(440.0, SAMPLE_RATE as MathT);
         assert!(float_equal(440.0, s.get_frequency(), std::f64::EPSILON, |x| x.abs()));
 
         let time = std::time::Duration::from_secs_f64(1.0/s.get_frequency());
-        let samples = bae_rs::utils::seconds_to_samples(time);
+        let samples = bae_rs::utils::seconds_to_samples(time, SAMPLE_RATE as MathT);
 
         let omega = |t: f32, x: f32| 2.0 / t * x;
         let phi = |t: f32, x: f32| -2.0 * (x / t + 0.5).floor();
@@ -43,11 +48,11 @@ mod tests {
             let y = s.process();
             let o = omega(
                 1.0/s.get_frequency() as f32,
-                i as f32 * bae_rs::INV_SAMPLE_RATE as f32
+                i as f32 * INV_SAMPLE_RATE as f32
             );
             let p = phi(
                 1.0/s.get_frequency() as f32,
-                i as f32 * bae_rs::INV_SAMPLE_RATE as f32
+                i as f32 * INV_SAMPLE_RATE as f32
             );
             let n = o + p;
             assert!(float_equal(y, n, std::f32::EPSILON * 10.0, |x| x.abs()));
@@ -56,13 +61,13 @@ mod tests {
 
     #[test]
     fn test_sine() {
-        let mut s = Sine::new(440.0);
+        let mut s = Sine::new(440.0, SAMPLE_RATE as MathT);
         assert!(float_equal(440.0, s.get_frequency(), std::f64::EPSILON, |x| x.abs()));
 
         let time = std::time::Duration::from_secs_f64(1.0/s.get_frequency());
-        let samples = bae_rs::utils::seconds_to_samples(time);
+        let samples = bae_rs::utils::seconds_to_samples(time, SAMPLE_RATE as MathT);
 
-        let omega = |f: f32, i: f32| f * 2.0 * std::f32::consts::PI * bae_rs::INV_SAMPLE_RATE as f32 * i;
+        let omega = |f: f32, i: f32| f * 2.0 * std::f32::consts::PI * INV_SAMPLE_RATE as f32 * i;
 
         for i in 0..samples {
              let y = s.process();
@@ -73,13 +78,13 @@ mod tests {
 
     #[test]
     fn test_square() {
-        let mut s = Square::new(440.0);
+        let mut s = Square::new(440.0, SAMPLE_RATE as MathT);
         assert!(float_equal(440.0, s.get_frequency(), std::f64::EPSILON, |x| x.abs()));
 
         let time = std::time::Duration::from_secs_f64(1.0/s.get_frequency());
-        let samples = bae_rs::utils::seconds_to_samples(time);
+        let samples = bae_rs::utils::seconds_to_samples(time, SAMPLE_RATE as MathT);
 
-        let omega = (-2.0 * s.get_frequency() * bae_rs::INV_SAMPLE_RATE) as f32;
+        let omega = (-2.0 * s.get_frequency() * INV_SAMPLE_RATE) as f32;
 
         for i in 0..samples {
             let y = s.process();
@@ -91,11 +96,11 @@ mod tests {
     #[test]
     fn test_triangle() {
         let f = 440.0;
-        let mut t = Triangle::new(f);
+        let mut t = Triangle::new(f, SAMPLE_RATE as MathT);
         assert!(float_equal(f, t.get_frequency(), std::f64::EPSILON, |x| x.abs()));
 
         let period = 1.0/t.get_frequency() as f32;
-        let samples = bae_rs::utils::seconds_to_samples(std::time::Duration::from_secs_f32(period));
+        let samples = bae_rs::utils::seconds_to_samples(std::time::Duration::from_secs_f32(period), SAMPLE_RATE as MathT);
 
         let gen_triangle = |t: f32| {
             let q1 = (2.0/period * t + 0.5).floor();
@@ -108,7 +113,7 @@ mod tests {
         let before = std::time::Instant::now();
         for i in 0..samples {
             let y = t.process();
-            let t = i as f32 * bae_rs::INV_SAMPLE_RATE as f32;
+            let t = i as f32 * INV_SAMPLE_RATE as f32;
             let n = gen_triangle(t);
 
             assert!(float_equal(y, n, std::f32::EPSILON * 10.0, |x| x.abs()));
