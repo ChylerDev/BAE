@@ -8,20 +8,13 @@ use super::*;
 /// High pass filter adapted from the 3rd Order Butterworth Low Pass Filter with
 /// resonance.
 pub struct HighPass {
-    a0: SampleT,
-    a1: SampleT,
-    a2: SampleT,
-    a3: SampleT,
-    b1: SampleT,
-    b2: SampleT,
-    b3: SampleT,
+    an: [SampleT ; 4],
+    xn: [SampleT ; 3],
 
-    x1: SampleT,
-    x2: SampleT,
-    x3: SampleT,
-    y1: SampleT,
-    y2: SampleT,
-    y3: SampleT,
+    bn: [SampleT ; 3],
+    yn: [SampleT ; 3],
+
+    sample_rate: MathT,
 
     fc: MathT,
     r: MathT
@@ -36,23 +29,18 @@ impl HighPass {
     /// * `fc` - The cutoff frequency.
     /// * `r` - The resonance of the filter. Value should be in the range [0,1].
     /// If the value falls out of that range it is clamped to the closer value.
-    pub fn new(fc: MathT, r: MathT) -> HighPass {
-        let fc = fc.min(SAMPLE_RATE as MathT / 2.0);
+    pub fn new(fc: MathT, r: MathT, sample_rate: MathT) -> HighPass {
+        let fc = fc.min(sample_rate / 2.0);
         let r = r.min(1.0).max(0.0);
         let mut hp = HighPass {
-            a0: SampleT::default(),
-            a1: SampleT::default(),
-            a2: SampleT::default(),
-            a3: SampleT::default(),
-            b1: SampleT::default(),
-            b2: SampleT::default(),
-            b3: SampleT::default(),
-            x1: SampleT::default(),
-            x2: SampleT::default(),
-            x3: SampleT::default(),
-            y1: SampleT::default(),
-            y2: SampleT::default(),
-            y3: SampleT::default(),
+            an: [Default::default() ; 4],
+            bn: [Default::default() ; 3],
+
+            xn: [Default::default() ; 3],
+            yn: [Default::default() ; 3],
+
+            sample_rate,
+
             fc,
             r,
         };
@@ -69,7 +57,7 @@ impl HighPass {
 
     /// Sets the central frequency of the filter.
     pub fn set_central_frequency(&mut self, fc: MathT) {
-        let fc = fc.min(SAMPLE_RATE as MathT / 2.0);
+        let fc = fc.min(self.sample_rate / 2.0);
 
         self.fc = fc;
         self.reset();
@@ -80,7 +68,8 @@ impl HighPass {
         self.r
     }
 
-    /// Sets the resonance of the filter.
+    /// Sets the resonance of the filter. Value should be in the range [0,1].
+    /// If the value falls out of that range it is clamped to the closer value.
     pub fn set_resonance(&mut self, r: MathT) {
         let r = r.min(1.0).max(0.0);
 
@@ -92,31 +81,35 @@ impl HighPass {
         let theta = std::f64::consts::PI * (4.0 - self.r) / 6.0;
         let k = 1.0 - 2.0 * theta.cos();
         let w = 2.0 * std::f64::consts::PI * self.fc;
-        let t = w * INV_SAMPLE_RATE;
+        let t = w / self.sample_rate;
         let g = t.powf(3.0) + k*t.powf(2.0) + k*t + 1.0;
 
-        self.a0 = ( 1.0/g) as SampleT;
-        self.a1 = (-3.0/g) as SampleT;
-        self.a2 = ( 3.0/g) as SampleT;
-        self.a3 = (-1.0/g) as SampleT;
+        self.an[0] = ( 1.0/g) as SampleT;
+        self.an[1] = (-3.0/g) as SampleT;
+        self.an[2] = ( 3.0/g) as SampleT;
+        self.an[3] = (-1.0/g) as SampleT;
 
-        self.b1 = ((k*t.powf(2.0) + 2.0*k*t + 3.0)/g) as SampleT;
-        self.b2 = ((-k*t - 3.0)/g) as SampleT;
-        self.b3 = (1.0/g) as SampleT;
+        self.bn[0] = ((k*t.powf(2.0) + 2.0*k*t + 3.0)/g) as SampleT;
+        self.bn[1] = ((-k*t - 3.0)/g) as SampleT;
+        self.bn[2] = (1.0/g) as SampleT;
     }
 }
 
 impl Modifier for HighPass {
     fn process(&mut self, x: SampleT) -> SampleT {
-        let y = self.a0*x + self.a1*self.x1 + self.a2*self.x2 + self.a3*self.x3 +
-            self.b1*self.y1 + self.b2*self.y2 + self.b3*self.y3;
+        let y =
+            self.an[0] * x +
+            self.an[1] * self.xn[0] +
+            self.an[2] * self.xn[1] +
+            self.an[3] * self.xn[2] +
+            self.bn[0] * self.yn[0] +
+            self.bn[1] * self.yn[1] +
+            self.bn[2] * self.yn[2];
 
-        self.x3 = self.x2;
-        self.x2 = self.x1;
-        self.x1 = x;
-        self.y3 = self.y2;
-        self.y2 = self.y1;
-        self.y1 = y;
+        self.xn.rotate_right(1);
+        self.xn[0] = x;
+        self.yn.rotate_right(1);
+        self.yn[0] = y;
 
         y
     }
@@ -125,19 +118,14 @@ impl Modifier for HighPass {
 impl Clone for HighPass {
     fn clone(&self) -> Self {
         HighPass {
-            a0: self.a0,
-            a1: self.a1,
-            a2: self.a2,
-            a3: self.a3,
-            b1: self.b1,
-            b2: self.b2,
-            b3: self.b3,
-            x1: SampleT::default(),
-            x2: SampleT::default(),
-            x3: SampleT::default(),
-            y1: SampleT::default(),
-            y2: SampleT::default(),
-            y3: SampleT::default(),
+            an: self.an,
+            bn: self.bn,
+
+            xn: [SampleT::default() ; 3],
+            yn: [SampleT::default() ; 3],
+
+            sample_rate: self.sample_rate,
+
             fc: self.fc,
             r: self.r,
         }

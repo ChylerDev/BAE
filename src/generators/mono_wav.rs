@@ -14,7 +14,7 @@ pub struct MonoWav {
 
 impl MonoWav {
     /// Constructs from a given path.
-    pub fn from_source(s: &mut dyn std::io::Read) -> Self {
+    pub fn from_source(s: &mut dyn std::io::Read, sample_rate: MathT) -> Self {
         let (h, t) = utils::read_wav(s)
         .expect("File could not be read");
 
@@ -24,13 +24,13 @@ impl MonoWav {
             mt.push(Mono::from_sample(*s));
         }
 
-        MonoWav::from_track(h.sampling_rate as MathT, mt)
+        MonoWav::from_track(sample_rate, h.sampling_rate as MathT, mt)
     }
 
     /// Converts from the given track and source sample rate.
-    pub fn from_track(sampling_rate: MathT, t: MonoTrackT) -> Self {
+    pub fn from_track(sample_rate: MathT, source_sampling_rate: MathT, t: MonoTrackT) -> Self {
         MonoWav{
-            resam: MonoResampler::new(t, sampling_rate, 0, 0)
+            resam: MonoResampler::new(t, sample_rate, source_sampling_rate, 0, 0)
         }
     }
 

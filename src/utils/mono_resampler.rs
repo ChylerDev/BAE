@@ -26,12 +26,13 @@ impl MonoResampler {
     /// # Parameters
     /// 
     /// * `data` - The track containing the original audio data to resample.
+    /// * `sample_rate` - The sampling rate to resample to.
     /// * `source_sample_rate` - The sample rate the original data was recorded at.
     /// * `loop_start` - The start point of looping.
     /// * `loop_end` - The end point of looping. If this value is 0, no looping is assumed.
     /// 
     /// If `loop_end` is less than `loop_start`, they are swapped.
-    pub fn new(data:MonoTrackT, source_sample_rate: MathT, mut loop_start: usize, mut loop_end: usize) -> Self {
+    pub fn new(data:MonoTrackT, sample_rate: MathT, source_sample_rate: MathT, mut loop_start: usize, mut loop_end: usize) -> Self {
         if loop_end < loop_start {
             std::mem::swap(&mut loop_start, &mut loop_end);
         }
@@ -39,7 +40,7 @@ impl MonoResampler {
         MonoResampler {
             data,
             ind: 0.0,
-            inc: (source_sample_rate as MathT * INV_SAMPLE_RATE) as SampleT,
+            inc: (source_sample_rate as MathT * (1.0/sample_rate)) as SampleT,
             speed: 1.0,
             loop_start,
             loop_end,

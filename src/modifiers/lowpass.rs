@@ -7,10 +7,14 @@ use super::*;
 
 /// 3rd Order Butterworth Low Pass Filter with resonance.
 pub struct LowPass {
+    coeff: [SampleT; 4],
+
+    yn: [SampleT; 3],
+
+    sample_rate: MathT,
+
     fc: MathT,
     r: MathT,
-    coeff: [SampleT; 4],
-    outs: [SampleT; 3]
 }
 
 impl LowPass {
@@ -22,15 +26,18 @@ impl LowPass {
     /// * `fc` - The cutoff frequency.
     /// * `r` - The resonance of the filter. Value should be in the range [0,1].
     /// If the value falls out of that range it is clamped to the closer value.
-    pub fn new(fc: MathT, r: MathT) -> LowPass {
-        let fc = fc.min(SAMPLE_RATE as MathT / 2.0);
+    pub fn new(fc: MathT, r: MathT, sample_rate: MathT) -> LowPass {
+        let fc = fc.min(sample_rate / 2.0);
         let r = r.min(1.0).max(0.0);
 
         let mut lp = LowPass {
+            coeff: [SampleT::default() ; 4],
+            yn: [SampleT::default() ; 3],
+
+            sample_rate,
+
             fc,
             r,
-            coeff: [0.0; 4],
-            outs: [SampleT::default(); 3]
         };
 
         lp.reset();
@@ -45,7 +52,7 @@ impl LowPass {
 
     /// Sets the central frequency of the filter.
     pub fn set_central_frequency(&mut self, fc: MathT) {
-        let fc = fc.min(SAMPLE_RATE as MathT / 2.0);
+        let fc = fc.min(self.sample_rate / 2.0);
 
         self.fc = fc;
         self.reset();
@@ -68,7 +75,7 @@ impl LowPass {
         let theta = (std::f64::consts::PI / 6.0) * (4.0 - self.r);
         let k = 1.0 - 2.0 * theta.cos();
         let w = 2.0 * std::f64::consts::PI * self.fc;
-        let t = w * INV_SAMPLE_RATE;
+        let t = w / self.sample_rate;
         let g = t.powf(3.0) + k*t.powf(2.0) + k*t + 1.0;
 
         self.coeff[0] = (t.powf(3.0) / g) as SampleT;
@@ -80,14 +87,14 @@ impl LowPass {
 
 impl Modifier for LowPass {
     fn process(&mut self, x: SampleT) -> SampleT {
-        let y = self.coeff[0]*x +
-                self.coeff[1]*self.outs[0] +
-                self.coeff[2]*self.outs[1] +
-                self.coeff[3]*self.outs[2];
+        let y =
+            self.coeff[0] * x +
+            self.coeff[1] * self.yn[0] +
+            self.coeff[2] * self.yn[1] +
+            self.coeff[3] * self.yn[2];
 
-        self.outs[2] = self.outs[1];
-        self.outs[1] = self.outs[0];
-        self.outs[0] = y;
+        self.yn.rotate_right(1);
+        self.yn[0] = y;
 
         y
     }
@@ -96,10 +103,13 @@ impl Modifier for LowPass {
 impl Clone for LowPass {
     fn clone(&self) -> Self {
         LowPass {
+            coeff: self.coeff,
+            yn: [SampleT::default() ; 3],
+
+            sample_rate: self.sample_rate,
+
             fc: self.fc,
             r: self.r,
-            coeff: self.coeff,
-            outs: [SampleT::default(); 3]
         }
     }
 }

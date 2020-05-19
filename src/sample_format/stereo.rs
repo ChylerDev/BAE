@@ -11,7 +11,8 @@ use crate::utils::*;
 pub type StereoTrackT = Vec<Stereo>;
 
 /// Struct representing a stereophonic audio sample.
-#[derive(Copy,Clone,Default)]
+#[derive(Debug,Copy,Clone,Default,PartialEq)]
+#[repr(C)]
 pub struct Stereo{
     /// Left sample value.
     pub left:  SampleT,
@@ -59,7 +60,7 @@ impl SampleFormat for Stereo
 }
 
 /// Pans a given sample between the left and right channels. The panning
-/// parameter `g` is a floating point value of the rang [-1,1], where -1 is 
+/// parameter `g` is a floating point value of the rang \[-1,1\], where -1 is 
 /// panned full left and 1 is panned full right. If the given value is not
 /// within this range, it is clamped to it.
 impl Panner<f32> for Stereo {

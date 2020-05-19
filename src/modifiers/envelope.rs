@@ -5,6 +5,8 @@ use super::*;
 /// Envelope Follower filter. I don't remember my lectures well enough to write
 /// a detailed description.
 pub struct Envelope {
+    sample_rate: MathT,
+
     au: SampleT,
     bu: SampleT,
     ad: SampleT,
@@ -19,15 +21,17 @@ impl Envelope {
     /// to follow.
     /// 
     /// [`Envelope`]: struct.Envelope.html
-    pub fn new(lower: SampleT, upper: SampleT) -> Envelope{
-        let theta_u = (std::f32::consts::PI * upper * INV_SAMPLE_RATE as SampleT).tan();
-        let theta_d = (std::f32::consts::PI * lower * INV_SAMPLE_RATE as SampleT).tan();
+    pub fn new(lower: MathT, upper: MathT, sample_rate: MathT) -> Envelope{
+        let theta_u = (std::f64::consts::PI * upper / sample_rate).tan();
+        let theta_d = (std::f64::consts::PI * lower / sample_rate).tan();
 
         Envelope {
-            au: theta_u / (1.0 + theta_u),
-            bu: (1.0 - theta_u) / (1.0 + theta_u),
-            ad: theta_d / (1.0 + theta_d),
-            bd: (1.0 - theta_d) / (1.0 + theta_d),
+            sample_rate,
+
+            au: (theta_u / (1.0 + theta_u)) as SampleT,
+            bu: ((1.0 - theta_u) / (1.0 + theta_u)) as SampleT,
+            ad: (theta_d / (1.0 + theta_d)) as SampleT,
+            bd: ((1.0 - theta_d) / (1.0 + theta_d)) as SampleT,
 
             x1: SampleT::default(),
             y1: SampleT::default(),
@@ -53,6 +57,8 @@ impl Modifier for Envelope {
 impl Clone for Envelope {
     fn clone(&self) -> Self {
         Envelope {
+            sample_rate: self.sample_rate,
+
             au: self.au,
             bu: self.bu,
             ad: self.ad,

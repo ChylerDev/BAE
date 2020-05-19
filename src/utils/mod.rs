@@ -10,12 +10,14 @@ pub mod mono_resampler;
 pub use mono_resampler::*;
 
 /// Linear interpolation (y-y1 = m * (x-x1)) of a given value.
+#[inline]
 pub fn lerp<T>(x:T, x1:T, x2:T, y1:T, y2:T) -> T
     where T: Copy + Sized + Add<Output=T> + Sub<Output=T> + Mul<Output=T> + Div<Output=T>
 {
     ((y2 - y1) / (x2 - x1)) * (x - x1) + y1
 }
 
+#[inline]
 fn clamp<T>(x: T, mut x1: T, mut x2: T) -> T
     where T: Copy + Sized + PartialOrd
 {
@@ -35,6 +37,7 @@ fn clamp<T>(x: T, mut x1: T, mut x2: T) -> T
 /// Clamped linear interpolation (y-y1 = m * (x-x1)) of a given value. The input
 /// `x` is clamped to the range [`x1`,`x2`]. If `x1` is greater than `x2`, they
 /// are swapped.
+#[inline]
 pub fn clerp<T>(x:T, x1:T, x2:T, y1:T, y2:T) -> T
     where T: Copy + Sized + PartialOrd + Add<Output=T> + Sub<Output=T> + Mul<Output=T> + Div<Output=T>
 {
@@ -42,13 +45,13 @@ pub fn clerp<T>(x:T, x1:T, x2:T, y1:T, y2:T) -> T
 }
 
 /// Converts a given sample count to seconds.
-pub fn samples_to_seconds(s: usize) -> std::time::Duration {
-    std::time::Duration::from_secs_f64(s as f64 * SAMPLE_RATE as f64)
+pub fn samples_to_seconds(s: usize, r: MathT) -> std::time::Duration {
+    std::time::Duration::from_secs_f64(s as f64 * r as f64)
 }
 
 /// Converts the given duration to samples, rounded to the nearest sample.
-pub fn seconds_to_samples(s: std::time::Duration) -> usize {
-    (s.as_secs_f64() * SAMPLE_RATE as f64).round() as usize
+pub fn seconds_to_samples(s: std::time::Duration, r: MathT) -> usize {
+    (s.as_secs_f64() * r as f64).round() as usize
 }
 
 /// Converts from a linear gain value to a decibel (dBFS) value.
@@ -137,114 +140,156 @@ pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<
     Ok((h, tracks))
 }
 
-/// Takes the given track and filename and writes the track data to the WAV file
-/// at the given location with a given bit-depth.
+/// Structure representing the options available to configure the format of the
+/// wave file resulting from a call to [`WaveWriteOptions::write`][0], letting
+/// you control the bits per sample, sampling rate, and whether or not the track
+/// given to [`WaveWriteOptions::write`][0] will be clipped.
 /// 
-/// # Parameters
+/// This struct uses a builder pattern, allowing you to chain the methods that
+/// set the internal parameters, and then write the values at the end.
 /// 
-/// * `track` - A vector of tracks to write. Each track is considered a channel.
-/// * `bps` - The number of bits per sample. Should be 8, 16, or 24.
-/// * `d` - The destination to write to.
-/// * `clip` - Controls whether or not the function will clamp values outside
-///            the range of [-1,1] to that range. If you normalize your data
-///            beforehand it is safe to set this to false.
-/// 
-/// # Errors
-/// 
-/// This function fails if:
-/// * Anything that [`wav::write_wav`] specifies.
-/// * The channels don't have equal lengths.
-/// * The given vector contains no data.
-/// 
-/// # Example
-/// 
-/// ```
-/// # use std::fs::File;
-/// use bae_rs::{*,generators::*, utils::*};
-/// let mut n = Noise::new();
-/// let mut t = SampleTrackT::new();
-///
-/// for _ in 0..SAMPLE_RATE {
-///     t.push(n.process());
-/// }
-///
-/// write_wav(vec![t], 16, &mut File::create(".junk/some/path/noise.wav").unwrap(), false);
-/// ```
-/// 
-/// [`wav::write_wav`]: https://docs.rs/wav/0.1.1/wav/fn.write_wav.html
-pub fn write_wav(mut tracks: Vec<SampleTrackT>, bps: u16, d: &mut dyn std::io::Write, clip: bool) -> std::io::Result<()> {
-    use std::io::{Error, ErrorKind};
-    use crate::sample_format::*;
+/// [0]: #method.write
+#[derive(Default)]
+pub struct WaveWriteOptions {
+    bps: u16,
+    r: MathT,
+    clip: bool,
+}
 
-    if tracks.len() == 0 {
-        return Err(Error::new(ErrorKind::Other, "No channels given, aborting."));
+impl WaveWriteOptions {
+    /// Creates new waveWriteOptions object.
+    pub fn new() -> Self {
+        Default::default()
     }
 
-    let len = tracks[0].len();
-
-    for t in &mut tracks {
-        if t.len() != len {
-            return Err(Error::new(ErrorKind::Other, "Channels have mismatching lengths, aborting."));
-        }
-        if clip {
-            for s in t {
-                if *s > 1.0 {
-                    *s = 1.0;
-                } else if *s < -1.0 {
-                    *s = -1.0;
-                }
-            }
+    /// Sets the bits per sample value.
+    /// 
+    /// Succeeds if bps is one of either 8, 16, or 24, fails otherwise.
+    pub fn bps(mut self, bps: u16) -> Result<WaveWriteOptions,()> {
+        if bps == 8 || bps == 16 || bps == 24 {
+            self.bps = bps;
+            Ok(self)
+        } else {
+            Err(())
         }
     }
 
-    match bps {
-        8 => {
-            let mut v = Vec::new();
-
-            for i in 0..len {
-                for t in &tracks {
-                    v.push(sample_to_u8(t[i]));
-                }
-            }
-
-            wav::write_wav(
-                wav::Header::new(1, tracks.len() as u16, SAMPLE_RATE as u32, bps),
-                wav::BitDepth::Eight(v),
-                d
-            )?;
-        },
-        16 => {
-            let mut v = Vec::new();
-
-            for i in 0..len {
-                for t in &tracks {
-                    v.push(sample_to_i16(t[i]));
-                }
-            }
-
-            wav::write_wav(
-                wav::Header::new(1, tracks.len() as u16, SAMPLE_RATE as u32, bps),
-                wav::BitDepth::Sixteen(v),
-                d
-            )?;
-        },
-        24 => {
-            let mut v = Vec::new();
-
-            for i in 0..len {
-                for t in &tracks {
-                    v.push(sample_to_i24(t[i]));
-                }
-            }
-
-            wav::write_wav(
-                wav::Header::new(1, tracks.len() as u16, SAMPLE_RATE as u32, bps),
-                wav::BitDepth::TwentyFour(v),
-                d
-            )?;
-        },
-        _ => return Err(Error::new(ErrorKind::Other, "Unsupported bit depth, aborting.")),
+    /// Sets the sampling rate.
+    pub fn r(mut self, r: MathT) -> WaveWriteOptions {
+        self.r = r;
+        self
     }
 
-    Ok(())
+    /// Sets whether or not values outside the range of \[-1,1\] will be clipped or not.
+    pub fn clip(mut self, clip: bool) -> WaveWriteOptions {
+        self.clip = clip;
+        self
+    }
+
+    /// Takes the given options and tracks and writes the formatted WAV data to
+    /// the passed `io::Write` object.
+    /// 
+    /// # Parameters
+    /// 
+    /// * `tracks` - A vector of tracks to write. Each track is considered a channel.
+    /// * `d` - The `io::Write` object to write to.
+    /// 
+    /// # Errors
+    /// 
+    /// This function will return an error under the following conditions:
+    /// * Anything that [`wav::write_wav`] specifies.
+    /// * The channels don't have equal lengths.
+    /// * The given vector of channels contains no data.
+    /// 
+    /// # Example
+    /// 
+    /// ```
+    /// # use std::fs::File;
+    /// # use bae_rs::{*, generators::*, utils::*};
+    ///
+    /// let mut t = SampleTrackT::new();
+    /// let mut opt = WaveWriteOptions::new();
+    ///
+    /// /* snip */
+    ///
+    /// opt.write(vec![t], &mut File::create("some_file.wav").unwrap());
+    /// ```
+    /// 
+    /// [`wav::write_wav`]: https://docs.rs/wav/0.3.0/wav/fn.write_wav.html
+    pub fn write(self, mut tracks: Vec<SampleTrackT>, d: &mut dyn std::io::Write) -> std::io::Result<()> {
+        use std::io::{Error, ErrorKind};
+        use crate::sample_format::*;
+
+        if tracks.len() == 0 {
+            return Err(Error::new(ErrorKind::Other, "No channels given, aborting."));
+        }
+
+        let len = tracks[0].len();
+
+        for t in &mut tracks {
+            if t.len() != len {
+                return Err(Error::new(ErrorKind::Other, "Channels have mismatching lengths, aborting."));
+            }
+            if self.clip {
+                for s in t {
+                    if *s > 1.0 {
+                        *s = 1.0;
+                    } else if *s < -1.0 {
+                        *s = -1.0;
+                    }
+                }
+            }
+        }
+
+        match self.bps {
+            8 => {
+                let mut v = Vec::new();
+
+                for i in 0..len {
+                    for t in &tracks {
+                        v.push(sample_to_u8(t[i]));
+                    }
+                }
+
+                wav::write_wav(
+                    wav::Header::new(1, tracks.len() as u16, self.r as u32, self.bps),
+                    wav::BitDepth::Eight(v),
+                    d
+                )?;
+            },
+            16 => {
+                let mut v = Vec::new();
+
+                for i in 0..len {
+                    for t in &tracks {
+                        v.push(sample_to_i16(t[i]));
+                    }
+                }
+
+                wav::write_wav(
+                    wav::Header::new(1, tracks.len() as u16, self.r as u32, self.bps),
+                    wav::BitDepth::Sixteen(v),
+                    d
+                )?;
+            },
+            24 => {
+                let mut v = Vec::new();
+
+                for i in 0..len {
+                    for t in &tracks {
+                        v.push(sample_to_i24(t[i]));
+                    }
+                }
+
+                wav::write_wav(
+                    wav::Header::new(1, tracks.len() as u16, self.r as u32, self.bps),
+                    wav::BitDepth::TwentyFour(v),
+                    d
+                )?;
+            },
+            _ => return Err(Error::new(ErrorKind::Other, "Unsupported bit depth, aborting.")),
+        }
+    
+        Ok(())
+    }
 }
