@@ -39,9 +39,10 @@ use std::ops::*;
 /// communicated with the given [`String`] used for the error type. An example
 /// of such an error could be (for the [`Stereo`] type):
 /// 
-/// ```
-/// # let v: Vec<f32> = vec![];
-/// format!("ERROR: Given vector was length {}. This function requires length 2.", v.len());
+/// ```rust
+/// let v = vec![];
+/// 
+/// assert_eq!(Err("ERROR: Given vector was length 0. This function requires length 2."), Stereo::try_from(v));
 /// ```
 /// 
 /// [`Mul`]: https://doc.rust-lang.org/std/ops/trait.Mul.html
@@ -71,7 +72,7 @@ pub trait SampleFormat:
     TryFrom<Vec<i32>, Error=String> + Into<    Vec<i32>>
 {
     /// Creates an object from a single monophonic sample.
-    fn from_sample(x:SampleT) -> Self;
+    fn from_sample(x: SampleT) -> Self;
 
     /// Converts the given polyphonic sample to a monophonic sample.
     fn into_sample(self) -> SampleT;

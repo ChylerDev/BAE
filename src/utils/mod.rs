@@ -154,6 +154,11 @@ pub struct WaveWriteOptions {
 }
 
 impl WaveWriteOptions {
+    /// Creates new waveWriteOptions object.
+    pub fn new() -> Self {
+        Default::default()
+    }
+
     /// Sets the bits per sample value.
     /// 
     /// Succeeds if bps is one of either 8, 16, or 24, fails otherwise.
@@ -197,14 +202,14 @@ impl WaveWriteOptions {
     /// 
     /// ```
     /// # use std::fs::File;
-    /// # use bae_rs::{*,generators::*, utils::*};
-    /// # let mut n = Noise::new();
+    /// # use bae_rs::{*, generators::*, utils::*};
+    ///
     /// let mut t = SampleTrackT::new();
-    /// let mut opt = WaveWriteOptions::default();
+    /// let mut opt = WaveWriteOptions::new();
     ///
     /// /* snip */
     ///
-    /// opt.write(vec![t], &mut File::create(".junk/some/path/noise.wav").unwrap());
+    /// opt.write(vec![t], &mut File::create("some_file.wav").unwrap());
     /// ```
     /// 
     /// [`wav::write_wav`]: https://docs.rs/wav/0.3.0/wav/fn.write_wav.html
@@ -224,9 +229,9 @@ impl WaveWriteOptions {
             }
             if self.clip {
                 for s in t {
-                    if s > 1.0 {
+                    if *s > 1.0 {
                         *s = 1.0;
-                    } else if s < -1.0 {
+                    } else if *s < -1.0 {
                         *s = -1.0;
                     }
                 }
