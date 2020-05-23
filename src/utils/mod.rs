@@ -103,14 +103,14 @@ pub fn normalize(db: MathT, t: &mut SampleTrackT) {
 /// # Errors
 /// 
 /// This function fails if:
-/// * Anything that [`wav::read_wav`] specifies.
+/// * Anything that [`wav::read`] specifies.
 /// 
 /// [`std::io::Result`]: https://doc.rust-lang.org/std/io/type.Result.html
-/// [`wav::Header`]: https://docs.rs/wav/0.1.1/wav/struct.Header.html
+/// [`wav::Header`]: https://docs.rs/wav/0.4.0/wav/struct.Header.html
 /// [`TrackT`]: ../../type.TrackT.html
-/// [`wav::read_wav`]: https://docs.rs/wav/0.1.1/wav/fn.read_wav.html
+/// [`wav::read`]: https://docs.rs/wav/0.4.0/wav/fn.read.html
 pub fn read_wav(s: &mut dyn std::io::Read) -> std::io::Result<(wav::Header, Vec<SampleTrackT>)> {
-    let (h, bd) = wav::read_wav(s)?;
+    let (h, bd) = wav::read(s)?;
 
     let mut tracks = Vec::new();
     for _ in 0..h.channel_count {
@@ -197,7 +197,7 @@ impl WaveWriteOptions {
     /// # Errors
     /// 
     /// This function will return an error under the following conditions:
-    /// * Anything that [`wav::write_wav`] specifies.
+    /// * Anything that [`wav::write`] specifies.
     /// * The channels don't have equal lengths.
     /// * The given vector of channels contains no data.
     /// 
@@ -215,7 +215,7 @@ impl WaveWriteOptions {
     /// opt.write(vec![t], &mut File::create("some_file.wav").unwrap());
     /// ```
     /// 
-    /// [`wav::write_wav`]: https://docs.rs/wav/0.3.0/wav/fn.write_wav.html
+    /// [`wav::write`]: https://docs.rs/wav/0.4.0/wav/fn.write.html
     pub fn write(&self, mut tracks: Vec<SampleTrackT>, d: &mut dyn std::io::Write) -> std::io::Result<()> {
         use std::io::{Error, ErrorKind};
         use crate::sample_format::*;
@@ -251,7 +251,7 @@ impl WaveWriteOptions {
                     }
                 }
 
-                wav::write_wav(
+                wav::write(
                     wav::Header::new(1, tracks.len() as u16, self.r as u32, self.bps),
                     wav::BitDepth::Eight(v),
                     d
@@ -266,7 +266,7 @@ impl WaveWriteOptions {
                     }
                 }
 
-                wav::write_wav(
+                wav::write(
                     wav::Header::new(1, tracks.len() as u16, self.r as u32, self.bps),
                     wav::BitDepth::Sixteen(v),
                     d
@@ -281,13 +281,13 @@ impl WaveWriteOptions {
                     }
                 }
 
-                wav::write_wav(
+                wav::write(
                     wav::Header::new(1, tracks.len() as u16, self.r as u32, self.bps),
                     wav::BitDepth::TwentyFour(v),
                     d
                 )?;
             },
-            _ => return Err(Error::new(ErrorKind::Other, "Unsupported bit depth, aborting.")),
+            _ => return Err(Error::new(ErrorKind::InvalidData, "Unsupported bit depth, aborting.")),
         }
 
         Ok(())

@@ -10,7 +10,6 @@ mod tests {
 
     #[test]
     fn test_write_wav() -> Result<(),()> {
-
         let mut t = bae_rs::SampleTrackT::new();
 
         for i in 0..16 {
@@ -28,7 +27,7 @@ mod tests {
     }
 
     #[test]
-    fn test_resampler() {
+    fn test_mono_resampler() {
         use bae_rs::{SampleFormat, Mono};
         use bae_rs::debug::*;
 

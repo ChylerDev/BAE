@@ -16,7 +16,7 @@ categories = ["data-structures", "mathematics", "multimedia::audio"]
 lazy_static = "1"
 petgraph = "0.5"
 rand = "0.7"
-wav = "0.3"
+wav = "0.4"
 version-sync = "0.9"
 
 [badges]
