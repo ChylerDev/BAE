@@ -1,5 +1,5 @@
 //! # Triangle
-//! 
+//!
 //! A triangle wave generator.
 
 use super::*;
@@ -54,7 +54,7 @@ impl Clone for Triangle {
         Triangle {
             sample_rate: self.sample_rate,
             irate: self.irate,
-            inc: 0.0
+            inc: 0.0,
         }
     }
 }

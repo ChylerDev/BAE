@@ -1,21 +1,21 @@
 //! # Stereo
-//! 
+//!
 //! Module containing type for handling stereophonic audio data.
 
 use super::*;
 use crate::utils::*;
 
 /// Type for a track of [`Stereo`] samples
-/// 
+///
 /// [`Stereo`]: struct.Stereo.html
 pub type StereoTrackT = Vec<Stereo>;
 
 /// Struct representing a stereophonic audio sample.
-#[derive(Debug,Copy,Clone,Default,PartialEq)]
+#[derive(Debug, Copy, Clone, Default, PartialEq)]
 #[repr(C)]
-pub struct Stereo{
+pub struct Stereo {
     /// Left sample value.
-    pub left:  SampleT,
+    pub left: SampleT,
     /// Right sample value.
     pub right: SampleT,
 }
@@ -28,30 +28,26 @@ impl Stereo {
 
     /// Returns a new Stereo object created from individual left and right
     /// audio samples.
-    /// 
+    ///
     /// # Parameters
-    /// 
+    ///
     /// * `l` - the left audio sample.
     /// * `r` - the right audio sample.
-    pub fn from(l:SampleT, r:SampleT) -> Self {
-        Stereo {
-            left:  l,
-            right: r,
-        }
+    pub fn from(l: SampleT, r: SampleT) -> Self {
+        Stereo { left: l, right: r }
     }
 }
 
-impl SampleFormat for Stereo
-{
-    fn from_sample(x:SampleT) -> Self {
+impl SampleFormat for Stereo {
+    fn from_sample(x: SampleT) -> Self {
         Stereo {
-            left:  x * SampleT::sqrt(0.5),
-            right: x * SampleT::sqrt(0.5)
+            left: x * SampleT::sqrt(0.5),
+            right: x * SampleT::sqrt(0.5),
         }
     }
 
     fn into_sample(self) -> SampleT {
-        (self.left + self.right)/SampleT::sqrt(0.5)
+        (self.left + self.right) / SampleT::sqrt(0.5)
     }
 
     fn num_samples() -> usize {
@@ -60,7 +56,7 @@ impl SampleFormat for Stereo
 }
 
 /// Pans a given sample between the left and right channels. The panning
-/// parameter `g` is a floating point value of the rang \[-1,1\], where -1 is 
+/// parameter `g` is a floating point value of the rang \[-1,1\], where -1 is
 /// panned full left and 1 is panned full right. If the given value is not
 /// within this range, it is clamped to it.
 impl Panner<f32> for Stereo {
@@ -77,8 +73,8 @@ impl Panner<f32> for Stereo {
         };
 
         Stereo {
-            left:  (db_to_linear(l_lerp) * s as MathT) as SampleT,
-            right: (db_to_linear(r_lerp) * s as MathT) as SampleT
+            left: (db_to_linear(l_lerp) * s as MathT) as SampleT,
+            right: (db_to_linear(r_lerp) * s as MathT) as SampleT,
         }
     }
 }
@@ -96,8 +92,8 @@ impl Panner<f64> for Stereo {
         };
 
         Stereo {
-            left:  (db_to_linear(l_lerp) * s as MathT) as SampleT,
-            right: (db_to_linear(r_lerp) * s as MathT) as SampleT
+            left: (db_to_linear(l_lerp) * s as MathT) as SampleT,
+            right: (db_to_linear(r_lerp) * s as MathT) as SampleT,
         }
     }
 }
@@ -107,7 +103,7 @@ impl std::ops::Neg for Stereo {
 
     fn neg(self) -> Self::Output {
         Stereo {
-            left:  -self.left,
+            left: -self.left,
             right: -self.right,
         }
     }
@@ -153,7 +149,7 @@ impl std::ops::Mul<Stereo> for Stereo {
     fn mul(self, rhs: Stereo) -> Self::Output {
         Stereo {
             left: self.left * rhs.left,
-            right: self.right * rhs.right
+            right: self.right * rhs.right,
         }
     }
 }
@@ -186,8 +182,8 @@ impl std::ops::Mul<MathT> for Stereo {
 
     fn mul(self, rhs: MathT) -> Self::Output {
         Stereo {
-            left:(self.left as MathT * rhs) as SampleT,
-            right:(self.right as MathT * rhs) as SampleT,
+            left: (self.left as MathT * rhs) as SampleT,
+            right: (self.right as MathT * rhs) as SampleT,
         }
     }
 }
@@ -214,14 +210,15 @@ impl TryFrom<Vec<u8>> for Stereo {
 
     fn try_from(v: Vec<u8>) -> Result<Self, Self::Error> {
         if v.len() < 2 {
-            Err(format!("ERROR: Given vector was length {}. This function requires length 2.", v.len()))
+            Err(format!(
+                "ERROR: Given vector was length {}. This function requires length 2.",
+                v.len()
+            ))
         } else {
-            Ok(
-                Stereo {
-                    left:  sample_from_u8(v[0]),
-                    right: sample_from_u8(v[1]),
-                }
-            )
+            Ok(Stereo {
+                left: sample_from_u8(v[0]),
+                right: sample_from_u8(v[1]),
+            })
         }
     }
 }
@@ -236,14 +233,15 @@ impl TryFrom<Vec<i16>> for Stereo {
 
     fn try_from(v: Vec<i16>) -> Result<Self, Self::Error> {
         if v.len() < 2 {
-            Err(format!("ERROR: Given vector was length {}. This function requires length 2.", v.len()))
+            Err(format!(
+                "ERROR: Given vector was length {}. This function requires length 2.",
+                v.len()
+            ))
         } else {
-            Ok(
-                Stereo {
-                    left:  sample_from_i16(v[0]),
-                    right: sample_from_i16(v[1]),
-                }
-            )
+            Ok(Stereo {
+                left: sample_from_i16(v[0]),
+                right: sample_from_i16(v[1]),
+            })
         }
     }
 }
@@ -258,14 +256,15 @@ impl TryFrom<Vec<i32>> for Stereo {
 
     fn try_from(v: Vec<i32>) -> Result<Self, Self::Error> {
         if v.len() < 2 {
-            Err(format!("ERROR: Given vector was length {}. This function requires length 2.", v.len()))
+            Err(format!(
+                "ERROR: Given vector was length {}. This function requires length 2.",
+                v.len()
+            ))
         } else {
-            Ok(
-                Stereo {
-                    left:  sample_from_i24(v[0]),
-                    right: sample_from_i24(v[1]),
-                }
-            )
+            Ok(Stereo {
+                left: sample_from_i24(v[0]),
+                right: sample_from_i24(v[1]),
+            })
         }
     }
 }

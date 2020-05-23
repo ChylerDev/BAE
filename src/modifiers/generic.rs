@@ -4,26 +4,26 @@ use super::*;
 use std::collections::VecDeque;
 
 /// Alias for a [`VecDeque`] describing a list of zeros for a filter.
-/// 
+///
 /// [`VecDeque`]: https://doc.rust-lang.org/std/collections/struct.VecDeque.html
-pub type Zeros = VecDeque<(usize,SampleT)>;
+pub type Zeros = VecDeque<(usize, SampleT)>;
 
 /// Alias for a [`VecDeque`] describing a list of poles for a filter.
-/// 
+///
 /// [`VecDeque`]: https://doc.rust-lang.org/std/collections/struct.VecDeque.html
-pub type Poles = VecDeque<(usize,SampleT)>;
+pub type Poles = VecDeque<(usize, SampleT)>;
 
 /// Alias for a [`VecDeque`] describing a list of samples for a filter.
-/// 
+///
 /// [`VecDeque`]: https://doc.rust-lang.org/std/collections/struct.VecDeque.html
 pub type Samples = VecDeque<SampleT>;
 
 /// Generic filter object.
 pub struct Generic {
-    zeros:Zeros,
-    poles:Poles,
-    inputs:Samples,
-    outputs:Samples,
+    zeros: Zeros,
+    poles: Poles,
+    inputs: Samples,
+    outputs: Samples,
 }
 
 impl Generic {
@@ -55,7 +55,7 @@ impl Generic {
                     v.push_back(SampleT::default());
                 }
                 v
-            }
+            },
         }
     }
 }
@@ -99,7 +99,7 @@ impl Clone for Generic {
                     v.push_back(SampleT::default());
                 }
                 v
-            }
+            },
         }
     }
 }

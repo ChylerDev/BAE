@@ -1,12 +1,12 @@
 //! # Sine
-//! 
+//!
 //! A sinusoidal sample generator.
 
-use lazy_static::lazy_static;
 use super::*;
+use lazy_static::lazy_static;
 
 /// The number of elements in the wavetable.
-const WAVETABLE_SIZE: usize = 1024*1024;
+const WAVETABLE_SIZE: usize = 1024 * 1024;
 
 lazy_static! {
     /// Lazy static initialization of the static WAVETABLE object.
@@ -29,11 +29,11 @@ pub struct Sine {
 
 impl FreqMod for Sine {
     fn new(f: MathT, sample_rate: MathT) -> Self {
-        Sine{
+        Sine {
             ind: 0.0,
             inc: (f * WAVETABLE_SIZE as MathT) / sample_rate,
             sample_rate,
-            table: WAVETABLE.as_slice()
+            table: WAVETABLE.as_slice(),
         }
     }
 
@@ -57,7 +57,7 @@ impl Generator for Sine {
         } as usize;
         let k = k as usize;
 
-        let y = ((1.0-g)*self.table[k] + g*self.table[k1]) as SampleT;
+        let y = ((1.0 - g) * self.table[k] + g * self.table[k1]) as SampleT;
 
         self.ind += self.inc;
 

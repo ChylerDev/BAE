@@ -1,5 +1,5 @@
 //! # Square
-//! 
+//!
 //! A square wave generator.
 
 use super::*;
@@ -16,16 +16,16 @@ impl FreqMod for Square {
         Square {
             sample_rate,
             ind: 0.0,
-            inv: sample_rate/(2.0 * f)
+            inv: sample_rate / (2.0 * f),
         }
     }
 
     fn set_frequency(&mut self, f: MathT) {
-        self.inv = self.sample_rate/(2.0 * f);
+        self.inv = self.sample_rate / (2.0 * f);
     }
 
     fn get_frequency(&self) -> MathT {
-        self.sample_rate/(2.0 * self.inv)
+        self.sample_rate / (2.0 * self.inv)
     }
 }
 
@@ -52,7 +52,7 @@ impl Clone for Square {
         Square {
             sample_rate: self.sample_rate,
             ind: 0.0,
-            inv: self.inv
+            inv: self.inv,
         }
     }
 }

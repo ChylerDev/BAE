@@ -1,8 +1,8 @@
 //! # Delay
 
 use super::*;
-use std::time::Duration;
 use std::collections::VecDeque;
+use std::time::Duration;
 
 /// Delay modifier, delays a signal by a given amount of time rounded to the
 /// nearest sample.
@@ -25,7 +25,7 @@ impl Delay {
                 }
 
                 v
-            }
+            },
         }
     }
 
@@ -55,7 +55,7 @@ impl Clone for Delay {
                 }
 
                 v
-            }
+            },
         }
     }
 }

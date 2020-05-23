@@ -14,9 +14,9 @@ pub struct Echo {
 impl Echo {
     /// Creates a new ['Echo'] object with the given delay duration and feedback
     /// amount.
-    /// 
+    ///
     /// [`Echo`]: struct.Echo.html
-    pub fn new(d: Duration, g: MathT, sample_rate: MathT) -> Self{
+    pub fn new(d: Duration, g: MathT, sample_rate: MathT) -> Self {
         let mut v = VecDeque::new();
         for _ in 0..((d.as_secs_f64() * sample_rate as MathT) as usize) {
             v.push_back(SampleT::default());

@@ -1,5 +1,5 @@
 //! # Debug
-//! 
+//!
 //! Module containing utilities used for debugging.
 
 /// Equivalency check of two floating point values.
@@ -13,13 +13,14 @@
 /// * `abs` - Function that determines the absolute value of the given floating
 ///   point value. For built-in floating point types you are welcome to use
 ///   [`f32::abs`] or [`f64::abs`].
-/// 
+///
 /// [`std::f32::EPSILON`]:
 pub fn float_equal<T, F>(a: T, b: T, e: T, abs: F) -> bool
-    where T: std::ops::Sub<T, Output=T> + std::cmp::PartialOrd,
-          F: FnOnce(T)->T
+where
+    T: std::ops::Sub<T, Output = T> + std::cmp::PartialOrd,
+    F: FnOnce(T) -> T,
 {
-    abs(a-b) < e
+    abs(a - b) < e
 }
 
 /// Used for testing purposes to avoid reading a file from disk, and instead
@@ -32,15 +33,12 @@ pub struct VecReader {
 impl VecReader {
     /// Creates a new VecReader object with the given Vec as the payload.
     pub fn new(vec: Vec<u8>) -> Self {
-        VecReader {
-            vec,
-            pos: 0,
-        }
+        VecReader { vec, pos: 0 }
     }
 }
 
 impl std::io::Read for VecReader {
-    fn read(&mut self, buf: &mut[u8]) -> std::io::Result<usize> {
+    fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
         let mut n = 0;
         while n < buf.len() && self.pos < self.vec.len() {
             buf[n] = self.vec[self.pos];

@@ -1,16 +1,16 @@
 //! # Mono
-//! 
+//!
 //! Module containing type for handling monophonic audio data.
 
 use super::*;
 
 /// Type for a track of [`Mono`] samples
-/// 
+///
 /// [`Mono`]: struct.Mono.html
 pub type MonoTrackT = Vec<Mono>;
 
 /// Struct representing a monophonic audio sample.
-#[derive(Debug,Copy,Clone,Default,PartialEq)]
+#[derive(Debug, Copy, Clone, Default, PartialEq)]
 #[repr(C)]
 pub struct Mono {
     /// The single, monophonic sample.
@@ -25,17 +25,13 @@ impl Mono {
 
     /// Creates a new Mono object from the given sample value.
     pub fn from(s: SampleT) -> Self {
-        Mono {
-            mono: s
-        }
+        Mono { mono: s }
     }
 }
 
 impl SampleFormat for Mono {
     fn from_sample(x: SampleT) -> Self {
-        Mono {
-            mono: x
-        }
+        Mono { mono: x }
     }
 
     fn into_sample(self) -> SampleT {
@@ -49,9 +45,7 @@ impl SampleFormat for Mono {
 
 impl<T> Panner<T> for Mono {
     fn to_sample_format(s: SampleT, _: T) -> Self {
-        Mono {
-            mono: s
-        }
+        Mono { mono: s }
     }
 }
 
@@ -61,9 +55,7 @@ impl Neg for Mono {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        Mono {
-            mono: -self.mono
-        }
+        Mono { mono: -self.mono }
     }
 }
 
@@ -72,7 +64,7 @@ impl Add<Mono> for Mono {
 
     fn add(self, rhs: Mono) -> Self::Output {
         Mono {
-            mono: self.mono + rhs.mono
+            mono: self.mono + rhs.mono,
         }
     }
 }
@@ -87,7 +79,7 @@ impl Sub<Mono> for Mono {
 
     fn sub(self, rhs: Mono) -> Self {
         Mono {
-            mono: self.mono + rhs.mono
+            mono: self.mono + rhs.mono,
         }
     }
 }
@@ -102,7 +94,7 @@ impl Mul<Mono> for Mono {
 
     fn mul(self, rhs: Mono) -> Self::Output {
         Mono {
-            mono: self.mono * rhs.mono
+            mono: self.mono * rhs.mono,
         }
     }
 }
@@ -117,7 +109,7 @@ impl Mul<SampleT> for Mono {
 
     fn mul(self, rhs: SampleT) -> Self::Output {
         Mono {
-            mono: self.mono * rhs
+            mono: self.mono * rhs,
         }
     }
 }
@@ -132,7 +124,7 @@ impl Mul<MathT> for Mono {
 
     fn mul(self, rhs: MathT) -> Self::Output {
         Mono {
-            mono: (self.mono as MathT * rhs) as SampleT
+            mono: (self.mono as MathT * rhs) as SampleT,
         }
     }
 }
@@ -158,13 +150,14 @@ impl TryFrom<Vec<u8>> for Mono {
 
     fn try_from(v: Vec<u8>) -> Result<Self, Self::Error> {
         if v.len() < 1 {
-            Err(format!("ERROR: Given vector was length {}. This function requires length 1.", v.len()))
+            Err(format!(
+                "ERROR: Given vector was length {}. This function requires length 1.",
+                v.len()
+            ))
         } else {
-            Ok(
-                Mono {
-                    mono: sample_from_u8(v[0])
-                }
-            )
+            Ok(Mono {
+                mono: sample_from_u8(v[0]),
+            })
         }
     }
 }
@@ -179,13 +172,14 @@ impl TryFrom<Vec<i16>> for Mono {
 
     fn try_from(v: Vec<i16>) -> Result<Self, Self::Error> {
         if v.len() < 1 {
-            Err(format!("ERROR: Given vector was length {}. This function requires length 1.", v.len()))
+            Err(format!(
+                "ERROR: Given vector was length {}. This function requires length 1.",
+                v.len()
+            ))
         } else {
-            Ok(
-                Mono {
-                    mono: sample_from_i16(v[0])
-                }
-            )
+            Ok(Mono {
+                mono: sample_from_i16(v[0]),
+            })
         }
     }
 }
@@ -200,13 +194,14 @@ impl TryFrom<Vec<i32>> for Mono {
 
     fn try_from(v: Vec<i32>) -> Result<Self, Self::Error> {
         if v.len() < 1 {
-            Err(format!("ERROR: Given vector was length {}. This function requires length 1.", v.len()))
+            Err(format!(
+                "ERROR: Given vector was length {}. This function requires length 1.",
+                v.len()
+            ))
         } else {
-            Ok(
-                Mono {
-                    mono: sample_from_i24(v[0])
-                }
-            )
+            Ok(Mono {
+                mono: sample_from_i24(v[0]),
+            })
         }
     }
 }

@@ -1,10 +1,10 @@
 //! # Simple Sound
-//! 
+//!
 //! Module containing types implementing the ability to run a single
 //! [`Generator`] and [`Modifier`] within a single object, granting the ability
 //! for fast processing of simple [`Generator`]s and [`Modifier`]s into a single
 //! output.
-//! 
+//!
 //! [`Generator`]: ../../generators/trait.Generator.html
 //! [`Modifier`]: ../../generators/trait.Modifier.html
 
@@ -14,7 +14,7 @@ use super::*;
 /// given list of [`Modifier`]s operated in series. This allows for simple and
 /// fast processing of the structure's elements while still allowing for a wide
 /// range of more complex sounds.
-/// 
+///
 /// [`Generator`]: ../../generators/trait.Generator.html
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
 #[derive(Clone)]
@@ -32,7 +32,7 @@ impl SimpleSound {
     /// Constructs a new [`SimpleSound`] object. The new object is initialized
     /// with an empty [`Vec`] of [`Modifier`]s. Add [`Modifier`]s with
     /// [`add_modifier`] or [`extend_modifiers`].
-    /// 
+    ///
     /// [`SimpleSound`]: struct.SimpleSound.html
     /// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
     /// [`Modifier`]: ../../modifiers/trait.Modifier.html
@@ -51,17 +51,18 @@ impl SimpleSound {
     }
 
     /// Adds a single modifier to the internal [`Vec`] of [`Modifier`]s.
-    /// 
+    ///
     /// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
     /// [`Modifier`]: ../../modifiers/trait.Modifier.html
     pub fn add_modifier<M>(&mut self, m: BlockSP)
-        where M: 'static + Clone
+    where
+        M: 'static + Clone,
     {
         self.modifier_list.push(m);
     }
 
     /// Extends the internal [`Vec`] of [`Modifier`]s with the given [`Vec`].
-    /// 
+    ///
     /// [`Vec`]: https://doc.rust-lang.org/std/vec/struct.Vec.html
     /// [`Modifier`]: ../../modifiers/trait.Modifier.html
     pub fn extend_modifiers(&mut self, m_list: Vec<BlockSP>) {

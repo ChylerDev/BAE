@@ -19,9 +19,9 @@ pub struct Envelope {
 impl Envelope {
     /// Creates a new [`Envelope`] object from the given max and min frequencies
     /// to follow.
-    /// 
+    ///
     /// [`Envelope`]: struct.Envelope.html
-    pub fn new(lower: MathT, upper: MathT, sample_rate: MathT) -> Envelope{
+    pub fn new(lower: MathT, upper: MathT, sample_rate: MathT) -> Envelope {
         let theta_u = (std::f64::consts::PI * upper / sample_rate).tan();
         let theta_d = (std::f64::consts::PI * lower / sample_rate).tan();
 
@@ -63,7 +63,7 @@ impl Clone for Envelope {
             bu: self.bu,
             ad: self.ad,
             bd: self.bd,
-            
+
             x1: Default::default(),
             y1: Default::default(),
         }

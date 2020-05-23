@@ -1,11 +1,11 @@
 //! # Gain
-//! 
+//!
 //! Simple amplification filter.
 
 use super::*;
 
 /// Simple gain filter, the simplest filter of all.
-#[derive(Default,Copy,Clone)]
+#[derive(Default, Copy, Clone)]
 pub struct Gain {
     /// The gain of the gain filter.
     pub a: SampleT,
@@ -14,9 +14,7 @@ pub struct Gain {
 impl Gain {
     /// Constructs a new gain filter from the given gain.
     pub fn new(a: SampleT) -> Gain {
-        Gain {
-            a
-        }
+        Gain { a }
     }
 }
 

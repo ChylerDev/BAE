@@ -2,29 +2,29 @@ extern crate bae_rs;
 
 #[cfg(test)]
 mod tests {
+    use bae_rs::{generators::*, modifiers::*, utils::*, *};
     use std::fs::File;
     use std::time::Duration;
-    use bae_rs::{*, modifiers::*, generators::*, utils::*};
 
     const SAMPLE_RATE: usize = 48_000;
 
     const FILE_PREFIX: &'static str = ".junk/modifiers/";
 
     #[test]
-    fn test_adsr() -> Result<(),()> {
+    fn test_adsr() -> Result<(), ()> {
         let mut a = ADSR::new(
             Duration::from_secs_f64(0.03125),
             Duration::from_secs_f64(0.125),
             linear_to_db(0.5),
             Duration::from_secs_f64(0.5),
-            SAMPLE_RATE as MathT
+            SAMPLE_RATE as MathT,
         );
 
         let mut g = Sine::new(440.0, SAMPLE_RATE as MathT);
         let mut t = bae_rs::SampleTrackT::new();
 
         for i in 0..SAMPLE_RATE {
-            if i == SAMPLE_RATE/2 {
+            if i == SAMPLE_RATE / 2 {
                 a.trigger_release();
             }
 
@@ -40,18 +40,19 @@ mod tests {
             .bps(24)?
             .r(SAMPLE_RATE as MathT)
             .clip(true)
-            .write(vec![t], &mut File::create(f).unwrap()).unwrap();
+            .write(vec![t], &mut File::create(f).unwrap())
+            .unwrap();
 
         Ok(())
     }
 
     #[test]
     fn test_bandpass() {
-        let mut bp1 = BandPass::from_corners((100.0,200.0), SAMPLE_RATE as MathT);
+        let mut bp1 = BandPass::from_corners((100.0, 200.0), SAMPLE_RATE as MathT);
         let f1 = "bandpass_100_200.wav";
-        let mut bp2 = BandPass::from_corners((200.0,225.0), SAMPLE_RATE as MathT);
+        let mut bp2 = BandPass::from_corners((200.0, 225.0), SAMPLE_RATE as MathT);
         let f2 = "bandpass_200_225.wav";
-        let mut bp3 = BandPass::from_corners((20.0,20000.0), SAMPLE_RATE as MathT);
+        let mut bp3 = BandPass::from_corners((20.0, 20000.0), SAMPLE_RATE as MathT);
         let f3 = "bandpass_20_20k.wav";
 
         run_modifier(&mut bp1, f1).unwrap();
@@ -61,20 +62,27 @@ mod tests {
 
     #[test]
     fn test_delay() {
-        let mut d = Delay::new(std::time::Duration::from_secs_f64(0.5), SAMPLE_RATE as MathT);
+        let mut d = Delay::new(
+            std::time::Duration::from_secs_f64(0.5),
+            SAMPLE_RATE as MathT,
+        );
 
         run_modifier(&mut d, "delay.wav").unwrap();
     }
 
     #[test]
-    fn test_echo() -> Result<(),()> {
-        let mut e = Echo::new(std::time::Duration::from_secs_f64(0.25), 0.5, SAMPLE_RATE as MathT);
+    fn test_echo() -> Result<(), ()> {
+        let mut e = Echo::new(
+            std::time::Duration::from_secs_f64(0.25),
+            0.5,
+            SAMPLE_RATE as MathT,
+        );
 
         let mut g = Sine::new(440.0, SAMPLE_RATE as MathT);
         let mut t = bae_rs::SampleTrackT::new();
 
         for _ in 0..SAMPLE_RATE {
-            t.push(e.process(g.process()*0.5));
+            t.push(e.process(g.process() * 0.5));
         }
 
         let f = ".junk/modifiers/echo.wav";
@@ -82,13 +90,14 @@ mod tests {
             .bps(24)?
             .r(SAMPLE_RATE as MathT)
             .clip(true)
-            .write(vec![t], &mut File::create(f).unwrap()).unwrap();
+            .write(vec![t], &mut File::create(f).unwrap())
+            .unwrap();
 
         Ok(())
     }
 
     #[test]
-    fn test_envelope() -> Result<(),()> {
+    fn test_envelope() -> Result<(), ()> {
         let mut e = Envelope::new(20.0, 20_000.0, SAMPLE_RATE as MathT);
 
         let mut a = ADSR::new(
@@ -96,13 +105,13 @@ mod tests {
             Duration::from_secs_f64(0.125),
             linear_to_db(0.5),
             Duration::from_secs_f64(0.5),
-            SAMPLE_RATE as MathT
+            SAMPLE_RATE as MathT,
         );
         let mut g = Sine::new(440.0, SAMPLE_RATE as MathT);
         let mut t = bae_rs::SampleTrackT::new();
 
         for i in 0..SAMPLE_RATE {
-            if i == SAMPLE_RATE/2 {
+            if i == SAMPLE_RATE / 2 {
                 a.trigger_release();
             }
 
@@ -114,7 +123,8 @@ mod tests {
             .bps(24)?
             .r(SAMPLE_RATE as MathT)
             .clip(true)
-            .write(vec![t], &mut File::create(f).unwrap()).unwrap();
+            .write(vec![t], &mut File::create(f).unwrap())
+            .unwrap();
 
         Ok(())
     }
@@ -127,7 +137,7 @@ mod tests {
     }
 
     #[test]
-    fn test_generic() -> Result<(),()> {
+    fn test_generic() -> Result<(), ()> {
         let mut g = Generic::new(
             {
                 let mut v = Zeros::new();
@@ -162,7 +172,8 @@ mod tests {
             .bps(24)?
             .r(SAMPLE_RATE as MathT)
             .clip(true)
-            .write(vec![t], &mut File::create(f).unwrap()).unwrap();
+            .write(vec![t], &mut File::create(f).unwrap())
+            .unwrap();
 
         Ok(())
     }
@@ -175,13 +186,13 @@ mod tests {
     }
 
     #[test]
-    fn test_lowpass() -> Result<(),()> {
+    fn test_lowpass() -> Result<(), ()> {
         let mut lp = LowPass::new(440.0, 0.0, SAMPLE_RATE as MathT);
         let mut n = Noise::new();
         let mut t = bae_rs::SampleTrackT::new();
 
-        for i in 0..8*SAMPLE_RATE {
-            lp.set_resonance(i as bae_rs::MathT / (8*SAMPLE_RATE) as bae_rs::MathT);
+        for i in 0..8 * SAMPLE_RATE {
+            lp.set_resonance(i as bae_rs::MathT / (8 * SAMPLE_RATE) as bae_rs::MathT);
 
             t.push(lp.process(n.process()));
         }
@@ -191,13 +202,13 @@ mod tests {
             .bps(24)?
             .r(SAMPLE_RATE as MathT)
             .clip(true)
-            .write(vec![t], &mut File::create(f).unwrap()).unwrap();
+            .write(vec![t], &mut File::create(f).unwrap())
+            .unwrap();
 
         Ok(())
     }
 
-    fn run_modifier(m: &mut dyn bae_rs::modifiers::Modifier, file:&str) -> Result<(),()>
-    {
+    fn run_modifier(m: &mut dyn bae_rs::modifiers::Modifier, file: &str) -> Result<(), ()> {
         let mut g = Noise::new();
         let mut t = bae_rs::SampleTrackT::new();
 
@@ -209,7 +220,10 @@ mod tests {
 
         let after = std::time::Instant::now();
         let duration = after - before;
-        println!("Test generated 1s of audio in {} seconds", duration.as_secs_f32());
+        println!(
+            "Test generated 1s of audio in {} seconds",
+            duration.as_secs_f32()
+        );
 
         let mut f = String::from(FILE_PREFIX);
         f.push_str(file);
@@ -218,7 +232,8 @@ mod tests {
             .bps(24)?
             .r(SAMPLE_RATE as MathT)
             .clip(true)
-            .write(vec![t], &mut File::create(f.as_str()).unwrap()).unwrap();
+            .write(vec![t], &mut File::create(f.as_str()).unwrap())
+            .unwrap();
 
         Ok(())
     }

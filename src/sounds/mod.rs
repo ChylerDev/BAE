@@ -1,25 +1,25 @@
 //! # Sounds
-//! 
+//!
 //! This module includes the types needed to represent a collection of
 //! [`Generator`]s and [`Modifier`]s in an abstract, simple way.
-//! 
+//!
 //! [`Generator`]: ../generators/trait.Generator.html
 //! [`Modifier`]: ../modifiers/trait.Modifier.html
 
 use super::*;
 use std::sync::Arc;
 
-pub mod standard_block;
 pub mod complex_sound;
 pub mod simple_sound;
+pub mod standard_block;
 
-pub use standard_block::*;
 pub use complex_sound::*;
 pub use simple_sound::*;
+pub use standard_block::*;
 
 /// Trait used for generalizing the interface that allows for the processing of
 /// multiple audio objects (be they [`Generator`]s or [`Modifier`]s or both).
-/// 
+///
 /// [`Generator`]: ../../generators/trait.Generator.html
 /// [`Modifier`]: ../../modifiers/trait.Modifier.html
 pub trait Block {
@@ -29,7 +29,7 @@ pub trait Block {
     /// Process the [`Block`]. Individually processes the stored [`Generator`]
     /// and [`Modifier`] objects which are both combined using the [`Inter`] and
     /// returned.
-    /// 
+    ///
     /// [`Block`]: trait.Block.html
     /// [`Generator`]: ../../generators/trait.Generator.html
     /// [`Modifier`]: ../../modifiers/trait.Modifier.html
@@ -38,19 +38,19 @@ pub trait Block {
 }
 
 /// Alias for a [`Block`] object wrapped in a smart pointer.
-/// 
+///
 /// [`Block`]: trait.Block.html
 pub type BlockSP = Arc<dyn Block>;
 
 /// This trait defines the interface that anything producing sound that will be
 /// output to a [`Channel`] must define.
-/// 
+///
 /// [`Channel`]: ../../core/trait.Channel.html
 pub trait Sound {
     /// Toggles the pause state of the sound. If the sound is paused, the
     /// internal structures aren't process during a call to [`process`], instead
     /// only [`Default::default()`] is returned.
-    /// 
+    ///
     /// [`process`]: trait.Sound.html#tymethod.process
     /// [`Default::default()`]: https://doc.rust-lang.org/std/default/trait.Default.html#tymethod.default
     fn toggle_pause(&mut self);
@@ -59,9 +59,9 @@ pub trait Sound {
     fn is_paused(&self) -> bool;
 
     /// Toggles the mute state of the sound. If the sound is muted, the internal
-    /// structures are still processed during a call to [`process`], but 
+    /// structures are still processed during a call to [`process`], but
     /// [`Default::default()`] is returned.
-    /// 
+    ///
     /// [`process`]: trait.Sound.html#tymethod.process
     /// [`Default::default()`]: https://doc.rust-lang.org/std/default/trait.Default.html#tymethod.default
     fn toggle_mute(&mut self);
@@ -71,22 +71,22 @@ pub trait Sound {
 
     /// Processes the sound and its internal structures, returning the resulting
     /// audio sample.
-    /// 
+    ///
     /// If the sound is paused, no processing of the internal structures is
     /// performed, instead only [`Default::default()`] is returned.
-    /// 
+    ///
     /// If the sound is muted, the internal structures are still processed, but
     /// [`Default::default()`] is still returned.
-    /// 
+    ///
     /// [`Default::default()`]: https://doc.rust-lang.org/std/default/trait.Default.html#tymethod.default
     fn process(&mut self, input: SampleT) -> SampleT;
 
     /// Sets itself as registered with the given ID.
-    /// 
+    ///
     /// Caution should be taken when registering and unregistering sounds to or
     /// from a [`Channel`], as [`Sound`]s don't control their own registration.
     /// As such you should be registering through [`Channel::add_sound`].
-    /// 
+    ///
     /// [`Channel`]: ../../core/trait.Channel.html
     /// [`Channel::add_sound`]: ../../core/trait.Channel.html#tymethod.add_sound
     /// [`Sound`]: trait.Sound.html
@@ -94,11 +94,11 @@ pub trait Sound {
     fn register(&mut self, id: usize);
 
     /// Sets itself as unregistered and clears the saved ID.
-    /// 
+    ///
     /// Caution should be taken when registering and unregistering sounds to or
     /// from a [`Channel`] as [`Sound`]s don't control their own registration.
     /// As such you should be registering through [`Channel::remove_sound`].
-    /// 
+    ///
     /// [`Channel`]: ../../core/trait.Channel.html
     /// [`Channel::remove_sound`]: ../../core/trait.Channel.html#tymethod.remove_sound
     /// [`Sound`]: trait.Sound.html
@@ -106,7 +106,7 @@ pub trait Sound {
 
     /// Returns the ID given to the [`Sound`] during registration with a
     /// [`Channel`]. If the [`Sound`] is unregistered, it will return `None`.
-    /// 
+    ///
     /// [`Channel`]: ../../core/trait.Channel.html
     /// [`Sound`]: trait.Sound.html
     fn get_id(&self) -> Option<usize>;

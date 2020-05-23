@@ -1,8 +1,8 @@
 //! # ADSR
 
 use super::*;
-use std::time::Duration;
 use crate::utils::*;
+use std::time::Duration;
 
 /// Enum of the states an ADSR filter exists in.
 pub enum ADSRState {
@@ -19,7 +19,7 @@ pub enum ADSRState {
 }
 
 /// Attack-decay-sustain-release filter.
-/// 
+///
 /// Creates a simple envelope for the given signal.
 pub struct ADSR {
     a: MathT,
@@ -35,9 +35,9 @@ pub struct ADSR {
 
 impl ADSR {
     /// Constructs an ADSR filter object.
-    /// 
+    ///
     /// # Parameters
-    /// 
+    ///
     /// * `a` - Attack time.
     /// * `d` - Decay time.
     /// * `s` - Sustain level in dBFS. Value is clamped to be less than 0.
@@ -46,10 +46,10 @@ impl ADSR {
     pub fn new(a: Duration, d: Duration, s: MathT, r: Duration, sample_rate: MathT) -> Self {
         let s = s.min(0.0);
         ADSR {
-            a: 1.0/(a.as_secs_f64() * sample_rate),
-            d: ((db_to_linear(s)-1.0)/(d.as_secs_f64() * sample_rate)),
+            a: 1.0 / (a.as_secs_f64() * sample_rate),
+            d: ((db_to_linear(s) - 1.0) / (d.as_secs_f64() * sample_rate)),
             s: db_to_linear(s),
-            r: ((-db_to_linear(s))/(r.as_secs_f64() * sample_rate)),
+            r: ((-db_to_linear(s)) / (r.as_secs_f64() * sample_rate)),
             sample_rate,
             state: ADSRState::Attack,
             g: Default::default(),
@@ -58,18 +58,18 @@ impl ADSR {
 
     /// Sets the attack time.
     pub fn attack(&mut self, a: Duration) {
-        self.a = 1.0/(a.as_secs_f64() * self.sample_rate);
+        self.a = 1.0 / (a.as_secs_f64() * self.sample_rate);
     }
 
     /// Sets the decay time.
     pub fn decay(&mut self, d: Duration) {
-        self.d = (self.s as MathT - 1.0)/(d.as_secs_f64() * self.sample_rate);
+        self.d = (self.s as MathT - 1.0) / (d.as_secs_f64() * self.sample_rate);
     }
 
     /// Sets the sustain level in dBFS.
     pub fn sustain(&mut self, s: MathT) {
-        self.d *= (db_to_linear(s) - 1.0)/(self.s as MathT - 1.0);
-        self.r *= db_to_linear(s)/self.s as MathT;
+        self.d *= (db_to_linear(s) - 1.0) / (self.s as MathT - 1.0);
+        self.r *= db_to_linear(s) / self.s as MathT;
         self.s = db_to_linear(s);
     }
 
@@ -105,9 +105,7 @@ impl Modifier for ADSR {
 
                 x * self.g as SampleT
             }
-            ADSRState::Sustain => {
-                x * self.g as SampleT
-            }
+            ADSRState::Sustain => x * self.g as SampleT,
             ADSRState::Release => {
                 self.g += self.r;
                 if self.g <= 0.0 {
@@ -117,7 +115,7 @@ impl Modifier for ADSR {
 
                 x * self.g as SampleT
             }
-            ADSRState::Stopped => SampleT::default()
+            ADSRState::Stopped => SampleT::default(),
         }
     }
 }
